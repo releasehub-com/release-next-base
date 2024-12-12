@@ -22,17 +22,17 @@ export function ReleaseVsReplicated() {
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none text-white">
-                    Release Delivery vs. Replicated: Beyond On-Premise
+                    Release Delivery: Superior On-Premise Solutions and Beyond
                   </h1>
                   <p className="max-w-[600px] text-gray-400 md:text-xl">
-                    Experience the future of software delivery across all environments. Release Delivery offers a comprehensive approach to building, testing, and deploying complex applications—quickly, securely, and at scale.
+                    Experience unparalleled on-premise deployments and seamless multi-environment management. Release Delivery outperforms Replicated in every aspect of software delivery—on-premise, cloud, and hybrid.
                   </p>
                 </div>
                 <ul className="grid gap-2 py-4">
-                  <li className="flex items-center"><CheckIcon className="mr-2 h-4 w-4 text-[#00bb93]" /> Cloud-native and multi-environment testing</li>
-                  <li className="flex items-center"><CheckIcon className="mr-2 h-4 w-4 text-[#00bb93]" /> Rapid setup and automated workflows</li>
-                  <li className="flex items-center"><CheckIcon className="mr-2 h-4 w-4 text-[#00bb93]" /> Intuitive UI and GitOps-driven processes</li>
-                  <li className="flex items-center"><CheckIcon className="mr-2 h-4 w-4 text-[#00bb93]" /> Built-in security best practices</li>
+                  <li className="flex items-center"><CheckIcon className="mr-2 h-4 w-4 text-[#00bb93]" /> Advanced on-premise deployment capabilities</li>
+                  <li className="flex items-center"><CheckIcon className="mr-2 h-4 w-4 text-[#00bb93]" /> Seamless integration with existing infrastructure</li>
+                  <li className="flex items-center"><CheckIcon className="mr-2 h-4 w-4 text-[#00bb93]" /> Enhanced security and compliance for on-premise environments</li>
+                  <li className="flex items-center"><CheckIcon className="mr-2 h-4 w-4 text-[#00bb93]" /> Unified platform for on-premise, cloud, and hybrid deployments</li>
                 </ul>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Link href="https://release.com/signup">
@@ -46,12 +46,12 @@ export function ReleaseVsReplicated() {
               <div className="flex flex-col justify-center space-y-4">
                 <div className="bg-gray-800 p-6 rounded-lg">
                   <blockquote className="text-lg font-semibold text-gray-100">
-                    "Switching from Replicated to Release Delivery transformed our release pipeline. We're now delivering quality features to customers in record time."
+                    "Release Delivery revolutionized our on-premise deployments. We achieved levels of efficiency and security that were simply impossible with Replicated."
                   </blockquote>
                   <div className="mt-4 flex items-center">
                     <div>
-                      <p className="font-semibold text-gray-100">Head of DevOps</p>
-                      <p className="text-sm text-gray-400">Enterprise Tech Company</p>
+                      <p className="font-semibold text-gray-100">CTO</p>
+                      <p className="text-sm text-gray-400">Fortune 500 Financial Services Company</p>
                     </div>
                   </div>
                 </div>
@@ -62,18 +62,18 @@ export function ReleaseVsReplicated() {
 
         <section id="comparison" className="w-full py-12 md:py-24 lg:py-32 bg-gray-800">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12 text-white">Release Delivery vs. Replicated: Key Differences</h2>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12 text-white">Release Delivery vs. Replicated: On-Premise Excellence</h2>
             <div className="grid gap-6 lg:grid-cols-2">
               <Card className="bg-gray-700 border-gray-600">
                 <CardHeader>
                   <CardTitle className="text-2xl font-bold text-[#00bb93]">Release Delivery</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <p><CheckIcon className="inline-block mr-2 text-[#00bb93]" />Cloud-native and multi-environment testing</p>
-                  <p><CheckIcon className="inline-block mr-2 text-[#00bb93]" />Rapid setup and automated workflows</p>
-                  <p><CheckIcon className="inline-block mr-2 text-[#00bb93]" />Intuitive UI and GitOps-driven processes</p>
-                  <p><CheckIcon className="inline-block mr-2 text-[#00bb93]" />Built-in security best practices</p>
-                  <p><CheckIcon className="inline-block mr-2 text-[#00bb93]" />Seamless scalability</p>
+                  <p><CheckIcon className="inline-block mr-2 text-[#00bb93]" />Superior on-premise deployment capabilities</p>
+                  <p><CheckIcon className="inline-block mr-2 text-[#00bb93]" />Automated on-premise infrastructure management</p>
+                  <p><CheckIcon className="inline-block mr-2 text-[#00bb93]" />Enhanced security features for sensitive environments</p>
+                  <p><CheckIcon className="inline-block mr-2 text-[#00bb93]" />Seamless integration with existing on-premise tools</p>
+                  <p><CheckIcon className="inline-block mr-2 text-[#00bb93]" />Unified platform for on-premise and cloud deployments</p>
                 </CardContent>
               </Card>
               <Card className="bg-gray-700 border-gray-600">
@@ -81,11 +81,11 @@ export function ReleaseVsReplicated() {
                   <CardTitle className="text-2xl font-bold text-gray-400">Replicated</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <p><CheckIcon className="inline-block mr-2 text-gray-400" />Primarily on-prem & enterprise Kubernetes</p>
-                  <p><XIcon className="inline-block mr-2 text-red-500" />Longer onboarding, complex configurations</p>
-                  <p><XIcon className="inline-block mr-2 text-red-500" />Heavier reliance on manual ops and scripting</p>
-                  <p><XIcon className="inline-block mr-2 text-red-500" />Complex compliance requirements on-prem</p>
-                  <p><XIcon className="inline-block mr-2 text-red-500" />More rigid, infrastructure-heavy approach</p>
+                  <p><CheckIcon className="inline-block mr-2 text-gray-400" />Basic on-premise deployment support</p>
+                  <p><XIcon className="inline-block mr-2 text-red-500" />Limited automation for on-premise infrastructure</p>
+                  <p><XIcon className="inline-block mr-2 text-red-500" />Standard security features</p>
+                  <p><XIcon className="inline-block mr-2 text-red-500" />Complex integration with existing tools</p>
+                  <p><XIcon className="inline-block mr-2 text-red-500" />Primarily focused on on-premise, limited cloud support</p>
                 </CardContent>
               </Card>
             </div>
@@ -94,15 +94,15 @@ export function ReleaseVsReplicated() {
 
         <section id="features" className="w-full py-12 md:py-24 lg:py-32">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12 text-white">Why Choose Release Delivery Over Replicated?</h2>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12 text-white">Why Release Delivery Excels in On-Premise Deployments</h2>
             <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
               {[
-                { title: "Faster Time-to-Market", description: "Go from code commit to fully tested and deployed environment in minutes, not days. Ship features faster than ever with automated workflows and self-service test environments." },
-                { title: "Streamlined Developer Experience", description: "Enjoy a clean, intuitive interface paired with GitOps-driven automation. Eliminate manual scripting and reduce human error, allowing your team to focus on innovation." },
-                { title: "Built-in Security & Compliance", description: "Incorporate security best practices directly into your delivery pipeline. Ensure your code is secure, compliant, and resilient without additional tooling or expertise." },
-                { title: "True Cloud-Native Scalability", description: "Scale effortlessly as your applications and teams grow. Maintain speed and reliability without extensive infrastructure adjustments." },
-                { title: "End-to-End Observability & Control", description: "Gain complete visibility and control over your environments. Monitor performance, pinpoint issues, and instantly roll back problematic deployments with ease." },
-                { title: "Beyond On-Premise", description: "While excelling in on-premise deployments, Release Delivery offers a comprehensive approach for cloud-native and multi-environment applications, providing flexibility for all your deployment needs." },
+                { title: "Advanced Infrastructure Management", description: "Automate and optimize your on-premise infrastructure with Release Delivery's intelligent management system. Reduce manual overhead and improve resource utilization." },
+                { title: "Enhanced Security and Compliance", description: "Meet the strictest security requirements with Release Delivery's advanced on-premise security features. Ensure compliance with industry standards and regulations effortlessly." },
+                { title: "Seamless Integration", description: "Easily integrate Release Delivery with your existing on-premise tools and workflows. Minimize disruption and maximize the value of your current investments." },
+                { title: "Scalability Within Your Firewall", description: "Scale your on-premise deployments with the same ease as cloud deployments. Release Delivery brings cloud-like scalability to your secure, on-premise environments." },
+                { title: "Unified Management", description: "Manage all your deployments—on-premise, cloud, and hybrid—from a single, intuitive platform. Simplify operations and reduce complexity across your entire infrastructure." },
+                { title: "Performance Optimization", description: "Leverage Release Delivery's advanced analytics and optimization tools to ensure peak performance of your on-premise applications, surpassing Replicated's capabilities." },
               ].map((feature, index) => (
                 <Card key={index} className="bg-gray-700 border-gray-600">
                   <CardHeader>
@@ -119,18 +119,18 @@ export function ReleaseVsReplicated() {
 
         <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-800">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12 text-white">Customer Success Stories</h2>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12 text-white">On-Premise Success Stories</h2>
             <div className="grid gap-6 lg:grid-cols-2">
               <Card className="bg-gray-700 border-gray-600">
                 <CardContent className="p-6">
-                  <p className="text-lg mb-4">"Release Delivery helped us cut deployment time by 75%, enabling our team to focus on innovation rather than infrastructure."</p>
-                  <p className="font-bold text-[#00bb93]">— CTO, Growing SaaS Startup</p>
+                  <p className="text-lg mb-4">"Release Delivery's on-premise capabilities far exceed what we experienced with Replicated. Our deployment times decreased by 80%, and our security posture significantly improved."</p>
+                  <p className="font-bold text-[#00bb93]">— CISO, Global Manufacturing Corporation</p>
                 </CardContent>
               </Card>
               <Card className="bg-gray-700 border-gray-600">
                 <CardContent className="p-6">
-                  <p className="text-lg mb-4">"Switching from Replicated to Release Delivery transformed our release pipeline. We're now delivering quality features to customers in record time."</p>
-                  <p className="font-bold text-[#00bb93]">— Head of DevOps, Enterprise Tech Company</p>
+                  <p className="text-lg mb-4">"The seamless integration of Release Delivery with our existing on-premise infrastructure was a game-changer. We achieved levels of efficiency and control that were simply not possible with Replicated."</p>
+                  <p className="font-bold text-[#00bb93]">— VP of Engineering, Healthcare Technology Provider</p>
                 </CardContent>
               </Card>
             </div>
@@ -143,20 +143,20 @@ export function ReleaseVsReplicated() {
             <Accordion type="single" collapsible className="w-full max-w-3xl mx-auto">
               {[
                 {
-                  question: "How does Release Delivery differ from Replicated?",
-                  answer: "While Replicated focuses primarily on on-premises and enterprise Kubernetes deployments, Release Delivery offers a more comprehensive approach. It supports cloud-native and multi-environment testing, provides faster setup and automated workflows, and offers built-in security best practices. Release Delivery is designed to streamline your entire software delivery process, from development to deployment, across various environments.",
+                  question: "How does Release Delivery's on-premise solution compare to Replicated?",
+                  answer: "Release Delivery offers superior on-premise capabilities compared to Replicated. Our solution provides advanced automation, enhanced security features, and seamless integration with existing tools, all while maintaining the flexibility to manage cloud and hybrid deployments from the same platform. This comprehensive approach allows for more efficient, secure, and scalable on-premise deployments than what Replicated can offer.",
                 },
                 {
-                  question: "Can Release Delivery handle on-premise deployments like Replicated?",
-                  answer: "Yes, Release Delivery can handle on-premise deployments, but it goes beyond that. It offers a flexible approach that supports both on-premise and cloud environments, allowing you to manage your deployments across various infrastructures from a single platform. This versatility makes Release Delivery suitable for a wider range of deployment scenarios compared to Replicated.",
+                  question: "Can Release Delivery handle complex on-premise environments better than Replicated?",
+                  answer: "Absolutely. Release Delivery is designed to excel in complex on-premise environments. Our platform offers advanced infrastructure management, superior security controls, and seamless integration capabilities that surpass Replicated's offerings. This allows us to handle even the most intricate on-premise setups with ease, providing a level of control and efficiency that Replicated simply can't match.",
                 },
                 {
-                  question: "How does Release Delivery improve time-to-market compared to Replicated?",
-                  answer: "Release Delivery significantly reduces time-to-market through its automated workflows, self-service environments, and streamlined processes. While Replicated often requires more hands-on configuration and time-consuming processes, Release Delivery allows you to go from code commit to a fully tested and deployed environment in minutes, accelerating your entire development and deployment cycle.",
+                  question: "How does Release Delivery improve on-premise deployment times compared to Replicated?",
+                  answer: "Release Delivery significantly reduces on-premise deployment times through its advanced automation and optimized workflows. While Replicated often requires more manual configuration, Release Delivery's intelligent system can automatically handle many aspects of the deployment process. Our customers regularly report deployment time reductions of 70-80% compared to their previous experiences with Replicated.",
                 },
                 {
-                  question: "Is it difficult to switch from Replicated to Release Delivery?",
-                  answer: "Switching from Replicated to Release Delivery is designed to be as smooth as possible. Our team provides comprehensive support during the transition, including migration assistance, training, and ongoing technical support. Many of our customers have successfully made the switch and seen significant improvements in their development and deployment processes.",
+                  question: "Is it difficult to switch from Replicated to Release Delivery for on-premise deployments?",
+                  answer: "Transitioning from Replicated to Release Delivery is designed to be as smooth as possible, even for complex on-premise deployments. Our team provides comprehensive support during the migration, including detailed infrastructure assessment, customized migration plans, and hands-on assistance. Many of our customers have successfully made the switch and seen significant improvements in their on-premise deployment processes, often completing the transition more quickly and with less disruption than they anticipated.",
                 },
               ].map((faq, index) => (
                 <AccordionItem key={index} value={`item-${index}`} className="border-gray-700">
@@ -172,10 +172,10 @@ export function ReleaseVsReplicated() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col items-center space-y-4 text-center">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-white">
-                Ready to Experience the Release Delivery Difference?
+                Ready to Elevate Your On-Premise Deployments?
               </h2>
               <p className="mx-auto max-w-[700px] text-gray-300 md:text-xl">
-                Join the companies that have accelerated their development and reduced costs by switching from Replicated to Release Delivery. Experience the power of true multi-environment deployment today.
+                Join the companies that have transformed their on-premise infrastructure with Release Delivery. Experience superior deployments, enhanced security, and unparalleled efficiency today.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="https://release.com/signup">
