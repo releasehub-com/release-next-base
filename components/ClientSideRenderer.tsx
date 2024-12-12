@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic'
 const LandingPage = dynamic(() => import('@/components/LandingPage'), { ssr: false })
 const GitLabLandingPage = dynamic(() => import('@/components/GitLabLandingPage'), { ssr: false })
 const KubernetesLandingPage = dynamic(() => import('@/components/KubernetesLandingPage'), { ssr: false })
+const ReplicatedLandingPage = dynamic(() => import('@/components/ReplicatedLandingPage').then(mod => mod.ReleaseVsReplicated), { ssr: false })
 
 export default function ClientSideRenderer({ initialVersion }: { initialVersion: string }) {
   const [version, setVersion] = useState(initialVersion)
@@ -29,7 +30,8 @@ export default function ClientSideRenderer({ initialVersion }: { initialVersion:
     Promise.all([
       import('@/components/LandingPage'),
       import('@/components/GitLabLandingPage'),
-      import('@/components/KubernetesLandingPage')
+      import('@/components/KubernetesLandingPage'),
+      import('@/components/ReplicatedLandingPage')
     ]).then(() => {
       setIsLoading(false)
     })
@@ -43,7 +45,8 @@ export default function ClientSideRenderer({ initialVersion }: { initialVersion:
     <div className="fade-in">
       {version === 'gitlab' && <GitLabLandingPage />}
       {(version === 'kubernetes' || version === 'k8s') && <KubernetesLandingPage />}
-      {(version !== 'gitlab' && version !== 'kubernetes' && version !== 'k8s') && <LandingPage />}
+      {version === 'replicated' && <ReplicatedLandingPage />}
+      {(version !== 'gitlab' && version !== 'kubernetes' && version !== 'k8s' && version !== 'replicated') && <LandingPage />}
     </div>
   )
 }

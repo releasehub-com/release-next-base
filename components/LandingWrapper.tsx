@@ -7,17 +7,20 @@ type LandingWrapperProps = {
   LandingPage: ComponentType
   GitLabLandingPage: ComponentType
   KubernetesLandingPage: ComponentType
+  ReplicatedLandingPage: ComponentType
 }
 
 export default function LandingWrapper({ 
   initialVersion,
   LandingPage,
   GitLabLandingPage,
-  KubernetesLandingPage
+  KubernetesLandingPage,
+  ReplicatedLandingPage
 }: LandingWrapperProps) {
   const [CurrentComponent, setCurrentComponent] = useState<ComponentType | null>(() => {
     if (initialVersion === 'gitlab' && GitLabLandingPage) return GitLabLandingPage
     if (initialVersion === 'k8s' && KubernetesLandingPage) return KubernetesLandingPage
+    if (initialVersion === 'replicated' && ReplicatedLandingPage) return ReplicatedLandingPage
     return LandingPage || null
   })
 
@@ -41,6 +44,9 @@ export default function LandingWrapper({
       case 'k8s':
         newComponent = KubernetesLandingPage || null
         break
+      case 'replicated':
+        newComponent = ReplicatedLandingPage || null
+        break
       default:
         newComponent = LandingPage || null
     }
@@ -56,7 +62,7 @@ export default function LandingWrapper({
         localStorage.setItem('landing_version', version)
       }
     }
-  }, [initialVersion, LandingPage, GitLabLandingPage, KubernetesLandingPage, CurrentComponent])
+  }, [initialVersion, LandingPage, GitLabLandingPage, KubernetesLandingPage, ReplicatedLandingPage, CurrentComponent])
 
   if (!CurrentComponent) {
     return <div>Loading...</div>
