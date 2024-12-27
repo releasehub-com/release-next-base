@@ -24,7 +24,7 @@ export default function LandingWrapper({
     if (initialVersion === 'k8s' && KubernetesLandingPage) return KubernetesLandingPage
     if (initialVersion === 'replicated' && ReplicatedLandingPage) return ReplicatedLandingPage
     if (initialVersion === 'ephemeral' && EphemeralLanding) return EphemeralLanding
-    return LandingPage || null
+    return EphemeralLanding || null
   })
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function LandingWrapper({
     }
 
     const storedVersion = getStoredVersion()
-    const version = initialVersion || storedVersion || 'regular'
+    const version = initialVersion || storedVersion || 'ephemeral'
 
     let newComponent: ComponentType | null = null
 
@@ -51,10 +51,9 @@ export default function LandingWrapper({
         newComponent = ReplicatedLandingPage || null
         break
       case 'ephemeral':
+      default:
         newComponent = EphemeralLanding || null
         break
-      default:
-        newComponent = LandingPage || null
     }
 
     if (newComponent && newComponent !== CurrentComponent) {
@@ -62,7 +61,7 @@ export default function LandingWrapper({
     }
 
     if (typeof window !== 'undefined') {
-      if (version === 'regular') {
+      if (version === 'ephemeral') {
         localStorage.removeItem('landing_version')
       } else {
         localStorage.setItem('landing_version', version)

@@ -11,7 +11,7 @@ const ReplicatedLandingPage = dynamic(() => import('@/components/ReplicatedLandi
 const EphemeralLanding = dynamic(() => import('@/components/EphemeralLanding').then(mod => mod.default), { ssr: false })
 
 export default function ClientSideRenderer({ initialVersion }: { initialVersion: string }) {
-  const [version, setVersion] = useState(initialVersion)
+  const [version, setVersion] = useState(initialVersion || 'ephemeral')
   const [isLoading, setIsLoading] = useState(true)
   const searchParams = useSearchParams()
 
@@ -24,6 +24,8 @@ export default function ClientSideRenderer({ initialVersion }: { initialVersion:
       const storedVersion = localStorage.getItem('landing_version')
       if (storedVersion) {
         setVersion(storedVersion)
+      } else {
+        setVersion('ephemeral')
       }
     }
     
@@ -48,8 +50,8 @@ export default function ClientSideRenderer({ initialVersion }: { initialVersion:
       {version === 'gitlab' && <GitLabLandingPage />}
       {(version === 'kubernetes' || version === 'k8s') && <KubernetesLandingPage />}
       {version === 'replicated' && <ReplicatedLandingPage />}
-      {version === 'ephemeral' && <EphemeralLanding />}
-      {(version !== 'gitlab' && version !== 'kubernetes' && version !== 'k8s' && version !== 'replicated' && version !== 'ephemeral') && <LandingPage />}
+      {(version === 'ephemeral' || version === 'regular') && <EphemeralLanding />}
+      {(version !== 'gitlab' && version !== 'kubernetes' && version !== 'k8s' && version !== 'replicated' && version !== 'ephemeral' && version !== 'regular') && <LandingPage />}
     </div>
   )
 }
