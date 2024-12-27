@@ -12,16 +12,12 @@ const logos = [
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/653c1c0485d1049635456984_Brand-Simon.svg",
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/653c1c03b7222b7bd919a8ae_Brand-Together.svg",
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/653c1c03f440994e9112f8ef_Brand-Datasaur-ai.svg",
-  "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/6408b779083a0497ec7c5ba7_Brand-uoss-280x70.svg",
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/6408b779e05890f7fcf8f0c3_Brand-launch-darkly-280x70.svg",
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/6408b7792d114d3891ae393e_Brand-moment-house-280x70.svg",
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/6408b77931ea2bc3a4c2df13_Brand-simplyInsured-280x70.svg",
-  "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/6408b95fe9d8e065267d4556_Brand-ReMatter-280x70-png.webp",
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/653c1c00455f57d0b226d6da_Brand-softledger.svg",
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/653c1c0065b24affb15aaf4f_Brand-Brave_Care.svg",
-  "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/6408b89c90ee1fad85e705cb_Brand-brevy-280x70-png.webp",
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/65415c419ce5e4e8883ad42a_logo-cross.svg",
-  "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/653c1c009d028b16c1836b83_Brand-Monad.svg",
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/653c1c0065310461ef8198b0_Brand-Noteable.svg",
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/653c1c00d4b1a7b780ee87d8_Brand-Mosaic.svg"
 ]
