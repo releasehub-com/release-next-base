@@ -45,7 +45,6 @@ export default function Header() {
             <Link href="https://release.com/pricing" className="text-sm font-medium hover:text-gray-300 py-2 md:py-0">Pricing</Link>
             <Link href="/#how-it-works" className="text-sm font-medium hover:text-gray-300 py-2 md:py-0">How it Works</Link>
             <Link href="https://release.com/use-cases" className="text-sm font-medium hover:text-gray-300 py-2 md:py-0">Use Cases</Link>
-            <Link href="/#faq" className="text-sm font-medium hover:text-gray-300 py-2 md:py-0">FAQs</Link>
             <Link href="https://release.com/blog" className="text-sm font-medium hover:text-gray-300 py-2 md:py-0">Blog</Link>
             <Link href="https://docs.release.com" className="text-sm font-medium hover:text-gray-300 py-2 md:py-0">Docs</Link>
             <Link href="https://release.ai" className="text-sm font-medium hover:text-gray-300 py-2 md:py-0">Release.ai</Link>
