@@ -1,15 +1,15 @@
-'use client'
+"use client";
 
-import React from 'react'
-import Header from './Header'
-import Footer from './Footer'
-import EphemeralHero from './EphemeralHero'
-import EphemeralUsers from './EphemeralUsers'
-import EphemeralFeatures from './EphemeralFeatures'
-import EphemeralIntegration from './EphemeralIntegration'
-import EphemeralDocumentation from './EphemeralDocumentation'
-import EphemeralUseCases from './EphemeralUseCases'
-import EphemeralCTA from './EphemeralCTA'
+import React from "react";
+import Header from "./Header";
+import Footer from "./Footer";
+import EphemeralHero from "./EphemeralHero";
+import EphemeralUsers from "./EphemeralUsers";
+import EphemeralFeatures from "./EphemeralFeatures";
+import EphemeralIntegration from "./EphemeralIntegration";
+import EphemeralDocumentation from "./EphemeralDocumentation";
+import EphemeralUseCases from "./EphemeralUseCases";
+import EphemeralCTA from "./EphemeralCTA";
 
 export default function EphemeralLanding() {
   return (
@@ -26,5 +26,5 @@ export default function EphemeralLanding() {
       </main>
       <Footer />
     </div>
-  )
+  );
 }

@@ -1,83 +1,105 @@
-'use client'
+"use client";
 
-import { useEffect, useState, ComponentType } from 'react'
+import { useEffect, useState, ComponentType } from "react";
 
 type LandingWrapperProps = {
-  initialVersion: string | undefined
-  LandingPage: ComponentType
-  GitLabLandingPage: ComponentType
-  KubernetesLandingPage: ComponentType
-  ReplicatedLandingPage: ComponentType
-  EphemeralLanding: ComponentType
-  CloudDevLanding: ComponentType
-}
+  initialVersion: string | undefined;
+  LandingPage: ComponentType;
+  GitLabLandingPage: ComponentType;
+  KubernetesLandingPage: ComponentType;
+  ReplicatedLandingPage: ComponentType;
+  EphemeralLanding: ComponentType;
+  CloudDevLanding: ComponentType;
+  CloudLanding: ComponentType;
+};
 
-export default function LandingWrapper({ 
+export default function LandingWrapper({
   initialVersion,
   LandingPage,
   GitLabLandingPage,
   KubernetesLandingPage,
   ReplicatedLandingPage,
   EphemeralLanding,
-  CloudDevLanding
+  CloudDevLanding,
+  CloudLanding,
 }: LandingWrapperProps) {
-  const [CurrentComponent, setCurrentComponent] = useState<ComponentType | null>(() => {
-    if (initialVersion === 'gitlab' && GitLabLandingPage) return GitLabLandingPage
-    if (initialVersion === 'k8s' && KubernetesLandingPage) return KubernetesLandingPage
-    if (initialVersion === 'replicated' && ReplicatedLandingPage) return ReplicatedLandingPage
-    if (initialVersion === 'ephemeral' && EphemeralLanding) return EphemeralLanding
-    if (initialVersion === 'cloud-dev' && CloudDevLanding) return CloudDevLanding
-    return EphemeralLanding || null
-  })
+  const [CurrentComponent, setCurrentComponent] =
+    useState<ComponentType | null>(() => {
+      if (initialVersion === "gitlab" && GitLabLandingPage)
+        return GitLabLandingPage;
+      if (initialVersion === "k8s" && KubernetesLandingPage)
+        return KubernetesLandingPage;
+      if (initialVersion === "replicated" && ReplicatedLandingPage)
+        return ReplicatedLandingPage;
+      if (initialVersion === "ephemeral" && EphemeralLanding)
+        return EphemeralLanding;
+      if (initialVersion === "cloud-dev" && CloudDevLanding)
+        return CloudDevLanding;
+      if (initialVersion === "heroku" && CloudLanding) return CloudLanding;
+      return EphemeralLanding || null;
+    });
 
   useEffect(() => {
     const getStoredVersion = () => {
-      if (typeof window !== 'undefined') {
-        return localStorage.getItem('landing_version')
+      if (typeof window !== "undefined") {
+        return localStorage.getItem("landing_version");
       }
-      return null
-    }
+      return null;
+    };
 
-    const storedVersion = getStoredVersion()
-    const version = initialVersion || storedVersion || 'ephemeral'
+    const storedVersion = getStoredVersion();
+    const version = initialVersion || storedVersion || "ephemeral";
 
-    let newComponent: ComponentType | null = null
+    let newComponent: ComponentType | null = null;
 
     switch (version) {
-      case 'gitlab':
-        newComponent = GitLabLandingPage || null
-        break
-      case 'k8s':
-        newComponent = KubernetesLandingPage || null
-        break
-      case 'replicated':
-        newComponent = ReplicatedLandingPage || null
-        break
-      case 'cloud-dev':
-        newComponent = CloudDevLanding || null
-        break
-      case 'ephemeral':
+      case "gitlab":
+        newComponent = GitLabLandingPage || null;
+        break;
+      case "k8s":
+        newComponent = KubernetesLandingPage || null;
+        break;
+      case "replicated":
+        newComponent = ReplicatedLandingPage || null;
+        break;
+      case "cloud-dev":
+        newComponent = CloudDevLanding || null;
+        break;
+      case "heroku":
+        newComponent = CloudLanding || null;
+        break;
+      case "ephemeral":
       default:
-        newComponent = EphemeralLanding || null
-        break
+        newComponent = EphemeralLanding || null;
+        break;
     }
 
     if (newComponent && newComponent !== CurrentComponent) {
-      setCurrentComponent(newComponent)
+      setCurrentComponent(newComponent);
     }
 
-    if (typeof window !== 'undefined') {
-      if (version === 'ephemeral') {
-        localStorage.removeItem('landing_version')
+    if (typeof window !== "undefined") {
+      if (version === "ephemeral") {
+        localStorage.removeItem("landing_version");
       } else {
-        localStorage.setItem('landing_version', version)
+        localStorage.setItem("landing_version", version);
       }
     }
-  }, [initialVersion, LandingPage, GitLabLandingPage, KubernetesLandingPage, ReplicatedLandingPage, EphemeralLanding, CloudDevLanding, CurrentComponent])
+  }, [
+    initialVersion,
+    LandingPage,
+    GitLabLandingPage,
+    KubernetesLandingPage,
+    ReplicatedLandingPage,
+    EphemeralLanding,
+    CloudDevLanding,
+    CloudLanding,
+    CurrentComponent,
+  ]);
 
   if (!CurrentComponent) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
-  return <CurrentComponent />
+  return <CurrentComponent />;
 }

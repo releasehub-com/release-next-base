@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import React from 'react'
-import Link from 'next/link'
-import { Button } from "@/components/ui/button"
+import React from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function EphemeralCta() {
   return (
@@ -13,18 +13,30 @@ export default function EphemeralCta() {
             Ready to Transform Your Development Process?
           </h2>
           <p className="mx-auto max-w-[700px] text-gray-300 md:text-xl">
-            Join the companies that have accelerated their development and reduced costs with Release's Ephemeral Environments Platform.
+            Join the companies that have accelerated their development and
+            reduced costs with Release's Ephemeral Environments Platform.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link href="https://release.com/signup">
-              <Button size="lg" className="bg-[#00bb93] text-white hover:bg-[#00bb93]/90">Start Free Trial</Button>
+              <Button
+                size="lg"
+                className="bg-[#00bb93] text-white hover:bg-[#00bb93]/90"
+              >
+                Start Free Trial
+              </Button>
             </Link>
             <Link href="https://calendly.com/release-tommy/release-discussion">
-              <Button size="lg" variant="outline" className="border-[#00bb93] text-[#00bb93] hover:bg-[#00bb93] hover:text-white">Schedule Demo</Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-[#00bb93] text-[#00bb93] hover:bg-[#00bb93] hover:text-white"
+              >
+                Schedule Demo
+              </Button>
             </Link>
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }

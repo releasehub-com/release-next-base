@@ -22,14 +22,17 @@ const logos = [
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/653c1c00d4b1a7b780ee87d8_Brand-Mosaic.svg",
 ];
 
-export default function EphemeralUsers() {
+export default function CloudUsers() {
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-900">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-12 text-white">
-          Join these amazing companies who all use Ephemeral Environments to
-          delight users and developers
+        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-6 text-white">
+          Trusted by Companies Using the Release Cloud Platform
         </h2>
+        <p className="text-xl text-gray-300 text-center mb-12 max-w-3xl mx-auto">
+          Join these companies who found the perfect balance of simplicity and
+          power with the Release Cloud Platform
+        </p>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 items-center justify-items-center">
           {logos.map((logo, index) => (
             <div key={index} className="w-full h-20 relative">

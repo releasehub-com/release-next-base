@@ -1,17 +1,19 @@
+"use client";
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import {
   ArrowRight,
-  Cpu,
-  Database,
-  Globe,
-  LineChart,
+  Cloud,
+  Lock,
   Rocket,
+  Scale,
   Server,
+  Shield,
 } from "lucide-react";
 
-export default function EphemeralUseCases() {
+export default function CloudUseCases() {
   return (
     <section
       id="use-cases"
@@ -19,82 +21,68 @@ export default function EphemeralUseCases() {
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12 text-white">
-          Additional Ways to Use Release...
+          From Startup to Enterprise
         </h2>
         <div className="grid gap-6 lg:grid-cols-3">
           <Card className="bg-gray-800 border-gray-700 hover:border-[#00bb93] transition-colors duration-300">
             <CardHeader>
               <CardTitle className="text-white flex items-center">
-                <Server className="mr-2 h-6 w-6 text-[#00bb93]" />
-                Production Environment Management
+                <Rocket className="mr-2 h-6 w-6 text-[#00bb93]" />
+                Start Fast with the Release Cloud Platform
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-gray-300">
-                Let Release manage production environments, enabling seamless
-                scaling, monitoring, and deployment to ensure reliability and
-                performance.
+                Perfect for startups and teams that want Heroku-like simplicity.
+                Deploy quickly with managed infrastructure and focus on building
+                your product.
               </p>
               <Link
-                href="https://docs.release.com/reference-documentation/workflows-in-release"
+                href="https://web.release.com/pricing"
                 className="flex items-center text-[#00bb93] hover:underline"
               >
-                <Rocket className="mr-2 h-5 w-5" />
-                Production Deployment Strategies
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-              <Link
-                href="https://docs.release.com/guides-and-examples/advanced-guides/visibility"
-                className="flex items-center text-[#00bb93] hover:underline"
-              >
-                <LineChart className="mr-2 h-5 w-5" />
-                Monitoring and Observability
+                <Cloud className="mr-2 h-5 w-5" />
+                Release Cloud Platform Features
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </CardContent>
           </Card>
+
           <Card className="bg-gray-800 border-gray-700 hover:border-[#00bb93] transition-colors duration-300">
             <CardHeader>
               <CardTitle className="text-white flex items-center">
-                <Globe className="mr-2 h-6 w-6 text-[#00bb93]" />
-                On-Premise Solutions with Release Delivery
+                <Scale className="mr-2 h-6 w-6 text-[#00bb93]" />
+                Scale with Your Growth
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-gray-300">
-                Deliver and manage on-premise solutions using Release Delivery.
-                Simplify deployments for customers who require private or
-                VPC-hosted infrastructure with full control and security.
+                As your needs grow, seamlessly scale your infrastructure and
+                transition to more advanced features without changing your
+                workflow.
               </p>
-              <Link
-                href="https://release.com/product/release-delivery"
-                className="flex items-center text-[#00bb93] hover:underline"
-              >
-                <Database className="mr-2 h-5 w-5" />
-                Learn More About Release Delivery
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
             </CardContent>
           </Card>
+
           <Card className="bg-gray-800 border-gray-700 hover:border-[#00bb93] transition-colors duration-300">
             <CardHeader>
               <CardTitle className="text-white flex items-center">
-                <Cpu className="mr-2 h-6 w-6 text-[#00bb93]" />
-                AI Environments with Release.ai
+                <Shield className="mr-2 h-6 w-6 text-[#00bb93]" />
+                Enterprise-Grade Control
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-gray-300">
-                Create scalable, ephemeral environments to support machine
-                learning workflows, model training, and AI application testing.
-                Streamline AI/ML development and deployment.
+                Get full control over your infrastructure with enterprise
+                features, advanced security, and compliance capabilities in your
+                own cloud account.
               </p>
               <Link
-                href="https://release.ai"
+                href="https://web.release.com/pricing"
                 className="flex items-center text-[#00bb93] hover:underline"
               >
-                <Cpu className="mr-2 h-5 w-5" />
-                Learn More About Release.ai
+                <Lock className="mr-2 h-5 w-5" />
+                Enterprise Features
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </CardContent>
