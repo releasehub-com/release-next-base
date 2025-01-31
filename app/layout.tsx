@@ -6,32 +6,38 @@ import Script from "next/script";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://release.com'),
+  metadataBase: new URL("https://release.com"),
   title: {
-    default: 'Release - The Ephemeral Environments Platform',
-    template: '%s | Release'
+    default: "Release - The Ephemeral Environments Platform",
+    template: "%s | Release",
   },
-  description: 'Create and manage on-demand environments in minutes. Empower developers, reduce costs, and accelerate your development workflow with Release.',
-  keywords: "ephemeral environments, development workflow, DevOps, cloud infrastructure, CI/CD, developer productivity, on-demand environments",
+  description:
+    "Create and manage on-demand environments in minutes. Empower developers, reduce costs, and accelerate your development workflow with Release.",
+  keywords:
+    "ephemeral environments, development workflow, DevOps, cloud infrastructure, CI/CD, developer productivity, on-demand environments",
   openGraph: {
-    title: 'Release - The Ephemeral Environments Platform',
-    description: 'Create and manage on-demand environments in minutes. Empower developers, reduce costs, and accelerate your development workflow with Release.',
-    images: [{
-      url: '/og/og-image.png',
-      width: 1200,
-      height: 630,
-      alt: 'Release Ephemeral Environments Platform'
-    }],
-    url: 'https://release.com',
-    siteName: 'Release',
-    type: 'website',
+    title: "Release - The Ephemeral Environments Platform",
+    description:
+      "Create and manage on-demand environments in minutes. Empower developers, reduce costs, and accelerate your development workflow with Release.",
+    images: [
+      {
+        url: "/og/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Release Ephemeral Environments Platform",
+      },
+    ],
+    url: "https://release.com",
+    siteName: "Release",
+    type: "website",
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'Release - The Ephemeral Environments Platform',
-    description: 'Create and manage on-demand environments in minutes. Empower developers, reduce costs, and accelerate your development workflow with Release.',
-    images: ['/og/og-image.png'],
-    creator: '@release_hub'
+    card: "summary_large_image",
+    title: "Release - The Ephemeral Environments Platform",
+    description:
+      "Create and manage on-demand environments in minutes. Empower developers, reduce costs, and accelerate your development workflow with Release.",
+    images: ["/og/og-image.png"],
+    creator: "@release_hub",
   },
   robots: {
     index: true,

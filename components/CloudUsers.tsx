@@ -5,6 +5,7 @@ import Image from "next/image";
 
 const logos = [
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/65e7478b28c49416c60a3e84_Brand-DebtBook-320x80.svg",
+  "/drata-wordmark-transparent.svg",
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/653c1c066c487c5eeace1b89_Brand-Ethos.svg",
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/653c1c0620464b59da2d3fc6_Brand-Navan.svg",
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/653c1c069d028b16c1837425_Brand-Chipper.svg",
@@ -16,7 +17,6 @@ const logos = [
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/6408b7792d114d3891ae393e_Brand-moment-house-280x70.svg",
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/6408b77931ea2bc3a4c2df13_Brand-simplyInsured-280x70.svg",
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/653c1c00455f57d0b226d6da_Brand-softledger.svg",
-  "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/653c1c0065b24affb15aaf4f_Brand-Brave_Care.svg",
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/65415c419ce5e4e8883ad42a_logo-cross.svg",
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/653c1c0065310461ef8198b0_Brand-Noteable.svg",
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/653c1c00d4b1a7b780ee87d8_Brand-Mosaic.svg",
@@ -39,7 +39,8 @@ export default function CloudUsers() {
               <Image
                 src={logo}
                 alt={`Company logo ${index + 1}`}
-                fill
+                width={320}
+                height={80}
                 style={{ objectFit: "contain" }}
                 className="filter brightness-0 invert"
               />
