@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
+import PathStorage from "./components/PathStorage";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -88,7 +89,10 @@ export default function RootLayout({
           src="//js.hs-scripts.com/8047877.js"
         />
       </head>
-      <body className={`${inter.className} bg-gray-900`}>{children}</body>
+      <body className={`${inter.className} bg-gray-900`}>
+        <PathStorage />
+        {children}
+      </body>
     </html>
   );
 }

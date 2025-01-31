@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
+import LandingWrapper from "@/components/LandingWrapper";
 
 const LandingPage = dynamic(() => import("@/components/LandingPage"), {
   ssr: false,
@@ -77,25 +78,15 @@ export default function ClientSideRenderer({
   }
 
   return (
-    <div className="fade-in">
-      {version === "gitlab" && <GitLabLandingPage />}
-      {(version === "kubernetes" || version === "k8s") && (
-        <KubernetesLandingPage />
-      )}
-      {version === "replicated" && <ReplicatedLandingPage />}
-      {version === "cloud-dev" && <CloudDevLanding />}
-      {version === "heroku" && <CloudLanding />}
-      {(version === "ephemeral" || version === "regular") && (
-        <EphemeralLanding />
-      )}
-      {version !== "gitlab" &&
-        version !== "kubernetes" &&
-        version !== "k8s" &&
-        version !== "replicated" &&
-        version !== "ephemeral" &&
-        version !== "regular" &&
-        version !== "cloud-dev" &&
-        version !== "heroku" && <LandingPage />}
-    </div>
+    <LandingWrapper
+      initialVersion={version}
+      LandingPage={LandingPage}
+      GitLabLandingPage={GitLabLandingPage}
+      KubernetesLandingPage={KubernetesLandingPage}
+      ReplicatedLandingPage={ReplicatedLandingPage}
+      EphemeralLanding={EphemeralLanding}
+      CloudDevLanding={CloudDevLanding}
+      CloudLanding={CloudLanding}
+    />
   );
 }

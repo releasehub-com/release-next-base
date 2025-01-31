@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState, ComponentType } from "react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 type LandingWrapperProps = {
   initialVersion: string | undefined;
@@ -35,7 +37,12 @@ export default function LandingWrapper({
         return EphemeralLanding;
       if (initialVersion === "cloud-dev" && CloudDevLanding)
         return CloudDevLanding;
-      if (initialVersion === "heroku" && CloudLanding) return CloudLanding;
+      if (
+        (initialVersion === "heroku" || initialVersion === "paas") &&
+        CloudLanding
+      ) {
+        return CloudLanding;
+      }
       return EphemeralLanding || null;
     });
 
@@ -66,6 +73,7 @@ export default function LandingWrapper({
         newComponent = CloudDevLanding || null;
         break;
       case "heroku":
+      case "paas":
         newComponent = CloudLanding || null;
         break;
       case "ephemeral":
