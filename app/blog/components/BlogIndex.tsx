@@ -9,6 +9,7 @@ import { blogConfig } from "../config";
 import { BlogPost } from "../types";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { getAuthorInfo } from "@/app/blog/lib/authors";
 
 const POSTS_PER_PAGE = 15;
 
@@ -152,10 +153,20 @@ export default function BlogIndex({
                       {featuredPost.frontmatter.summary}
                     </p>
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-gray-700 flex-shrink-0" />
+                      <Image
+                        src={
+                          getAuthorInfo(featuredPost.frontmatter.author).image
+                        }
+                        alt={
+                          getAuthorInfo(featuredPost.frontmatter.author).name
+                        }
+                        width={24}
+                        height={24}
+                        className="rounded-full"
+                      />
                       <div className="flex items-center text-sm text-gray-400">
                         <span className="capitalize">
-                          {featuredPost.frontmatter.author.replace(/-/g, " ")}
+                          {getAuthorInfo(featuredPost.frontmatter.author).name}
                         </span>
                         <span className="mx-2">•</span>
                         <span>
@@ -234,66 +245,66 @@ export default function BlogIndex({
 
           {/* Regular Posts Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {regularPosts.map((post) => (
-              <Link
-                key={post.slug}
-                href={`/blog/${post.slug}`}
-                className="group"
-              >
-                <article className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-750 transition-colors">
-                  {post.frontmatter.mainImage && (
-                    <div className="relative h-48 overflow-hidden">
-                      <Image
-                        src={post.frontmatter.mainImage}
-                        alt={post.frontmatter.title}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  )}
-                  <div className="p-6">
-                    {post.frontmatter.categories?.length > 0 && (
-                      <div className="flex gap-2 mb-4">
-                        {post.frontmatter.categories.map((category) => (
-                          <span
-                            key={category}
-                            className="text-xs text-purple-400 font-medium"
-                          >
-                            {category}
-                          </span>
-                        ))}
+            {regularPosts.map((post) => {
+              const authorInfo = getAuthorInfo(post.frontmatter.author);
+
+              return (
+                <Link
+                  key={post.slug}
+                  href={`/blog/${post.slug}`}
+                  className="group"
+                >
+                  <article className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-750 transition-colors">
+                    {post.frontmatter.mainImage && (
+                      <div className="relative h-48 overflow-hidden">
+                        <Image
+                          src={post.frontmatter.mainImage}
+                          alt={post.frontmatter.title}
+                          fill
+                          className="object-cover"
+                        />
                       </div>
                     )}
-                    <h2 className="text-xl font-bold mb-3 text-white group-hover:text-purple-400 transition-colors">
-                      {post.frontmatter.title}
-                    </h2>
-                    <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-                      {post.frontmatter.summary}
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-gray-700 flex-shrink-0" />
-                      <div className="flex items-center text-sm text-gray-400">
-                        <span className="capitalize">
-                          {post.frontmatter.author.replace(/-/g, " ")}
-                        </span>
-                        <span className="mx-2">•</span>
-                        <span>
+                    <div className="p-6">
+                      {post.frontmatter.categories?.length > 0 && (
+                        <div className="flex gap-2 mb-4">
+                          {post.frontmatter.categories.map((category) => (
+                            <span
+                              key={category}
+                              className="text-xs text-purple-400 font-medium"
+                            >
+                              {category}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      <h2 className="text-xl font-bold mb-3 text-white group-hover:text-purple-400 transition-colors">
+                        {post.frontmatter.title}
+                      </h2>
+                      <p className="text-gray-400 text-sm mb-4 line-clamp-2">
+                        {post.frontmatter.summary}
+                      </p>
+                      <div className="flex items-center gap-2 mt-4 text-sm text-gray-400">
+                        <Image
+                          src={authorInfo.image}
+                          alt={authorInfo.name}
+                          width={24}
+                          height={24}
+                          className="rounded-full"
+                        />
+                        <span>{authorInfo.name}</span>
+                        <span>•</span>
+                        <time dateTime={post.frontmatter.publishDate}>
                           {new Date(
                             post.frontmatter.publishDate,
-                          ).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          })}
-                        </span>
-                        <span className="mx-2">•</span>
-                        <span>{post.frontmatter.readingTime} min</span>
+                          ).toLocaleDateString()}
+                        </time>
                       </div>
                     </div>
-                  </div>
-                </article>
-              </Link>
-            ))}
+                  </article>
+                </Link>
+              );
+            })}
           </div>
 
           {/* Pagination */}

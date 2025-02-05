@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import BlogPostLayout from "@/components/BlogPostLayout";
+import BlogPostLayout from "@/app/components/BlogPostLayout";
 import { getBlogPosts, getPostBySlug } from "../lib/blog";
 import MDXContent from "../components/MDXContent";
 import CallToAction from "@/components/blog/CallToAction";

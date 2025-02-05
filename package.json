@@ -18,7 +18,9 @@
     "enable-cta": "ts-node scripts/enable-cta.ts",
     "enable-cta:dry-run": "ts-node scripts/enable-cta.ts --dry-run",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "update-blog-dates": "ts-node scripts/update-blog-dates.ts",
+    "update-blog-dates:dry-run": "ts-node scripts/update-blog-dates.ts --dry-run"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.1",

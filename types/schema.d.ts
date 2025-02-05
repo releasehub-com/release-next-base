@@ -18,4 +18,4 @@ export interface BlogPosting {
       url: string;
     };
   };
-} 
+}
