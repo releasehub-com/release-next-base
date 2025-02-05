@@ -1,0 +1,201 @@
+---
+title: "Terraform vs Kubernetes: What's the Difference and Why It Matters"
+summary: >-
+  We'll look at Terraform and Kubernetes and how you can use them separately or
+  together to automate and scale your cloud
+publishDate: "Tue Feb 21 2023 17:30:53 GMT+0000 (Coordinated Universal Time)"
+author: eric-goebelbecker
+readingTime: 7
+categories: &ref_0
+  - platform-engineering
+  - kubernetes
+mainImage: /blog-images/814523c36864bffb33d1170c4b4682ff.jpg
+imageAlt: Terraform vs Kubernetes
+showCTA: true
+ctaCopy: >-
+  Looking to automate and scale your cloud environments seamlessly like
+  Terraform and Kubernetes? Try Release for on-demand environment provisioning
+  and streamline workflows.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=terraform-vs-kubernetes-whats-the-difference-and-why-it-matters
+relatedPosts:
+  - ""
+ogImage: /blog-images/814523c36864bffb33d1170c4b4682ff.jpg
+excerpt: >-
+  We'll look at Terraform and Kubernetes and how you can use them separately or
+  together to automate and scale your cloud
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+Terraform vs. Kubernetes. Which tool is better? Which one do you need? 
+
+Sometimes people confuse these two cloud automation tools, but it turns out they're not the same thing, and they're not in competition with each other. As a matter of fact, they work very well together. [Terraform](https://www.terraform.io) is an [infrastructure as code](https://en.wikipedia.org/wiki/Infrastructure_as_code) tool, while [Kubernetes](https://kubernetes.io) is a [container orchestration](https://en.wikipedia.org/wiki/Orchestration_(computing) system. Terraform can help you build and manage reproducible cloud infrastructure. Kubernetes can help you create more robust cloud applications. 
+
+This post will explain what Terraform and Kubernetes are and how you can use them separately or together to automate and scale your cloud environments. 
+
+![](/blog-images/9e8aa21a7347960d68600df2f6c623aa.png)
+
+### Terraform
+
+Terraform is [Hashicorp's](https://www.hashicorp.com) infrastructure as code automation tool for provisioning and configuring cloud services. It has a consistent command-line interface (CLI) to more than 300 different cloud APIs. You describe your cloud environments in a declarative configuration syntax and then execute Terraform [plans](https://www.terraform.io/docs/glossary#plan-verb) to build them. Hashicorp offers both open-source and licensed versions of Terraform. 
+
+With Terraform you: 
+
+- Increase your infrastructure automation and eliminate preventable mistakes.
+- Use the same workflow to build environments in different public clouds
+- Manage your infrastructure like code with configuration files, pull requests, and reviews
+- Have a powerful tool for ensuring that your development, staging, and production environment are consistent.
+
+Terraform uses Hashicorp Configuration Language (HCL) to describe infrastructure resources. The CLI reads these files and executes your plans using the cloud provider's native APIS. 
+
+You can use Terraform to provision a wide variety of different tools via a robust plugin system. Plugins are called "providers." Hashicorp supports hundreds of official providers, [maintains an official registry](https://registry.terraform.io/browse/providers), and has an [API](https://www.terraform.io/cloud-docs/api-docs/private-registry/providers) so you can write your own. They even have a Kubernetes provider that we'll discuss later. 
+
+### Terraform HCL
+
+HCL is a user-friendly language that is easy to write and easy to read. If you understand the underlying infrastructure that you're using Terraform to provision, you can figure out HCL rather quickly. But it's not a restricted or limited programming language. It has variables, data types, and control flow. 
+
+This is how you declare a string variable in HCL: 
+
+```hcl
+
+variable "username" {
+  default = "webmaster"
+}
+
+```
+
+This is an example of a list: 
+
+```hcl
+
+variable "servers" {
+    default = ["webserver", "databaseserver", "backupserver"]
+}
+
+```
+
+Here's a for loop that traverses the list and outputs each name in upper case: 
+
+```hcl
+
+variable "servers" {
+    default = ["webserver", "databaseserver", "backupserver"]
+}
+
+output "forloop_terraform" {
+   value = [
+      for name in var.servers : upper(name)
+   ]
+}
+
+```
+
+Additionally, HCL has many powerful features, like maps, functions, and code libraries. 
+
+### Terraform Examples
+
+Terraform is cloud-agnostic, but unfortunately, that doesn't mean you can write one HCL file and use it with more than one cloud. Each cloud provider had distinct APIs and very different configuration models. 
+
+Here is code from the [Terraform tutorial](https://learn.hashicorp.com/terraform?utm_source=terraform_io) for provisioning an Amazon Web Service (AWS) EC2 instance. 
+
+```hcl
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.27"
+    }
+  }
+
+  required_version = ">= 1.1.0"
+}
+
+provider "aws" {
+  profile = "default"
+  region  = "us-west-2"
+}
+
+resource "aws_instance" "app_server" {
+  ami           = "ami-830c94e3"
+  instance_type = "t2.micro"
+
+  tags = {
+    Name = "ExampleAppServerInstance"
+  }
+}
+
+```
+
+Here is a similar example for GCP: 
+
+```hcl
+
+provider "google" {
+  project = "terraform-examples-gcloud"
+  region  = "us-east1"
+}
+
+resource "google_compute_instance" "example" {
+  name          = "example"
+  machine_type  = "f1-micro"
+  zone          = "us-east1-b"
+  
+  boot_disk {
+    initialize_params {
+      image = "ubuntu-1604-lts"
+    }
+  }
+  
+  network_interface {
+    network = "default"
+
+    access_config {
+      // Ephemeral IP
+    }
+  }
+  
+  tags = ["terraform-example"]
+}
+
+```
+
+You can separate your code into modules and separate variable declarations from code. This helps abstract out the difference between different cloud platforms. 
+
+![](/blog-images/078c35869988e1041da4242cd3632216.png)
+
+### Kubernetes
+
+Kubernetes ([K8s](https://release.com/blog/why-kubernetes-is-so-hard)) is an open-source container orchestration system. Like Terraform, it's an automation tool, but for containerized applications, not infrastructure. K8s automates deploying, scaling, and managing applications that run in containers. Usually, those containers are [Docker](https://www.docker.com). 
+
+Google created K8s, but it is not limited to Google infrastructure. You can run K8 on-premises, on a cluster you build and manage yourself in the cloud, or on a cloud provider's implementation. GCP offers [GKE](https://cloud.google.com/kubernetes-engine/), AWS offers its own [managed implementation](https://cloud.google.com/kubernetes-engine/), and Azure has [AKS](https://azure.microsoft.com/en-us/services/kubernetes-service/#overview). 
+
+### K8s Benefits
+
+When you run your app with Kubernetes, you get: 
+
+- **Automated deployments:** You tell K8s how you want your application to look, and it figures out how to get there gradually, without disrupting uptime. So, K8s can deploy or roll back your code for you.
+- **On-the-fly and automatic scaling:** You can tell K8s how much memory and CPU a container needs. Then it figures out how to fit them into the nodes you allocated to your cluster. K8s ability to make the most of your system resources is one of its most powerful abilities.
+- **Storage management:** K8s coordinates mounting and unmounting storage for your containers. It works with block storage, proprietary cloud systems, and more.
+- **Dynamic load balancing:** K8s makes containers available via an IP address or DNS name to the outside world. If traffic to a single instance reaches a designated threshold, it will distribute the load to more than one instance.
+- **Configuration:** K8s has tools for storing and managing configuration information, including secrets and tokens. These tools are a way to safely store secrets and push changes to applications without building a deploying new container.
+- **Automatic recovery and failover:** When containers fail or stop unexpectedly, K8s will restart them for you. You can provide a custom health check to K8s, and it will restart your container when the check fails.
+
+So with Kubernetes, you get the portability of containers combined with a robust automated infrastructure that runs in the cloud. 
+
+### Terraform and Kubernetes Together
+
+So, you can see how "Terraform vs. Kubernetes" isn't an entirely valid comparison. Terraform is an automation tool for building infrastructure. Kubernetes is an automation platform for running applications. They are both automation tools, and both can help you make your cloud applications easier to build, scale, and maintain. But, they solve different problems and are far from mutually exclusive. 
+
+Hashicorp offers an official [Kubernetes provider](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/guides/getting-started). It's [open-source and available on Github](https://github.com/hashicorp/terraform-provider-kubernetes). The documentation is complete, and Hashicorp offers sample HCL scripts for [EKS](https://github.com/hashicorp/terraform-provider-kubernetes/tree/main/_examples/eks), [GKE](https://github.com/hashicorp/terraform-provider-kubernetes/tree/main/_examples/gke), and [AKS](https://github.com/hashicorp/terraform-provider-kubernetes/tree/main/_examples/aks) with the course code. 
+
+There are several reasons to provision a cloud Kubernetes cluster with Terraform instead of using their proprietary tools. The obvious reason is that Terraform's cloud-agnostic features make it easier to build clusters to other cloud providers, even if you consider the differences between systems. Even if you don't want to move to a different cloud provider, you may find it necessary to run on an alternative public cloud for disaster recovery. Another good reason is to make it easier to create different environments inside the same cloud provider. In both cases, using Terraform to build K8s clusters acts as a form of documentation. Instead of proprietary shell scripts or worse, steps in a web interface, you have HCL scripts that document how you built your k8s cluster. 
+
+You can [manage a Kubernetes cluster with Terraform, too.](https://learn.hashicorp.com/tutorials/terraform/kubernetes-provider) 
+
+### Cloud Automation Tools
+
+We covered what Terraform and Kubernetes are, how they differ, and how you can use them together to make your cloud infrastructure easier to build and manage. Terraform is an automated infrastructure as code tool for provisioning and managing cloud infrastructure. It supports a large number of different platforms and services with a scripting language for describing the services you need and how Terraform is to provision them. Kubernetes is a container orchestration platform. You use it to automate deploying, scaling, recovering, and load-balancing your containerized applications. It runs on every major public cloud platform, as well as on-premises. 
+
+Terraform automates infrastructure. Kubernetes automates containers and applications. Rather than competing, they complement each other. You can use Terraform to deploy your Kubernetes clusters and make it easy to reproduce them in different environments.

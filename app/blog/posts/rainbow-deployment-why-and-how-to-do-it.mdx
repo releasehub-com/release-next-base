@@ -1,0 +1,182 @@
+---
+title: "Rainbow Deployment: Why and how to do it"
+summary: >-
+  Zero-downtime deployments with rainbow deployments. Learn how they work and
+  what benefits they can bring.
+publishDate: "Mon Sep 26 2022 19:51:01 GMT+0000 (Coordinated Universal Time)"
+author: tommy-mcclung
+readingTime: 4
+categories: &ref_0
+  - kubernetes
+  - platform-engineering
+mainImage: /blog-images/ab16c0e7873ce501c5d6d46342286504.jpg
+imageAlt: "Rainbow Deployment: Why and how to do it"
+showCTA: true
+ctaCopy: >-
+  Automate advanced zero-downtime deployments with Release's ephemeral
+  environments for seamless Kubernetes updates.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=rainbow-deployment-why-and-how-to-do-it
+relatedPosts:
+  - ""
+ogImage: /blog-images/ab16c0e7873ce501c5d6d46342286504.jpg
+excerpt: >-
+  Zero-downtime deployments with rainbow deployments. Learn how they work and
+  what benefits they can bring.
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+What makes an application modern? One defining factor of modern applications is whether they use zero-downtime deployments. If you can deploy a new version of your application without your users realizing it, it's a good indicator that your application follows modern practices.
+
+In modern, cloud-native environments, zero-downtime deployments are relatively easy to achieve, however it's not always as simple as deploying a new version of your application and then quickly switching traffic to it. Some applications may need to finish long-running tasks first. Others will have to somehow deal with not breaking user sessions.
+
+What this means is that zero-downtime deployments range from basic to advanced.
+
+In this post, we're interested in the more advanced zero-downtime deployments. We'll talk about what rainbow deployments are, and how you can use them for efficient zero-downtime deployments. 
+
+### Zero-Downtime Deployments
+
+**Zero-downtime deployment** is when you release a new version of your application without any downtime. This usually means that you deploy a new version of the application, and users are switched to that new version without even knowing. 
+
+Zero-downtime deployments are superior to traditional deployments, where you schedule a "maintenance window" and show a "we are down for maintenance" message to your users for a certain amount of time. In the world of Kubernetes, there are two main ways of completing (near) zero-downtime deployments: the Kubernetes rolling update deployment, and blue/green deployments. Let's quickly go over both so we'll have a good base of knowledge before diving into the rainbow deployments. 
+
+#### Rolling Update
+
+[Kubernetes rolling updates](https://kubernetes.io/docs/tutorials/kubernetes-basics/update/update-intro/) are simple and effective. Whereas the traditional software update process is usually done by shutting down the old version and then deploying the new version which, of course, will introduce some downtime —a Kubernetes rolling update first deploys a new version of the application next to the old version, and switches traffic to the new version as soon as it's marked as up and running. Only then is the old version deleted. Therefore, no downtime. 
+
+‍
+
+![](/blog-images/af63f58d457486a41af35f532576fcef.jpeg)
+
+However, a Kubernetes rolling update has some limitations. Your application needs to be able to handle such a process, you need to think about database access, and it's a very on/off process. Therefore, you don't have any control over when or how gradually traffic is switched to the new version. 
+
+#### Blue-Green Deployments
+
+Blue-green deployments are next-level deployments that try to answer the limitations of simple rolling updates. In this model, you always keep two deployments (or two clones of the whole infrastructure). One is called blue and one is called green. At any given time, only one is active and serving traffic, while the other one will be idle. And once you need to release an update, you do that on the idle side, test if everything works, and then switch the traffic. 
+
+This model is better than a simple rolling update because you have control over switching traffic, and you can have the new version running for a few minutes or even hours so that you can do testing to make sure you won't have any surprises once live traffic hits it. 
+
+However, while better than rolling updates, blue/green deployments also have their limitations. The most important is that you're limited to two environments: blue and green. In many cases, that's enough, but there are use cases where two environments would be a limiting factor, for, example, if you have long-running tasks such as database migrations or AI processing. 
+
+#### When Blue-Green is not Enough
+
+Imagine a situation where you deploy a new version of your long-running software to your blue environment, you test if it's okay, and you make it your [live environment](https://release.com/blog/setup-test-environment). Then you do the same again for the green environment—you deploy a new version there and switch again from blue to green. 
+
+Now, if you'd like to deploy a new version again, you'd have to do it in the blue environment. But blue could still be working on that long-running task. You can't simply stop a database migration in the middle because you'll end up with a corrupted database. So you'll have to wait until the software on the blue environment is finished before you can make another deployment. And that's where rainbow deployments come into play. 
+
+#### What is a Rainbow Deployment?
+
+Rainbow deployment is the next level of deployment methods that solves the limitation of blue-green deployments. In fact, rainbow deployments are very similar to blue/green deployments, but they're not limited to only two (blue and green) environments. You can have as many colorful environments as you like—thus the name. 
+
+At Release we use Kubernetes namespaces along with our deployment system to automate the creation and removal of rainbow deployments for your application. Release will automatically create and manage a new namespace for each deployment.
+
+The working principle of rainbow deployment is the same as blue/green deployments, but you can operate on more copies of your application than just two. So, let's take our example from before, in which we would have to wait for the blue environment to finish the long-running task before making a third deployment. With rainbow deployments, you can just add another environment, let's call it yellow. 
+
+![](/blog-images/42fec8e28837bbdd43dfb7c6fc243336.jpeg)
+
+Now we have three environments: blue, green, and yellow. Our blue is busy, and green is currently serving traffic. If we want to deploy a new version of our application, we can deploy it to yellow and then switch traffic to it from green. And that's how rainbow deployment works. 
+
+This is a very powerful method of deploying applications because you can avoid downtime as much as possible for as many users as possible. Long-running tasks blocking your deployments provide just one example, but there are more use cases. For example, if your application uses [WebSockets](https://en.wikipedia.org/wiki/WebSocket), no matter how fast and downtime-free your deployments are, you'll still have to disconnect users from their WebSockets sessions, so they'll potentially lose some notifications or other data from your app. Rainbow deployments are the solution: You deploy a new version of your application, and you keep the old one until all users have disconnected from WebSockets sessions. Then you kill the old version of the application. 
+
+#### How to do a Rainbow Deployment
+
+Now that you know what rainbow deployments are, let's see how you actually implement them. There is no single standard way of achieving rainbow deployments and there aren't any tools you can install to do rainbow deployments for you—it's more of a do-it-yourself approach. But it isn't all bad news: you can leverage the tools you have to enable rainbow deployments with just a few extra lines of logic. 
+
+So, how do you do it,? You use your current CI/CD pipelines. All you need to do is to point whatever network device you're using to a specific "color" of the application when you deploy. In the case of Kubernetes, this could mean changing the **Service** or **Ingress** objects to point to a different deployment.
+
+Below are some very simple and typical Kubernetes deployment and service definitions: 
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: nginx-deployment
+   labels:
+     app: nginx
+spec:
+   replicas: 1
+   selector:
+     matchLabels:
+       app: nginx
+   template:
+     metadata:
+       labels:
+         app: nginx
+     spec:
+       containers:
+       - name: nginx
+         image: your_application:0.1
+         ports:
+         - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+   name: nginxservice
+spec:
+   selector:
+     app: nginx
+   ports:
+     - protocol: TCP
+       port: 80
+       name: nginxs
+       targetPort: 80
+```
+
+We have one deployment and one service that points to that deployment. The service knows which deployment to target based on deployment labels. The service is instructed to search for deployment that has a label **app** with a value of **nginx.** But what if we target the deployment by color too? Well, that would be a rainbow deployment strategy. 
+
+#### Enter Rainbow Magic
+
+So, your definition would look something like this: 
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: nginx-deployment-[color]
+   labels:
+     app: nginx
+spec:
+   replicas: 1
+   selector:
+     matchLabels:
+       app: nginx
+   template:
+     metadata:
+       labels:
+         app: nginx
+         color: [color]
+     spec:
+       containers:
+       - name: nginx
+         image: your_application:0.2
+         ports:
+         - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+   name: nginxservice
+spec:
+   selector:
+     app: nginx
+     environment: [color]
+   ports:
+     - protocol: TCP
+       port: 80
+       name: nginxs
+       targetPort: 80
+```
+
+And it would be in your CI/CD job to replace **\[color\]** in the YAML definition every time you want to deploy a new version. So you deploy your application and service for it, then the next time you want to deploy a new version of that application, instead of updating the existing deployment, you create a new deployment and update the existing service to point to that new deployment. And you can repeat that process as many times as you want. Once the old deployments aren't needed anymore, you can delete them. This is the working principle of rainbow deployments. 
+
+It's also worth mentioning that you don't need to use colors to distinguish your deployments—you can use anything. A common example is to use a Git commit hash. Also, this method isn't exclusive to Kubernetes. You can use it in pretty much any infrastructure or environment as long as you have a way to identify a specific deployment and point your network traffic to. 
+
+#### Rainbow Deployment Summary
+
+Rainbow deployments solve a lot of problems that come with common deployment methods and they bring true benefits to your users. However, rainbow deployments are not a magic solution that will solve all your application problems. Your infrastructure and your application need to be compatible with this approach. Database handling may be especially tricky (for example, you don't want to have two applications writing to the same record in the same database). But these are typical problems that you need to solve anyway when dealing with distributed systems. 
+
+Once you improve the user experience, you can also think about improving your developer productivity. If you want to learn more, take a look at our [documentation here.](https://docs.releasehub.com/reference-documentation/workflows-in-release/rainbow-deployments)
+
+‍

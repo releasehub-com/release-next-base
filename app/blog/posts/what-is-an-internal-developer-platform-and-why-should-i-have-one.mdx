@@ -1,0 +1,124 @@
+---
+title: What Is an Internal Developer Platform and Why Should I Have One?
+summary: >-
+  IDPs automate self-service for developers, streamlining software practices,
+  infrastructure, environments, and operations
+publishDate: "Wed Aug 02 2023 20:49:49 GMT+0000 (Coordinated Universal Time)"
+author: sylvia-fronczak
+readingTime: 10
+categories: &ref_0
+  - platform-engineering
+  - product
+mainImage: /blog-images/b22d39624eadf32e5019d4f55aa45252.jpg
+imageAlt: What Is an Internal Developer Platform and Why Should I Have One?
+showCTA: true
+ctaCopy: >-
+  Automate environment provisioning and streamline workflows with Release's
+  platform to enhance your internal developer platform.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=what-is-an-internal-developer-platform-and-why-should-i-have-one
+relatedPosts:
+  - ""
+ogImage: /blog-images/b22d39624eadf32e5019d4f55aa45252.jpg
+excerpt: >-
+  IDPs automate self-service for developers, streamlining software practices,
+  infrastructure, environments, and operations
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+It seems like everyone is talking about internal developer platforms (IDPs). But what is an IDP, really, and how can it help your team?
+
+Let’s explore what an IDP is from a few angles. We’ll look at the definition, how the need for the IDPs developed, and the goals and outcomes of IDPs. With this information, you can assess whether IDPs can help your teams and organization and briefly look at next steps.
+
+Now let’s get started with a definition.
+
+### A Simple Definition
+
+An internal developer platform provides automated self-service solutions for developers to simplify and standardize software practices, infrastructure, environments, and operations.
+
+That’s it.
+
+Does it not seem like it’s specific enough?
+
+Well, that open-ended definition can be interpreted and built in many different ways into many forms. Is that OK? Yes, absolutely. That’s deliberate.
+
+Let’s note what this definition does not specify.
+
+First, perhaps you noticed that the definition does not specify any particular tool. An IDP consists of multiple tools and technologies that are integrated together. These tools vary from company to company and stack to stack. It really depends on the use case and should be built in accordance with the needs of the particular organization that wants the IDP.
+
+Additionally, this definition doesn’t mention [continuous integration and continuous deployment (CI/CD) tools](https://release.com/blog/11-continuous-deployment-tools-and-how-to-choose-one), microservice catalogs, or environment provisioning. Though those capabilities are often provided through the IDP, they are not an IDP on their own.
+
+And finally, the definition doesn’t mention a single pane of glass. In recent years, there’s been a lot of focus on bringing all the tools together in one place. Unfortunately, a central location isn’t enough. The IDP should be integrated throughout the development workflow in various ways based on need. There may be common UIs in an IDP, but there could also instead be CLIs, APIs, and other integration points between tools. It’s more about understanding the development process and adding the right automation in the right place at the right time.
+
+Now that we’ve covered the definition, let's talk about how the need for IDPs developed.
+
+### How the Need for IDPs Developed
+
+In the distant past, many developers handled both infrastructure and software. The environments were simpler and didn’t require a lot of specialization.
+
+Of course, the landscape changed. It was less about one C++ app running on a server somewhere and more about a collage of technologies working together. Tasks like deploying and operating the infrastructure moved to specialized operations or release management teams.
+
+Unfortunately, and typically due to a lack of automation and increased bureaucracy, the development teams felt held back, unable to get their changes into [the production environment](https://release.com/blog/what-is-a-production-environment-and-why-is-it-unique) quickly enough. And operations folks guarded their environment against changes in production to reduce incidents and outages. This took many forms, some more automated than others. As an example of less automation and more bureaucracy, some organizations required multiple requests, forms, or even Excel docs that specified what changes and what files were supposed to move to what environment. Even when there was more automation, the tools tended to be focused on the needs of administrators and not developers. There was a lot of friction and pain, and developers were not able to get their changes to production quickly.
+
+From that pain, DevOps was born. In order to liberate developers and allow them to deploy more frequently, they were also given the keys to the CI/CD pipeline and entrusted to handle infrastructure and operations for their applications as well. This made sense in theory, but in practice, various interpretations of DevOps resulted in every single team in an organization implementing their own CI/CD pipeline, every team applying the same patches to their pipeline, and learning all the same lessons of proper CI/CD and operations as each other. What started as an exception became the norm. And once again, development teams across organizations spent countless hours on work that had very little to do with building new products and features.
+
+There has to be a better way. How can we take the learnings from DevOps, but also make the development life cycle simpler to manage from the development team’s perspective? That’s where IDPs can help.
+
+‍
+
+![](/blog-images/64c5e84ac5ebf4f4f9d37f4b24f256ac.png)
+
+### Goals/Outcome of an IDP
+
+When we begin to look at what an IDP can do for an organization, we typically try to meet one or more of the following goals:
+
+1.  Reduce toil
+2.  Reduce context switching
+3.  Allow for technical specialization
+4.  Drive standardization
+5.  Increase efficiency
+6.  Improve developer experience
+7.  Improve time to market
+
+These goals all tie together well and overlap frequently.
+
+First, **reducing toil** involves reducing repetitive work that can be automated away. This could involve often-used tactics like automating CI/CD and tests. Reducing toil can also include automating dependency upgrades, audits, and access requests.
+
+Second, an IDP should reduce **context switching**. In part, when we reduce toil, we automatically reduce some amount of context switching. Additionally, with the appropriate automations and integrations, developers should not have to jump context between application development, environment management, infrastructure concerns, and whatever else is necessary.
+
+A proper IDP will automate and standardize many of the tools and technologies required by the development team to get their features out to production, which then also allows them to **specialize** in their product domain and in software engineering skills.
+
+Additionally, IDPs can drive **standardization** by providing out-of-the-box integration with static code analysis and enforced coding standards. And the teams themselves do not configure this each time for their new service or product. Instead, it’s baked in from the start and just works.
+
+When you **increase efficiency**, you’re making it easier for the team to focus on the job they do best—write software for their domain. They spend less time on work that doesn’t involve their craft or domain, making them more efficient overall. This, as well as previous points, also improves the **developer experience.** The development team has more time to focus on their craft and domain and worries less about the peripheral needs of their software stack.
+
+And finally, all of these combined result in improving **time to market**. When you reduce toil, reduce context switching, and increase efficiency, your development team can focus on building the product for your customer and not spend time on efforts that dilute their focus. They are able to prioritize the most important work with increased specialization for your target audience.
+
+### Common Problems IDPs Can Solve
+
+We’ve covered the definition, history, and goals of IDPs, but sometimes it’s still difficult to see how this applies to your organization. You need more to understand how an IDP can help you.
+
+Let’s look at common problems that IDPs can solve.
+
+First, let’s consider the attention sprawl and security risks example mentioned earlier. If teams have to manage their own infrastructure and CI/CD pipeline, they’re spending time on tasks that do not deliver working software to customers. More so, they are spending time doing tasks that they’re not always knowledgeable in. This can result in security vulnerabilities, like leaving certain ports and directories open or not utilizing proper deployment strategies and configuration management.
+
+Adding on to the security aspect, when teams manage their own infrastructure and CI/CD, they each must learn how to integrate your new security scanning software into their pipeline. At best, this will lead to repetitive work for each team that should have been centralized. At worst, teams may not configure the scans correctly, leaving you more vulnerable to security exploits.
+
+![](/blog-images/67f6d49acf6a72ffec4120ab21f58391.png)
+
+As another example, perhaps your teams struggle with environment setup. This can manifest as inconsistent environment setup or, more commonly, as a limitation in the number of environments available. Many teams are tied to a [small number of environments](https://release.com/blog/testing-environment-types-and-what-theyre-used-for)—staging, QA, UAT, and production, for example. It’s been historically difficult to replicate [everything that goes into an environment](https://release.com/blog/a-simple-guide-to-software-environments), and so organizations often stick to these static environments. This can cause [bottlenecks](https://release.com/blog/increase-developer-velocity-by-removing-environment-bottlenecks) for testing and deployments with multiple devs working in the same environment or waiting on others to complete their testing. With static environments like this, you may also end up with a need to do large data refreshes or resets periodically to clean up odd testing scenarios. With proper IDP integration, we could utilize tools like Release to [provide ephemeral environments instead](https://release.com/blog/improving-developer-productivity-with-ephemeral-environments).
+
+For our final example, let’s talk about waiting on tickets. Perhaps your organization utilizes ticket queues and request systems. If your teams are often waiting on requests for infrastructure changes, blocking their ability to build or ship code, then you’ve found an opportunity for automation in your IDP.
+
+This is a short and general list. Wherever there’s friction in the development process, there’s opportunity to improve the process through an IDP.
+
+### Next Steps
+
+At this point, you may think that an IDP will easily solve everyone’s problems. However, that’s not always the case. You need to carefully design your IDP to fit your specific needs, so that it can reduce toil, reduce context switching, improve the developer experience, and improve time to market. And if you don’t focus on the right aspects of your IDP, you could waste time and make the problems you’re trying to solve even worse.
+
+The investment in an IDP will require investigation, prioritization, and a product-driven perspective. Your IT will require a dedicated team, support, and governance. To begin, take a look at **how** your development teams work. What tools do they use? How often do they spend on tasks outside of their domain or primary technologies? Once you’ve assessed your starting point, you can begin to build the components of an IDP that will benefit your particular organization the most.
+
+Stay tuned to learn more about the components of a successful IDP in the next chapter on this IDP series.  
+
+‍*This post was written by Sylvia Fronczak.* [_Sylvia_](https://sylviafronczak.com/) _is a software developer that has worked in various industries with various software methodologies. She’s currently focused on design practices that the whole team can own, understand, and evolve over time._

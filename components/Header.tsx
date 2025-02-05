@@ -21,6 +21,11 @@ export default function Header() {
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
+  const navigation = [
+    { name: "Blog", href: "/blog" },
+    // ... other navigation items ...
+  ];
+
   return (
     <header
       className={`sticky top-0 z-50 w-full border-b border-gray-800 bg-gray-900 text-gray-100 transition-all duration-300 ${isScrolled ? "py-2" : "py-4"}`}
@@ -79,7 +84,7 @@ export default function Header() {
               Use Cases
             </Link>
             <Link
-              href="https://release.com/blog"
+              href="/blog"
               className="text-sm font-medium hover:text-gray-300 py-2 md:py-0"
             >
               Blog

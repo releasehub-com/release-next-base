@@ -1,0 +1,150 @@
+---
+title: Test Blog
+summary: >-
+  Let’s explore a significant decision in every software endeavor: do we build
+  or do we buy?
+publishDate: "Mon Sep 18 2023 16:14:03 GMT+0000 (Coordinated Universal Time)"
+author: sylvia-fronczak
+readingTime: 10
+categories: &ref_0
+  - platform-engineering
+  - product
+mainImage: /blog-images/1b6998ea6557914087a8b77eda4fe01b.jpg
+imageAlt: "Credit: Google DeepMind"
+showCTA: true
+ctaCopy: >-
+  Implement Release's ephemeral environments to streamline IDP development like
+  Spotify's Backstage. Sign up now!
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=test-blog
+relatedPosts:
+  - ""
+ogImage: /blog-images/1b6998ea6557914087a8b77eda4fe01b.jpg
+excerpt: >-
+  Let’s explore a significant decision in every software endeavor: do we build
+  or do we buy?
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+Previously, we wrote about the goals and outcomes of [an Internal Developer Platform (IDP](https://release.com/blog/what-is-an-internal-developer-platform-and-why-should-i-have-one)), as well as the [components of a successful IDP](https://release.com/blog/components-of-a-successful-idp-build-a-product-your-developers-actually-want-to-use). At this point, you may be either excited by or overwhelmed with where your platform could go and the efficiencies that it could create.
+
+As the next step, let’s explore a significant decision in every software endeavor: do we build or do we buy?
+
+Considering this is rarely a clean “yes or no” question, we’re also going to look at the options that sit between the two. In actuality, the solution you choose will be somewhere on a large spectrum between a complete build from scratch and entirely buying software that you never have to maintain yourself. Where your org falls on that spectrum depends on your current needs and capabilities.
+
+First, let’s look at some of the options available.
+
+> _Use code #IDP to get free Release Ephemeral Environments for 30 days. Sign up_ [_here_](https://release.com/signup)_._
+
+#### Build or Buy, or Else?
+
+When we make decisions around build vs. buy, we should first realize that when it comes to an IDP, it’s not all or nothing. This is a spectrum, where you can buy a managed IDP and all related components or you can pick and choose what you build and what you buy. As a reminder, an IDP isn’t one solution, but a platform with various components that provide solutions to different problems. Therefore, you can choose to build or buy the platform and the separate components.
+
+![](/blog-images/1863e6f1f0c7adae1cc585f2ba216bd3.png)
+
+‍**🛠️ Fully Build the IDP and Integrations**
+
+The most involved option would be to build everything yourself from scratch. This will be the most expensive option and will require a large team, but in theory, it will give you the most flexibility.
+
+Spotify did this when they built Backstage. Now, you may think that that’s the way to go. But do realize that Spotify had a large number of people working on this both internally and later externally when the platform was released as open source. Once they went open source, they had both individual contributors and partner companies that provided time and engineering efforts toward the build. Their [two-year anniversary called out 5,000 contributors](https://backstage.io/blog/2022/03/16/backstage-turns-two/) to the project.
+
+Most companies do not have hundreds, let alone thousands, of developers who can put in time and effort to building an IDP from scratch. In addition to the large number of resources, that level of contribution requires forgoing other projects within your organization that involve shipping features. As importantly, this platform is just that. A platform. Once you have the platform built, you will then need to configure the necessary components and add-ons that your organization needs. Each of these components will result in a build vs. buy decision, so focus on the most important features for your organization first.
+
+##### ‍**🏗️ Build Atop Open-Source Frameworks and Commercial Components**
+
+If you’re not at the stage where you can build everything (and most organizations aren’t), another option would be to take an open-source framework and build on top of that.
+
+In this scenario, you’re using something like backstage.io but building out the implementation.
+
+This is a better option over a complete build as the base framework. However, you’ll still need to build integrations and quickly form opinions on how this should work for your organization.
+
+Many prefer this to the build option, but it will still take a considerable team to make it happen. And it’s not the ideal choice if you’re just starting to learn about IDPs and how they can help your org.
+
+For example, companies could choose a managed observability component like Datadog or New Relic. These tools aren’t cheap but will get your organization started with solid monitoring and observability. However, as costs increase, you could find yourself building your observability tools over open-source libraries like Prometheus and Grafana.
+
+Coming at this from a similar angle, you could handle your environment management in-house using Ansible, Terraform, or Docker Compose. You might begin by building out your environment management using these tools as the solution seems simple. As the complexity of your environment management increases, and as the problems you need to solve become more sophisticated, choosing an ephemeral environment solution like Release can reduce the complexity for your teams.
+
+![](/blog-images/2939d24e6fa24544309c8c562fa26486.png)
+
+##### **🤝Hire Someone to Build It**
+
+For some software projects, you could consider hiring out the build. For example, you could hire third-party contractors or consultants to build your IDP. Or you could directly hire new employees with the necessary experience and onboard them into your organization to build it out.
+
+Organizations will take this option if they don’t have the necessary knowledge in-house. Though this can work, it often has poor outcomes. The folks coming into the org don’t know the culture and processes of your teams and will need to learn them, or they’ll build something not based on your internal culture and processes. Frequently, for third-party development teams, they don’t have the level of ownership needed for projects of this size. And hiring new employees for this work will also increase the burden on hiring resources. And if we don’t have existing employees with this expertise, we will oftentimes make expensive hiring decisions.
+
+To mitigate some of the risks with these options, you could have a small number of experts build alongside your team so that you have more of your own long-term workforce working on the project than you have temporary parties. That would be the only way I’d consider this option.
+
+##### ‍**💰Buy It: Vendor-Managed Options**
+
+Buying enterprise software isn’t a plug-it-in-and-forget-it endeavor. There will still be work involved in configuration, management, and onboarding teams. This is even more true for IDPs, as they are simply platforms and will need the right components and integrations added on to make a usable product.
+
+Even though there’s not a complete buy-it option, buying the right components that provide value to your org will reduce the development burden on your teams. You’ll be able to focus on the integrations that solve your organization’s biggest development workflow pain points, which can free you up to decide how you want to incorporate the use of the IDP into your organizational culture.
+
+Additionally, for an IDP, you have managed solutions available for a number of components. For example, there are organizations that provide managed IDP solutions like [Cortex](https://www.cortex.io/) or [OpsLevel](https://www.opslevel.com/) for service catalogs and integrations to other tools.
+
+You can also consider whether it makes sense to buy components and capabilities that extend your IDP. Let’s consider the monitoring and observability components of your IDP. We already mentioned purchasing products like Datadog or New Relic. You can further this by adding paging options like [PagerDuty](https://www.pagerduty.com/) or [Opsgenie](https://www.atlassian.com/software/opsgenie). These problems have robust solutions on the market that can fill your organization’s needs.
+
+When it comes to environment management, Release provides a managed platform as a service (PAAS) solution for managing both standard and ephemeral environments. This provides additional building blocks for your IDP, adding environment management capabilities to further increase your development team efficiency. And yes, you could build it yourself, scripting atop open-source solutions like [Terraform](https://www.terraform.io/) or [Docker Compose](https://docs.docker.com/compose/). But again, these types of products are not something that will take a few days and still scale well.
+
+When considering what components to build or buy, consider how the value compares to the effort. What components can provide big benefits to your engineering teams that will take a lot of time and effort to build? And consider your most pressing needs. Do you need a central place to locate tools and services? How about robust monitoring tools to operate your systems? Or environment management to increase developer velocity? And which do you want to benefit from quickly?
+
+![](/blog-images/cd72cd05beb337ab5405213445b5211a.png)
+
+#### Build vs. Buy Factors to Consider
+
+We’ve gone over many alternatives in the build, build on open source, hire out, and buy spectrum. There isn’t a one-size-fits-all solution, and you’ll have to consider what’s best for your organization.
+
+But there are a number of things to consider when deciding if you will build or buy your IDP.
+
+##### 1\. Cost
+
+Cost isn’t just the amount of money that you’ll spend on the software licenses or the developer headcount to build the IDP. If you buy software, you’ll still have to spend time on training, evangelizing, and configuring the IDP for your organization. If you build, you’ll need to include engineering time as well as the training, evangelizing, and configuring just like when you buy. Building also includes opportunity costs. What could your engineering staff be building to further differentiate your product in the market? Should you focus their energies on your product or on integrations that all organizations need?
+
+##### 2\. Expertise and Capabilities
+
+Building software like an IDP requires a team with the right skills and expertise. And don’t think your team of five production engineers can take on this effort. Organizations like Netflix, Facebook, and Spotify can build tools like this in-house because they have hundreds, if not more, of employees working on internal systems and efficiencies. These folks are dedicated to improving the developer experience.
+
+If you have a small development team focused on application or product development, developing a [production engineering](https://engineering.fb.com/category/production-engineering/) or platform enablement team will not work well. It won’t take advantage of their expertise in your domain and will take them away from building the product that is your market differentiator.
+
+##### 3\. Scalability
+
+With the build option, you do control the ability to scale the needs of the system yourself to your specific loads and use cases. However, consider whether you could start with buying a managed IDP option and then move over to build after you’ve outgrown the capabilities and scale of that option.
+
+##### 4\. Custom Integrations
+
+If your organization has its own custom-built tools for testing, security, governance, or more, integrations through an IDP may be more difficult. Or you’ll potentially have the same amount of effort between the build and the buy option.
+
+##### 5\. Security and Compliance
+
+When you build the software, you can control the security and compliance features. But that also means you must be the experts in security and compliance. This loops back to #2. Do you have the expertise, or do you need to offload that need for expertise to another organization where it’s their product differentiator?
+
+##### 6\. Competitive Advantage
+
+If you’re an org like Spotify, Netflix, Meta, or similar, then squeezing every bit of efficiency out of your development team by ensuring everything is custom-built for their needs makes sense. But if you’re not at that scale, consider starting smaller.
+
+##### 7\. Usability and Adoption
+
+If you build a custom IDP but don’t consider usability, then you will have poor adoption. This means not only UI concerns of the IDP but also usability of configurations and interactions with the developer workflow.
+
+##### 8\. Support
+
+Custom-built solutions won’t have an internet full of adopters that use the tool or similar tools for debugging, tutorials, and instructions. Buying software solutions through a vendor-managed option means you don’t have to create a large support network and can offload much of that to the wider developer ecosystem.
+
+##### 9\. Course Correction
+
+One final factor involves transitioning from one decision to another. Consider this. Would it be easier and more economical to move from a “buy” solution that doesn’t meet your needs or from a “build” solution that fails? If you decide to build but find that this is not maintainable or salable, then the effort put into building will be wasted.
+
+If you find that a buy solution doesn’t work for your needs, yes, you’ll still have sunk costs, but they should be more manageable. Depending on the components involved and your expertise, your answer can vary.
+
+However, if you start with a buy solution or use a PaaS or managed solution, you can transition to build when you’re ready. You’ll build up the experience needed and the understanding of what you need from the product. For something like an IDP that consists of many integrated components, you can build piece by piece, taking on more of the build as your organization’s expertise and understanding of the component grows.
+
+#### Making a Decision
+
+Making the right decision depends on many factors that vary across organizations. Consider what’s best for your situation today and focus on solving for the 80% before deciding to move to a build solution. This may consist of a combination of building, building on top of open source, buying, or hiring out.
+
+In the next installment of this series, we’ll talk about using product thinking to establish your IDP. Stay tuned!
+
+‍*This post was written by Sylvia Fronczak.* [_Sylvia_](https://sylviafronczak.com/) _is a software developer who has worked in various industries with various software methodologies. She’s currently focused on design practices that the whole team can own, understand, and evolve over time._
+
+‍

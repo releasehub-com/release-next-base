@@ -1,0 +1,89 @@
+---
+title: Rules for putting together the article
+summary: ""
+publishDate: "Mon Apr 03 2023 17:16:30 GMT+0000 (Coordinated Universal Time)"
+author: ""
+readingTime: 5
+categories: &ref_0
+  - platform-engineering
+  - product
+mainImage: ""
+imageAlt: ""
+showCTA: true
+ctaCopy: >-
+  Unlock precise environment management with Release. Ensure proper formatting
+  and spacing in your articles effortlessly.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=rules-for-putting-together-the-article
+relatedPosts:
+  - ""
+ogImage: /blog/default-og-image.png
+excerpt: >-
+  1 - The article should ALWAYS start with a paragraph or a heading H2 Otherwise
+  the body of the post will be misaligned with the social block  2 - The H1
+  shou...
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+## 1 - The article should ALWAYS start with a paragraph or a heading H2
+
+Otherwise the body of the post will be misaligned with the social block
+
+### 2 - The H1 should never be used, because this tag is reserved for the blog title
+
+It's bad for SEO having two or more H1 in the same page
+
+### 3 - It's not needed to add bold to the for the headings, because the weight is already set for the headings.
+
+#### Otherwise the headings will look like this: **Heading bold**
+
+### 4 - It's not needed to add extra space between the paragraphs
+
+It is not necessary to use space between paragraphs as they already have a defined margin.
+
+Adding extra spaces will leave your text with excess space, as we can see below.  
+‍
+
+Can you see? I told you
+
+### 5 - When working with the block codes it's important to pay attention to spacing
+
+```yaml
+  readiness_probe:
+    exec:
+      command:
+      - curl
+      - "-Lf"
+      - http://localhost
+    failure_threshold: 5
+    period_seconds: 30
+    timeout_seconds: 3
+
+```
+
+_If you add a description for the blog, make it italic._
+
+### 6 - When you add an image there is no need to add empty lines above and/or below the image, the image itself is already spacing defined.
+
+Here's how you won't need to add a line between the paragraph and the image:
+
+![](/blog-images/9e8bd025d7f442e799770734b97fc833.png)
+
+Image description
+
+It will be perfect even if you don't have a description for the image, don't worry.
+
+But see below that if you have an empty line it will create non-harmonious spacing between the paragraph and the image
+
+‍
+
+![](/blog-images/9e8bd025d7f442e799770734b97fc833.png)
+
+‍
+
+### 7 - Take care to always end your article without empty lines at the end, as this will generate empty space at the end of the article.
+
+### 8 - The proper way to write inline code block:
+
+`release instances terminal`

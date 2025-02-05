@@ -1,0 +1,127 @@
+---
+title: What Is a Production Environment and Why Is It Unique?
+summary: >-
+  What is a production environment? What makes it special? Learn to make your
+  production environment better!
+publishDate: "Tue Mar 14 2023 18:15:32 GMT+0000 (Coordinated Universal Time)"
+author: eric-goebelbecker
+readingTime: 7
+categories: &ref_0
+  - platform-engineering
+  - product
+mainImage: /blog-images/4ec490497814724ca55f37f02e79e548.jpg
+imageAlt: What Is a Production Environment and Why Is It Unique?
+showCTA: true
+ctaCopy: >-
+  Enhance production environment efficiency with Release's on-demand
+  environments. Simplify testing, streamline workflows, and ensure consistent
+  deployments.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=what-is-a-production-environment-and-why-is-it-unique
+relatedPosts:
+  - ""
+ogImage: /blog-images/4ec490497814724ca55f37f02e79e548.jpg
+excerpt: >-
+  What is a production environment? What makes it special? Learn to make your
+  production environment better!
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+Is the code ready for production? Can we test that in production? How will this configuration change affect production? These questions, and ones like them, are issues that developers and engineers hear and ask nearly every day. But what is a production environment? What makes it different from development, user-acceptance testing, or [staging](https://release.com/staging-environments)? What does the name "production" imply, and what do you need to keep in mind when using it? 
+
+Let's take a close look at production environments. We'll talk about what an environment is, what makes an environment "production," what can go wrong in a production environment, and how to improve it. 
+
+![](/blog-images/1e7476e4e0b3e9a0a643189ed9059958.jpeg)
+
+### Environments
+
+Before we delve into what makes a production environment "production," let's discuss what environments are and how to think about them. 
+
+### What Is an Environment?
+
+An environment, or more formally a [deployment environment](https://en.wikipedia.org/wiki/Deployment_environment), is a set of computer systems and services that host and support a software application. The size and scope of applications vary, and environments have to scale to support them. So, it’s useful to define the term application before talking about environments. 
+
+When we're talking about an application deployed to an environment, we're usually talking about an application composed of several, if not dozens of programs that work together to serve a business need. For example, the application might be an online store, a trading platform, or software as a service (SaaS) that provides capabilities to client businesses. 
+
+The requirements for these applications directly affect the size and scope of the environments that support them. A development environment could be a single system running in a few containers. A production environment might span 100s of virtual machines. Two different environments can support the same application in two very different contexts. A developer can run a containerized application on their laptop for testing purposes, while the production environment requires ten or more virtual machines. 
+
+![](/blog-images/14b5f95f951d008e2d0eb92e4ccccad5.png)
+
+You build environments to satisfy the [release management cycle](https://en.wikipedia.org/wiki/Release_management). You do your coding, troubleshooting, and initial testing in a development environment. Then you conduct testing in User Acceptance Testing (UAT) environments. You might test your final configuration and perform more intense testing in a staging environment. Finally, you serve your customers from the production environment. 
+
+### What Are Environments Composed of?
+
+When we talk about environments, especially production, we tend to focus on the systems that run the core software stack. A typical scenario might include a database server (or cluster), [microservices](https://docs.release.com/guides-and-examples/advanced-guides/microservices-architecture), customer-facing web server, and network gear. These may be managed resources, cloud native services, or ephemeral systems in a cloud environment, but they tend to be "what we talk about when we talk about environments."
+
+But environments are more than the systems and services they run on. An application has code, but it has data in the form of configurations, user information, and other resources, too. In most cases, that data differs between environments. That data is part of the environment. When the developer runs the environment on their laptop, they create a development environment. Their system configuration is very different from what's required to support the production environment and they are usually not using live user information. 
+
+In today’s complex software architecture environments also include cloud native services, and security policies governing access requirements to various systems and services.
+
+![](/blog-images/0558487bbdd0a363a0007e56f18e4d1a.jpg)
+
+### What Is a Production Environment?
+
+Simply put, your production environment is where your application meets your primary users. This applies to external (public, customers consuming your services) or internal (enterprise, users within the organizations for whom the application is built). Let's look at what that means and how it affects how you treat this environment. 
+
+### What Makes Production Unique?
+
+#### Revenue and Customer Satisfaction
+
+For almost all businesses, the fact that production supports their users means that it represents their primary source of revenue. In many cases, clients are paying for access to the application, (or internal users are using it to do business directly). Other clients may pay for "offline" services, but production is how they interface with the company. In all cases, if the production environment isn't functioning correctly, revenue is in danger. 
+
+If clients can't access your application, they can't give (or make) you money. Every minute of downtime means lost revenue. When a major internet service provider reports downtime, the headlines usually contain "lost" revenue numbers. 
+
+But a production outage has a long-term effect, too. While your application is down, there's an excellent chance your customers will take their business to someone else. If they have a good experience with your competitor, they may not come back. 
+
+#### Security
+
+If users use your production information, it's available to the public, which means it's in constant danger from attack. Production environments have extraordinary security requirements. 
+
+Attackers can cause problems in many ways. One is extortion via ransomware. If they can compromise even one system, they can install code that spreads throughout your production environment and forces you to either pay them and hope they follow through or start from scratch and build a new environment. 
+
+Another attacker may break in to steal user information. This attack exposes you to legal and financial liability. It can have a fatal impact on your reputation, too. 
+
+### What Are the Risks to Production?
+
+We've talked about what can go wrong if your production environment is broken or compromised. What are the common causes of these issues? 
+
+### Insufficient or Incorrect Testing
+
+In many organizations, testing is like the weather; everyone talks about testing, but no one does anything about it. A test plan missed an issue because it didn't exist, or it wasn't executed, or the test plan failed to account for the issue. 
+
+The first two scenarios are probably more common than many of us would like to admit. 
+
+The third scenario points back to the definition of an environment. User acceptance testing doesn't work if your [environment doesn't look like production.](https://release.com/blog/what-are-the-challenges-faced-during-uat-testing) If, for example, your production environment has more than 30 virtual machines, but your development environment only has four, testing in development doesn't cover all of your cases. It's too expensive to reproduce your production environment for every developer or development team. But you still need to find a cost-effective way to [build a staging environment](https://release.com/usecase/on-demand-staging-environments) that looks like production. 
+
+### Security and Access Control
+
+Security is an ongoing concern for everyone. We already covered the risks that a breach represents above. Proper access control goes a long way toward preventing these issues. Access control can also act as a check against incorrect configuration changes and premature releases.
+
+![](/blog-images/ac685788143302558873d9f8bf99cd27.png)
+
+Another way to tighten security is via automation. Automation is an effective tool for enforcing the "[principle of least privilege](https://release.com/usecase/on-demand-staging-environments)" because you can delegate deployment and configuration tasks to entities with limited privileges. 
+
+To protect yourself from data loss, recognize that any system storing user information is part of the production environment. If you don't want to extend production into that system, don't let the data go there. If the system is storing data that you can't afford to lose, confine it to the strictest level of access control possible. 
+
+### How Can Release Help?
+
+Developing and testing for today’s architectures can get complex. Things work well in development and staging, then they break down in pre-production and you have to rollback. Sound familiar?
+
+Creating an up-to-date production replica will significantly reduce your rollback rate. When you test with the right dataset, security policies, and services you remove the differences between your environments, and testing is more effective. 
+
+Better user acceptance testing makes your production environment better, and the [best way to accomplish that](https://release.com/blog/how-do-you-prepare-for-user-acceptance-testing) is with an environment that looks like production. What if you could create a replica of your production environment, perform your testing, and then [tear it down until you need it next time](https://release.com/ephemeral-environments)? What if your user acceptance testing could help you find shortcomings in your production environment and not just in your code? 
+
+Do you need a large dataset to test or code against? Don't risk your production data; use an [instant dataset](https://docs.release.com/reference-documentation/instant-datasets-aws) and throw it away when you're finished. 
+
+### Multi-Cloud Deployments of Private Applications
+
+Software companies who, for security reasons, deploy their application on customers' private clouds often find it challenging to ensure that application works on every cloud vendor.
+
+Release makes it easy to deploy your private application in AWS or GCP without refactoring. We create an abstraction of the cloud native services, making it easier to support and maintain your application without limiting yourself to one cloud vendor or another.
+
+### Build a Better Production Environment
+
+This post talked about the essential parts of an environment and how you need to examine those parts when comparing one domain to another. Then we discussed production and what makes it unique when compared to other environments. Finally, we talked about how you take positive steps to improve the reliability of your production environment. 
+
+Release has the tools you need to build better environments. Discover [ways](https://release.com/use-cases) to improve production development speed and flexibility, and equip your testing and engineering teams with better tools today, [start for free](https://release.com/get-started)!

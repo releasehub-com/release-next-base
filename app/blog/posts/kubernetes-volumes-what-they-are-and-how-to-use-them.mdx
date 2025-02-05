@@ -1,0 +1,277 @@
+---
+title: "Kubernetes Volumes: What They Are and How to Use Them"
+summary: >-
+  Learn how to inject file systems into Kubernetes pods using volumes and talk
+  about the different types of their uses.
+publishDate: "Tue Sep 13 2022 18:26:07 GMT+0000 (Coordinated Universal Time)"
+author: erik-landerholm
+readingTime: 5
+categories: &ref_0
+  - kubernetes
+  - platform-engineering
+mainImage: /blog-images/e2fad2ca4879f4bfe48dc3b52c46df72.jpg
+imageAlt: "A table with a cell phone, pencil, glasses and a plant"
+showCTA: true
+ctaCopy: >-
+  Discover how Release.com's dynamic environments streamline Kubernetes volume
+  management for persistent data storage.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=kubernetes-volumes-what-they-are-and-how-to-use-them
+relatedPosts:
+  - ""
+ogImage: /blog-images/e2fad2ca4879f4bfe48dc3b52c46df72.jpg
+excerpt: >-
+  Learn how to inject file systems into Kubernetes pods using volumes and talk
+  about the different types of their uses.
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+By default, the file system available to a Kubernetes pod is limited to the pod's lifetime. As such, when the pod is deleted, all changes are lost.
+
+But many applications will need to store data persistently, irrespective of whether a pod is running or not. For example, we need to retain data that was updated in the database or files written. Also, we may want to share a file system across multiple containers, and those may be running on different nodes.
+
+Let's take a look at Kubernetes [volumes](https://kubernetes.io/docs/concepts/storage/volumes/), which can address these problems.
+
+### The Basics
+
+Most data storage that applications use is ultimately file system-based, e.g., even though a database may keep some or all of its data in memory while running, it also keeps it updated in the data files on the file system for persistence. 
+
+Volumes allow us to inject the application with a reference to a file system, which the application can then read from or write to. 
+
+Injecting the file system makes it independent of the container's lifetime. We need to specify an absolute path where the injected file system should be mounted within the container's file system. 
+
+Volumes may be persistent or not. There are many different types of volumes, as we shall see. 
+
+A volume has to first be defined using the **volumes** key, and then used by a container using the **volumeMounts** key. 
+
+#### Example
+
+Below is a partial YAML snippet to illustrate how we can define and use volumes in a pod. Depending on the type of volume, its definition and usage could be in separate places. 
+
+```yaml
+apiVersion: v0
+kind: Pod
+metadata:
+   name: my-pod
+spec:
+   containers:
+   - image: some-image-name
+     name: my-container
+     volumeMounts:
+     - mountPath: /tempfiles
+       name: temp-files-volume
+   volumes:
+   - name: temp-files-volume
+     emptyDir: {}
+```
+
+Here, we've defined a volume of the **emptyDir** type. We'll see more about this later. 
+
+Since this type can only be used at the level of a single pod, not across, it's defined along with the pod. There could be multiple containers in a pod (though usually not), and they could all use the same volume. 
+
+So, if one container in a pod writes a new file to the volume, it would be visible to the other containers in that pod that use that volume. The name of the volume can be anything. 
+
+The **volumeMounts** entry under the container specifies where to mount that volume within the container's file system. In this case, we want /tempfiles. 
+
+When the application in the container writes to /tempfiles, it'll be writing to the temp-files volume. A container may use many different volumes or none. Note that in order to use volumes, the application in the container has to use the path that we specified in mountPath. 
+
+So, if you want to use a container image with volumes, make sure that the path it uses to read/write files matches the path we specified in **volumeMounts.** 
+
+A volume could—depending on its type—specify other attributes like accessModes, i.e., what kind of access it allows. 
+
+Modes can be **ReadWriteOnce**, **ReadOnlyMany**, **ReadWriteMany**, and **ReadWriteOncePod**. Note that specifying an access mode may not constrain the actual usage by the container. See [access modes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes) for details. 
+
+Now, let's take a look at different types of volumes. 
+
+![A picture containing textDescription automatically generated](/blog-images/bd7448beaaf00cde3327a932d3196820.jpeg)
+
+### Volume Types
+
+#### EmptyDir
+
+Kubernetes first creates an emptyDir volume when it assigns the [pod](https://kubernetes.io/docs/concepts/workloads/pods/) using that volume to a [node](https://kubernetes.io/docs/concepts/architecture/nodes/). As the name suggests, it's empty to start with, i.e., it contains no files/directories. 
+
+Containers in the same pod can share the volume so that changes made by any container are visible to others. The emptyDir volume persists as long as the pod using it does—a container crash does not delete a pod. 
+
+Thus, it's an ephemeral or temporary kind of storage for things like cached files/data or intermediate results, etc. Also, we cannot use it to share data across pods. 
+
+#### Persistent
+
+[Persistent volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) are defined by an administrator at the Kubernetes cluster level and can be used by multiple nodes in the cluster. They can retain their data even if we delete the pod using them. 
+
+Applications in containers can request to use a persistent volume by specifying a persistent volume **claim**. The claim specifies how much storage of what type it requires and using which access mode. 
+
+The cluster can allocate the storage for a claim in two ways: statically if a claim is satisfied by a provisioned volume, and dynamically—for if no volume is available for a claim, the cluster may try to provision the volume dynamically based on the storage class specified. 
+
+The claim with the allocated storage is valid as long as the pod making the claim exists. 
+
+The **reclaim policy** of a volume specifies what to do with a volume once the application no longer needs the volume storage—for example, when we delete a pod using the volume. 
+
+Accordingly, we can either retain or delete the data on the volume. Note also that the available access modes will depend on what type of volume is used. Since Kubernetes itself does not provide a file-sharing solution, we need to set that up first. 
+
+For instance, when using NFS, we need to set up the NFS share first, and then we can refer to it when creating a persistent volume. Additionally, we may need to install drivers for supporting that volume on the cluster. 
+
+![Graphical user interface, text, applicationDescription automatically generated](/blog-images/59109fced26c504cecd82674233bb3c4.png)
+
+##### YAML Example
+
+Let's look at an example configuration for an NFS volume. 
+
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+name: nfs-vol
+spec:
+capacity:
+storage: 1Mi
+accessModes:
+  - ReadWriteMany
+nfs:
+server: nfs-server-name
+path: "/"
+mountOptions:
+  - nfsvers=4.1
+```
+
+The name, capacity, and accessModes are common to all types of volumes, whereas the section at the end, "nfs" in this case, is specific to the type of volume. 
+
+We can create the volume with **kubectl apply**. To get information about a volume, we would use 
+
+```yaml
+kubectl get pv
+```
+
+Now, create a persistent volume claim, and again with kubectl apply 
+
+```yaml
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+
+```
+
+Here, we can request a particular storage class (useful for dynamic provisioning), the access mode, and the amount of storage needed. 
+
+We can query for a claim using 
+
+```yaml
+kubectl get pvc
+```
+
+Finally, we can use the claim in a pod: 
+
+```
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+spec:
+  volumes:
+    - name: my-pv-storage
+      persistentVolumeClaim:
+        claimName: my-pv-claim
+  containers:
+    - name: my-pv-container
+      image: nginx
+      ports:
+        - containerPort: 8080
+          name: "tomcat-server"
+      volumeMounts:
+        - mountPath: "/usr/data"
+          name: my-pv-storage
+
+```
+
+Here, we link the persistent volume to the claim we created earlier. Then, as usual, we refer to the volume to mount it at the specified path in the container. 
+
+Next, let's go through the supported types of persistent volumes. 
+
+##### HostPath
+
+This is probably the easiest way to test persistent volumes. 
+
+HostPath mounts content from the node's file system into the pod. It has specific use cases, like when the container needs to run sys tools or access Docker internals. Containers usually shouldn't make any assumptions about the host node, so good practice discourages such use. 
+
+Also, hostPath exposes the host's file system—and potentially the cluster—to security flaws in the application. We should only use it for testing on a single node, as it doesn't work in a multi-node cluster. You can check out the **local** volume type instead. 
+
+##### Local
+
+Using local storage devices mounted on nodes is a better alternative to hostPath for sharing a file system between multiple pods but on the same node. 
+
+The volume definition contains **node affinity,** which points to the particular node name on which the local storage is available. The controller will assign pods using the local storage volume to the node that has the local storage, thus using the node affinity to identify the node name. 
+
+If the node with the local storage becomes unhealthy, the storage will become unavailable, and pods using it will fail too. Thus, local storage is not suitable where fail safety is important. 
+
+![Graphical user interface, text, applicationDescription automatically generated](/blog-images/23297143a280c4334df4d2cc653a7d19.png)
+
+#### Projected
+
+A projected volume maps several existing volume sources into the same directory. The supported volume types for this are downwardAPI, secret, configMap, and serviceAccountToken. 
+
+#### ISCSI
+
+iSCSI—SCSI over IP—is an IP-based standard for transferring data that supports host access by carrying SCSI commands over IP networks. [SCSI](https://en.wikipedia.org/wiki/SCSI) is a set of standards for physically connecting and transferring data between computers and peripheral devices. 
+
+#### CSI
+
+The container storage interface defined by Kubernetes is a standard for exposing arbitrary block and file storage systems to containerized workloads. To support using a new type of file system as a volume, we need to write a CSI driver for that file system and install it on the cluster. A list of CSI drivers can be seen [here](https://kubernetes-csi.github.io/docs/drivers.html), including drivers for file systems on popular cloud providers like AWS and Azure. 
+
+#### Fc
+
+Fc, or [Fibre Channel storage](https://www.ibm.com/docs/en/ds8880/8.1.1?topic=attachment-fibre-channel-storage-area-networks), is a high-speed network that attaches servers and storage devices. 
+
+#### Nfs
+
+A [network file system](https://en.wikipedia.org/wiki/Network_File_System) is a distributed file system originally developed by Sun Microsystems that's based on the [open network computing remote procedure call](https://en.wikipedia.org/wiki/Open_Network_Computing_Remote_Procedure_Call). 
+
+#### Cephfs
+
+A [Ceph file system](https://docs.ceph.com/en/quincy/cephfs/) is a POSIX-compliant, open-source file system built on top of Ceph’s distributed object store, **Rados**. It provides a multi-use, highly available, and performant file store. 
+
+#### RBD
+
+A Rados block device is the device on which the Ceph file system is built. Block storage allows us to access storage as blocks of raw data rather than files and directories. 
+
+#### AwsElasticBlockStore (deprecated)
+
+We can use this volume type to mount an AWS EBS store. It is now deprecated, so we should use the CSI drivers instead. 
+
+#### AzureDisk (deprecated)
+
+This is used to mount an Azure disk. It is now deprecated, so we should use the CSI drivers instead. 
+
+The above list of persistent volume types is not exhaustive, but it covers the commonly used types. 
+
+#### ConfigMap
+
+This type of volume exposes key value pairs from a ConfigMap as files on the file system. 
+
+Specifically, the key becomes the file name, and the value becomes the file contents. For example, the log-level=debug key value is represented as a file named log-level with contents = "debug". We can specify the path at which we want to mount the volume in the container. But first, we need to create a ConfigMap using **kubectl create.** 
+
+We can create it from properties files or literal values. It's also possible to expose the values from the ConfigMap as environment variables for a pod. See [more](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/) for details. 
+
+#### Downward API
+
+The downward API exposes pod and container field values to applications. The downward API volume exposes the key value pairs as files on the file system similar to ConfigMap above. 
+
+#### Secret
+
+This is a tempfs-based file system used to store secrets, e.g., for authentication. It's similar to ConfigMap. We need to first create a  secret using the Kubernetes API. We can also expose secrets as environment variables. 
+
+### Conclusion
+
+In this post, we've highlighted how to inject file systems into Kubernetes pods using volumes. 
+
+We've also explored the different kinds of volumes and their uses. Using volumes allows us to use various types of storage, persist data independent of the pod, and also share data across pods.

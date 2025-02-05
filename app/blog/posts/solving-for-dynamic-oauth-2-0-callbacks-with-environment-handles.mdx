@@ -1,0 +1,134 @@
+---
+title: Solving for Dynamic OAuth 2.0 Callbacks with Environment Handles
+summary: >-
+  In this blog post, we will discuss the concept of Environment Handles and how
+  they can be used to support dynamic OAuth
+publishDate: "Wed Jul 20 2022 13:10:36 GMT+0000 (Coordinated Universal Time)"
+author: mat-werber
+readingTime: 8
+categories: &ref_0
+  - platform-engineering
+  - product
+mainImage: /blog-images/b2cbef385b87616e21dd815831068d86.jpg
+imageAlt: a keyboard with red lights
+showCTA: true
+ctaCopy: >-
+  Empower developers to easily manage dynamic OAuth callbacks with Release's
+  flexible environment handles.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=solving-for-dynamic-oauth-2-0-callbacks-with-environment-handles
+relatedPosts:
+  - ""
+ogImage: /blog-images/b2cbef385b87616e21dd815831068d86.jpg
+excerpt: >-
+  In this blog post, we will discuss the concept of Environment Handles and how
+  they can be used to support dynamic OAuth
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+### Ephemeral Environments and Dynamic Hostnames
+
+When creating an ephemeral, on-demand application environment with your environment platform, you may have one or more services, such as a frontend web application or API server, that require internet ingress.
+
+While these endpoints can be hard-coded into your environment configuration, it's beneficial to avoid this when possible and instead use a random ID as part of the hostname so that your developers can freely spin up multiple environments from the same definition, if needed.
+
+For example, cloud environments created with [Release](https://release.com/) will by default generate a random environment ID, **ENV_ID**, and let you use that value anywhere you want within the hostname of an ephemeral ingress endpoint, such as `https://frontend-ENV_ID.example.com`.
+
+#### OAuth 2.0 and the Authorization Grant Flow
+
+[OAuth 2.0](https://oauth.net/2/) ("OAuth") is a common standard that allows a user to authorize one application to access their resources hosted within another system. The OAuth standard provides several different methods, referred to as OAuth flows, for which delegated access can be provisioned. While an in-depth discussion of OAuth and the various flows is outside the scope of this blog, we will define the **authorization grant flow** and refer back to it later as follows:
+
+_The authorization grant flow_ is an OAuth 2.0 flow that allows a user of your **client application** to provide your application with delegated permission to access the user's resources hosted within a 3rd-party system's **resource server**. In practice, your client application will redirect the user to the 3rd party's **authorization server** to authenticate the user and, once authenticated, confirm with the user whether they want to grant your client application one or more permissions (**scopes**) to their resources. If the user approves the access, the authorization server will redirect the user to a predefined **callback URL** (aka redirect URL or sign-in redirect) while providing an **authorization grant** to the client application. The client application will then exchange the grant for an **access token** with the authorization server which ultimately allows the client application to access the user's resources on the resource server. The authorization and resource servers are often part of the same application and domain, but they don't have to be.
+
+As a practical example, if you've ever granted permission for an application to interact with your GitHub account or repositories, as I'm doing with GitKraken in the example below, you were almost certainly using OAuth 2.0 under the hood:
+
+![](/blog-images/944b5c47b11052b893ff5b6c86608dcb.png)
+
+When using OAuth 2.0, a client application must be configured within the 3rd-party Authorization server in advance before the client can actually initiate an OAuth flow. The specific configuration varies based on the third-parties implementation of the protocol, but at a minimum, the authorization code flow requires that (1) the client application redirect URL(s) are defined in advance and (2) when first initiating the flow, the client application includes a pre-approved redirect URL as a query parameter.
+
+#### The Challenge
+
+We now know that:
+
+1.  The DNS endpoint (and thus callback URL) of an ephemeral client application environment is typically not known prior to creating the environment
+2.  The OAuth 2.0 authorization grant flow that you explicitly define the callback URL(s) _prior_ to actually initiating an actual authorization flow
+
+‍**This poses an interesting challenge:** how can you use OAuth 2.0 flows that require pre-defined, static callback URLs when the DNS endpoint of your client application and callback URL is dynamic?
+
+#### Environment Handles
+
+Instead of substituting random environment IDs into the hostnames of your ephemeral environments, you can instead create a pool of predefined environment IDs, aka **Environment Handles**. These could be a simple set of numbers like 1 through 10, a subset of your favorite superhero names, or anything else.
+
+With this approach, when your platform creates an environment it would randomly select one of the available handles, assign it to the newly-created environment, and mark it as in-use. The handle would remain unavailable until your environment is terminated and the handle is once again marked as available.
+
+For example, say you know that you will have at most five concurrent environments running at any time and you therefore create a list of handles, one through five. Continuing with our previous example, this means that the set of possible application URLs would be:
+
+- https://frontend-**1**.example.com
+- https://frontend-**2**.example.com
+- https://frontend-**3**.example.com
+- https://frontend-**4**.example.com
+- https://frontend-**5**.example.com
+
+Even though you don't know which environment will get which handle and when, your hostnames are now deterministic because they must be one of the five values above. This ultimately means that you now have a reliable list of callback URLs that you can configure with your 3rd-party OAuth provider and successfully use your ephemeral environments with OAuth 2.0.
+
+As an example, we use Release to deploy demo application environments that rely on OAuth to sign in and access third-party resources in source control providers like GitHub, and we use a pool of our favorite superhero names as environment handles as shown below:
+
+![](/blog-images/6f0fb6ee691c8dde88aed51d452038ff.png)
+
+Above, we can see that one of our 23 available handles, _shazam_, is assigned to an active environment to test some frontend notification modals. When we navigate to the frontend URL assigned to that environment, we can see that the _shazam_ handle is used to form the ephemeral frontend hostname:
+
+![](/blog-images/57e9956933fbcf938aac28e4118201c7.png)
+
+The _https://frontend-shazam-xxxxxx_ URL above, along with the other superhero variations from our environment handle pool, has been pre-configured as a callback URL within Release's OAuth client settings in GitHub, BitBucket, and GitLab so that we can test [OpenID Connect](https://openid.net/connect/) (OIDC), an extension of the OAuth 2.0 protocol, to let users log in with their third-party credentials.
+
+### Considerations when using Environment Handles
+
+#### Environment Handle Pool Size
+
+The size of your environment handle pool, and thus the number of URLs you need to allow-list in your OAuth client app configuration, is determined based on the number of concurrent ephemeral environments you expect you'll need plus some safety margin. For example, if your team will likely have three environments running at any one time, you might configure five handles just to be safe.
+
+#### Individual vs. Shared OAuth 2.0 Client per Handle
+
+When setting up the third-party OAuth clients for your environment handles, you'll need to determine whether you use a single client configuration for all of your environment handles or whether you set up a separate client per handle.
+
+A single client configuration with multiple callback URLs (one for each handle/endpoint) means that you would have a single Client ID and Client Secret to keep track of and results in a simpler configuration. However, whether the OAuth provider supports multiple callback URLs and how many are supported per client configuration may vary, and you may find that you have to create multiple client applications with your OAuth provider.
+
+If you do configure separate client applications, that means that each handle will have their own distinct set of metadata attributes, such as Client ID or Client Secret. In this case, your environments must be provided and use the metadata values that correspond with the environment handle they are given at runtime.
+
+Continuing with our previous example, Release Environment Handles also allow you to associate plaintext and secret key-value pairs with each environment handle that will automatically be injected as environment variables to your container services or custom jobs that run as part of your environment:
+
+![](/blog-images/276093a1a94ef2e36536fa84283c42b2.png)
+
+#### Alternative approaches to environment handles
+
+##### Wildcard subdomains in OAuth 2.0 callbacks
+
+Some 3rd-parties support the use of wildcard subdomains when allow-listing a client application's callback URL which technically could eliminate the need for a solution like environment handles. However, wildcard subdomains are a security risk (e.g. [subdomain hijacking](https://bolster.ai/blog/subdomain-hijacking-takeover)) and aren't supported by all OAuth 2.0 authorization servers For these reasons, we recommend avoiding them when possible.
+
+_Example - Okta provides a warning if you enable wildcards in your callback URLs:_
+
+![](/blog-images/2cc3eea40d7c71838bf0ff21028b9173.png)
+
+#### OAuth 2.0 Callback Proxy
+
+Depending on the size of your team, number of concurrent environments, or number of OAuth integrations, you may find that you need hundreds of callback URLs or a constantly-increasing number of URLs.
+
+In these scenarios, environment handles may not be practical and you might instead need to build an OAuth 2.0 callback proxy. Implementation details may vary, but as an example, one approach we've helped customers implement involves modifying their client application's initial OAuth 2.0 authorization code request to:
+
+1.  Use a callback URL that points to a static OAuth2 proxy service with a static hostname (e.g https://_oauth2.example.com/callback) instead of\_ the client application's true callback URL.
+2.  Encode the client application's true callback URL (e.g. https://_env-123.example.com/callback_) in one of the original request parameters, like **state**.
+
+After the user authenticates and approves any requested resource scopes, the authorization server would return the authorization grant to your OAuth2 proxy service's callback URL, which is the _only_ callback URL you need to allow-list in your OAuth client configuration for test purposes. Your OAuth2 proxy service would then decode the **state** parameter to determine your environment's true callback URL and forward the authorization grant to that destination.
+
+While outside the scope of this blog, stay tuned, as we plan to share a closer look at an example OAuth 2.0 proxy implementation in the near future.
+
+#### OAuth 2.0 Dynamic Client Registration Protocol
+
+The Internet Engineering Task Force (IETF) standardized the [OAuth 2.0 Dynamic Client Registration Protocol](https://datatracker.ietf.org/doc/html/rfc7591) in RFC 7591. As the name suggests, it can support just-in-time registration of a client application with an OAuth 2.0 authorization server. However, because it is not yet widely adopted, we haven't yet explored its applicability to ephemeral environments and the authorization code flow. If you've worked with this protocol and have a perspective to share, please let us know.
+
+### Summary
+
+In this blog, we discussed the challenges that can arise when ephemeral environments with dynamic hostnames need to leverage a protocol like OAuth 2.0 that requires predefining static callback URLs to those same applications, and how solutions like Environment Handles can work within these constraints.
+
+If you're looking for a platform that makes it easy to create ephemeral environments in _your_ AWS or GCP account, [Release](https://release.com/) can help, and if you're looking to use deterministic hostnames with your Release environment for OAuth callbacks or anything else, we offer [out-of-the-box support for Environment Handles](https://docs.releasehub.com/reference-documentation/account-settings/environment-handles) within your Release environments.

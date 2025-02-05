@@ -1,0 +1,70 @@
+---
+title: Table test
+summary: ""
+publishDate: "Sat Dec 03 2022 17:52:33 GMT+0000 (Coordinated Universal Time)"
+author: ""
+readingTime: 10
+categories: &ref_0
+  - platform-engineering
+  - product
+mainImage: ""
+imageAlt: ""
+showCTA: true
+ctaCopy: >-
+  Improve testing efficiency by automating environment setup and data
+  manipulation with Release's environment management platform.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=table-test
+relatedPosts:
+  - ""
+ogImage: /blog/default-og-image.png
+excerpt: >-
+  Step 1: Gather test data The first step, as exactly described above in Stack
+  Overflow, is to run the AWS CLI to output a JSON list of all of your Route53
+  ent...
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+#### Step 1: Gather test data
+
+The first step, as exactly described above in Stack Overflow, is to run the AWS CLI to output a JSON list of all of your Route53 entries (in our case, over 5,000+!!!). Take a few lines of the first part of the output to play with. You can grab a few entries by limiting the --max-items option in the list-resource-record-sets command. Take those and paste them into the jq play screen on the left, then select “.” as the operator to output everything. You can follow along with this snippet. Here is what it looks like initially:
+
+![](/blog-images/1341fcd03400c51a9212ba68db72ae33.png)
+
+This is a good starting point but we need to first start with unwrapping the outer layer of the “ResourceRecords” key to find the list of entries as follows (turn on the “Compact View” to make it easier to understand and see more of what’s happening:
+
+                                               
+
+| Tag Key | Tag Value | Location in UI | Env variable |
+| ------- | --------- | -------------- | ------------ |
+
+|        
+releasehub.com/app-
+
+       
+
+name
+
+    | (the app name) | Top of the environment page. In the screenshot below, the app name is
+
+example-voting-app
+
+|
+
+RELEASE_APP_NAME
+
+(see default ReleaseHub environment variables) |
+|        
+
+releasehub.com/env-id
+
+    | (the environment handle) | In the screenshot below, the environment handle is
+
+ted3bff
+
+|
+
+RELEASE_ENV_ID
+
+(see default ReleaseHub environment variables) |

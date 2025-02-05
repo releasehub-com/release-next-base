@@ -1,0 +1,127 @@
+---
+title: Remote Development Environments
+summary: >-
+  Use Remote Development Environments to get instant feedback using production
+  like data as early as the development stage
+publishDate: "Fri Oct 21 2022 21:07:58 GMT+0000 (Coordinated Universal Time)"
+author: erik-landerholm
+readingTime: 4
+categories: &ref_0
+  - platform-engineering
+  - product
+mainImage: /blog-images/dbd507c99d76242126c0c7d52fafeda2.jpg
+imageAlt: Remote Development Environments
+showCTA: true
+ctaCopy: >-
+  Unlock seamless remote development with production-like environments using
+  Release for faster bug resolution and consistent deployments.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=remote-development-environments
+relatedPosts:
+  - ""
+ogImage: /blog-images/dbd507c99d76242126c0c7d52fafeda2.jpg
+excerpt: >-
+  Use Remote Development Environments to get instant feedback using production
+  like data as early as the development stage
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+## Introducing Remote Development Environments
+
+Kubernetes is the best way to manage and orchestrate modern, complex container-based applications in the cloud.  
+
+While this is great for production environments it poses serious challenges for developers and DevOps practitioners. The differences between development and production often result in the utterance of the most dreaded words in application development, “But it works on my machine!” at the most inopportune times, specifically when there is an outage in production.  
+
+There are a few ways to mitigate this issue, but the only “[win-win-win](https://www.youtube.com/watch?v=rYldJY3t9zk)” solution is a development environment that replicates production. Historically, this was often too difficult, time-consuming, and expensive, but Release has bridged the gap to provide you with a single pane of glass for all categories of environments you might need.
+
+You may already know that Release can create ephemeral environments on pull requests and run your staging and production environments. But did you know that Release can also install your SaaS-based offerings in your customer’s VPCs, all from the same UI/CLI? 
+
+With this new feature, we have added production-like, cloud-based development environments to our industry-leading offerings. Your developer teams now get all the benefits of a traditional cloud-based development environment:
+
+- Write code on your machine (thin client, laptop, small supercomputer under your desk), but run it remotely with production mirroring hardware, software and configuration.
+- Total control over the configuration of remote development environments: You can build remote development environments to be as much like production as you need.
+- Bring your own tools.  Release doesn’t force you to use a web-based IDE or change anything about your development, build, or deployment process.
+
+While other solutions may give you these same benefits, Release has always maintained a focus on merging development, staging, and production, meaning we can offer further benefits that our competitors simply can’t:
+
+- Instant datasets so that you can develop using production or production-like data.  You will no longer need to worry anymore that your seed data and production data have diverged. Test all of your migrations during development on real data before running them in production.  Customer-facing bugs that only appear on production can now be debugged and fixed in record time!
+- Model the most complicated applications and develop against multiple services at once, even if each service needs its own data store and custom configuration.
+
+With Release, you have the best of all worlds and can finally feel confident that “works on my machine” will be a thing of the past.
+
+Let’s take a look at how you can get started with Release remote development environments.
+
+### Getting Started
+
+Starting remote development with Release consists of two steps:
+
+- Add configuration to a particular environment or Application Template.
+- Use the Release [CLI](https://docs.releasehub.com/cli/getting-started) to set up the environment in development mode.
+
+Each step takes less than a minute to set up and you will be happily remote developing in record time!
+
+Watch a [video showing the set-up steps](https://vimeo.com/manage/videos/762779889/privacy) in detail with an example or read our [how-to-guide](https://gist.github.com/NickBusey/a2107705c3c524283ae725c0ca44f4b0) for more details.
+
+### Configuration
+
+To enable remote development on an ephemeral environment you will need to add a new high-level stanza to your Application Template or Environment Configuration.
+
+```yaml
+
+development_environment:
+  services:
+   - name: api #references service from config
+     command: bundle exec rails s -b 0.0.0.0 #optional, can use default command if the same
+     sync: #block to tell Release which paths to sync from local to remote
+     - local_path: "."  #path on your local machine to sync to...
+       remote_path: "/app" #this remote path in the cloud
+     port_forwards: #port mapping from local to remote, localhost:3010 now points to remote end-point
+     - remote_port: 3000
+       local_port: 3010
+   - name: sidekiq #develop against multiple services
+     command: bundle exec sidekiq
+     sync:
+     - local_path: "."
+       remote_path: "/app"
+
+```
+
+ *Example of multi-service remote development*
+
+This example allows you to develop against two different services, in the cloud, while exposing ports for the API service but not the _sidekiq_ service. Once you save this configuration, you can use the CLI to activate development mode for this particular environment. You can view the full documentation [here](https://docs.releasehub.com/reference-documentation/application-settings/application-template/schema-definition#development-environments).
+
+The above syntax works per environment or at the application level and affects all ephemeral environments.
+
+### CLI
+
+Next, use the CLI to set up a bidirectional sync between your local machine and the remote environment. Release remote development environments use a sync process to mirror changes locally with your development environment. This allows you to work locally should you have connectivity issues, unlike developing directly on a remote container in the cloud.
+
+From the directory with the source code for the particular environment, run a single command using the Release CLI:
+
+```yaml
+release envs dev –app backend –environment env_id
+```
+
+_‘env_id’ is the ID of the environment_
+
+The CLI will:
+
+- Start a deployment and set the environment to development mode using your configuration.
+- Activate the bidirectional sync service.
+- Set up the port forwards.
+- Launch the command you defined locally via SSH. This allows you to interact with your container as if it was local. You can run commands on the container and send signals (such as ctrl-c) as if it was a local service.
+
+‍
+
+![](/blog-images/04e1b62140aab9d5af33492b452af744.gif)
+
+That’s it! You are now ready to start making changes locally that will be synced to your remote containers.
+
+### Conclusion
+
+The addition of Remote Development Environments to our services makes Release the most complete EaaS (Environments as a Service) platform available. Your entire development life cycle can now be implemented using Release environments, from development to production.
+
+The adoption of new technologies, like k8s, can result in massive changes or regressions in our development process. Release mitigates these trade-offs by offering a complete solution in one platform, including features like instant datasets and developing against multiple services that just aren't possible with other solutions.
+
+Not quite ready to do it on your own? [Set up time](https://calendly.com/d/d35-s6p-4nf/releasehub-full-stack-environment-automation?month=2022-10) with our team to walk you through.

@@ -1,0 +1,90 @@
+---
+title: Automating your day-to-day workflows with the Release CLI
+summary: >-
+  Walk you through a hypothetical bug scenario and how Release can make your
+  day-to-day workflows more enjoyable.
+publishDate: "Tue Apr 04 2023 18:19:50 GMT+0000 (Coordinated Universal Time)"
+author: luiz-felipe
+readingTime: 4
+categories: &ref_0
+  - platform-engineering
+  - product
+mainImage: /blog-images/a07cfb35baa2e31696bd68b5af23bda0.png
+imageAlt: Automating your day-to-day workflows with the Release CLI
+showCTA: true
+ctaCopy: >-
+  Automate bug replication and ticket handling with Release's instant
+  environments. Streamline workflows and focus on fixing bugs faster.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=automating-your-day-to-day-workflows-with-the-release-cli
+relatedPosts:
+  - ""
+ogImage: /blog-images/a07cfb35baa2e31696bd68b5af23bda0.png
+excerpt: >-
+  Walk you through a hypothetical bug scenario and how Release can make your
+  day-to-day workflows more enjoyable.
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+A typical day for a developer is filled with coming up with great ideas for applications, writing flawless code and seeing everything work exactly as expected, right? Well, sometimes. Often, our days are filled with repetitive tasks, and if you’re anything like me, once you’ve done the same task a few times you get an urge to automate it. One of these common repetitive tasks is fixing pesky bugs. Today, I will walk you through a hypothetical bug scenario where we’ll be using Release for ephemeral environments and Release CLI to make your day-to-day workflows more enjoyable. This might give you some time back to focus on that perfect app! 
+
+Before we begin, make sure to set up your version of Release. You can get a free trial [here](https://beta.release.com/register). 
+
+### The dreaded bug
+
+When fixing bugs one of the first steps towards a fix is to replicate them. However, doing that can be very tricky. Our development environments are often pristine and perfect (right?) and bugs rarely happen! Somehow customers (or hopefully QA) find new ways to break your application and it’s our job to try to break it in the same way, so we can fix it for good.
+
+Sometimes you have good error handling and reporting which gives you all of the context needed for a fix. But if that’s not the case we have to dig deeper to uncover the application state when the error occurred.
+
+But let’s not get ahead of ourselves here. First things first: we must keep management happy by properly handling our ticket. Sadly this is one of the hardest things to automate because of the sheer diversity of ticketing systems and maturity of these products. Although most of them offer APIs, almost none offer good CLI tools which means you might have to resort to using the dreaded browser/mouse combo.
+
+Here at Release we use Linear which has an API but unfortunately has no CLI tool ready for us to use. Which means we have a choice: do we keep this step manual or do we automate it? I took the plunge and wrote myself a simple script, because at the end of the day, I’m going to have to deal with these tickets hundreds of times in the future. The few minutes spent automating this will pay off in dividends (and your wrist will thank you too).
+
+If you’re interested the script is [available here](https://gist.github.com/Draiken/f23a98de94015b794219d9e64ef5c642). Maybe you’re lucky and your ticketing system offers a CLI or you too will have to take the plunge and write something to automate this (you know you want to). Whatever the means, we can use that to tell the world we’re starting our ticket!
+
+### Creating our environment
+
+Now the first thing we need is an environment to reproduce our bug. Luckily Release offers a feature on top of the ephemeral environments that’s perfect for these situations: [instant datasets](https://docs.release.com/reference-documentation/instant-datasets-aws). We can spin up environments with production-like data within minutes. Depending on how fresh the snapshot we’re using is, the data that caused the bug we need to reproduce might be there already.
+
+For this we’re going to use the [Release CLI](https://docs.release.com/cli/getting-started). Once that’s setup we’ll login and we’ll be ready to create an environment. Here’s what I use:
+
+```yalm line-numbers
+
+release environments create –app my_app –wait | notify-send “Environment ready!”
+
+# or for our friends that run the fruit system
+
+release environments create –app my_app –wait | osascript -e 'display notification "Environment Ready!"
+
+```
+
+Once the environment is up and running we get a notification and we can start our investigation.
+
+Figuring out the state around the bug more often than not requires you to dig through the data either directly on the database or through some sort of application console. Ideally we’d just have a perfect admin page showing what’s what, but that’s not always the case.
+
+Our Release CLI allows us to very easily dive right into the environment we just spun up and poke around. For this we’re going to use the **instances** command, which lists the running instances and lets us open up a terminal inside those containers. All we need to do is type:
+
+    	`release instances terminal`
+
+Select our app/instance and boom: we’re in! If we use something like Rails we can access our console here or alternatively we can connect to the database directly, given this environment is attached to our database and we have the environment variables needed to connect to it.
+
+### Fix all the things
+
+Now that we’ve investigated and replicated our bug, we can finally fix it! For this we can use another very handy tool from Release: [development environments](https://docs.release.com/cli/remote-dev). Rather than making changes, deploying them to the environment and then checking it, we can simplify all that by running our local code inside the release environment. Let’s start our development environment:
+
+    	`release development start –app my_app –environment my_env`
+
+This will insert our local machine’s code into the environment and forward the configured ports right into our localhost. We get the best of both worlds: release is running our code (along all those services it depends on) and we get instant feedback from our changes. We can now fix the issue and close this ticket once and for all.
+
+With our changes done, we can commit those in and create our pull request. Tools like GitHub and GitLab provide nice CLIs which make it easy to automate this part. At Release we use GitHub and I personally use the [hub](https://github.com/github/hub) CLI for this.
+
+    	`hub pull-request -o -m “Fix all the things”`
+
+With our pull request open, we can also update our ticket to the appropriate state, if it’s not already done automatically. Now we can ask our teammates to review our code, give us the all important “LGTM” (Let Go The Mayo!) and merge that bad boy in.
+
+### Automate it all
+
+There’s much more in our daily workflow that we can automate, and hopefully this inspires you to tackle this piece with Release. Once you bite the bullet and make the effort to automate these small tasks you start to realize how much time is wasted outside of our beloved CLI.
+
+What about you? What else have you automated on your day-to-day?

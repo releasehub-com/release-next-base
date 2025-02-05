@@ -1,0 +1,285 @@
+---
+title: "Rails and Kubernetes: A Guide to Using Them Together"
+summary: >
+  Is Kubernetes only for modern, cloud-native, microservices-based applications
+  or can it be used with Rails monoliths?
+publishDate: "Mon Sep 26 2022 20:15:41 GMT+0000 (Coordinated Universal Time)"
+author: erik-landerholm
+readingTime: 3
+categories: &ref_0
+  - kubernetes
+  - platform-engineering
+mainImage: /blog-images/20dfb68ea8564e9f6a8f0669a46c11e5.jpg
+imageAlt: "Rails and Kubernetes: A Guide to Using Them Together"
+showCTA: true
+ctaCopy: >-
+  Streamline your Rails application deployment on Kubernetes with Release's
+  on-demand environments for efficient testing and deployment workflows.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=rails-and-kubernetes-a-guide-to-using-them-together
+relatedPosts:
+  - ""
+ogImage: /blog-images/20dfb68ea8564e9f6a8f0669a46c11e5.jpg
+excerpt: >
+  Is Kubernetes only for modern, cloud-native, microservices-based applications
+  or can it be used with Rails monoliths?
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+You may have heard that Kubernetes is for modern cloud-native, microservices-based applications. Does that mean you can't run it with a monolith Rails application? 
+
+Not quite. Technically, nothing will stop you from just deploying your Rails application on Kubernetes. It'll work just fine. But there are a few things to consider to decide if you actually should. 
+
+Let's take a look. 
+
+### Rails on Kubernetes—Why?
+
+Let's start with the most important question: why would you want to run your Rails application at all? 
+
+As we already mentioned, Rails applications are monolithic, which means most of the application logic is combined into one piece. And Kubernetes was designed to run distributed, a [microservices-based](https://en.wikipedia.org/wiki/Microservices) application where one application consists of multiple smaller pieces. So, it sounds like it's not a good fit for Rails, right? 
+
+Well, at first, indeed, it does. But let's dive a bit deeper into it. 
+
+What's your alternative? Running a Rails application on a normal server, right? 
+
+And do you have only one server for your Rails application? If it's a very small application or you just started with Rails, then possibly. 
+
+But in most production situations, you'll actually have a few servers working together for one Rails application. This includes one server for the Rails itself, another server handling access to your application—so, for example, NGINX and Puma—a third server for Redis, a fourth server for a database, and a fifth server for background jobs like Delayed Job or Sidekiq. 
+
+On top of that, you'll probably have some load balancer in front of all that and maybe yet another separate server or a dedicated solution for storage. 
+
+And, suddenly, you realize that your monolithic Rails application actually requires a dozen servers and not just one. **‍**
+
+#### The Problem
+
+The problem with that approach is that it's not very flexible, and you need to make a lot of compromises. For example, some of your servers may be heavily underutilized most of the time, but you can't scale them down because, from time to time, there is a spike in traffic. And the bigger the application and the more servers you have, the more resources that are probably wasted—or, to put it nicer, not used efficiently. 
+
+Another thing is that it'll take a lot of time and effort to get all these servers maintained—periodic system upgrades, making sure they all have enough free disk space left, etc. 
+
+Adding a new server when needed will probably take a while, too. You'll need to deploy it first, then configure the operating system, then install what's needed for Rails, and finally make sure it connects properly with the rest. 
+
+![](/blog-images/cfd60170ce84a5144d500bb231a50392.png)
+
+#### Enter the Kubernetes World
+
+The problems stated in the previous section bring us to Kubernetes. You could simply put all your Rails application pieces to Kubernetes and not worry about individual servers anymore. Kubernetes abstracts infrastructure from you, so you won't need to worry about underlying operating systems, security patching, etc. 
+
+Sure, your Rails application will still be a monolith, so you won't get all the benefits of Kubernetes, but you'll get some. All the extras that your Rails application may need will still be deployed on Kubernetes as separate pieces, so you'll still benefit from easier scaling and node management.
+
+And, last but not least, once your Rails application is on Kubernetes, you'll have an easier path to start decoupling your monolith in microservices if you wish to do so. 
+
+#### **How to Use Rails on Kubernetes**‍
+
+‍Now that we know some theory, let's see in practice how to run Rails application on Kubernetes.
+
+In fact, there's nothing special about running Rails on Kubernetes in comparison with other frameworks. You'll need to package your Rails application into a container and create a YAML manifest file in order to deploy it on Kubernetes. 
+
+Let's start with the container. There's no single specific way of packaging Ruby on Rails applications into a container—a lot will depend on how your application is working and how many best practices you want to implement, but here's a good starting point. 
+
+#### Docker Container
+
+```yaml
+
+FROM ruby:3.1
+
+# Create directory for our Rails application and set it as working directory
+
+RUN mkdir /app
+WORKDIR /app
+
+# Copy the Gemfile
+
+COPY Gemfile Gemfile.lock ./
+
+# Install nodejs and yarl (if you need anything else you can add it here)
+
+RUN apt-get update && apt-get install -y nodejs yarn
+
+# Install bundler and run bundle install
+
+RUN gem install bundler
+RUN bundle install
+
+# Copy the Rails application code
+
+COPY . .
+
+# Precompile the Rails assets.
+
+RUN rake assets:precompile
+
+# Expose your Rails app
+
+EXPOSE 3000
+
+# Run Rails server
+
+CMD ["rails", "server", "-b", "0.0.0.0"]
+
+```
+
+Save the above as Dockerfile (with no extension) in your Rails project root directory, and then build your image: 
+
+```yaml
+
+$ docker build -t rails_on_k8s:0.1 .
+
+Sending build context to Docker daemon  13.58MB
+Step 1/11 : FROM ruby:3.1
+3.1: Pulling from library/ruby
+1671565cc8df: Pull complete
+(...)
+2e02738a3297: Pull complete
+Digest: sha256:74f02cae856057841964d471f0a54a5957dec7079cfe18076c132ce5c6b6ea37
+Status: Downloaded newer image for ruby:3.1
+ ---> e739755aa18e
+Step 2/11 : RUN apt-get update && apt-get install -y nodejs yarn postgresql-client
+ ---> Running in 5095ff174667
+Get:1 http://deb.debian.org/debian bullseye InRelease [116 kB]
+(...)
+Step 11/11 : CMD ["rails", "server", "-b", "0.0.0.0"]
+ ---> Running in ac82bad67bb6
+Removing intermediate container ac82bad67bb6
+ ---> 731093adf23f
+Successfully built 731093adf23f
+Successfully tagged rails_on_k8s:0.1
+
+```
+
+OK, that's pretty much it. That's how you package a Rails application into a Docker container. 
+
+Now what? 
+
+We could start writing out Kubernetes manifest, but it's best to first check if our application is working in the container properly. To do that, run that freshly built image by executing **docker run -p 3000:3000 rails_on_k8s:0.1**, and then open your web browser and head to **localhost:3000.** 
+
+If you see your application, everything is good, and we can proceed. 
+
+#### Kubernetes Manifest
+
+OK, we're ready to write a Kubernetes deployment manifest for our Rails application. 
+
+It'll be a fairly simple deployment at first. The only thing you need is to upload your Docker image to some container registry. If you don't have your own private repository, you can use a free account on dockerhub.com. You'll need to register there and follow the instructions on tagging your image and pushing it to the registry. 
+
+Once you have your image ready in a container registry, you can create a Kubernetes manifest: 
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: rails-on-k8s
+spec:
+   replicas: 1
+   selector:
+     matchLabels:
+       app: rails-k8s
+   template:
+     metadata:
+       labels:
+         app: rails-k8s
+     spec:
+       containers:
+       - name: rails-k8s
+         image: davezworka/rails_on_k8s:0.1
+         ports:
+         - containerPort: 3000
+```
+
+Once created, it's time to deploy it. We'll use the **kubectl apply** command and pass the YAML file with the **\-f** parameter followed by the file name: 
+
+```yaml
+$ kubectl apply -f k8s_deployment.yaml
+deployment.apps/rails-on-k8s created
+```
+
+OK, it looks like it worked! Let's check: 
+
+```yaml
+$ kubectl get pods
+NAME                            READY   STATUS    RESTARTS   AGE
+rails-on-k8s-7b9f7fb574-8l74g   1/1     Running   0          48s
+```
+
+It seems like, indeed, we successfully deployed our Rails application on Kubernetes. 
+
+But here's the first tip for you. The fact that your Rails pod is running doesn't actually mean that the application inside is too. Without proper checks added to our deployment definition, it's possible that our Rails server actually failed to start properly and Kubernetes doesn't know about it. 
+
+To validate if the application in the pod is indeed running, we can first check the logs: 
+
+```yaml
+
+$ kubectl logs rails-on-k8s-7b9f7fb574-8l74g
+=> Booting Puma
+=> Rails 7.0.3.1 application starting in development
+=> Run `bin/rails server --help` for more startup options
+Puma starting in single mode...
+* Puma version: 5.6.5 (ruby 3.1.2-p20) ("Birdie's Version")
+*  Min threads: 5
+*  Max threads: 5
+*  Environment: development
+*          PID: 1
+* Listening on http://0.0.0.0:3000
+
+```
+
+That looks promising. It seems like our Rails server started properly, so, most likely, everything is good. But the ultimate test would be just to try to access the application. To do that, we first need to expose it somehow. In the Kubernetes world, we do that using Kubernetes services. 
+
+#### Kubernetes Services
+
+In order to create a service for our Rails deployment, create another YAML file with content similar to this, but keep in mind that you may need to adjust the type of the service based on what kind of Kubernetes cluster you're using: 
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+   name: rails-service
+spec:
+   type: LoadBalancer
+   selector:
+     app: rails-k8s
+   ports:
+     - port: 80
+       targetPort: 3000
+```
+
+Apply the above using **kubectl apply**: 
+
+```yaml
+$ kubectl apply -f rails-svc.yaml
+service/rails-service created
+```
+
+Now, after a few seconds, we should see the IP address of the load balancer that exposes our application: 
+
+```yaml
+$ kubectl get svc
+NAME               TYPE           CLUSTER-IP   EXTERNAL-IP     PORT(S)        AGE
+kubernetes         ClusterIP      10.0.0.1               443/TCP        8h
+rails-service      LoadBalancer   10.0.74.93   20.101.11.115   80:31330/TCP   48s
+```
+
+And if you open that IP address in your web browser, you should see your application, which in our case is showing a simple "Hello world" message: 
+
+![](/blog-images/41ada768a12014157ed6f76a40ee7223.jpeg)
+
+All works well, then. We have a Rails application running on a Kubernetes cluster. 
+
+But this was just a simple example when we only deployed our Rails application. If that's all you'd do, it probably won't give you many benefits to move to Kubernetes. 
+
+Earlier in this post, we mentioned that it makes sense to move your Rails application when you have lots of other components supporting your application. 
+
+And if you do, the process of moving them to Kubernetes would be very similar. You either create a [Docker image](https://release.com/blog/cutting-build-time-in-half-docker-buildx-kubernetes) from scratch for all the components you need or search for ready-to-use images. Companies behind well-known tools like Redis or NGINX are publishing images themselves, so it's a little bit easier to onboard them on Kubernetes. 
+
+#### But What About the Database?
+
+This is a fair question. The database is really important for Rails. Databases can run on Kubernetes too. But depending on your specific needs and due to the nature of databases, it may make more sense to use an SaaS database or keep it on traditional servers. 
+
+You can easily keep your Rails application on a Kubernetes cluster and have it connected to the external database. Of course, for performance reasons, however, you should keep it as close as possible to your Kubernetes, which means ideally in the same cloud provider, the same region, and even the same network. 
+
+#### Rails and Kubernetes Summary
+
+We've only touched the tip of the iceberg here when it comes to Kubernetes, but you learned how to package your Rails application into a container and deploy it on Kubernetes. From there, the next steps will depend on your application and company specifics. 
+
+Kubernetes itself is a complex system and gives you multiple choices when it comes to deploying applications, networking, and storage. But you now know how to use it for your Rails application and when it wouldn't really make too much sense. 
+
+If you're interested in learning more about Kubernetes, check out our blog [here](https://release.com/blog) for more posts about it.

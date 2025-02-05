@@ -1,0 +1,79 @@
+---
+title: 12 Things You Didn’t Know You Could Do With Release (Part 1)
+summary: Tips and tricks to elevate your experience with Release (Part 1)
+publishDate: "Tue May 16 2023 22:15:42 GMT+0000 (Coordinated Universal Time)"
+author: regis-wilson
+readingTime: 8
+categories: &ref_0
+  - kubernetes
+  - platform-engineering
+  - product
+mainImage: /blog-images/9933868091bf15adcbfbdbaf9ca23492.jpg
+imageAlt: "multiple hot air balloons "
+showCTA: true
+ctaCopy: >-
+  Unlock seamless testing of Helm charts, Terraform, and serverless code with
+  Release's isolated environments. Test confidently, deploy effortlessly.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=12-things-you-didnt-know-you-could-do-with-release-part-1
+relatedPosts:
+  - ""
+ogImage: /blog-images/9933868091bf15adcbfbdbaf9ca23492.jpg
+excerpt: Tips and tricks to elevate your experience with Release (Part 1)
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+‍*This is Part 1 of a 2 part series on things you didn't know about using Release. Stay tuned for* [_Part 2_](https://release.com/blog/12-things-you-didnt-know-you-could-do-with-release-part-2) _next week._
+
+You may know that Release makes environments easy by allowing anyone to create full stack, isolated environments for development, testing, quality assurance, user acceptance testing, or even production. But did you know that there are many other things you could use Release for that you may not have thought about? This guide will help you find some really cool hidden tips and tricks for maximising your enjoyment and delight using Release!
+
+### #1: Install and Manage Your Kubernetes Helm Charts
+
+Release natively supports Helm charts that can be deployed to your clusters. Deploying and managing Helm charts can be difficult, error prone, and tedious. For example, setting up a GitOps workflow with Argo or Flux can be quite daunting to get started. And once installed, how safe is it to test new features and changes in existing deployments?
+
+With Release, you can create an application that contains a Helm chart and deploy it to a namespace. If you want to test a new version of your Helm chart(s), simply create a branch on your repository and create a new environment. You will now be able to test a full version of the Helm chart in complete isolation without breaking any existing installations. When you are finished testing your changes, merge the new branch into the main branch to roll out the tested changes to your existing environment(s) automatically – or on demand, however you prefer.
+
+Danger: Do not try this with [CRDs](https://hackmd.io/@carvel/rJKraqlDD).
+
+### #2: Test and Update Advanced Terraform and Serverless Code
+
+Running [Terraform](https://www.terraform.io/), [Pulumi](https://www.pulumi.com/), or [Serverless code](https://en.wikipedia.org/wiki/Serverless_computing) is amazing but the development and testing for the cloud-native services they touch can be extremely challenging, to the point where testing in production is a real activity people resort to all the time. In some cases, you have no choice but to test in production and pray. If you are a DevOps engineer with full access to cloud resources, testing accounts, an/or infrastructure, the ability to develop and test automation scripts and code is a little easier. But what if you are a developer with little-to-no access to cloud credentials or environments to test in? And how closely similar are these environments to the real production environment?
+
+With Release, you can create a new environment based on a template that can deploy a new copy of your infrastructure code (or your serverless function code – usually you’ll need both) to a new environment (and even a separate testing cluster and/or cloud account as needed) to be able to deploy and test changes in isolation. Each commit and push to your branch will be deployed and executed in this safe environment so you can test and verify the functionality of the infrastructure you are deploying as code. You can be sure your changes are being tested in a high-fidelity environment that closely mimics your target environment because Release manages the templating and deployments to keep you safe and secure.
+
+All of this without requiring extra authentication, access to resources, and credentials, while still operating with the safety and guidelines set up and enforced by your policies.
+
+### #3: Save on AWS Costs Using Instant Dataset Pause Schedules
+
+With the Release [Instant Datasets](https://docs.release.com/reference-documentation/instant-datasets-aws), you can instantly access a full version of your database snapshot in your own sandbox environment to test against. It’s a popular functionality, since it allows developers to test more realistic scenarios, that using fake data. But did you know that you can save money by pausing idle Instant Dataset instances on a schedule? This adds up to significant cost savings in database and cloud bills, depending on the dataset size and number of instances. Currently, this feature only applies to AWS, where RDS and Aurora support the concept of pausing database instances and clusters, and only charged for storage during the paused state.
+
+The simplest and easiest way to save money with Instant Datasets is to pause the datasets during the weekend when most of our customers are not actively building, testing, and running their development cycles. However, you can also expand the schedule to include hours when your teams may not be active, for example during off hours of the week. For example, your team may only be actively developing and utilising environments during the morning and afternoon hours. You can set up a schedule to pause your Instant Datasets (and save a lot of money!) during the off hours of the week and also all day on the weekends.
+
+Even if you have teams working in multiple locations and time zones, most of our customers are able to find 8 or 12 hours per weekday when their environment datasets are not needed and can be paused, which adds up overtime.
+
+### #4: Manipulate and Test Data Safely in Isolation
+
+With the Release [Instant Datasets](https://docs.release.com/reference-documentation/instant-datasets-aws), you can get a full version of your database snapshot from recent copies of data into your own sandbox environment. From there, you can perform any number of tasks and administrative commands on the database. For example, you could take a full production snapshot with sensitive data in it and run “sanitising” or pruning scripts to create snapshots that would be suitable for testing purposes. You could even script this to automatically create and update test database snapshots for other environments to use as an Instant Dataset.
+
+Another use case is to perform potentially dangerous operations on your database in the safety of an isolated environment. You could perform dangerous operations like updating security patches, upgrading versions, or changing configuration values without altering the source dataset. You could also test less invasive, but potentially blocking operations, like changing various configuration settings on the database to see how performance is affected. For example, you could take an Instant Dataset and change the instance type or size and run load testing from the safety and comfort of an isolated environment to test how the application performs under the new configuration. With Release, environments aren’t just code!
+
+### #5: Move Your Applications Across Cloud Providers
+
+You probably already understand the power and advantages of deploying code in testing environments and then promoting changes to production environments. You may already know that Release makes this fantastically easy and if you have a production environment already hosted in Release, how comfortable you are that your environments are high-fidelity versions of the actual production environment. You may also know that you can now deploy your applications and environments between clusters (for example, a testing cluster and a production cluster, or a primary region and a backup or alternate region). Promoting changes between testing, QA, staging, and production environments, or from primary to secondary is as simple as merging a pull request!
+
+But did you also know that your clusters need not merely be separated by region or type (like preproduction and production), but also across cloud providers AWS and GCP? Because we keep our deployment features in parity (as much as humanly possible) with cloud providers, you can almost certainly move an application template between two clusters in two different cloud providers and have a nearly identical copy running in both! If you are using one of our supported databases via [Instant Datasets](https://docs.release.com/reference-documentation/instant-datasets-aws), you will be able to take snapshots from each cloud provider and check in a full set of data no matter whether you are using AWS or GCP. Combined with your code and application template, it is eminently possible to move an application across cloud providers, or even to run in a multi-cloud scenario.
+
+Of course, if you use cloud-native resources outside of Release constructs with Terraform or other IAAC, you will need to adjust your code and probably need to be extremely clever with your infrastructure. But this is easy to do on our platform and you now have as close a shot as ever in the history of cloud computing to pull this stunt off and make it a reality.
+
+### #6: Connect to Full-Stack Cloud Environments Remotely
+
+There are entire companies whose only product is to allow you to access a cloud environment and work seamlessly with your local environment to test and develop code in the cloud as easily and quickly as you would if everything were completely local. At Release, this dream is just one side feature of our product around environments. Because your environments based on a branch, feature, or pull request are available securely in your own cloud, we can easily flip your environment into a “developer mode” where you can have complete access to containers running in the cloud environment on local ports and local filesystems.
+
+This means it really is as easy as editing a local file, hitting refresh in your browser’s “localhost” and seeing the results live from the cloud environment. You also don’t need to lose remote access to your cloud environment because you can still share the links and environments publicly with customers and end users or privately with colleagues and coworkers while you still update and test changes, fully live, and nearly instantly without waiting for builds and deployments! You can even connect to remote resources in your environment, like databases and services that are deployed in the cloud that might be too large or too complicated to run locally.
+
+When you are done, simply turn off “developer mode” and your environment will go back to the latest commit on the branch or pull request you are tracking to continue where you started.
+
+### Conclusion
+
+Read the other six things you may not have known about using Release in [Part 2](https://release.com/blog/12-things-you-didnt-know-you-could-do-with-release-part-2) next week. We hope you have enjoyed these tips and hope they inspire you to try a few on your own, or contact us to get a demonstration of how these features work. If you found other creative ways to use Release or have ideas for new features, drop us a line at [hello@release.com](mailto:hello@release.com) We’d love to hear from you!

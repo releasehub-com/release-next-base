@@ -1,0 +1,68 @@
+---
+title: On-Demand Testing Spaces Turbocharge Developer Velocity
+summary: >-
+  Embracing ephemerality in software development with on-demand ephemeral
+  environments.
+publishDate: "Tue Jan 23 2024 22:01:14 GMT+0000 (Coordinated Universal Time)"
+author: tommy-mcclung
+readingTime: 4
+categories: &ref_0
+  - platform-engineering
+  - kubernetes
+mainImage: /blog-images/f36efe4b298888a84509e1392695839f.png
+imageAlt: New Stack Release Article
+showCTA: true
+ctaCopy: >-
+  Release.com's ephemeral environments eliminate staging bottlenecks, enabling
+  instant testing spaces for faster code deployment and seamless collaboration.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=on-demand-testing-spaces-turbocharge-developer-velocity
+relatedPosts:
+  - ""
+ogImage: /blog-images/f36efe4b298888a84509e1392695839f.png
+excerpt: >-
+  Embracing ephemerality in software development with on-demand ephemeral
+  environments.
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+We live in an ephemeral world. From social media stories that vanish within 24 hours, to app messages that self-destruct after viewing, to our speed-of-light news cycle where today’s headlines are forgotten tomorrow. For better or for worse, we as a culture are just not that into permanence.
+
+One area where ephemerality has been making positive inroads is in the world of software development, where it’s solving a particularly intractable problem. I’m referring to a relatively new innovation known as ephemeral environments — virtual spaces that can be created and destroyed on demand to streamline software development and remove the staging or QA environment bottleneck.
+
+## **The Bottleneck Problem**
+
+Delivering software is hard. With applications [growing in complexity](https://thenewstack.io/the-growing-complexity-of-kubernetes-and-whats-being-done-to-fix-it/), getting ideas from one’s fingertips to users is fraught with challenges.
+
+Consider the gauntlet that a developer’s code must run before it can be released to the world. It must pass through development, staging or QA, and production environments, each of which is critical.
+
+Staging is the environment where code is “staged” — that is, tested and merged — before being run in front of users so dev teams can be sure it works as designed. The staging environment should mirror production as closely as possible, but without exposing the code to clients, customers and the public.
+
+At many tech organizations, the staging environment is the source of the biggest and most costly bottleneck in software development.
+
+There are several reasons for this, including:
+
+- **Complexity:** These preproduction environments are actually highly complex platforms comprising dozens or even hundreds of services, cloud platforms and supporting technologies. Standing up a new environment is a highly specialized task that requires the [skills of DevOps](https://thenewstack.io/how-to-close-the-devops-skills-gap/) engineers.
+- **Cost:** In addition to the cost of engaging DevOps talent, for which there is great demand in the industry, staging environments can be expensive to maintain, and they often break. Any shared resource can be a pain point for companies large and small that are trying to rapidly ship new features.
+- **Scarcity:** Most organizations have one or very few of these environments, and only one engineer at a time can deploy to an environment. There are [over 20 million developers](https://en.wikipedia.org/wiki/Software_engineering_demographics) in the world, and pretty much all of them use these environments.
+
+The result is that developer teams often waste precious time twiddling their thumbs as they wait for testing environments to become available, or argue over priorities and who can use the environment. Teams can sometimes wait days or weeks to [deploy their code](https://thenewstack.io/gitops-at-home-automate-code-deploys-with-kubernetes-and-flux/) due to constraints on single environments. This combination of long queues, idle engineers and delayed releases can cost organizations tens of millions of dollars per year. We estimate managing and maintaining environments costs organizations more than $45 billion a year.
+
+## **On-Demand Ephemeral Staging Environments**
+
+With ephemeral environments, the traditional idea of “staging” is gone — and with it the need for a single testing and integration environment where all code must merge before going to production. Staging happens on demand and at a click, allowing developers to create a limitless supply of environments for any purpose.
+
+Ephemeral environments offer a production-like replica that allows developers to properly test their code (shift left) and isolate bugs to a single branch, while ensuring a smooth merge to staging and production. They can be created automatically with every code pull request, and URLs to the environment can be shared with stakeholders so they can see progress while code is being developed.
+
+## **3 Ways to Get the Most from Ephemeral Environments**
+
+Just as physical pop-up stores offer a range of benefits to retailers, restaurateurs and others — cost-effectiveness and easy experimentation, for example — developer pop-ups offer several advantages over traditional staging. Here are three.
+
+- **Early and frequent feedback:** With developer pop-ups, the environment is updated each time a developer pushes code to their source control system, providing a live reflection of the feature during development. Stakeholders such as product managers, designers and QA are automatically notified when changes are live, and they can preview those changes and give feedback immediately, enabling better code quality in development and minimizing rework.
+- **Get feedback on your branch:** Ephemeral environments can be created for any code branch, on demand, and loaded with your data. Developers can spin up as many isolated environments as they need, get feedback on a specific branch and work with the certainty that, if there is an issue, it’s not in their environment.
+- **Greater developer velocity:** In making bottlenecks a thing of the past, ephemeral environments allow for more frequent release cycles, better customer experiences and — the holy grail of software development — better developer velocity.
+
+[According to McKinsey](https://www.mckinsey.com/industries/technology-media-and-telecommunications/our-insights/developer-velocity-how-software-excellence-fuels-business-performance), developer velocity is a key predictor of performance. Companies in the top 25% of McKinsey’s Developer Velocity Index outperform others in the market by four to five times, are more innovative, and score higher on customer satisfaction and other measures.
+
+Ephemeral environments turbocharge development velocity by eliminating bottlenecks in the process and helping companies produce consistent, reliable and plentiful environments on demand so they can get their best ideas to the world quickly.

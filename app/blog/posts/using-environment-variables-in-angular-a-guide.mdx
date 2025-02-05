@@ -1,0 +1,308 @@
+---
+title: "Using Environment Variables in Angular: A Guide"
+excerpt: >-
+  Learn how to effectively use environment variables in your Angular
+  applications for better configuration management.
+date: "2024-02-05"
+ogImage: /blog-images/9de6930e0d988897966633594a3cfe34.png
+summary: >-
+  What are environments? Why do you need them? And how do you correctly use
+  environment variables in an Angular app?
+publishDate: "Mon Jan 23 2023 14:06:16 GMT+0000 (Coordinated Universal Time)"
+author: ""
+readingTime: 5
+categories: &ref_0
+  - platform-engineering
+  - product
+mainImage: /blog-images/9de6930e0d988897966633594a3cfe34.png
+imageAlt: "Using Environment Variables in Angular: A Guide"
+showCTA: true
+ctaCopy: >-
+  By automating environment setup like Angular, Release simplifies managing
+  different environments for seamless deployment and testing.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=using-environment-variables-in-angular-a-guide
+relatedPosts:
+  - ""
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+![angular environment](/blog-images/c4635aef1048ce157456670de7326463.png)
+
+Angular is one of the most popular and preferred frontend frameworks today, especially among large engineering teams. It's backed by a robust open-source community that makes it an ideal choice for building scalable web applications.
+
+However, being a frontend framework, your Angular application at some point needs to communicate with an external API or a third-party service application.
+
+For verifying authentic communication between your Angular application and the server, you'll need to use API keys and URLs that may change based on the environment of your Angular application.
+
+In this post, I'll walk you through how to use environment variables in an Angular application.
+
+![](/blog-images/6e56bd2300ad21054eb696f30be767e8.png)
+
+## **What are Environments in Angular?**
+
+Before we get into what environment variables are, let's quickly understand what an environment means for Angular. Angular by default provides a way to detect and modify some files in your application based on where the application is running.
+
+Broadly speaking, Angular considers two environments for any application. One is the development environment, which means you're running Angular locally on your own system. This is when you're actually writing code for your Angular application.
+
+The other environment is production. This is where your Angular application is running for the end users on a domain or a server. This environment comes into the picture when you create a JavaScript bundle for your Angular application and deploy it to production.
+
+## **How Does Angular Know Which Environment?**
+
+Now that we understand what environments are in Angular, let's see how Angular maintains and keeps track of them.
+
+Create a fresh Angular app by running the following:
+
+ng new angular-environment-variables
+
+To keep track of different environments, Angular maintains an environment directory in the src directory:
+
+![](/blog-images/f825bb67f75affcad84aca257f1ff2a4.png)
+
+Notice that Angular maintains two environment files called **environment.ts** and **environment.prod.ts**.
+
+Now, let's go to the **angular.json** file in the root directory. If you look closely at the **configurations** section, you'll notice it has some configurations declared for **production** and **development**.
+
+![angular environment](/blog-images/b7ee3bff372e7733bef1883ec4284b1f.png)
+
+If you take a look at the **fileReplacements** array in this file, you'll see it instructs Angular to replace the **environment.ts** file with the **environment.prod.ts** file for production. So, when you run the **ng build** command and deploy your Angular application in production, Angular automatically switches these two files so that the production bundle uses the production environment.
+
+## **Detecting Environment in Angular**
+
+Angular makes it really easy for you to detect the environment you're running it in. There are also other ways you can do this, including by checking the URL of your application's domain. But Angular provides an out-of-the-box solution for this.
+
+Let's explore this a bit.
+
+In the **src/app/app.component.ts** file, import the **isDevMode** from **@angular/core**:
+
+```typescript
+import { Component, isDevMode } from "@angular/core";
+```
+
+Then, create a variable called **environment** inside the AppComponent:
+
+```typescript
+@Component({
+  selector: "app-root",
+  template: "<h1>{{title}}</h1>",
+})
+export class AppComponent {
+  title = "angular-environment-variables";
+  environment = "";
+}
+```
+
+Now we can use the **isDevMode** to populate the **environment** variable above:
+
+```typescript
+@Component({
+  selector: "app-root",
+  template: "<h1>{{title}}</h1>",
+})
+export class AppComponent {
+  title = "angular-environment-variables";
+  environment = "";
+
+  ngOnInit() {
+    if (isDevMode()) {
+      this.environment = "Development";
+    } else {
+      this.environment = "Production";
+    }
+  }
+}
+```
+
+Let's now render the **environment** variable in the component's HTML:
+
+```html
+<h1>This is Angular app running in {{environment}} Environment</h1>
+```
+
+If you visit your Angular development server, it should tell you that your Angular app is running in a development environment:
+
+![](/blog-images/5edfe8892fb6dacc5f586f73cfba9ce5.png)
+
+Great!
+
+Now let's look at how we can modify or update our environment files to use environment variables in our Angular application.
+
+## **Using Environment Variables in Angular**
+
+Now that you understand how Angular maintains and keeps track of the environment, let's play around with the environment directory that we have in the root directory.
+
+First, let's look at the default contents of each. The **/src/environments/environment.ts** file contains the following code by default:
+
+```typescript
+// This file can be replaced during build by using the `fileReplacements` array.
+// `ng build` replaces `environment.ts` with `environment.prod.ts`.
+// The list of file replacements can be found in `angular.json`.
+export const environment = {
+  production: false,
+};
+
+/*
+ * For easier debugging in development mode, you can import the following file
+ * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
+ *
+ * This import should be commented out in production mode because it will have a negative impact
+ * on performance if an error is thrown.
+ */
+// import 'zone.js/plugins/zone-error';
+// Included with Angular CLI.
+```
+
+Similarly, if we look at the **/src/environmnets/environment.prod.ts** file, we see this:
+
+```typescript
+export const environment = {
+  production: true,
+};
+```
+
+Now, let's say you wish to add API URLs for the development and production environment. Here's how the **/src/environments/environment.ts** file could look:
+
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: "local api url",
+};
+```
+
+And your **/src/environments/environments.prod.ts** file could look like this:
+
+```typescript
+export const environment = {
+  production: true,
+  apiUrl: "production api url",
+};
+```
+
+Now, let's go and use these environment variables in our app component. Update the **app.component.ts** file with the following:
+
+```typescript
+// app.component.ts
+import { Component, isDevMode } from "@angular/core";
+import { environment } from "../environments/environment";
+
+@Component({
+  selector: "app-root",
+  template: "<h1>{{title}}</h1>",
+})
+export class AppComponent {
+  title = "angular-environment-variables";
+  environment = "";
+  apiUrl = environment.apiUrl;
+
+  ngOnInit() {
+    if (isDevMode()) {
+      this.environment = "Development";
+    } else {
+      this.environment = "Production";
+    }
+  }
+}
+```
+
+Then, we can update the template:
+
+```html
+<h1>
+  This is Angular app running in {% raw %}{{environment}}{% endraw %}
+  Environment
+</h1>
+<h3>API URL: {% raw %}{{apiUrl}}{% endraw %}</h3>
+```
+
+And we should now see the **apiUrl** referring to the development environment on the page:
+
+![](/blog-images/3fd86c11ab5c50104e9886c3487f5b28.png)
+
+But if you close the Angular development server and run it in production mode using this command:
+
+```bash
+ng serve --configuration=production
+```
+
+that should render the template for the production environment as shown below:
+
+![](/blog-images/7d5165a066fd2b04a67c3cd389720232.png)
+
+Great!
+
+But what if we had another environment called staging or QA, where we occasionally test our applications?
+
+## **Using Staging Environment Variables**
+
+We can add as many custom environments in Angular as we want. All we need to do is define the relevant environment configuration in the **angular.json** file and then create that environment file in the **/src/environments** directory.
+
+Let's say we were to add a new staging environment.
+
+First, under the **build** configurations, we'll add the following **fileReplacements** array for our staging environment:
+
+```json
+{
+  "staging": {
+    "fileReplacements": [
+      {
+        "replace": "src/environments/environment.ts",
+        "with": "src/environments/environment.stage.ts"
+      }
+    ]
+  }
+}
+```
+
+Then, under the **serve** configurations, we'll add the **browserTarget** configuration for our staging environment:
+
+```json
+{
+  "staging": {
+    "browserTarget": "angular-environment-variables:build:staging"
+  }
+}
+```
+
+Almost there!
+
+Now, we'll create a new file called **environment.stage.ts** inside the **/src/environments** directory with the following contents:
+
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: "staging api url",
+};
+```
+
+Awesome!
+
+Then, all we need to do is run the following command:
+
+ng serve --configuration=staging
+
+And you should see your Angular app running in the newly defined staging environment. The **apiUrl** will resolve to the value you specified in the **environment.stage.ts** file:
+
+![angular environment](/blog-images/3db3b8412406cdd6d8b7a470aff3dccd.png)
+
+## **Security Considerations**
+
+The concept of environments we've explored in Angular helps us dynamically inject some variables based on the run-time environment of our application.
+
+However, this is quite different from the environment variables you use in a backend server or a system. Typically, environment variables are defined in the system or on a server where they can't be accessed by anyone else.
+
+In this case, our environment variables are exported for other components and files to work with. This exposes these environment variables to anyone who's using the frontend application.
+
+For this reason, you shouldn't store any sensitive credentials in your Angular app's environment variables. For instance, if you have an API key that, if exposed, could cause an attacker to use APIs on your behalf, you shouldn't store them here.
+
+![](/blog-images/2e2aac8a10bd455c521dbd4923699549.png)
+
+## **Conclusion**
+
+Angular's default support for environments makes it really convenient for developers and testers to build and test the application in different environments.
+
+You can pretty much create your own custom environment and use it any way you like, as we did here for the staging environment.
+
+Finally, remember to keep security considerations in mind when using environment variables in any frontend application. If you don't want to manage environments on your own, you can also use an automated environment management service from Release. Learn more about it [here](https://releasehub.com/ebook/the-complete-guide-to-automated-software-environments).
+
+We've explored what environments are, why you need them, and how to correctly use environment variables in an Angular application. Hopefully, this has given you the starting point you need to dive deeper into environments and explore further use cases for environment variables in your applications.

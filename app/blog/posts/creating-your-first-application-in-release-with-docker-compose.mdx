@@ -1,0 +1,154 @@
+---
+title: Creating your first Application in Release with Docker Compose
+summary: >-
+  Take your Docker Compose file and Crete an Application to run on Kubernetes in
+  six easy steps.
+publishDate: "Wed Jun 28 2023 14:46:59 GMT+0000 (Coordinated Universal Time)"
+author: jeremy-kreutzbender
+readingTime: 10
+categories: &ref_0
+  - platform-engineering
+  - kubernetes
+mainImage: /blog-images/24d9e9521de18493481de2d2321d4516.jpg
+imageAlt: Creating your first Application in Release with Docker Compose
+showCTA: true
+ctaCopy: >-
+  Explore how Release simplifies deploying Kubernetes applications with
+  ephemeral environments for faster testing and streamlined collaboration.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=creating-your-first-application-in-release-with-docker-compose
+relatedPosts:
+  - ""
+ogImage: /blog-images/24d9e9521de18493481de2d2321d4516.jpg
+excerpt: >-
+  Take your Docker Compose file and Crete an Application to run on Kubernetes in
+  six easy steps.
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+If you’re using Docker compose for local development but have been interested in running your application on Kubernetes or creating ephemeral environments for your application, keep on reading, this post is for you!    
+
+At Release we know that Applications consist of more than just your repository and code. There are other services that are required, such as databases or key value stores. An application usually cannot run without environment variables, backing data, infrastructure, or storage component(s). That’s why we think that a Docker compose file is one of the best ways to describe your application for local development. It is also a perfect way to get started on Release and get your near-production environments spun up with each pull request. In this blog, we will walk through the steps to create an Application, highlight how Release helps transform your compose file into an Application Template and ultimately deploy it on Kubernetes (which we will cover in part two of this series).
+
+We’ll be using [https://github.com/awesome-release/rails_postgres_redis](https://github.com/awesome-release/rails_postgres_redis) as the example in this post. It is a small application that runs a Ruby on Rails server, has requirements of a Postgresql database and a Redis server, as well as runs Sidekiq, which is a background job processor.
+
+Let’s take a look at the compose file and then jump into creating our Application.
+
+```yaml
+
+version: '3'
+services:
+  api:
+    build: .
+    image: rails_postgres_redis:latest
+    command: bash -c "(rake db:exists && rake db:migrate || rake db:setup) && bundle exec rails s -b 0.0.0.0"
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_HOST: db
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - redis
+  
+  sidekiq:
+    image: rails_postgres_redis:latest
+    command: bundle exec sidekiq
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_HOST: db
+    depends_on:
+      - api
+      - redis
+      - db    
+
+  db:
+    image: postgres:12-alpine
+    ports:
+      - "5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+
+  redis:
+    image: redis
+    ports:
+      - "6379"
+    volumes:
+      - redis:/data
+
+volumes:
+  postgres-data: {}
+  redis: {}
+
+```
+
+‍
+
+We won’t go through everything line by line but we wanted to make sure to note that in this compose file certain ports are exposed, as well as volumes are being defined to retain data between restarts. We also see that the containers have their `depends_on` defined to tell us in which order the containers should be started in. We encourage you to take a look at our [Docker Compose conversion support documentation](https://docs.release.com/reference-documentation/docker-compose-conversion-support) to see the full list of supported attributes.
+
+### Translating a Compose file into an Application
+
+Now that we have a Docker Compose file ready, let’s see how to translate it into an Application in Release.
+
+- **Step 1: Create your application**
+
+The first step in creating your Application is to give it a name and select which repository we’ll be using. I’ve named mine “release-docker-compose-demo” and selected the awesome-release/rails_postgres_redis repository (linked above).
+
+![](/blog-images/ff3c06a3bb3d132f792d59947fecbbcc.png)
+
+- **Step 2: Analyze your repository**
+
+The next step is to analyze the repository. We’ve selected the main branch and are shown some options of files we can select in a dropdown. The files we select will be analyzed and converted into what Release calls Services. These Services can have many types, such as Containers, Static Javascript Builds, Helm, and Terraform; we’ll primarily focus on Containers in this post but look for future posts where we’ll cover the other options.
+
+We’ve selected our docker-compose.yml file and we will click the Start Analysis button.
+
+![](/blog-images/b96ad97ba2f3abdcdf27b467438e0e79.png)
+
+We see that Release created four Services for us with the same names as what is in the compose file. The dependencies are also listed. In this case we know that we want all these Services, but if something had been displayed that we didn’t want to deploy on Release, we could uncheck the Service to remove it. Now we’ll click Next Step to move on.
+
+![](/blog-images/e0c91cdc3c2141465fd17ada6c65ce82.png)
+
+‍\* **Step 3: Generate a template**
+
+In this stage we get our first view of an Application Template. We won’t go through everything in the template here, however we encourage you to read through the documentation on [Application Templates](https://docs.release.com/reference-documentation/application-settings/application-template) to understand all the possibilities. Instead we’ll highlight how Release has translated the Services from the last page into this yaml format. We see the familiar names of  `api`, `db`, and `redis` as well as the ports and volumes that were defined in the compose file.
+
+![](/blog-images/2061a6acb4335f3eebcdc64912fd9f5d.png)
+
+The definitions of Services help to describe _what_ Release will deploy, but we also want to know _how_ Release will deploy these Services. That information is contained in the workflows stanza. There are three types of workflows defined: **setup**, **patch**, and **teardown**.
+
+A **setup** workflow defines a deployment where infrastructure can be deployed for the first time or if there are subsequent changes to the infrastructure; think, changing your Postgresql version, the number of replicas of the  `api` Service, or changing environment variables for your Application. We can also see that the order of the Services from the compose file  `depends_on` is translated into the setup workflow. `db` and `redis` will be deployed in parallel first. Once both of those Services are up and running, Release will move to the next step and deploy  `api`. Finally  `sidekiq` will be deployed.
+
+The **patch** workflow is used when only code changes need to be deployed. In our case, both the `api` and `sidekiq` Services contain the code from the repository and would need to be deployed when we push new changes. The  `db` and `redis` Services don’t require any changes so they don’t need to be referenced in a patch.
+
+The final workflow is the **teardown** which uses a Release defined task called `remove_environment`. This task will tear down all the infrastructure in Kubernetes and free up the resources that were being used. Additional steps can be added to a teardown workflow but the `remove_environment` is a requirement.
+
+Now that we’ve had a quick runthrough of parts of our Application Template, we’ll click Next Step to move on.
+
+![](/blog-images/eb1e9b99de4ff152fbb5eb1e8135f1f5.png)
+
+- **Step 4: Set Environment Variables**
+
+Here we are presented with the Environment Variables that Release was able to extract from the compose file. If we wanted to add additional variables here we could but for this Application we won’t need any more so we’ll click Next Step.
+
+![](/blog-images/6fc90f447bd025a35d9feff557a5fd2b.png)
+
+- **Step 5: Set Build Arguments**
+
+At this stage we are presented with the ability to add build arguments if we need to explicitly pass anything into our Docker build. For this Application, the [Dockerfile](https://github.com/awesome-release/rails_postgres_redis/blob/main/Dockerfile) accepts a build argument for `RUBY_VERSION` if we want to use a newer version than the `3.0.0` default. We’ll add an argument for the `3.2.0` version. We’ll be able to see this version used when we look at the build in part two of this series. After clicking the check mark to add our build argument, we’ll click Next Step to move on.
+
+![](/blog-images/f7f0a2dc9c90964f8e213dbd200096c1.png)
+
+- **Step 6: save and deploy**  
+  ** The final step in creating our Application is to create a deployment. By clicking the “Deploy your app!” button, Release will create an ephemeral environment and start a **setup\*\* workflow.
+
+That’s it! 🎉 In short six steps we took our Docker Compose file and created an Application Template that we can now use to spin up ephemeral environments on demand.
+
+In part two of this series, we’ll cover what happens during the deployment, as well as what Kubernetes objects were created. We will also use the ephemeral environment that was created to ensure that all of our Services are up and running. Stay tuned for part two and in the meantime [take Release for a spin](https://web.release.com/register) and let us know if you have any questions.

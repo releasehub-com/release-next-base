@@ -1,0 +1,78 @@
+---
+title: "Introducing Release Share, a Docker Desktop Extension"
+summary: >-
+  Easily share your containers and apps with collaborators and reviewers using
+  Release Share Extension in Docker Desktop
+publishDate: "Mon Oct 02 2023 20:30:34 GMT+0000 (Coordinated Universal Time)"
+author: ira-casteel
+readingTime: 5
+categories: &ref_0
+  - platform-engineering
+  - product
+mainImage: /blog-images/ad4f0d9a6a9336170e2e4fc9145f03d9.jpg
+imageAlt: "Introducing Release Share, a Docker Desktop Extension"
+showCTA: true
+ctaCopy: >-
+  Empower faster testing and sharing with Release's ephemeral environments for
+  seamless collaboration and efficient deployment cycles.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=introducing-release-share-a-docker-desktop-extension
+relatedPosts:
+  - release-is-going-to-dockercon-2023
+ogImage: /blog-images/ad4f0d9a6a9336170e2e4fc9145f03d9.jpg
+excerpt: >-
+  Easily share your containers and apps with collaborators and reviewers using
+  Release Share Extension in Docker Desktop
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+At Release, we like to move fast and break fewer things. So we use ephemeral environments a lot. They're like playgrounds where we build and test things before moving them to the real world. This way, we can quickly see if something works (or doesn't) and fix it early. And since sharing what we make is a big part of this process, we thought: why not make sharing easier?
+
+So, we made [Release Share](https://hub.docker.com/extensions/releasecom/docker-extension) for Docker Desktop. It's a simple tool to help you share your containers. Just one click and you get a public URL, which you can even customize if you like.
+
+#### **What Release Share does:**
+
+🔗 **Make Your Own URL**: Change the link name to whatever you like.
+
+▶️ **List Live Containers**: If it's running and has exposed ports, you can share it.
+
+✅ **Simple Sharing**: Send the link to anyone, and they can see your app in their browser
+
+#### **How to Use It:**
+
+**1.** Start Docker Desktop (or download the latest version [here](https://www.docker.com/products/docker-desktop/)).
+
+![](/blog-images/3587b81a0c040cd7e3d82d94f9b6e26e.png)
+**2.** Go to Extensions Marketplace, find [Release Share](https://open.docker.com/extensions/marketplace?extensionId=releasecom/docker-extension), and install it.
+
+![](/blog-images/0b4e8659a9fe8f4c0dc6093012b137bc.png)
+**3.** Click on “Get Started” on the welcome screen (tip: you can always get back to this screen by clicking “About” in the top right corner).
+
+![](/blog-images/d0de679cd4d410b8393ea838ebc4f772.png)
+**4\.** Release Share looks for your active containers and lists all that have exposed ports and can be shared externally. Choose one, click “Connect” and Release Share will create a private tunnel for your container with a shareable link.
+
+Note that you can also see recent inactive containers by toggling the “Show containers without exposed ports” switch.
+
+![](/blog-images/fb34e83aa126d1490fa4bc4c05112e71.png)
+**5.** The standard URL looks like [https://random-name.rshare.io/](https://random-name.rshare.io/). Copy and share the URL and the recipient can preview your container or app in any browser.
+
+![](/blog-images/84869eefc978f982bf40d7eabf911df5.png)
+
+Like this:
+
+![](/blog-images/5154644d9cab9603ebd8cc818e3d2970.png)
+**6.** Want a different name? You can change it by clicking “Edit”.
+
+![](/blog-images/e4786837bd61e77bca78d40c9251c567.png)
+
+The system will check if the name is available and assign the new name to your public URL. At this point the old URL becomes disabled and whoever had it will not be able to see the contents of your container or app any more. This comes handy for version control or tagging specific changes or audiences.
+
+![](/blog-images/11ac264b2481ea2e68f091d81f95895e.png)
+
+Your new URL will go live as soon as you hit save.
+
+![](/blog-images/5bd29fbc9332e87699811568a2212cee.png)
+**7.** When you're done sharing, click “Disconnect” to take your container offline. Note, the custom URL is saved for future use, so if you want to share the same container later, it will spin up with the last name used.
+
+This concludes our quick rundown of Release Share. Give it a try. If you've got suggestions or feedback, we're all ears. Find us at [DockerCon2023](https://www.dockercon.com) or drop us a line.

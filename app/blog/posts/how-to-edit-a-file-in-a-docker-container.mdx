@@ -1,0 +1,157 @@
+---
+title: How to edit a file in a Docker container
+summary: >-
+  See how to edit files in Docker containers with command line editors or
+  through connecting VS Code.
+publishDate: "Tue Jul 19 2022 07:37:33 GMT+0000 (Coordinated Universal Time)"
+author: regis-wilson
+readingTime: 3
+categories: &ref_0
+  - platform-engineering
+  - product
+mainImage: /blog-images/9ad01e7b63d384efa30ad9fe35b9e74b.jpg
+imageAlt: Some files on a table
+showCTA: true
+ctaCopy: >-
+  Looking to edit files in Docker containers hassle-free? Try Release.com for
+  ephemeral environments that simplify setup and teardown.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=how-to-edit-a-file-in-a-docker-container
+relatedPosts:
+  - ""
+ogImage: /blog-images/9ad01e7b63d384efa30ad9fe35b9e74b.jpg
+excerpt: >-
+  See how to edit files in Docker containers with command line editors or
+  through connecting VS Code.
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+You want to edit a file in your Docker container, but you've run into an error that leaves you with none of the tools you need to make your changes. Now what?
+
+Docker intentionally keeps containers as lean as possible with no unnecessary packages installed to maximize performance and stability. Unfortunately, this also means Docker containers don't have a file editor like Vim or Nano preinstalled.
+
+In this guide, we'll show you how to install an editor, make the changes you need to, and return the container to its original state, both from the command line and using the Docker extension inside VS Code.
+
+First, though, some housekeeping. It's considered bad practice to edit Docker files currently running in a production environment, and, once you've made your change, you should remove any packages you installed to do so (the editor, for example).
+
+Here's our step-by-step guide to editing a file in Docker.
+
+### Option 1: Edit from the command line
+
+#### #1 Log in to your container
+
+If your container is not already running, run the container with the following:
+
+```yaml
+docker run --name  -d -t
+```
+
+To check all your running containers, you can use the command:
+
+```yaml
+docker ps
+```
+
+You should be met with something like this:
+
+![The console showing the output of docker ps listing the container ID and other information.](/blog-images/5269f2732d8885273f30405faaabebd6.png)
+
+This list indicates your target container is up and running. Note that every container has a discrete ID, which we'll need to gain root access to the container.
+
+To gain root access to the container, run:
+
+```yaml
+docker exec -it
+```
+
+You should see something like this:
+
+![A prompt showing that root login has succeeded.](/blog-images/449be2be0b420fbd7378193201c1564d.png)
+
+As you can see, **root@CONTAINER_ID:/#** indicates we now have root access to the container.
+
+#### #2 Install the editor
+
+It's a good idea to update your package manager before you install the editor. This ensures that you install the latest stable release of the editor. On Ubuntu, that command is:
+
+```yaml
+apt-get update
+```
+
+To install your preferred editor, such as Vim, Nano or GNU Emacs:
+
+```yaml
+apt-get install
+```
+
+For example, to install Vim:
+
+```yaml
+apt-get install vim
+```
+
+#### #3 Edit the File
+
+To edit the file, ensure you are in the appropriate directory and use the command:
+
+```yaml
+vim yourfilename.yaml
+```
+
+Once you've made the edit to the file, you can remove the editor (in our case, Vim) like this:
+
+```yaml
+apt-get remove vim
+```
+
+Or like this:
+
+```yaml
+apt-get purge vim
+```
+
+The command "remove" will remove only Vim, and no other config files or dependencies involved in the initial install. The command "purge" will remove all config files associated with Vim. In the interest of leaving no trace, the purge command is probably appropriate in this case.
+
+Your package manager may change depending on your OS. These commands are associated with Ubuntu and Vim.
+
+### Persisting an editor for regular changes
+
+The above steps are useful for one-off changes, but if you need to make changes often – in a development environment, for example – it's best to add your editor to your Dockerfile. This will ensure your chosen editor is always available whenever you spin up another instance of your container.
+
+Add your editor to the Dockerfile like this:
+
+```yaml
+RUN["apt-get", "update"]
+RUN["apt-get", "install", "vim"]
+```
+
+Every image created with that Dockerfile will have Vim pre-installed and ready to go.
+
+You can replace "Vim" with your editor of choice, such as Nano or GNU Emacs. Keep in mind that the commands in the square brackets are specific to Ubuntu Linux. You may need to adapt these to the operating system you are running in your Docker container.
+
+### Option 2: Edit from VS Code
+
+If you prefer to use a GUI editor (for example, if you'd like to use your mouse to navigate through large files, or cut and paste text), you can use VS Code.
+
+This option requires both the Visual Studio Code IDE and the Docker extension from Microsoft. To install the extension, navigate to the extensions tab in VS Code and type in "Docker".
+
+![Search results in VS Code extensions for docker.](/blog-images/c65ee7d20b5528430ddb2927aaac44c2.png)
+
+Be sure to select the Docker extension from Microsoft. This extension allows you to easily manage any containers on your system directly from its UI.
+
+![VS Code displaying a file inside the docker container.](/blog-images/70ac9ac2bf3cda7f1eba36a594a7cc7e.png)
+
+From here, treating a container like any file directory, you can navigate to and open files in that container, and make your changes right in VS Code.
+
+### Closing remarks
+
+Now that you know how to edit files in a Docker file, it's important to take note of the best practice for it.
+
+Editing files in a running Docker container is only recommended when working in a development environment during conceptualisation and when building proof-of-concepts.
+
+Once you've made changes to your project in Docker containers, save a new image with those changes in place. This leaves flexibility for testing two containers comparatively while ensuring stability and consistency across containers.
+
+‍
+
+‍

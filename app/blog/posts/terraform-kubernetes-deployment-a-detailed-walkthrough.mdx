@@ -1,0 +1,347 @@
+---
+title: "Terraform Kubernetes Deployment: A Detailed Walkthrough"
+summary: " Did you know that you can use Terraform for deployment of your Kubernetes clusters? Learn how and why to do it here."
+publishDate: "Sat Aug 06 2022 22:18:19 GMT+0000 (Coordinated Universal Time)"
+author: regis-wilson
+readingTime: 6
+categories: &ref_0
+  - kubernetes
+  - platform-engineering
+mainImage: /blog-images/93cadc79db3755d6a026b27fe882105c.jpg
+imageAlt: "Terraform Kubernetes Deployment: A Detailed Walkthrough"
+showCTA: true
+ctaCopy: >-
+  Looking to streamline Kubernetes deployment workflows? Try Release.com for
+  ephemeral environments that mirror production, enabling faster testing and
+  deployment cycles.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=terraform-kubernetes-deployment-a-detailed-walkthrough
+relatedPosts:
+  - ""
+ogImage: /blog-images/93cadc79db3755d6a026b27fe882105c.jpg
+excerpt: " Did you know that you can use Terraform for deployment of your Kubernetes clusters? Learn how and why to do it here."
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+Terraform and Kubernetes are two of the most popular tools in their categories. Terraform is widely adopted as the tool of choice for infrastructure as code, and Kubernetes is number one when it comes to orchestrating containers. Is it possible to combine both? Sure! You can use Terraform to deploy your Kubernetes clusters. It's actually quite common, and it lets you deploy Kubernetes just like the rest of your infrastructure. In this post, you'll learn how to do it.
+
+### Terraform + Kubernetes: How and Why?
+
+We have two main questions to answer here. How can you deploy Kubernetes with Terraform, and why would you do that? Let's start with the latter.
+
+![ApplicationDescription automatically generated with medium confidence](/blog-images/a82632ed72605aab10dcbb180de0d4d1.png)
+
+The answer doesn't differ from "Why would you deploy anything with Terraform?" From that perspective, there's nothing special about Kubernetes, and you get the same benefit by using Terraform to deploy it as with any other infrastructure. You get automation, infrastructure versioning, reliability, and even the ability to perform infrastructure security scanning.
+
+As for how, the answer is actually similar. You can deploy Kubernetes with Terraform just like any other infrastructure. Meaning, you first need to find a Kubernetes resource definition for Terraform (we'll show you that shortly), adjust some parameters for your needs, add it to your Terraform code, and you're done. And just like with any other resource, Terraform will be able to track changes to your cluster and update its configuration after you make changes to the code.
+
+### Deploying Kubernetes: First Steps
+
+Enough theory. Let's see how it works in practice. First, you need to find a Terraform provider for your cloud. If you want to deploy Kubernetes on [DigitalOcean](https://www.digitalocean.com/), you'd need to follow [this documentation](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/kubernetes_cluster). For [Microsoft Azure](https://azure.microsoft.com/en-us/), you'd need to head [here](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kubernetes_cluster) for details. And for [Google Cloud](https://cloud.google.com/), you need to check [here](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster). These are just a few examples. But no matter which cloud provider you're using, the general approach will be the same. For today's example, we'll use DigitalOcean.
+
+To start from nothing, in the simplest scenario, you need to create two files named **provider.tf** and **main.tf**. You could do it all in one file, but it's a good practice to separate providers and main resource definitions. In the code below, you can define your DigitalOcean provider for Terraform and pass your DigitalOcean token:
+
+```yaml
+
+terraform {
+  required_providers {
+    digitalocean = {
+      source = "digitalocean/digitalocean"
+      version = "~> 2.0"
+    }
+  }
+}
+variable "do_token" {
+  default = "[replace_with_your_token]"
+}
+
+# Configure the DigitalOcean Provider
+
+provider "digitalocean" {
+  token = var.do_token
+}
+
+```
+
+In **main.tf** you can now define your Kubernetes.
+
+```yaml
+resource "digitalocean_kubernetes_cluster" "test" {
+name   = "test_cluster"
+region = "nyc1"
+version = "1.22.11-do.0"
+node_pool {
+name       = "worker-pool"
+size       = "s-2vcpu-2gb"
+node_count = 3
+}
+}
+```
+
+Now that you have your Terraform files prepared, you need three things. First, you need to initiate the DigitalOcean provider. You can do that with **terraform init**.
+
+```yaml
+
+# terraform init
+
+Initializing the backend...
+Initializing provider plugins...
+- Finding digitalocean/digitalocean versions matching "~> 2.0"...
+- Installing digitalocean/digitalocean v2.21.0...
+- Installed digitalocean/digitalocean v2.21.0 (signed by a HashiCorp partner, key ID F82037E524B9C0E8)
+Partner and community providers are signed by their developers.
+If you'd like to know more about provider signing, you can read about it here:
+https://www.terraform.io/docs/cli/plugins/signing.html
+Terraform has created a lock file .terraform.lock.hcl to record the provider
+selections it made above. Include this file in your version control repository
+so that Terraform can guarantee to make the same selections by default when
+you run "terraform init" in the future.
+Terraform has been successfully initialized!
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
+
+```
+
+Then you can run your **terraform plan**, which will show you planned changes to the infrastructure (which in this case should be creating a new Kubernetes cluster).
+
+```yaml
+
+# terraform plan
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following
+symbols:
+  + create
+Terraform will perform the following actions:
+  # digitalocean_kubernetes_cluster.test will be created
+  + resource "digitalocean_kubernetes_cluster" "test" {
+      + cluster_subnet = (known after apply)
+      + created_at     = (known after apply)
+      + endpoint       = (known after apply)
+      + ha             = false
+      + id             = (known after apply)
+      + ipv4_address   = (known after apply)
+      + kube_config    = (sensitive value)
+      + name           = "test-cluster"
+      + region         = "nyc1"
+      + service_subnet = (known after apply)
+      + status         = (known after apply)
+      + surge_upgrade  = true
+      + updated_at     = (known after apply)
+      + urn            = (known after apply)
+      + version        = "1.22.11-do.0"
+      + vpc_uuid       = (known after apply)
+      + maintenance_policy {
+          + day        = (known after apply)
+          + duration   = (known after apply)
+          + start_time = (known after apply)
+        }
+      + node_pool {
+          + actual_node_count = (known after apply)
+          + auto_scale        = false
+          + id                = (known after apply)
+          + name              = "worker-pool"
+          + node_count        = 3
+          + nodes             = (known after apply)
+          + size              = "s-2vcpu-2gb"
+        }
+    }
+Plan: 1 to add, 0 to change, 0 to destroy.
+
+```
+
+The plan looks good. One resource will be added, and that's your Kubernetes cluster, so you can go ahead and apply the changes with **terraform apply**.
+
+```yaml
+
+# terraform apply
+
+(...)
+Plan: 1 to add, 0 to change, 0 to destroy.
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+  Enter a value: yes
+digitalocean_kubernetes_cluster.test: Creating...
+digitalocean_kubernetes_cluster.test: Still creating... [10s elapsed]
+(...)
+digitalocean_kubernetes_cluster.test: Still creating... [7m10s elapsed]
+digitalocean_kubernetes_cluster.test: Creation complete after 7m16s [id=49fd0517-a4a5-41e8-997d-1412c081e000]
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+
+```
+
+If you now head to your DigitalOcean portal to validate, you can indeed see it there.
+
+![DigitalOcean portal](/blog-images/4ae1114850cfa16a93e987103c7eb5e0.png)
+
+And that's it! That's how you deploy Kubernetes with Terraform.
+
+![A picture containing device, control panelDescription automatically generated](/blog-images/14771b0c5e49d3c50009a99ebfdcd091.jpeg)
+
+### Deploying Kubernetes: Next Steps
+
+Now that you know how it works in general, there are a few things that you need to learn next. First, all you've done is deploy basic, minimal Kubernetes. In more realistic scenarios, you'll probably want to parametrize more options for your Kubernetes. This, however, will highly depend on what you actually need. If you know what you need, you can head to the Terraform documentation and check [**argument reference**](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/kubernetes_cluster#argument-reference) for your Kubernetes resource. Find what you need and add it to your code.
+
+For example, if you'd like your Kubernetes cluster to automatically upgrade, you can find the following in the documentation:
+
+![Auto upgrade](/blog-images/0a5e2c452dafd796806726969310f5a2.png)
+
+To make your freshly deployed cluster automatically upgrade, you just need to add the following to your Kubernetes resource definition in **main.tf** as follows:
+
+```yaml
+resource "digitalocean_kubernetes_cluster" "test" {
+name   = "test-cluster"
+region = "nyc1"
+version = "1.22.11-do.0"
+auto_upgrade = true
+node_pool {
+name       = "worker-pool"
+size       = "s-2vcpu-2gb"
+node_count = 3
+}
+}
+```
+
+But you're not there yet. You can quickly see in the DigitalOcean portal that the cluster currently does not automatically upgrade.
+
+![auto upgrade in portal](/blog-images/a2dfca6ce7870345b1829ffe4f4a457e.png)
+
+Automatic upgrades are disabled now, so you can run **terraform plan** again to check what Terraform will try to do.
+
+```yaml
+# terraform plan
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:  ~ update in-place
+Terraform will perform the following actions:
+   # digitalocean_kubernetes_cluster.test will be updated in-place
+  ~ resource "digitalocean_kubernetes_cluster" "test" {
+  ~ auto_upgrade   = false -> true
+  id             = "49fd0517-a4a5-41e8-997d-1412c081e000"
+  name           = "test-cluster"
+  tags           = []
+  # (13 unchanged attributes hidden)
+  # (2 unchanged blocks hidden)
+  }
+Plan: 0 to add, 1 to change, 0 to destroy
+```
+
+As expected, Terraform will now try to update your cluster in place and add an auto-upgrade option to it. Let's go ahead and apply that change.
+
+```yaml
+
+# terraform apply
+
+(...)
+Plan: 0 to add, 1 to change, 0 to destroy.
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+  Enter a value: yes
+digitalocean_kubernetes_cluster.test: Modifying... [id=49fd0517-a4a5-41e8-997d-1412c081e000]
+digitalocean_kubernetes_cluster.test: Modifications complete after 2s [id=49fd0517-a4a5-41e8-997d-1412c081e000]
+Apply complete! Resources: 0 added, 1 changed, 0 destroyed.
+
+```
+
+The change was quickly applied to your cluster, and if you double check in the portal again, you can see that, indeed, the auto-upgrade option is now enabled.
+
+![auto-upgrade enabled](/blog-images/9730642cc35deb2d6c3b63888fe4d71e.png)
+
+### Destroying Kubernetes
+
+If you no longer want your Kubernetes cluster, you can destroy it just as easily as you deployed it. All you need to do is execute **terraform destroy**.
+
+```yaml
+
+# terraform destroy
+
+digitalocean_kubernetes_cluster.test: Refreshing state... [id=49fd0517-a4a5-41e8-997d-1412c081e000]
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  - destroy
+Terraform will perform the following actions:
+  # digitalocean_kubernetes_cluster.test will be destroyed
+  - resource "digitalocean_kubernetes_cluster" "test" {
+      - auto_upgrade   = true -> null
+      - cluster_subnet = "10.244.0.0/16" -> null
+      - created_at     = "2022-07-24 06:15:34 +0000 UTC" -> null
+      - endpoint       = "https://49fd0517-a4a5-41e8-997d-1412c081e000.k8s.ondigitalocean.com" -> null
+      - ha             = false -> null
+      - id             = "49fd0517-a4a5-41e8-997d-1412c081e000" -> null
+      - kube_config    = (sensitive value)
+      - name           = "test-cluster" -> null
+      - region         = "nyc1" -> null
+      - service_subnet = "10.245.0.0/16" -> null
+      - status         = "running" -> null
+      - surge_upgrade  = true -> null
+      - tags           = [] -> null
+      - updated_at     = "2022-07-24 06:37:27 +0000 UTC" -> null
+      - urn            = "do:kubernetes:49fd0517-a4a5-41e8-997d-1412c081e000" -> null
+      - version        = "1.22.11-do.0" -> null
+      - vpc_uuid       = "877cc187-97ad-426c-9301-079e3683d351" -> null
+      - maintenance_policy {
+          - day        = "any" -> null
+          - duration   = "4h0m0s" -> null
+          - start_time = "10:00" -> null
+        }
+      - node_pool {
+          - actual_node_count = 3 -> null
+          - auto_scale        = false -> null
+          - id                = "8df9b48c-329d-41f5-899e-b7b896e28e15" -> null
+          - labels            = {} -> null
+          - max_nodes         = 0 -> null
+          - min_nodes         = 0 -> null
+          - name              = "worker-pool" -> null
+          - node_count        = 3 -> null
+          - nodes             = [
+              - {
+                  - created_at = "2022-07-24 06:15:34 +0000 UTC"
+                  - droplet_id = "309670716"
+                  - id         = "b82aeb19-78d8-4571-91e6-a0c2cffdb1db"
+                  - name       = "worker-pool-c1766"
+                  - status     = "running"
+                  - updated_at = "2022-07-24 06:19:09 +0000 UTC"
+                },
+              - {
+                  - created_at = "2022-07-24 06:15:34 +0000 UTC"
+                  - droplet_id = "309670715"
+                  - id         = "6b0d1ecf-4e48-427b-99a9-0e153056238d"
+                  - name       = "worker-pool-c176t"
+                  - status     = "running"
+                  - updated_at = "2022-07-24 06:18:27 +0000 UTC"
+                },
+              - {
+                  - created_at = "2022-07-24 06:15:34 +0000 UTC"
+                  - droplet_id = "309670717"
+                  - id         = "5ea0e536-96aa-4171-8602-dc0ab19e9888"
+                  - name       = "worker-pool-c176l"
+                  - status     = "running"
+                  - updated_at = "2022-07-24 06:18:27 +0000 UTC"
+                },
+            ] -> null
+          - size              = "s-2vcpu-2gb" -> null
+          - tags              = [] -> null
+        }
+    }
+Plan: 0 to add, 0 to change, 1 to destroy.
+Do you really want to destroy all resources?
+  Terraform will destroy all your managed infrastructure, as shown above.
+  There is no undo. Only 'yes' will be accepted to confirm.
+  Enter a value: yes
+digitalocean_kubernetes_cluster.test: Destroying... [id=49fd0517-a4a5-41e8-997d-1412c081e000]
+digitalocean_kubernetes_cluster.test: Destruction complete after 1s
+Destroy complete! Resources: 1 destroyed.
+
+```
+
+Just like that, the cluster is gone.
+
+### Summary
+
+And there you have it. That's how you can manage Kubernetes clusters with Terraform. You used DigitalOcean Kubernetes for this purpose, but as mentioned before, the process will be exactly the same for other providers. You'll just need to initiate different providers in **provider.tf** and then adjust the Kubernetes resource definition in **main.tf**. It's best to follow Terraform documentation for that. You'll find examples and argument references for major cloud providers.
+
+Managing infrastructure with Terraform definitely helps you save time, but did you know that you can also easily spin up an environment on [Release](https://release.com/) directly from your docker-compose file? [Give it a shot here](https://release.com/), and if you want to expand your Terraform knowledge further, take a look at our [post about for_each](https://release.com/blog/terraforms-for-each-examples).

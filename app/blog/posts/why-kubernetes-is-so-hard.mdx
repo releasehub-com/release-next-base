@@ -1,0 +1,182 @@
+---
+title: Why Is Kubernetes So Hard - 4 Reasons Why And What to do About it
+summary: >-
+  Kubernetes (k8s) has been all the rage for the last few years because
+  application orchestration has become a de facto
+publishDate: "Wed Mar 03 2021 03:03:48 GMT+0000 (Coordinated Universal Time)"
+author: regis-wilson
+readingTime: 9
+categories: &ref_0
+  - kubernetes
+  - platform-engineering
+mainImage: /blog-images/0de40b472cdcd421f32d1dd75c78815d.jpg
+imageAlt: >-
+  Two wrestling athletes fighting representing why Kubernetes infrastructure is
+  hard
+showCTA: true
+ctaCopy: >-
+  Simplify Kubernetes infrastructure management with Release's ephemeral
+  environments for seamless testing and deployment workflows.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=why-kubernetes-is-so-hard
+relatedPosts:
+  - ""
+ogImage: /blog-images/0de40b472cdcd421f32d1dd75c78815d.jpg
+excerpt: >-
+  Kubernetes (k8s) has been all the rage for the last few years because
+  application orchestration has become a de facto
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+### Overview
+
+- [Introduction to Kubernetes](#intro)
+- [Kubernetes Infrastructure Is Hard](#k8sishard)
+- [YAML is not a Markup Language](#yaml)
+- [You Can't Just Copy-Paste Code in Kubernetes](#copypaste)
+- [Kubernetes Debugging](#debug)
+- [Release Hub Solution](#solution)
+
+[‍](#solution)
+
+### Introduction to Kubernetes
+
+Kubernetes (k8s) has been all the rage for the last few years because application orchestration has become a de facto table-stakes requirement for production workloads running containers. “Containerising” applications is _relatively_ straightforward, and most DevOps engineers worth their salt can create a few Dockerfiles and build images in a pipeline that are ready to run. But where do you “run” your Docker containers? And which versions do you deploy? And how do all the containers talk to each other? This is where orchestration comes into play and where a few options are proposed by large vendors. There are two main options available at the time of this writing: Elastic Container Service (ECS) from Amazon Web Services (AWS) and Kubernetes which is offered by all the Infrastructure As A Service (IaaS) providers, including even AWS.
+
+The hope is that orchestration will allow companies to deliver their containerised applications to test and integration environments quickly and painlessly. The ideal scenario is that it “just works”, that is, you would snap your fingers and wait a few minutes before you see your application running in front of you. Ideally, you’d only need to specify the minimum information necessary to run your application: name, framework, dependencies, and so forth, preferably read out from existing configuration files you already have available. That’s the hope anyway.
+
+Obviously, from the title, we are focusing on Kubernetes, mainly because it is available everywhere and mainly because the only _other_ option is ECS which only proves the point of our thesis that Kubernetes is hard to use because AWS came up with their own solution that is _supposed to be_ easier. But why is it so hard to use? How long would it reasonably take to get your application(s) running in K8s?? And why isn’t it easier?
+
+### Kubernetes Infrastructure Is Hard
+
+We always start with the infrastructure even though most companies wouldn’t build their own Kubernetes clusters themselves. If you were ever going to use a managed infrastructure service, K8s would be at the top of the list. I’m sure there are a few people who start up [minikube](https://minikube.sigs.k8s.io/docs/start/) on their laptops and say to themselves, “Wow, this is easy! I can do this myself!!” This reminds me of people who start up an [Elasticsearch](https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-elastic-stack.html) container on their laptop and say, “Wow, we should implement this for our website!!” Fast forward to a production launch six months or a year later and the simple “We can do this ourselves” mantra turns into “I wish we didn’t have to do this anymore.”
+
+If you were truly going to build your own Kubernetes cluster, you’d need to build all the control plane servers and services on your bare-metal or Virtual Machines (VMs) from an IaaS of choice, and then tie them all together with some fancy networking configuration to separate control-plane traffic from container traffic. You’d need to configure and run all of the control plane software and get them all talking to each other, running stably and monitored properly. Perversely, you’d be orchestrating the containers that orchestrate the application, but without a lot of orchestration! The fancy mirage that’s presented when you run minikube or Docker Desktop on Windows hides all the inception of running a container orchestration system using containers.
+
+We haven’t even gotten to the complications of setting up ingresses (which are just nginx instances, usually) and load balancers that sit on top of or next to the control plane stack. A lot of the time, you’ll feel like you are creating a whole infrastructure just for your infrastructure to run (which isn’t unusual, but definitely doesn’t feel better than trying to orchestrate things yourself). We also haven’t gotten into the Role Based Authentication Controls and network policies that need to be set to support more than a single application or stack running in one cluster. The number of configuration points and server-side setups start to mount quickly and we haven’t even started orchestrating applications yet, which is the whole point of the orchestration system we’re supposed to be setting up.
+
+And let’s suppose that you really do wade out into this deep North Atlantic Ocean of huge waves and death-inducing freezing waters, and build yourself a production-worthy ship that can orchestrate your containers into an actual application. You look back up at your calendar and it’s been six months or a year since you started, and you’re just now deploying a control plane that says, “Hello World!” You think you’re successful and you’re about to celebrate when you check the releases section on the website and now you have a new version of k8s to deploy!!!
+
+I hear what you’re saying, “We’re large company and we have lots of DevOps engineers who are top decile of engineering talent in the whole world. We can handle all the heavy lifting. You’re just a whining, jealous baby.” I see you, [Datadog](https://www.youtube.com/watch?v=HDm9iNkLyPI) and [Ticketmaster](https://www.youtube.com/watch?v=wqXVKneP0Hg). (By the way, your accusations of jealousy might be correct. At the end of my good friend Justin Dean’s keynote speech where he shows the slides with all the team members, my picture should have been up there — but I had left the team two years earlier.) For everyone else, we all just decide to not spend six months or a year trying to build our control plane and start up our IaaS provider’s managed service and cross our fingers and pray.
+
+### K8s YAML Ain’t Markup Language
+
+If you’ve skipped ahead and just started up a managed k8s cluster, you’re still in for a long and tedious journey wading into a deep sea of confusing YAML. YAML is to text what James Joyce’s [_Finnegan’s Wake_](https://www.finwake.com/1024chapter1/fw01.htm) is to English. If you close one eye, use only your left pinky and right thumb to follow some brail, put your feet into ballet’s fifth position, and then recite World War II codes under your breath, then you will easily see that YAML is quite a breeze to comprehend. Once you get the hang of it, it’s like riding a bicycle over a frozen lake on centimeter-thin ice with rabid wolves chasing you. It’s as easy as trying to crash the Ancient Aliens cocktail party held in Fort Knox on gold smuggling days.
+
+Look, it’s not actually that hard, right? Let’s say a guy walks up to you on the street. He’s a k8s expert and he’s going to show you how easy the “hello world” web service deployment is. The conversation goes like this:
+
+```line-numbers
+
+Him: “kind: Deployment”
+
+You: “Oh, I see. Yes, I like it.”
+
+Him: “apiVersion: apps/v1beta1.”
+
+You: “Uh, okay. Isn’t v1beta1 out of date? You can use v1 as of k8s 1.9.
+It’s actually removed in 1.16, but I wonder how many people have never
+updated.”
+
+Him: “Start over.”
+
+You: “Wat.”
+
+Him: “kind: Deployment”
+
+You: “Stop with the Kinds everywhere!”
+
+Him: “apiVersion: apps/v1”
+
+You: “This again.”
+
+Him: “spec:”
+
+You: “Huh??”
+
+Him: “selector:”
+
+You: “No.”
+
+Him: “matchLabels:”
+
+You: “Wat.”
+
+Him: “app: nginx”
+
+You: “That’s nearly the first thing I’ve understood about this so far.”
+
+Him: “spec:”
+
+You: “Again?”
+
+Him: “containers:”
+
+You: “Okay, now we’re getting somewhere.”
+
+Him: “image: nginx:1.14.2”
+
+You: “Hmm.”
+
+Him: “ports:”
+
+You: “Aiiiiieeee.”
+
+Him: “containerPort: 80”
+
+You: “I’m going home. I quit. There must be a devops job I can get where
+I work on [Gatsby blogs](https://www.gatsbyjs.com/ "Gatsby nodejs frontend")
+all day.”
+
+```
+
+And that’s just trying to read and understand the file. Try reading two k8s yaml examples and then generate one yourself from scratch. Even better, every day try a [code kata](http://codekata.com/) practice of writing working and deployable configurations to Kubernetes.
+
+I DARE YOU.
+
+### Copy Paste Ain’t Code
+
+I’m still chuckling over the previous section. I have to chuckle because this is the daily pain of my day-to-day existence and facing that pain directly is like standing in front of a bus being driven by Keanu Reeves on the freeway. The only thing that keeps my nose going back to the grindstone is the realization that working with NodeJs would be worse. The problem is that the Kubernetes docs are pretty good. You copy-paste some hello world examples and the outputs look like they work. You start to get pretty good at using kubectl. You can see vague shapes and outlines in YAML. You’re starting to gain confidence that you might be able to do something useful.
+
+“Let’s try to move our application into Kubernetes!” you yell into the air as you emerge dripping wet from your bathtub wrapped only in a towel, like [Archimedes](https://www.scientificamerican.com/article/fact-or-fiction-archimede/) sprinting through the streets of Syracuse. “We’ll just copy-paste some sections from here and here and put them there and there, and we’ll have our app running in no time,” you breathlessly explain to your coworkers. “Does it work?!” they excitedly ask. “Not yet. I mean, no. I need to indent the section and remove one piece that is not used in this spec. Then I need to decide if we use a deployment or a daemonset, but it’s almost there. I swear!”
+
+First of all, put on some clothes. I’m all for taking a bath while thinking about kubernetes YAML files, but you need to get dressed afterward. Also, if you drop your Macbook Air into the bath with you, the results can be electrifying. I know. Second, here’s a riddle for you: how many YAML files do you think you need to run and deploy your application? Good thing that some people have ten fingers and ten toes because that’s probably how many you’ll need. And they’re all related but not really. You can copy-paste sections around if you’re adventurous and gullible, but you have no idea if the sections are compatible. There are only four required fields, all of which are gibberish, and everything goes under spec: (including spec:). Most of the sections are duplicated but only slightly. They vary microscopically in ways that matter macroscopically.
+
+Copying and pasting is a wonderful art, and I’ve personally worked my entire adult career that way. I gleefully admit my whole output in life is like a [ransom note](https://tvtropes.org/pmwiki/pmwiki.php/Main/CutAndPasteNote) cut from stack overflow and documentation examples. But piecing together this fragile web of text to do what really should be quite simple and obvious is tedious, error-prone, and too trial-and-error-y. It would be much better to express what you want and be able to actually emit workable, executable code that produces a result you want: namely your application running.
+
+All this complaining about YAML is quite amusing, but really it’s the symptom of the cause: Kubernetes is so difficult to use because the interface has to be completely rigid. K8s configurations are not living, majestic trees, they are a bunch of dead chopped wood. They are worse than chopped wood, they are whole petrified forests, vast piles of rocks with the imprint of thousands of years of growth rings imprinted on them and preserved for millions of years.
+
+No, they are worse than petrified wood forests! Kubernetes manifests are the punch cards of the twenty-first century. Each YAML is a collection of holes poked into chopped up wooden cards that we can’t read and understand, that we shove blindly into the kubectl apply -f command and hope that we put them in the correct order and didn’t make a single-hole mistake anywhere in the stack. Then, just like the machines of yesteryear, we try to gain insight into what’s happening by looking at the blinking lights and obscure output of ticker tape, hoping to glean insight.
+
+Just like trying to reproduce Mozart or Beethoven on a [pianola](https://en.wikipedia.org/wiki/Player_piano#Music_rolls) is tedious, laborious, error prone, and ultimately unfulfilling, similarly k8s manifests are frozen forever in time, impossible to write expressively, and playing the same tune _ad infinitum_. The reason people still use v1beta1 even though v1 has been available for _two years_ is because nobody has generated new k8s configurations since then.
+
+### Doctor, Heal Thyself; or Debugging Yourself Is Hard
+
+The great thing about k8s is that when something goes wrong, nobody knows. I can’t count the number of times I’ve deployed something, worked on something else for a few hours, came back and realised that the deployment had just silently failed and nothing ever notified me. The error message was available somewhere: was it in the deployment logs or the pod logs? Is the ingress or ingress deployment running? Where in the ten or dozens of Kinds files did the log entry appear? And the root cause was often some unrelated issue: an errant and invisible whitespace, not using double quotation marks when I should have, not using single quotation marks when I should have, or getting the brunt end of the indent from a copy-paste issue from three weeks ago.
+
+There are, of course, tools and techniques and monitoring tools that help out; it’s like Elon Musk’s [Mars orbiter](https://youtu.be/aBr2kKAHN6M?t=837) MVP: “Does it work?” “Absolutely!! A thousand times, yes!” “What does it do?” “Almost anything you want!” You have to know what to look for and where to look for it, then you have to know how to figure out what to do about it, then you have to figure out where in the ten or dozens of files which line or lines to fix, and then you have to know how to fix it.
+
+The other great thing about k8s is that you own the whole thing. Listen: friendo, pal, buddy, you chose this existence. You copy pasted the “code”. The documentation examples work. I can run “Hello World!” on my laptop so it’s clearly all on you. You’re the one who ran through the office dripping wet in a towel shouting “Kubernetes!” If the Hippocratic oath is “Do no harm” then maybe the Devops oath is “Do no more harm than that which will get you fired.”
+
+And the last great thing about k8s is there are tons of people and companies who claim to know what is going on and what to do, and they’ll gladly take your money to show you whether that’s true or not. Type Kubernetes into the search engines and see all the ads that pop up. This article is part of the problem, and also the solution, so stay with me.
+
+### The Solution, Finally
+
+There are several ways to make Kubernetes easier to use:
+
+1.  Don’t use k8s: run, screaming for your lives
+2.  Train all your people to figure it out (come back to me when you’re done; I still might be alive. Probably not.)
+3.  Hire more people for your team to figure it out (I’m available, hit me up. Ha ha, just kidding.)
+4.  Hire someone else to do it for you
+5.  Wait longer for results, do more with less, eventually settle on something that isn’t horrible
+6.  Find a solution that deploys your applications to environments for you and get on with your actual business of, well, whatever business it is you actually do. Automation tools and services can help you get your application running without investing in the activities described above. Someone has to do it, but it better not be you.
+
+At [Release](https://releasehub.com/) we work tirelessly to bring your application to life in an orchestrated, human interface. We write software to deal with all the complexity, difficulty, and strain so that no one else has to (unless they want to!) We create the engine that drives the Kubernetes vehicle, and we deliver solutions that our customers can use to get on with their business of doing business.
+
+### Additional Resources
+
+- [Kubernetes Pods Advanced Concepts Explained](https://releasehub.com/blog/kubernetes-pods-advanced-concepts-explained)
+- [How Do You Make Kubernetes Config Files Not Suck?](https://releasehub.com/blog/how-to-make-kubernetes-config-files-not-suck)
+- [Kubernetes - How to Debug CrashLoopBackOff in a Container](https://releasehub.com/blog/kubernetes-how-to-debug-crashloopbackoff-in-a-container)
+- [Cutting Build Time In Half with Docker’s Buildx Kubernetes Driver](https://releasehub.com/blog/cutting-build-time-in-half-docker-buildx-kubernetes)
+- [Kubernetes Health Checks - 2 Ways to Improve Stability in Your Production Applications](https://releasehub.com/blog/kubernetes-health-checks-2-ways-to-improve-stability)
