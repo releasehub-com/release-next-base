@@ -9,8 +9,8 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /build
 
-# Install pnpm explicitly
-RUN npm install -g pnpm@8.15.4
+# Use corepack to set pnpm version instead of npm install
+RUN corepack prepare pnpm@8.15.4 --activate
 
 # Copy package files
 COPY package.json pnpm-lock.yaml ./
