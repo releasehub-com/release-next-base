@@ -37,8 +37,8 @@ COPY package.json pnpm-lock.yaml .npmrc ./
 COPY . .
 COPY --from=deps /build/node_modules ./node_modules
 
-# Use pnpm directly for build
-RUN npm install -g pnpm@8.15.4 && pnpm build
+# Build the application
+RUN pnpm build
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
