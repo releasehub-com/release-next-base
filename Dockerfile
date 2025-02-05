@@ -15,7 +15,7 @@ RUN corepack prepare pnpm@8.15.4 --activate
 # Copy package files
 COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies with frozen lockfile
+# Install ALL dependencies (including devDependencies)
 RUN pnpm install --frozen-lockfile
 
 # Rebuild the source code only when needed
@@ -40,13 +40,13 @@ COPY --from=deps /build/node_modules ./node_modules
 # Build the application
 RUN pnpm build
 
+# After successful build, prune dev dependencies
+RUN pnpm install --prod --frozen-lockfile
+
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED 1
-
-# Prune out the devDependencies from node_modules after build
-RUN pnpm install --production --frozen-lockfile
 
 # Production image, copy all the files and run next
 FROM base AS runner
