@@ -14,6 +14,11 @@ import {
   MDXOrderedListProps,
   MDXListItemProps,
 } from "../types/mdx";
+import CodeBlock from "./CodeBlock";
+
+type CodeProps = ComponentProps<"code"> & {
+  inline?: boolean;
+};
 
 type MDXComponents = {
   img: (props: ComponentProps<"img">) => JSX.Element;
@@ -23,12 +28,30 @@ type MDXComponents = {
   p: (props: ComponentProps<"p">) => JSX.Element;
   a: (props: ComponentProps<"a">) => JSX.Element;
   pre: (props: ComponentProps<"pre">) => JSX.Element;
-  code: (props: ComponentProps<"code">) => JSX.Element;
+  code: (props: {
+    inline?: boolean;
+    className?: string;
+    children?: React.ReactNode;
+  }) => JSX.Element;
   ul: (props: ComponentProps<"ul">) => JSX.Element;
   ol: (props: ComponentProps<"ol">) => JSX.Element;
   li: (props: ComponentProps<"li">) => JSX.Element;
   CallToAction: (props: { copy: string; link: string }) => JSX.Element;
 };
+
+// Create a pure inline code component that doesn't pass through any MDX-specific props
+const InlineCode = React.forwardRef<HTMLElement, ComponentProps<"code">>(
+  ({ children, ...props }, ref) => (
+    <code
+      ref={ref}
+      className="bg-gray-800 px-1 py-0.5 rounded text-sm"
+      {...props}
+    >
+      {children}
+    </code>
+  ),
+);
+InlineCode.displayName = "InlineCode";
 
 const components: MDXComponents = {
   img: (props: ComponentProps<"img">) => (
@@ -72,9 +95,21 @@ const components: MDXComponents = {
       {...props}
     />
   ),
-  code: (props) => (
-    <code className="bg-gray-800 px-1 py-0.5 rounded" {...props} />
-  ),
+  code: (props: {
+    inline?: boolean;
+    className?: string;
+    children?: React.ReactNode;
+  }) => {
+    const { inline, className, children, ...rest } = props;
+
+    // For inline code
+    if (inline) {
+      return <InlineCode>{children}</InlineCode>;
+    }
+
+    // For block code
+    return <CodeBlock className={className}>{children}</CodeBlock>;
+  },
   ul: (props) => (
     <ul className="list-disc list-inside text-gray-300 mb-4 ml-4" {...props} />
   ),

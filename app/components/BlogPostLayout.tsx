@@ -76,7 +76,9 @@ export default function BlogPostLayout({
         </div>
       </header>
 
-      <article className="prose prose-invert max-w-none">{children}</article>
+      <article className="prose prose-invert max-w-none prose-ul:pl-5 prose-ol:pl-5 prose-li:pl-0 prose-li:my-0 prose-li:marker:text-gray-400">
+        {children}
+      </article>
     </>
   );
 }

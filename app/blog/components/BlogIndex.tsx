@@ -29,9 +29,21 @@ export default function BlogIndex({
   categories,
 }: BlogIndexProps) {
   const router = useRouter();
-  const selectedCategory = searchParams.category;
-  const currentPage = Number(searchParams.page) || 1;
-  const searchQuery = searchParams.search || "";
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState(searchParams.search || "");
+
+  // Update the selectedCategory logic to handle both AI%2FML and ai
+  const getSelectedCategory = (category?: string) => {
+    if (!category) return "All";
+    // Decode the URL parameter and handle both cases
+    const decodedCategory = decodeURIComponent(category.toLowerCase());
+    if (decodedCategory === "ai/ml" || decodedCategory === "ai") {
+      return "ai";
+    }
+    return category;
+  };
+
+  const selectedCategory = getSelectedCategory(searchParams.category);
 
   // Local state for search input
   const [searchInput, setSearchInput] = useState(searchQuery);
@@ -56,11 +68,13 @@ export default function BlogIndex({
           .includes(searchQuery.toLowerCase())
       : true;
 
-    const matchesCategory = selectedCategory
-      ? post.frontmatter.categories?.some(
-          (cat) => cat.toLowerCase() === selectedCategory.toLowerCase(),
-        )
-      : true;
+    // Only filter by category if not "All"
+    const matchesCategory =
+      selectedCategory === "All"
+        ? true
+        : post.frontmatter.categories?.some(
+            (cat) => cat.toLowerCase() === selectedCategory.toLowerCase(),
+          );
 
     return matchesSearch && matchesCategory;
   });
@@ -89,12 +103,16 @@ export default function BlogIndex({
     router.push(`/blog?${params.toString()}`, { scroll: false });
   };
 
-  const handleCategoryClick = (category?: string) => {
-    const newUrl = category
-      ? `/blog?category=${category.toLowerCase()}`
-      : "/blog";
-
-    router.push(newUrl, { scroll: false });
+  // Update handleCategoryChange to properly encode AI category
+  const handleCategoryChange = (category: string) => {
+    if (category === "All") {
+      router.push("/blog", { scroll: false });
+    } else {
+      // Special handling for AI category
+      const encodedCategory =
+        category.toLowerCase() === "ai" ? "AI%2FML" : category.toLowerCase();
+      router.push(`/blog?category=${encodedCategory}`, { scroll: false });
+    }
   };
 
   const handlePageChange = (page: number) => {
@@ -107,13 +125,19 @@ export default function BlogIndex({
     <>
       <Header />
       <main className="min-h-screen bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="mb-8">
-            <span className="text-purple-500 font-medium">Product</span>
-            <h1 className="text-4xl font-bold text-white mt-2">
-              Latest Articles
-            </h1>
-          </div>
+        <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+          {/* Selected Category Pill - only show if not "All" */}
+          {selectedCategory !== "All" && (
+            <div className="mb-4">
+              <span className="px-4 py-2 text-sm bg-purple-600 text-white rounded-full">
+                {selectedCategory}
+              </span>
+            </div>
+          )}
+
+          <h1 className="text-3xl font-bold text-white mb-8">
+            Latest Articles
+          </h1>
 
           {/* Featured Post - always show */}
           {featuredPost && (
@@ -188,7 +212,6 @@ export default function BlogIndex({
             </Link>
           )}
 
-          {/* Search and Filter Section */}
           <div className="mb-12 space-y-8">
             {/* Search Bar */}
             <div className="relative">
@@ -206,14 +229,14 @@ export default function BlogIndex({
               />
             </div>
 
-            {/* Categories */}
+            {/* Category Pills - with All Articles */}
             <div className="flex flex-wrap gap-2">
               <button
-                onClick={() => handleCategoryClick()}
-                className={`px-4 py-2 rounded-full text-sm transition-colors ${
-                  !selectedCategory
+                onClick={() => handleCategoryChange("All")}
+                className={`px-4 py-2 rounded-full text-sm ${
+                  selectedCategory === "All"
                     ? "bg-purple-600 text-white"
-                    : "bg-gray-800 text-white hover:bg-gray-700"
+                    : "bg-gray-800 text-gray-300 hover:bg-gray-700"
                 }`}
               >
                 All Articles
@@ -221,11 +244,11 @@ export default function BlogIndex({
               {categories.map((category) => (
                 <button
                   key={category}
-                  onClick={() => handleCategoryClick(category)}
-                  className={`px-4 py-2 rounded-full text-sm transition-colors ${
-                    selectedCategory?.toLowerCase() === category.toLowerCase()
+                  onClick={() => handleCategoryChange(category)}
+                  className={`px-4 py-2 rounded-full text-sm ${
+                    selectedCategory === category
                       ? "bg-purple-600 text-white"
-                      : "bg-gray-800 text-white hover:bg-gray-700"
+                      : "bg-gray-800 text-gray-300 hover:bg-gray-700"
                   }`}
                 >
                   {category}

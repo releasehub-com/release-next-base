@@ -26,7 +26,7 @@ tags: *ref_0
 ctaButton: Try Release for Free
 ---
 
-At Release, we've been using BuildKit to do our own builds for some time now and BuildKit does an awesome job of caching Docker image layers! But one thing that continued to slow down our builds was running <code inline>bundle install</code> when upgrading gems in our Rails application. I decided to start researching if there was any way that we could **cache our <code inline>bundle install</code> commands over many builds** because a cold <code inline>bundle install</code> is very slow, but **incremental changes are quite fast**. In my search, I came across a KubeCon video about BuildKit, ["Running Cache-Efficient Builds at Scale on Kubernetes with BuildKit - Gautier Delorme, Apple Inc."](https://www.youtube.com/watch?v=wTENRhYt3mw) which had a very interesting slide.
+At Release, we've been using BuildKit to do our own builds for some time now and BuildKit does an awesome job of caching Docker image layers! But one thing that continued to slow down our builds was running `bundle install` when upgrading gems in our Rails application. I decided to start researching if there was any way that we could **cache our `bundle install` commands over many builds** because a cold `bundle install` is very slow, but **incremental changes are quite fast**. In my search, I came across a KubeCon video about BuildKit, ["Running Cache-Efficient Builds at Scale on Kubernetes with BuildKit - Gautier Delorme, Apple Inc."](https://www.youtube.com/watch?v=wTENRhYt3mw) which had a very interesting slide.
 
 ![](/blog-images/271d7cec8f533d977b812f76403497cd.png)
 
@@ -46,9 +46,9 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 
 ```
 
-In this example, the <code inline>go build</code> command uses the <code inline>/root/.cache/go-build</code> directory to store the packages in between builds. Because the output of <code inline>go build</code> is a binary and does not require anything to run besides that binary, this example makes correct use of the cache. If we think of the cache directory as a named volume from the host server into the container we can create a picture of how this example works. When <code inline>go build</code> is run, the cache directory is populated on the host server and the resulting binary ends up in the container. The problem is that this mount cache functionality wasn't built with the idea that the packages in the cache needed to be pulled into the resulting image.
+In this example, the `go build` command uses the `/root/.cache/go-build` directory to store the packages in between builds. Because the output of `go build` is a binary and does not require anything to run besides that binary, this example makes correct use of the cache. If we think of the cache directory as a named volume from the host server into the container we can create a picture of how this example works. When `go build` is run, the cache directory is populated on the host server and the resulting binary ends up in the container. The problem is that this mount cache functionality wasn't built with the idea that the packages in the cache needed to be pulled into the resulting image.
 
-To solve this problem I continued my search and came across this issue on the BuildKit repository, "[Am I misunderstanding RUN mount=type=cache?](https://github.com/moby/buildkit/issues/1173)". The writer of the issue explains how this functionality isn't working with <code inline>bundle install</code> and is trying to figure out what to do. In one of the answers a link to blog post in Japanese is provided, "[Dockerfile for Rails6のベストプラクティスを解説](https://qiita.com/k_kind/items/836bc7ba2e33dc2ed3e7)". A Dockerfile is provided in the post, which has the solution we've been searching for.
+To solve this problem I continued my search and came across this issue on the BuildKit repository, "[Am I misunderstanding RUN mount=type=cache?](https://github.com/moby/buildkit/issues/1173)". The writer of the issue explains how this functionality isn't working with `bundle install` and is trying to figure out what to do. In one of the answers a link to blog post in Japanese is provided, "[Dockerfile for Rails6のベストプラクティスを解説](https://qiita.com/k_kind/items/836bc7ba2e33dc2ed3e7)". A Dockerfile is provided in the post, which has the solution we've been searching for.
 
 ```ruby line-numbers
 
@@ -83,7 +83,7 @@ RUN bundle config set app_config .bundle
 
 ```
 
-Next, we set Bundler's config to the <code inline>.bundle</code> directory.
+Next, we set Bundler's config to the `.bundle` directory.
 
 ```ruby line-numbers
 
@@ -91,7 +91,7 @@ RUN bundle config set path .cache/bundle
 
 ```
 
-Then, we set Bundler's path <code inline>.cache/bundle</code> which is the directory the gems will be installed into.
+Then, we set Bundler's path `.cache/bundle` which is the directory the gems will be installed into.
 
 ```ruby line-numbers
 
@@ -102,7 +102,7 @@ RUN --mount=type=cache,uid=1000,target=/app/.cache/bundle \
 
 ```
 
-Now the important part! We use the <code inline>--mount=type=cache</code> and set the cache to be the same location as Bundler's path. But a key here is to include the <code inline>WORKDIR</code> path so it becomes <code inline>target=/app/.cache/bundler</code>. This means our directory of installed gems will be persisted from build to build. We run <code inline>bundle install</code> to install the gems and then create a vendor directory. The last step here is to copy <code inline>.cache/bundle</code> into <code inline>vendor/bundle</code> because, if you recall from the Go example, the contents of the cache are not included in the layer.
+Now the important part! We use the `--mount=type=cache` and set the cache to be the same location as Bundler's path. But a key here is to include the `WORKDIR` path so it becomes `target=/app/.cache/bundler`. This means our directory of installed gems will be persisted from build to build. We run `bundle install` to install the gems and then create a vendor directory. The last step here is to copy `.cache/bundle` into `vendor/bundle` because, if you recall from the Go example, the contents of the cache are not included in the layer.
 
 ```ruby line-numbers
 
@@ -114,17 +114,17 @@ Finally we set Bundler's path to the directory we copied the files into and we'r
 
 And now we fully understand what is happening! To wrap up, there are a few final points to cover. The first is that the code above is not quite ideal. It works, but it is missing a few options to add some safety and reliability. There will be a full example shown below.
 
-The mount cache accepts an <code inline>id</code> as a parameter. The [documentation](https://docs.docker.com/engine/reference/builder/#run---mounttypecache) says:
+The mount cache accepts an `id` as a parameter. The [documentation](https://docs.docker.com/engine/reference/builder/#run---mounttypecache) says:
 
 > Optional ID to identify separate/different caches. Defaults to the value of the target.
 
 Setting an ID is valuable if there are potentially lots of Dockerfiles running on the same BuildKit server who might be attempting to use the same cache location; imagine if two different Rails projects started sharing the same directory!
 
-Which leads us to the second parameter of <code inline>sharing</code>. The [documentation](https://docs.docker.com/engine/reference/builder/#run---mounttypecache) says:
+Which leads us to the second parameter of `sharing`. The [documentation](https://docs.docker.com/engine/reference/builder/#run---mounttypecache) says:
 
 > One of shared, private, or locked. Defaults to shared. A shared cache mount can be used concurrently by multiple writers. private creates a new mount if there are multiple writers. locked pauses the second writer until the first one releases the mount.
 
-We want to opt for <code inline>sharing=locked</code> meaning that if two builds of the same Dockerfile are running at the same time, only one can access the cache at a time. This ensures that the output of <code inline>bundle install</code> won't be mangled when the <code inline>cp</code> command is issued.
+We want to opt for `sharing=locked` meaning that if two builds of the same Dockerfile are running at the same time, only one can access the cache at a time. This ensures that the output of `bundle install` won't be mangled when the `cp` command is issued.
 
 This is our suggestion for a full solution.
 

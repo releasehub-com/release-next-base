@@ -92,17 +92,19 @@ volumes:
 
 ‍
 
-We won’t go through everything line by line but we wanted to make sure to note that in this compose file certain ports are exposed, as well as volumes are being defined to retain data between restarts. We also see that the containers have their <code inline>depends_on</code> defined to tell us in which order the containers should be started in. We encourage you to take a look at our [Docker Compose conversion support documentation](https://docs.release.com/reference-documentation/docker-compose-conversion-support) to see the full list of supported attributes.
+We won’t go through everything line by line but we wanted to make sure to note that in this compose file certain ports are exposed, as well as volumes are being defined to retain data between restarts. We also see that the containers have their `depends_on` defined to tell us in which order the containers should be started in. We encourage you to take a look at our [Docker Compose conversion support documentation](https://docs.release.com/reference-documentation/docker-compose-conversion-support) to see the full list of supported attributes.
 
 ### Translating a Compose file into an Application
 
 Now that we have a Docker Compose file ready, let’s see how to translate it into an Application in Release.
-**Step 1: Create your application**
+
+- **Step 1: Create your application**
 
 The first step in creating your Application is to give it a name and select which repository we’ll be using. I’ve named mine “release-docker-compose-demo” and selected the awesome-release/rails_postgres_redis repository (linked above).
 
 ![](/blog-images/ff3c06a3bb3d132f792d59947fecbbcc.png)
-**Step 2: Analyze your repository**
+
+- **Step 2: Analyze your repository**
 
 The next step is to analyze the repository. We’ve selected the main branch and are shown some options of files we can select in a dropdown. The files we select will be analyzed and converted into what Release calls Services. These Services can have many types, such as Containers, Static Javascript Builds, Helm, and Terraform; we’ll primarily focus on Containers in this post but look for future posts where we’ll cover the other options.
 
@@ -114,34 +116,38 @@ We see that Release created four Services for us with the same names as what is 
 
 ![](/blog-images/e0c91cdc3c2141465fd17ada6c65ce82.png)
 
-‍**Step 3: Generate a template**
+‍\* **Step 3: Generate a template**
 
-In this stage we get our first view of an Application Template. We won’t go through everything in the template here, however we encourage you to read through the documentation on [Application Templates](https://docs.release.com/reference-documentation/application-settings/application-template) to understand all the possibilities. Instead we’ll highlight how Release has translated the Services from the last page into this yaml format. We see the familiar names of  <code inline>api</code>, <code inline>db</code>, and <code inline>redis</code> as well as the ports and volumes that were defined in the compose file.
+In this stage we get our first view of an Application Template. We won’t go through everything in the template here, however we encourage you to read through the documentation on [Application Templates](https://docs.release.com/reference-documentation/application-settings/application-template) to understand all the possibilities. Instead we’ll highlight how Release has translated the Services from the last page into this yaml format. We see the familiar names of  `api`, `db`, and `redis` as well as the ports and volumes that were defined in the compose file.
 
 ![](/blog-images/2061a6acb4335f3eebcdc64912fd9f5d.png)
 
 The definitions of Services help to describe _what_ Release will deploy, but we also want to know _how_ Release will deploy these Services. That information is contained in the workflows stanza. There are three types of workflows defined: **setup**, **patch**, and **teardown**.
 
-A **setup** workflow defines a deployment where infrastructure can be deployed for the first time or if there are subsequent changes to the infrastructure; think, changing your Postgresql version, the number of replicas of the  <code inline>api</code> Service, or changing environment variables for your Application. We can also see that the order of the Services from the compose file  <code inline>depends_on</code> is translated into the setup workflow. <code inline>db</code> and <code inline>redis</code> will be deployed in parallel first. Once both of those Services are up and running, Release will move to the next step and deploy  <code inline>api</code>. Finally  <code inline>sidekiq</code> will be deployed.
+A **setup** workflow defines a deployment where infrastructure can be deployed for the first time or if there are subsequent changes to the infrastructure; think, changing your Postgresql version, the number of replicas of the  `api` Service, or changing environment variables for your Application. We can also see that the order of the Services from the compose file  `depends_on` is translated into the setup workflow. `db` and `redis` will be deployed in parallel first. Once both of those Services are up and running, Release will move to the next step and deploy  `api`. Finally  `sidekiq` will be deployed.
 
-The **patch** workflow is used when only code changes need to be deployed. In our case, both the <code inline>api</code> and <code inline>sidekiq</code> Services contain the code from the repository and would need to be deployed when we push new changes. The  <code inline>db</code> and <code inline>redis</code> Services don’t require any changes so they don’t need to be referenced in a patch.
+The **patch** workflow is used when only code changes need to be deployed. In our case, both the `api` and `sidekiq` Services contain the code from the repository and would need to be deployed when we push new changes. The  `db` and `redis` Services don’t require any changes so they don’t need to be referenced in a patch.
 
-The final workflow is the **teardown** which uses a Release defined task called <code inline>remove_environment</code>. This task will tear down all the infrastructure in Kubernetes and free up the resources that were being used. Additional steps can be added to a teardown workflow but the <code inline>remove_environment</code> is a requirement.
+The final workflow is the **teardown** which uses a Release defined task called `remove_environment`. This task will tear down all the infrastructure in Kubernetes and free up the resources that were being used. Additional steps can be added to a teardown workflow but the `remove_environment` is a requirement.
 
 Now that we’ve had a quick runthrough of parts of our Application Template, we’ll click Next Step to move on.
 
 ![](/blog-images/eb1e9b99de4ff152fbb5eb1e8135f1f5.png)
-**Step 4: Set Environment Variables**
+
+- **Step 4: Set Environment Variables**
 
 Here we are presented with the Environment Variables that Release was able to extract from the compose file. If we wanted to add additional variables here we could but for this Application we won’t need any more so we’ll click Next Step.
 
 ![](/blog-images/6fc90f447bd025a35d9feff557a5fd2b.png)
-**Step 5: Set Build Arguments**  
-At this stage we are presented with the ability to add build arguments if we need to explicitly pass anything into our Docker build. For this Application, the [Dockerfile](https://github.com/awesome-release/rails_postgres_redis/blob/main/Dockerfile) accepts a build argument for <code inline>RUBY_VERSION</code> if we want to use a newer version than the <code inline>3.0.0</code> default. We’ll add an argument for the <code inline>3.2.0</code> version. We’ll be able to see this version used when we look at the build in part two of this series. After clicking the check mark to add our build argument, we’ll click Next Step to move on.
+
+- **Step 5: Set Build Arguments**
+
+At this stage we are presented with the ability to add build arguments if we need to explicitly pass anything into our Docker build. For this Application, the [Dockerfile](https://github.com/awesome-release/rails_postgres_redis/blob/main/Dockerfile) accepts a build argument for `RUBY_VERSION` if we want to use a newer version than the `3.0.0` default. We’ll add an argument for the `3.2.0` version. We’ll be able to see this version used when we look at the build in part two of this series. After clicking the check mark to add our build argument, we’ll click Next Step to move on.
 
 ![](/blog-images/f7f0a2dc9c90964f8e213dbd200096c1.png)
-**Step 6: save and deploy  
-**The final step in creating our Application is to create a deployment. By clicking the “Deploy your app!” button, Release will create an ephemeral environment and start a **setup** workflow.
+
+- **Step 6: save and deploy**  
+  ** The final step in creating our Application is to create a deployment. By clicking the “Deploy your app!” button, Release will create an ephemeral environment and start a **setup\*\* workflow.
 
 That’s it! 🎉 In short six steps we took our Docker Compose file and created an Application Template that we can now use to spin up ephemeral environments on demand.
 
