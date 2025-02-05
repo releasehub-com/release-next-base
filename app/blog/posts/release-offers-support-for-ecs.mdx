@@ -3,17 +3,28 @@ title: Release Offers Support for ECS
 summary: >-
   Release now supports the use of IaC (Infrastructure as Code: Terraform,
   Pulumi, etc) to create resources in ECS
-publishDate: Fri Apr 21 2023 16:55:46 GMT+0000 (Coordinated Universal Time)
+publishDate: 'Fri Apr 21 2023 16:55:46 GMT+0000 (Coordinated Universal Time)'
 author: erik-landerholm
 readingTime: 4
-categories: []
+categories: &ref_0
+  - platform-engineering
+  - kubernetes
 mainImage: /blog-images/24e9b4247f1c58e1a7bc5c20c67777fb.jpg
 imageAlt: A group of colorful containers
-showCTA: false
-ctaCopy: ''
-ctaLink: ''
+showCTA: true
+ctaCopy: >-
+  Empower efficient ECS resource management with Release's unified interface for
+  seamless deployment and monitoring.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=release-offers-support-for-ecs
 relatedPosts:
   - ''
+ogImage: /blog-images/24e9b4247f1c58e1a7bc5c20c67777fb.jpg
+excerpt: >-
+  Release now supports the use of IaC (Infrastructure as Code: Terraform,
+  Pulumi, etc) to create resources in ECS
+tags: *ref_0
+ctaButton: Try Release for Free
 ---
 
 Complex applications on AWS frequently combine not only the core code but also connections to resources and dependencies (such as ECS Tasks and Lambdas). We’re excited to announce support for ECS tasks! Development, testing, and production of complex apps can now be managed through our newest Release update. This latest update includes support for the use of IaC (Infrastructure as Code, for example, Terraform and Pulumi)  to create resources in ECS, which you can manage in Release right alongside your EKS resources. In this post, we'll show you some simple set-up steps to add ECS resources to Release, access them through the terminal, and view their logs.

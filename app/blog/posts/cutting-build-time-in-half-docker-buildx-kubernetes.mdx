@@ -3,17 +3,28 @@ title: Cutting Build Time In Half with Docker’s Buildx Kubernetes Driver
 summary: >-
   At Release, environments are our main focus, but we can’t create environments
   without builds. Recently we undertook a pr
-publishDate: Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)
+publishDate: 'Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)'
 author: jeremy-kreutzbender
 readingTime: 5
-categories: []
+categories: &ref_0
+  - kubernetes
+  - platform-engineering
 mainImage: /blog-images/0e25329b235434c91db7ac0845e8f6a1.jpg
 imageAlt: A red and an orange container
-showCTA: false
-ctaCopy: ''
-ctaLink: ''
+showCTA: true
+ctaCopy: >-
+  Discover how Release's environment management platform optimizes Docker builds
+  for faster delivery cycles.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=cutting-build-time-in-half-docker-buildx-kubernetes
 relatedPosts:
   - ''
+ogImage: /blog-images/0e25329b235434c91db7ac0845e8f6a1.jpg
+excerpt: >-
+  At Release, environments are our main focus, but we can’t create environments
+  without builds. Recently we undertook a pr
+tags: *ref_0
+ctaButton: Try Release for Free
 ---
 
 At Release, environments are our main focus, but we can’t create environments without builds. Recently we undertook a project to revisit our build infrastructure and determine if it needed to be upgraded. Build times had become a big factor in our service delivery and we needed a way to improve our customers’ experiences. One of the main areas that we wanted to improve upon was the parallelism of building multiple docker images for a single application.

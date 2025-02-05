@@ -3,17 +3,28 @@ title: A Guide to Configuring and Deploying HPA on Kubernetes
 summary: >-
   HPA in Kubernetes will make your Kubernetes cluster more self-sustainable and
   will offload you from repetitive tasks.
-publishDate: Fri Apr 21 2023 18:22:03 GMT+0000 (Coordinated Universal Time)
+publishDate: 'Fri Apr 21 2023 18:22:03 GMT+0000 (Coordinated Universal Time)'
 author: ashley-penney
 readingTime: 5
-categories: []
+categories: &ref_0
+  - kubernetes
+  - platform-engineering
 mainImage: /blog-images/6939a8efb4225dcbacab89ad2bf333d3.jpg
 imageAlt: a row of computer screens with a glass in front of them
-showCTA: false
-ctaCopy: ''
-ctaLink: ''
+showCTA: true
+ctaCopy: >-
+  Automate scaling with Release's environments like HPA on Kubernetes for
+  efficient resource management.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=a-guide-to-configuring-and-deploying-hpa-on-kubernetes
 relatedPosts:
   - ''
+ogImage: /blog-images/6939a8efb4225dcbacab89ad2bf333d3.jpg
+excerpt: >-
+  HPA in Kubernetes will make your Kubernetes cluster more self-sustainable and
+  will offload you from repetitive tasks.
+tags: *ref_0
+ctaButton: Try Release for Free
 ---
 
 One of the main advantages of Kubernetes is that it can take care of your containers for you. This means, for example, that it will move containers around to distribute the load on the cluster evenly, automatically restart failed pods, and kill those that misbehave and try to eat too many resources. Another nice feature is Horizontal Pod Autoscaler. As the name suggests, HPA can automatically scale your pods. But how? I'm glad you asked, because that's exactly what this post is about. 

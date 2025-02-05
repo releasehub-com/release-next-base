@@ -58,3 +58,38 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
       new Date(a.frontmatter.publishDate).getTime(),
   );
 }
+
+export function getPostBySlug(slug: string): BlogPost {
+  const postsDirectory = path.join(process.cwd(), "app/blog/posts");
+  const fullPath = path.join(postsDirectory, `${slug}.mdx`);
+  
+  if (!fs.existsSync(fullPath)) {
+    throw new Error(`Blog post not found: ${slug}`);
+  }
+
+  const fileContents = fs.readFileSync(fullPath, 'utf8');
+  const { data: frontmatter, content } = matter(fileContents);
+
+  return {
+    slug,
+    content,
+    frontmatter: {
+      ...frontmatter,
+      // Ensure all required fields have defaults
+      title: frontmatter.title || '',
+      summary: frontmatter.summary || '',
+      publishDate: frontmatter.publishDate || '',
+      author: frontmatter.author || '',
+      readingTime: frontmatter.readingTime || 0,
+      categories: frontmatter.categories || [],
+      mainImage: frontmatter.mainImage || '',
+      imageAlt: frontmatter.imageAlt || '',
+      showCTA: frontmatter.showCTA || false,
+      ctaCopy: frontmatter.ctaCopy || '',
+      ctaLink: frontmatter.ctaLink || '',
+      relatedPosts: frontmatter.relatedPosts || [],
+      bodyTop: frontmatter.bodyTop || '',
+      bodyBottom: frontmatter.bodyBottom || '',
+    }
+  };
+}

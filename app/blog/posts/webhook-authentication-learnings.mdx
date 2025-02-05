@@ -1,21 +1,32 @@
 ---
-title: Webhook Authentication Learnings for GitHub, GitLab, and Bitbucket
+title: 'Webhook Authentication Learnings for GitHub, GitLab, and Bitbucket'
 summary: >-
   I was recently tasked with implementing GitLab support for Release and to
   complete that task I needed to implement authe
-publishDate: Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)
+publishDate: 'Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)'
 author: jeremy-kreutzbender
 readingTime: 9
-categories: []
+categories: &ref_0
+  - platform-engineering
+  - product
 mainImage: /blog-images/f640a5f16852b36e83669568508fa7c2.jpg
 imageAlt: >-
   Rope passing on rock climbing pitons conveying the idea of Webhook
   Authentication
-showCTA: false
-ctaCopy: ''
-ctaLink: ''
+showCTA: true
+ctaCopy: >-
+  Looking to streamline webhook authentication like in the blog post? Try
+  Release for seamless environment management.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=webhook-authentication-learnings
 relatedPosts:
   - ''
+ogImage: /blog-images/f640a5f16852b36e83669568508fa7c2.jpg
+excerpt: >-
+  I was recently tasked with implementing GitLab support for Release and to
+  complete that task I needed to implement authe
+tags: *ref_0
+ctaButton: Try Release for Free
 ---
 
 I was recently tasked with implementing GitLab support for Release and to complete that task I needed to implement authentication for GitLab and a way to handle their webhooks. I completed the authentication first and left the webhook implementation for another pull request as I wanted to refactor the way we were handling all webhooks.

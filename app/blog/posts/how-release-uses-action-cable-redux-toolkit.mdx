@@ -3,17 +3,28 @@ title: How Release Uses Action Cable and Redux Toolkit
 summary: >-
   Walk through setting up Action Cable messages that are received by a React
   Component hooked up to Redux Toolkit.
-publishDate: Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)
+publishDate: 'Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)'
 author: jeremy-kreutzbender
 readingTime: 8
-categories: []
+categories: &ref_0
+  - platform-engineering
+  - product
 mainImage: /blog-images/4a62d2a6629b891fdae6ce6926d1fb05.jpg
-imageAlt: A toolkit that includes several tools such as hammer, saw and file
-showCTA: false
-ctaCopy: ''
-ctaLink: ''
+imageAlt: 'A toolkit that includes several tools such as hammer, saw and file'
+showCTA: true
+ctaCopy: >-
+  Enhance your Redux setup with Release's ephemeral environments for seamless
+  collaboration and efficient testing.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=how-release-uses-action-cable-redux-toolkit
 relatedPosts:
   - ''
+ogImage: /blog-images/4a62d2a6629b891fdae6ce6926d1fb05.jpg
+excerpt: >-
+  Walk through setting up Action Cable messages that are received by a React
+  Component hooked up to Redux Toolkit.
+tags: *ref_0
+ctaButton: Try Release for Free
 ---
 
 Over the past few weeks at [Release](https://releasehub.com) the Frontend Engineering team has started working on adding Redux to Release. We had been making use of [React Context](https://reactjs.org/docs/context.html) but felt that we were starting to stretch its capabilities. In some places we were having to add multiple providers to implement new features. After some research on the current state of Redux, we decided to go with [Redux Toolkit](https://redux-toolkit.js.org/) and [Redux Saga](https://redux-saga.js.org/). Moving all our data into the Redux store and out of local state meant that we were going to have to change our approach with [Action Cable](https://guides.rubyonrails.org/action_cable_overview.html) and how we were going to receive the messages, store them, and display changes for the user.

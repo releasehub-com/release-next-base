@@ -3,17 +3,28 @@ title: Kubernetes - How to Debug CrashLoopBackOff in a Container
 summary: >-
   If you’ve used Kubernetes (k8s), you’ve probably bumped into the dreaded
   CrashLoopBackOff. A CrashLoopBackOff is possibl
-publishDate: Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)
+publishDate: 'Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)'
 author: david-giffin
 readingTime: 3
-categories: []
+categories: &ref_0
+  - kubernetes
+  - platform-engineering
 mainImage: /blog-images/4e91e41da26a361f3123c6c7a68815ee.jpg
 imageAlt: Storage containers stacked representing a CrashLoopBackOff in a container
-showCTA: false
-ctaCopy: ''
-ctaLink: ''
+showCTA: true
+ctaCopy: >-
+  Struggling with CrashLoopBackOff in Kubernetes? Use Release for streamlined
+  debugging environments and faster issue resolution.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=kubernetes-how-to-debug-crashloopbackoff-in-a-container
 relatedPosts:
   - ''
+ogImage: /blog-images/4e91e41da26a361f3123c6c7a68815ee.jpg
+excerpt: >-
+  If you’ve used Kubernetes (k8s), you’ve probably bumped into the dreaded
+  CrashLoopBackOff. A CrashLoopBackOff is possibl
+tags: *ref_0
+ctaButton: Try Release for Free
 ---
 
 If you’ve used Kubernetes (k8s), you’ve probably bumped into the dreaded CrashLoopBackOff. A CrashLoopBackOff is possible for several types of k8s misconfigurations (not able to connect to persistent volumes, init-container misconfiguration, etc). We aren’t going to cover how to configure k8s properly in this article, but instead will focus on the harder problem of debugging your code or, even worse, someone else’s code 😱
