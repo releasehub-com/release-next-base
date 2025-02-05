@@ -18,22 +18,27 @@ COPY package.json pnpm-lock.yaml ./
 # Install dependencies with frozen lockfile
 RUN pnpm install --frozen-lockfile
 
-# Rebuild the source code only when needed and upload the sourcemaps
+# Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
 
-# Set all the Environment Variables, they need to be present before the build command happens
+# Install pnpm in builder stage
+RUN corepack prepare pnpm@8.15.4 --activate
+
+# Set Environment Variables
 ARG NEXT_PUBLIC_APP_BASE_URL
 ARG DD_API_KEY
 
 ENV NEXT_PUBLIC_APP_BASE_URL=$NEXT_PUBLIC_APP_BASE_URL \
-    DD_API_KEY=$DD_API_KEY
+    DD_API_KEY=$DD_API_KEY \
+    NEXT_TELEMETRY_DISABLED=1
 
 COPY package.json pnpm-lock.yaml .npmrc ./
 COPY . .
 COPY --from=deps /build/node_modules ./node_modules
 
-RUN pnpm build
+# Use pnpm directly for build
+RUN npm install -g pnpm@8.15.4 && pnpm build
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
