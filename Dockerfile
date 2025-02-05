@@ -9,14 +9,14 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /build
 
-# Use corepack to set pnpm version instead of npm install
+# Use corepack to set pnpm version
 RUN corepack prepare pnpm@8.15.4 --activate
 
 # Copy package files
 COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies with frozen lockfile and enable pre/post scripts
-RUN pnpm install --frozen-lockfile --enable-pre-post-scripts
+# Install dependencies with frozen lockfile
+RUN pnpm install --frozen-lockfile
 
 # Rebuild the source code only when needed and upload the sourcemaps
 FROM base AS builder
