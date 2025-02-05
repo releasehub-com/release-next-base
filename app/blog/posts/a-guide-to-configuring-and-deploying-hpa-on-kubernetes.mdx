@@ -3,7 +3,7 @@ title: A Guide to Configuring and Deploying HPA on Kubernetes
 summary: >-
   HPA in Kubernetes will make your Kubernetes cluster more self-sustainable and
   will offload you from repetitive tasks.
-publishDate: 'Fri Apr 21 2023 18:22:03 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Fri Apr 21 2023 18:22:03 GMT+0000 (Coordinated Universal Time)"
 author: ashley-penney
 readingTime: 5
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=a-guide-to-configuring-and-deploying-hpa-on-kubernetes
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/6939a8efb4225dcbacab89ad2bf333d3.jpg
 excerpt: >-
   HPA in Kubernetes will make your Kubernetes cluster more self-sustainable and
@@ -72,67 +72,61 @@ You can think of it as VPA working much slower and more long-term, looking at pa
 Now that you know all the theory, let's create some HPAs. We'll start with creating an example deployment with a resource request set: 
 
 ```yaml
-
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-svc
-  labels:
-    app: nginx
+   name: nginx-svc
+   labels:
+     app: nginx
 spec:
-  ports:
-  - port: 80
-  selector:
-    app: nginx
+   ports:
+   - port: 80
+   selector:
+     app: nginx
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-deployment
-  labels:
-    app: nginx
+   name: nginx-deployment
+   labels:
+     app: nginx
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-      - name: nginx
-        image: nginx
-        ports:
-        - containerPort: 80
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "100m"
-
+   replicas: 1
+   selector:
+     matchLabels:
+       app: nginx
+   template:
+     metadata:
+       labels:
+         app: nginx
+     spec:
+       containers:
+       - name: nginx
+         image: nginx
+         ports:
+         - containerPort: 80
+         resources:
+           requests:
+             memory: "64Mi"
+             cpu: "100m"
 ```
 
 I'll save it as nginx.yaml and apply with **kubectl apply**: 
 
 ```yaml
-
 $ kubectl apply -f nginx.yaml
 deployment.apps/nginx-deployment created
 
 $ kubectl get deploy
 NAME               READY   UP-TO-DATE   AVAILABLE   AGE
 nginx-deployment   1/1     1            1           115s
-
 ```
 
 Our deployment is up and running, so we can now add HPA to it. Just like anything in Kubernetes, you can add HPA by creating and applying the YAML definition, just like we did with this deployment. Another option is to use the **kubectl autoscale** command. Let's start with the latter. To create HPA with **kubectl** **autoscale,** you need to execute the following command: 
 
 ```yaml
-
 $ kubectl autoscale deploy nginx-deployment --min=1 --max=5 --cpu-percent=80
 horizontalpodautoscaler.autoscaling/nginx-deployment autoscaled
-
 ```
 
 After **kubectl autoscale,** we need to specify the resource type we want to autoscale. In our case, it's **deploy** (short for deployment), and then we specify the deployment name. After that, we pass the minimum and maximum amount of pods HPA can create and the condition on which to scale. 
@@ -142,11 +136,9 @@ After **kubectl autoscale,** we need to specify the resource type we want to aut
 In our example, we tell HPA to scale out pods when their CPU usage goes over 80%. And since in our deployment earlier we specified CPU requests of 100m, this means our HPA will start scaling out nginx-deployment when its average CPU usage goes over 80m. Let's validate that. First, we double-check if HPA is working using **kubectl get hpa:** 
 
 ```yaml
-
 $ kubectl get hpa
 NAME               REFERENCE                     TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
 nginx-deployment   Deployment/nginx-deployment   0%/80%    1         5         1          54s
-
 ```
 
 We can see it's working, and our nginx deployment is currently running one pod. There is no traffic on it, so it makes sense. But let's see if HPA will do its job when we put some traffic on nginx. For that, I'll deploy a simple load generator: 
@@ -182,27 +174,22 @@ spec:
 Once deployed (using **kubectl apply -f load-generator.yaml**) we can monitor your nginx deployment CPU usage with **kubectl top pods:** 
 
 ```yaml
-
 $ kubectl top pods
 NAME                               CPU(cores)   MEMORY(bytes)
 nginx-deployment-bc54c744b-tlpds   112m         4Mi
-
 ```
 
 And when we see the CPU usage goes over 80m, we can check the status of HPA again: 
 
 ```yaml
-
 $  ~ kubectl get hpa
 NAME               REFERENCE                     TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
 nginx-deployment   Deployment/nginx-deployment   138%/80%   1         5         2          16m
-
 ```
 
 And shortly after that, the target CPU usage should also drop (since the traffic is now distributed to two pods): 
 
 ```yaml
-
 $ kubectl get hpa
 NAME               REFERENCE                     TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
 nginx-deployment   Deployment/nginx-deployment   59%/80%   1         5         2          20m
@@ -211,7 +198,6 @@ $ kubectl top pods
 NAME                               CPU(cores)   MEMORY(bytes)
 nginx-deployment-bc54c744b-qshtz   52m          3Mi
 nginx-deployment-bc54c744b-tlpds   59m          3Mi
-
 ```
 
 So, HPA is working as expected. It increased the number of pods for our deployment based on the load. Just keep in mind that HPA doesn't work instantly. It usually takes a few seconds before it will take any action, just to avoid unnecessary scaling actions on very short load spikes. 
@@ -219,26 +205,24 @@ So, HPA is working as expected. It increased the number of pods for our deployme
 You now know how to create HPA with **kubectl,** and this is how you do the same with YAML definition: 
 
 ```yaml
-
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: nginx-hpa
+   name: nginx-hpa
 spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: nginx-deployment
-  minReplicas: 1
-  maxReplicas: 5
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 80
-
+   scaleTargetRef:
+     apiVersion: apps/v1
+     kind: Deployment
+     name: nginx-deployment
+   minReplicas: 1
+   maxReplicas: 5
+   metrics:
+   - type: Resource
+     resource:
+       name: cpu
+       target:
+         type: Utilization
+         averageUtilization: 80
 ```
 
 I showed you the basic usage of HPA using only CPU metrics. But you can also use memory usage instead. For that, you only need to change **name:** to **memory** in your HPA YAML definition. 
@@ -250,27 +234,25 @@ HPA can also be configured using custom metrics. For example, take the average H
 Let's see an example. If your application exposes a metric called "orders-pending," we can use the AverageValue of that metric to configure HPA as follows: 
 
 ```yaml
-
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: nginx-hpa-custom
+   name: nginx-hpa-custom
 spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: nginx-deployment
-  minReplicas: 1
-  maxReplicas: 5
-  metrics:
-  - type: Pods
-    pods:
-      metric:
-        name: orders-pending
-      target:
-        type: AverageValue
-        averageValue: 10
-
+   scaleTargetRef:
+     apiVersion: apps/v1
+     kind: Deployment
+     name: nginx-deployment
+   minReplicas: 1
+   maxReplicas: 5
+   metrics:
+   - type: Pods
+     pods:
+       metric:
+         name: orders-pending
+       target:
+         type: AverageValue
+         averageValue: 10
 ```
 
 Custom metrics are quite a broad topic and will depend on your use case. For more information on custom metrics, you can refer to Kubernetes documentation [here](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics). 

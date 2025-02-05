@@ -3,7 +3,7 @@ title: How to Setup Test Environments That Are Easy to Maintain
 summary: >-
   How to set up test environment | Data, Scope, environment lifetime, and what
   is the focus and goal at each stage.
-publishDate: 'Fri Apr 21 2023 19:37:52 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Fri Apr 21 2023 19:37:52 GMT+0000 (Coordinated Universal Time)"
 author: taurai-mutimutema
 readingTime: 6
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=setup-test-environment
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/e860bfc6e52f225fe1a870172da90274.jpg
 excerpt: >-
   How to set up test environment | Data, Scope, environment lifetime, and what
@@ -44,18 +44,20 @@ Skipping the creation of test environments, or running badly configured ones, ca
 #### Common Testing Environments
 
 Testing saves your team a lot of time (and face). As such, it's worth investing in the most suitable environments for your applications. Not all testing environments are the same. In fact, testing itself takes place at different stages along an application's metamorphosis. Three such milestones, each sparking an environment, commonly appear regardless of your development framework.
-*   **Development:** Tests run alongside new feature additions. Since this is where the main copy (branch) of an application resides, setting up is near effortless and cost the least to manage.
-*   **Testing:** This environment is created after development as a separate environment for engineers to put applications under various tests. This can be a minimum resource allocated container. It's a discovery phase that might itself be replicated to try out different testing frameworks/applications.
-*   **Staging:** Staging is perfect for post-development demonstrations of the application to a few users, but not the entire user base. Usually an opportunity for the app' investors/owners to check if the product addresses their business case.
+
+- **Development:** Tests run alongside new feature additions. Since this is where the main copy (branch) of an application resides, setting up is near effortless and cost the least to manage.
+- **Testing:** This environment is created after development as a separate environment for engineers to put applications under various tests. This can be a minimum resource allocated container. It's a discovery phase that might itself be replicated to try out different testing frameworks/applications.
+- **Staging:** Staging is perfect for post-development demonstrations of the application to a few users, but not the entire user base. Usually an opportunity for the app' investors/owners to check if the product addresses their business case.
 
 Some QAs will include the production environment as another test opportunity. Yes, continuous tests have become the norm, especially with teams practicing CI/CD principles. Being continuous implies an application is always being worked on. Consequently, changes made due to test results after deployment just mean we're in the development environment, after all.
 
 #### Challenges in Setting Up Test Environments
 
 Even with the knowledge of which environment to create, how well your testing turns out depends on **how** you create and manage the environment. Without proper management of test environments, the following burdens can plague your team:
-*   **Brittle smoke tests:** This leads to loss of confidence in a project's feasibility. In practice, you'll only find out that your environment caused test failures, and not your application. However, you'll have already wasted valuable time and possibly drowned team morale.
-*   **High cost of data synchronization with production:** Running tests on live data (or subsets of it) requires proper planning and infrastructure setup. Unpleasant loss of data, or corruption of live instances, can ruin tests altogether.
-*   **Inconsistent test data across teams:** All members of a development team should be up to speed with the most up-to-date test data. Inconsistencies that arise due to badly configured test environments can result in teams wasting efforts on otherwise resolved issues.
+
+- **Brittle smoke tests:** This leads to loss of confidence in a project's feasibility. In practice, you'll only find out that your environment caused test failures, and not your application. However, you'll have already wasted valuable time and possibly drowned team morale.
+- **High cost of data synchronization with production:** Running tests on live data (or subsets of it) requires proper planning and infrastructure setup. Unpleasant loss of data, or corruption of live instances, can ruin tests altogether.
+- **Inconsistent test data across teams:** All members of a development team should be up to speed with the most up-to-date test data. Inconsistencies that arise due to badly configured test environments can result in teams wasting efforts on otherwise resolved issues.
 
 All these problem cases cause setup costs to accumulate. Unmanaged, a team might use the budget on unnecessary or duplicate resources.
 

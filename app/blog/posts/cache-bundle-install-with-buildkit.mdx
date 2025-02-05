@@ -1,7 +1,7 @@
 ---
 title: Cache Bundle Install with BuildKit
-summary: ''
-publishDate: 'Mon May 22 2023 21:15:30 GMT+0000 (Coordinated Universal Time)'
+summary: ""
+publishDate: "Mon May 22 2023 21:15:30 GMT+0000 (Coordinated Universal Time)"
 author: jeremy-kreutzbender
 readingTime: 4
 categories: &ref_0
@@ -16,7 +16,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=cache-bundle-install-with-buildkit
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/54f242bfc5acedea0993fbf3735bc4af.png
 excerpt: >-
   At Release, we've been using BuildKit to do our own builds for some time now
@@ -118,9 +118,9 @@ The mount cache accepts an <code inline>id</code> as a parameter. The [documenta
 
 > Optional ID to identify separate/different caches. Defaults to the value of the target.
 
-Setting an ID is valuable if there are potentially lots of Dockerfiles running on the same BuildKit server who might be attempting to use the same cache location; imagine if two different Rails projects started sharing the same directory! 
+Setting an ID is valuable if there are potentially lots of Dockerfiles running on the same BuildKit server who might be attempting to use the same cache location; imagine if two different Rails projects started sharing the same directory!
 
-Which leads us to the second parameter of <code inline>sharing</code>. The [documentation](https://docs.docker.com/engine/reference/builder/#run---mounttypecache) says: 
+Which leads us to the second parameter of <code inline>sharing</code>. The [documentation](https://docs.docker.com/engine/reference/builder/#run---mounttypecache) says:
 
 > One of shared, private, or locked. Defaults to shared. A shared cache mount can be used concurrently by multiple writers. private creates a new mount if there are multiple writers. locked pauses the second writer until the first one releases the mount.
 
@@ -148,12 +148,13 @@ If you would like to read more about how the caching works, there is an issue on
 And if you would like to apply this caching mechanism to your build process, sign-up for Release and take advantage of our BuildKit servers!
 
 ```css
-blockquote { 
-  font-size: 1.25rem; 
-} 
-
-@media screen and (max-width: 479px) { 
-  blockquote { 
-    font-size: 1.0rem; 
-  } 
+blockquote {
+  font-size: 1.25rem;
 }
+
+@media screen and (max-width: 479px) {
+  blockquote {
+    font-size: 1rem;
+  }
+}
+```

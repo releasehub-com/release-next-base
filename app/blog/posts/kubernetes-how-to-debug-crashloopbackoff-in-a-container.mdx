@@ -3,7 +3,7 @@ title: Kubernetes - How to Debug CrashLoopBackOff in a Container
 summary: >-
   If you’ve used Kubernetes (k8s), you’ve probably bumped into the dreaded
   CrashLoopBackOff. A CrashLoopBackOff is possibl
-publishDate: 'Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)"
 author: david-giffin
 readingTime: 3
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=kubernetes-how-to-debug-crashloopbackoff-in-a-container
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/4e91e41da26a361f3123c6c7a68815ee.jpg
 excerpt: >-
   If you’ve used Kubernetes (k8s), you’ve probably bumped into the dreaded
@@ -109,16 +109,17 @@ Note: k8s uses a different naming convention for Docker Entrypoint and Cmd. In K
 
                                                  
 
-| Description | The command run by the container | Arguments passed to the command |
-| --- | --- | --- |
-| Docker field name | Entrypoint | Cmd |
-| Kubernetes field name | Cmd | args |
+| Description           | The command run by the container | Arguments passed to the command |
+| --------------------- | -------------------------------- | ------------------------------- |
+| Docker field name     | Entrypoint                       | Cmd                             |
+| Kubernetes field name | Cmd                              | args                            |
 
 There are a few tricks to understanding how the container you’re working with starts up. In order to get the startup command when you’re dealing with someone else’s container, we need to know the intended Docker Entrypoint and Cmd of the Docker image. If you have the Dockerfile that created the Docker image, then you likely already know the Entrypoint and Cmd, unless you aren’t defining them and inheriting from a base image that has them set.
 
 When dealing with either off the shelf containers, using someone else’s container and you don’t have the Dockerfile, or you’re inheriting from a base image that you don’t have the Dockerfile for, you can use the following steps to get the values you need. First, we pull the container locally using docker pull, then we inspect the container image to get the Entrypoint and Cmd:
-*   docker pull <image id=""></image>
-*   docker inspect <image id=""></image>
+
+- docker pull <image id=""></image>
+- docker inspect <image id=""></image>
 
 Here we use jq to filter the JSON response from docker inspect:
 
@@ -194,7 +195,7 @@ spec:
         - tail
         - "-f"
         - /dev/null
- 
+
 ```
 
 Here’s the configuration in Release:
@@ -216,19 +217,22 @@ You can now use kubectl or k9s to exec into the container and take a look around
 Depending on the container you’re running, it may be missing many of the tools necessary to debug your problem like: curl, lsof, vim; and if it’s someone else’s code, you probably don’t know which version of linux was used to create the image. We typically try all of the common package managers until we find the right one. Most containers these days use Alpine Linux (apk package manager) or a Debian, Ubuntu (apt-get package manager) based image. In some cases we’ve seen Centos and Fedora, which both use the yum package manager.
 
 One of the following commands should work depending on the operating system:
-*   apk
-*   apt-get
-*   yum
+
+- apk
+- apt-get
+- yum
 
 Dockerfile maintainers often remove the cache from the package manager to shrink the size of the image, so you may also need to run one of the following:
-*   apk update
-*   apt-get update
-*   yum makecache
+
+- apk update
+- apt-get update
+- yum makecache
 
 Now you need to add the necessary tools to help with debugging. Depending on the package manager you found, use one of the following commands to add useful debugging tools:
-*   apt-get install -y curl vim procps inetutils-tools net-tools lsof
-*   apk add curl vim procps net-tools lsof
-*   yum install curl vim procps lsof
+
+- apt-get install -y curl vim procps inetutils-tools net-tools lsof
+- apk add curl vim procps net-tools lsof
+- yum install curl vim procps lsof
 
 At this point, it’s up to you to figure out the problem. You can edit files using vim to tweak the container until you understand what’s going on. If you forget all of the files you’ve touched on the container, you can alway kill the pod and the container will restart without your changes. Always remember to write down the steps taken to get the container working. You’ll want to use your notes to alter the Dockerfile or add commands to the container startup scripts.
 

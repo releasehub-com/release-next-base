@@ -5,7 +5,7 @@ title: >-
 summary: >-
   These two methods for using Kubernetes health checks will improve your
   applications running in production.
-publishDate: 'Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)"
 author: regis-wilson
 readingTime: 5
 categories: &ref_0
@@ -22,7 +22,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=kubernetes-health-checks-2-ways-to-improve-stability
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/42573700288680e0692c4a12793ae14b.jpg
 excerpt: >-
   These two methods for using Kubernetes health checks will improve your
@@ -33,50 +33,46 @@ ctaButton: Try Release for Free
 
 ### Kubernetes Health Checks - 2 Ways to Improve Stability in Your Production Applications
 
-Health checks are often a last-minute addition to your application stack, if they are even included at all. Advanced Site Reliability Engineering (SRE) practices try to push best practices (like health checks) forward so they are included early before applications are deployed. Many engineers know intuitively that health checks are important, but getting them implemented correctly—and keeping them up to date—is very hard. This article tries to document best practices for health checks, application development including SRE tenets, and how to improve the stability and even performance of your application when it runs in production.  
+Health checks are often a last-minute addition to your application stack, if they are even included at all. Advanced Site Reliability Engineering (SRE) practices try to push best practices (like health checks) forward so they are included early before applications are deployed. Many engineers know intuitively that health checks are important, but getting them implemented correctly—and keeping them up to date—is very hard. This article tries to document best practices for health checks, application development including SRE tenets, and how to improve the stability and even performance of your application when it runs in production.
 
 At [Release](https://release.com), we have [previously written](https://release.com/blog/kubernetes-pods-advanced-concepts-explained) about how we monitor and configure applications so you can also read that blog post now or at a later time.
 
 ### Costs of Downtime and Instability in Production
 
-Do you know how much it costs for your application to go offline? Don’t worry if you don’t—or can’t—know the exact figure: the important thing is to go through the mental process of estimating how much an outage or degradation to your application would “cost.” Costs are not only measured in currency, you need to also consider impacts to your brand, your Net Promoter Score (NPS), chatter online and on social media among customers and potential customers, and even negative reactions in the public media.  
+Do you know how much it costs for your application to go offline? Don’t worry if you don’t—or can’t—know the exact figure: the important thing is to go through the mental process of estimating how much an outage or degradation to your application would “cost.” Costs are not only measured in currency, you need to also consider impacts to your brand, your Net Promoter Score (NPS), chatter online and on social media among customers and potential customers, and even negative reactions in the public media.
 
-I have worked in Site Reliability and DevOps my whole career and I have worked at many different companies whose responses for downtime ranged from the casual “our site will be back up eventually and we’ll be fine” to “we have lost $XXX per minute in revenue and we need to investigate methods for replacing that revenue”. No matter the response, I still did the best job my team and I could muster to keep the application and infrastructure services alive and well. There will always be bugs and issues with the code that is deployed and how it runs, however, if a problem occurs at a lower level in the application stack or in the infrastructure itself, then the application simply has no hope of servicing the needs of the consumers who visit your site.  
+I have worked in Site Reliability and DevOps my whole career and I have worked at many different companies whose responses for downtime ranged from the casual “our site will be back up eventually and we’ll be fine” to “we have lost $XXX per minute in revenue and we need to investigate methods for replacing that revenue”. No matter the response, I still did the best job my team and I could muster to keep the application and infrastructure services alive and well. There will always be bugs and issues with the code that is deployed and how it runs, however, if a problem occurs at a lower level in the application stack or in the infrastructure itself, then the application simply has no hope of servicing the needs of the consumers who visit your site.
 
 The metaphor that I used often was one of cars driving on the motorway: if the roads are wet and slippery, then the cars will be unsafe and dangerous. When and if a crash occurs, then the roads will also be blocked and traffic will stop while the crash is cleaned up. It's true that the cars may run out of petrol, the drivers may get lost and go to the wrong destination, or the cars may not have good horsepower to drive quickly, but all of those factors are a higher order concern in the traffic stack. In this way, I saw my team’s and my job as keeping the roads as clear and safe and uncongested as possible so that the cars could operate at the best possible level.
 
 ### The Symptoms Are The Disease
 
-Very early in the internet industry, the best practices for application stability were primitive and reactionary. Site reliability involved a manual post-mortem approach: finding out what happened and then applying monitoring and alerting on that behaviour to alert an operator that something was wrong. The best practices at the time involved a team of on-call engineers and operators who would literally watch an application 24 hours a day, 365 days a year (one extra day for leap years) and respond within a certain timeframe (usually less than fifteen minutes) to manually investigate and fix any issues that came up. In some cases the “team” was actually one poor person tasked with the impossible job of being on-call indefinitely.  
+Very early in the internet industry, the best practices for application stability were primitive and reactionary. Site reliability involved a manual post-mortem approach: finding out what happened and then applying monitoring and alerting on that behaviour to alert an operator that something was wrong. The best practices at the time involved a team of on-call engineers and operators who would literally watch an application 24 hours a day, 365 days a year (one extra day for leap years) and respond within a certain timeframe (usually less than fifteen minutes) to manually investigate and fix any issues that came up. In some cases the “team” was actually one poor person tasked with the impossible job of being on-call indefinitely.
 
 There are several drawbacks to this approach, not the least of which is the human toll such manual response takes and the unsustainable pace. The cost of the team, the cost of staff turnover and training, the losses due to turnaround time and missed calls, and the impact to end users were all huge reasons to implement a better solution.
 
 ### Health Checks to the Rescue
 
-One key initiative that came about in the early aughts was the concept of a health check in the load balancer. I was part of a team that worked with several major load balancer manufacturers to implement a way to not only route traffic to services in our application, but to add monitors and tests (even then we called them “health checks”) to the endpoints which would allow us to add or remove services that were not responding or were unhealthy. The concept was that a web application would respond on a well-known port and respond with a well-known response that proved the application was ready to serve traffic.  
+One key initiative that came about in the early aughts was the concept of a health check in the load balancer. I was part of a team that worked with several major load balancer manufacturers to implement a way to not only route traffic to services in our application, but to add monitors and tests (even then we called them “health checks”) to the endpoints which would allow us to add or remove services that were not responding or were unhealthy. The concept was that a web application would respond on a well-known port and respond with a well-known response that proved the application was ready to serve traffic.
 
-For example, we might query the backend service at _http://192.168.0.10/health-check_ and we expected the service to respond with a string like _200 OK_. This trivial example doesn’t sound like much until you realised that our end-goal was to actually perform some internal checks in the application which would allow us to do more than respond with a static string. For example, the application might check that the database is responding to a sample query that a table exists, and then the application could check that the CPU was at some nominal value. Therefore, the health check could be expanded to something like:  
+For example, we might query the backend service at _http://192.168.0.10/health-check_ and we expected the service to respond with a string like _200 OK_. This trivial example doesn’t sound like much until you realised that our end-goal was to actually perform some internal checks in the application which would allow us to do more than respond with a static string. For example, the application might check that the database is responding to a sample query that a table exists, and then the application could check that the CPU was at some nominal value. Therefore, the health check could be expanded to something like:
 
 ```yaml
-
 HTTP/1.0 200 OK
 
 Checking DB… ok
 Checking CPU… ok
 Checking User cache… ok
-
 ```
 
 Conversely, if something went wrong, the application could respond something like this:
 
 ```yaml
-
 HTTP/1.0 500 CRITICAL
 
 Checking DB... ok
 Checking CPU… ok
 Checking User cache… CORRUPTED
-
 ```
 
 Using the response code of 200 and looking for the string “OK” (for example), the load balancer manufacturers were able to remove a service from the backend pool, allowing other servers to accept requests and avoid servers that would otherwise have an error. Also, we could set a timeout so that the load balancer would consider no response to be an error. In this way, we can remove traffic from servers that were not responsive. The beauty of the system we were designing was that we were going to be able to monitor errors proactively and directly at the origin. The servers would be removed before they became a problem.
@@ -113,7 +109,7 @@ In fact, we believe that readiness probes are so important to correct functionin
 
 Here are some actual examples of health checks that we have implemented for our customers. These examples are generic enough to be applied almost anywhere.
 
-In this example we do a simple Nginx check on port 80 to ensure that the application is responding before we send traffic to the proxy.  
+In this example we do a simple Nginx check on port 80 to ensure that the application is responding before we send traffic to the proxy.
 
 ```yaml
   readiness_probe:
@@ -166,6 +162,6 @@ This example is good to show how a non-HTTP check for a postgres database can be
 
 ### Step N, Profit
 
-By implementing either (or both!) of these health checks, you can not only reduce the amount of time humans have to spend monitoring and interfering with applications, but you can even dramatically improve your traffic response levels, response times, and performance. In some cases, you might even be able to measure the impact to your customers’ NPS and/or your company’s top and bottom line.  
+By implementing either (or both!) of these health checks, you can not only reduce the amount of time humans have to spend monitoring and interfering with applications, but you can even dramatically improve your traffic response levels, response times, and performance. In some cases, you might even be able to measure the impact to your customers’ NPS and/or your company’s top and bottom line.
 
 Photo by [Hush Naidoo](https://unsplash.com/@hush52?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/s/photos/health?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)

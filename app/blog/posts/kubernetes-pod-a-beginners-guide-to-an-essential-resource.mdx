@@ -1,9 +1,9 @@
 ---
-title: 'Kubernetes Pod: A Beginner''s Guide to an Essential Resource'
+title: "Kubernetes Pod: A Beginner's Guide to an Essential Resource"
 summary: >-
   Pods are essential to any Kubernetes cluster. Learn everything about one of
   the most important Kubernetes resources.
-publishDate: 'Fri Apr 21 2023 18:22:03 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Fri Apr 21 2023 18:22:03 GMT+0000 (Coordinated Universal Time)"
 author: regis-wilson
 readingTime: 4
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=kubernetes-pod-a-beginners-guide-to-an-essential-resource
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/2266b02b751a19c98eb0df977859ad01.jpg
 excerpt: >-
   Pods are essential to any Kubernetes cluster. Learn everything about one of
@@ -43,7 +43,7 @@ Long story short: if you mainly deploy single containers, there isn't much diffe
 
 ### Pod Lifecycles
 
-Just like many other resources Kubernetes pods can be in a pending, running, or succeeded/failed state. You can check the status of your pod by executing **kubectl describe pod \[your\_pod\_name\]:** 
+Just like many other resources Kubernetes pods can be in a pending, running, or succeeded/failed state. You can check the status of your pod by executing **kubectl describe pod \[your_pod_name\]:** 
 
 ```yaml
 
@@ -100,29 +100,25 @@ Kubernetes secrets can be consumed by pods. Kubernetes service resources used to
 I'll show you how to create a pod, but be aware that normally you wouldn't create pods directly. You should use higher-level resources like [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) that will take care of creating pods for you. But if you ever need it for testing or learning purposes, you can create a pod with the following YAML definition: 
 
 ```yaml
-
 apiVersion: v1
 kind: Pod
 metadata:
-  name: nginx-pod-example
+   name: nginx-pod-example
 spec:
-  containers:
-    - name: nginx
-      image: nginx
-
+   containers:
+     - name: nginx
+       image: nginx
 ```
 
 You can apply it just like any other Kubernetes YAML definition, using **kubectl apply -f:** 
 
 ```yaml
-
-$ kubectl apply -f pod.yaml 
+$ kubectl apply -f pod.yaml
 pod/nginx-pod-example created
 
 $ kubectl get pod nginx-pod-example
 NAME                READY   STATUS    RESTARTS   AGE
 nginx-pod-example   1/1     Running   0          6s
-
 ```
 
 ### Pods With Multiple Containers

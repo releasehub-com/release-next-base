@@ -1,21 +1,21 @@
 ---
-title: 'Using Environment Variables in Angular: A Guide'
+title: "Using Environment Variables in Angular: A Guide"
 excerpt: >-
   Learn how to effectively use environment variables in your Angular
   applications for better configuration management.
-date: '2024-02-05'
+date: "2024-02-05"
 ogImage: /blog-images/9de6930e0d988897966633594a3cfe34.png
 summary: >-
   What are environments? Why do you need them? And how do you correctly use
   environment variables in an Angular app?
-publishDate: ''
-author: ''
+publishDate: ""
+author: ""
 readingTime: 5
 categories: &ref_0
   - platform-engineering
   - product
 mainImage: /blog-images/9de6930e0d988897966633594a3cfe34.png
-imageAlt: 'Using Environment Variables in Angular: A Guide'
+imageAlt: "Using Environment Variables in Angular: A Guide"
 showCTA: true
 ctaCopy: >-
   By automating environment setup like Angular, Release simplifies managing
@@ -23,7 +23,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=using-environment-variables-in-angular-a-guide
 relatedPosts:
-  - ''
+  - ""
 tags: *ref_0
 ctaButton: Try Release for Free
 ---
@@ -77,15 +77,15 @@ Let's explore this a bit.
 In the **src/app/app.component.ts** file, import the **isDevMode** from **@angular/core**:
 
 ```typescript
-import { Component, isDevMode } from '@angular/core';
+import { Component, isDevMode } from "@angular/core";
 ```
 
 Then, create a variable called **environment** inside the AppComponent:
 
 ```typescript
 @Component({
-  selector: 'app-root',
-  template: '<h1>{{title}}</h1>'
+  selector: "app-root",
+  template: "<h1>{{title}}</h1>",
 })
 export class AppComponent {
   title = "angular-environment-variables";
@@ -97,13 +97,13 @@ Now we can use the **isDevMode** to populate the **environment** variable above:
 
 ```typescript
 @Component({
-  selector: 'app-root',
-  template: '<h1>{{title}}</h1>'
+  selector: "app-root",
+  template: "<h1>{{title}}</h1>",
 })
 export class AppComponent {
   title = "angular-environment-variables";
   environment = "";
-  
+
   ngOnInit() {
     if (isDevMode()) {
       this.environment = "Development";
@@ -139,7 +139,7 @@ First, let's look at the default contents of each. The **/src/environments/envir
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 export const environment = {
-  production: false
+  production: false,
 };
 
 /*
@@ -157,7 +157,7 @@ Similarly, if we look at the **/src/environmnets/environment.prod.ts** file, we 
 
 ```typescript
 export const environment = {
-  production: true
+  production: true,
 };
 ```
 
@@ -166,7 +166,7 @@ Now, let's say you wish to add API URLs for the development and production envir
 ```typescript
 export const environment = {
   production: false,
-  apiUrl: 'local api url'
+  apiUrl: "local api url",
 };
 ```
 
@@ -175,7 +175,7 @@ And your **/src/environments/environments.prod.ts** file could look like this:
 ```typescript
 export const environment = {
   production: true,
-  apiUrl: 'production api url'
+  apiUrl: "production api url",
 };
 ```
 
@@ -183,18 +183,18 @@ Now, let's go and use these environment variables in our app component. Update t
 
 ```typescript
 // app.component.ts
-import { Component, isDevMode } from '@angular/core';
-import { environment } from '../environments/environment';
+import { Component, isDevMode } from "@angular/core";
+import { environment } from "../environments/environment";
 
 @Component({
-  selector: 'app-root',
-  template: '<h1>{{title}}</h1>'
+  selector: "app-root",
+  template: "<h1>{{title}}</h1>",
 })
 export class AppComponent {
   title = "angular-environment-variables";
   environment = "";
   apiUrl = environment.apiUrl;
-  
+
   ngOnInit() {
     if (isDevMode()) {
       this.environment = "Development";
@@ -208,7 +208,10 @@ export class AppComponent {
 Then, we can update the template:
 
 ```html
-<h1>This is Angular app running in {% raw %}{{environment}}{% endraw %} Environment</h1>
+<h1>
+  This is Angular app running in {% raw %}{{environment}}{% endraw %}
+  Environment
+</h1>
 <h3>API URL: {% raw %}{{apiUrl}}{% endraw %}</h3>
 ```
 
@@ -268,7 +271,7 @@ Now, we'll create a new file called **environment.stage.ts** inside the **/src/e
 ```typescript
 export const environment = {
   production: false,
-  apiUrl: 'staging api url'
+  apiUrl: "staging api url",
 };
 ```
 

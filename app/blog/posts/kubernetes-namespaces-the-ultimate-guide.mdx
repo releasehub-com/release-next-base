@@ -1,9 +1,9 @@
 ---
-title: 'Kubernetes Namespaces: The Ultimate Guide'
+title: "Kubernetes Namespaces: The Ultimate Guide"
 summary: >-
   In this post we talk about kubernetes namespaces. We discuss what are they,
   how they work and what they're useful for
-publishDate: 'Fri Apr 21 2023 18:46:03 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Fri Apr 21 2023 18:46:03 GMT+0000 (Coordinated Universal Time)"
 author: ashley-penney
 readingTime: 7
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=kubernetes-namespaces-the-ultimate-guide
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/2266b02b751a19c98eb0df977859ad01.jpg
 excerpt: >-
   In this post we talk about kubernetes namespaces. We discuss what are they,
@@ -42,10 +42,8 @@ Now that you know what Kubernetes namespaces are, let's talk about what they can
 Only one team will succeed. The other will get an error message saying that an nginx deployment already exists. A simple solution for that could be to make the names of the deployments unique by, for example, adding a number or the name of the team to the deployment name.
 
 ```yaml
-
 kubectl run nginx-teamA --image=nginx
 kubectl run nginx-teamB --image=nginx
-
 ```
 
 This would work, but it would be prone to errors, and it requires extra overhead. You won't be able to simply follow a tutorial on the internet about Kubernetes and copy and paste the commands from there because you'd have to adjust the names of resources every single time. Not great. That's exactly why namespaces exist. They isolate resources. This means you can have two nginx deployments running with the same name but in two separate namespaces. From each team's perspective, it would look like they have their own clusters. They won't have to worry about the other team's deployments.
@@ -77,23 +75,19 @@ Enough of theory. Let's see namespaces in action. The basic usage of namespaces 
 We mentioned before that Kubernetes comes with a namespace called "default". In fact, there may be more namespaces on your brand-new cluster, depending on how it was deployed and which version of Kubernetes you're using. Let's validate that. To see the list of namespaces on your cluster, you can execute **kubectl get namespaces:**
 
 ```yaml
-
 $ kubectl get namespaces
 NAME              STATUS   AGE
 default           Active   69s
 kube-system       Active   69s
 kube-public       Active   69s
 kube-node-lease   Active   69s
-
 ```
 
 As you can see, my cluster comes with four namespaces. Those named with prefix **kube-** are Kubernetes's own namespaces. **kube-system** holds Kubernetes components, so you definitely don't want to delete anything there. In fact, if you're a beginner, you should not touch any **kube-** prefixed namespaces. For you, there is the **default** namespace created. As mentioned before, this is the namespace where all your resources will be deployed if you don't specify otherwise. For example, if I execute **kubectl get pods** on an empty cluster, I'll see the following message:
 
 ```yaml
-
 $ kubectl get pods
 No resources found in default namespace.
-
 ```
 
 Following the same logic, if I create a pod without specifying a namespace, it will be created in a default namespace:
@@ -113,14 +107,12 @@ Namespace:    default
 As with many other Kubernetes objects, you can also use a shortcut, in this case **ns**, instead of typing **namespace** every time, so executing **kubectl get ns** will have the same effect as **kubectl get namespaces:**
 
 ```yaml
-
 $ kubectl get ns
 NAME              STATUS        AGE
 default           Active        25m
 kube-system       Active        25m
 kube-public       Active        25m
 kube-node-lease   Active        25m
-
 ```
 
 #### kubectl create namespace
@@ -128,16 +120,13 @@ kube-node-lease   Active        25m
 Now that you know how to see which namespaces you have in your cluster, let's add some more. For this, you can execute **kubectl create namespace** followed by the name of the desired namespace:
 
 ```yaml
-
 $ kubectl create namespace frontend
 namespace/frontend created
-
 ```
 
 If you execute **kubectl get namespaces** again, you should see your new namespace in the list now:
 
 ```yaml
-
 $ kubectl get namespaces
 NAME              STATUS   AGE
 default           Active   14m
@@ -145,43 +134,34 @@ kube-system       Active   14m
 kube-public       Active   14m
 kube-node-lease   Active   14m
 frontend          Active   8s
-
 ```
 
 Now that you have a new namespace, you can append **\--namespace=frontend** to any other **kubectl** action to specify that you want to use that specific namespace. So, for example, to deploy your nginx deployment in that namespace, you can run the following:
 
 ```yaml
-
 $ kubectl run nginx --image=nginx --restart=Never --namespace=frontend
 pod/nginx created
-
 ```
 
 If you check the pods on your cluster now, you'll see no running pods.
 
 ```yaml
-
 $ kubectl get pods
 No resources found in default namespace.
-
 ```
 
 Wait, what? Well, read the message again. It says that there are no resources in the **default** namespace. This is expected since we just deployed nginx in the **frontend** namespace. Therefore, you need to append **\--namespace=frontend** to the **kubectl get pods** command:
 
 ```yaml
-
 $ kubectl get pods --namespace=frontend
 NAME    READY   STATUS    RESTARTS   AGE
 nginx   1/1     Running   0          3m7s
-
 ```
 
 If you get tired of adding the long **\--namespace=frontend** parameter every time, you can also force your **kubectl** to use a specific namespace by default instead of the default "default" namespace. You can do that by executing the following:
 
 ```yaml
-
 kubectl config set-context --current --namespace=frontend
-
 ```
 
 You just need to remember that all your commands will now be executed against the **frontend** namespace and not the **default** namespace.
@@ -191,7 +171,6 @@ You just need to remember that all your commands will now be executed against th
 Deleting a namespace is as straightforward as creating one. You can do it by executing the **kubectl delete namespace** followed by the name of the namespace you want to delete. Here's an example:
 
 ```yaml
-
 $ kubectl get namespaces
 NAME STATUS AGE
 default Active 22m
@@ -209,7 +188,6 @@ default Active 22m
 kube-system Active 22m
 kube-public Active 22m
 kube-node-lease Active 22m
-
 ```
 
 Keep in mind that this will delete all resources within the namespace too. Your pods won't automatically move to another namespace. Also keep in mind that for the same reason, deleting the namespace can sometimes take a long time. If you have a lot of resources running in the namespace, Kubernetes will first try to delete all of them before deleting the namespace itself. For example, deleting pods can take some time, depending on their configuration.
@@ -232,42 +210,36 @@ No resource limits.
 
 ### Namespaces in YAML
 
-It's great to know how to use namespaces with **kubectl,** but in the real world, you'll probably manage all your Kubernetes resources with YAML files. You'll then need to specify which namespace to use in that YAML file. How do you do that? It's straightforward. Just add **namespace: \[namespace\_name\]** in the **metadata** section of your Kubernetes definition file.
+It's great to know how to use namespaces with **kubectl,** but in the real world, you'll probably manage all your Kubernetes resources with YAML files. You'll then need to specify which namespace to use in that YAML file. How do you do that? It's straightforward. Just add **namespace: \[namespace_name\]** in the **metadata** section of your Kubernetes definition file.
 
 ```yaml
-
 apiVersion: v1
 kind: Pod
 metadata:
-  name: nginx
-  namespace: frontend
-  labels:
-    name: nginx
+   name: nginx
+   namespace: frontend
+   labels:
+     name: nginx
 spec:
-  containers:
-  - name: nginx
-    image: nginx
-
+   containers:
+   - name: nginx
+     image: nginx
 ```
 
 You can also create a namespace from a YAML file. It follows the same structure as your other Kubernetes YAML files, so you need to specify **apiVersion**, which in the case of namespaces is **v1**, then **kind**, which—you guessed it—is **namespace**. Then just define its name in the metadata section.
 
 ```yaml
-
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: backend
-
+   name: backend
 ```
 
 It's the simplest Kubernetes file you've ever seen, isn't it? You can apply it like any other Kubernetes file using **kubectl apply -f namespace.yaml**.
 
 ```yaml
-
-$ kubectl apply -f namespace.yaml 
+$ kubectl apply -f namespace.yaml
 namespace/backend created
-
 ```
 
 ![](/blog-images/e2cbeea2c29032aa4a90c0b6ff3d428a.png)

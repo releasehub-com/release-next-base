@@ -1,14 +1,14 @@
 ---
-title: 'Terraform Kubernetes Deployment: A Detailed Walkthrough'
-summary: ' Did you know that you can use Terraform for deployment of your Kubernetes clusters? Learn how and why to do it here.'
-publishDate: 'Fri Apr 21 2023 18:46:03 GMT+0000 (Coordinated Universal Time)'
+title: "Terraform Kubernetes Deployment: A Detailed Walkthrough"
+summary: " Did you know that you can use Terraform for deployment of your Kubernetes clusters? Learn how and why to do it here."
+publishDate: "Fri Apr 21 2023 18:46:03 GMT+0000 (Coordinated Universal Time)"
 author: regis-wilson
 readingTime: 6
 categories: &ref_0
   - kubernetes
   - platform-engineering
 mainImage: /blog-images/93cadc79db3755d6a026b27fe882105c.jpg
-imageAlt: 'Terraform Kubernetes Deployment: A Detailed Walkthrough'
+imageAlt: "Terraform Kubernetes Deployment: A Detailed Walkthrough"
 showCTA: true
 ctaCopy: >-
   Looking to streamline Kubernetes deployment workflows? Try Release.com for
@@ -17,9 +17,9 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=terraform-kubernetes-deployment-a-detailed-walkthrough
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/93cadc79db3755d6a026b27fe882105c.jpg
-excerpt: ' Did you know that you can use Terraform for deployment of your Kubernetes clusters? Learn how and why to do it here.'
+excerpt: " Did you know that you can use Terraform for deployment of your Kubernetes clusters? Learn how and why to do it here."
 tags: *ref_0
 ctaButton: Try Release for Free
 ---
@@ -67,18 +67,16 @@ provider "digitalocean" {
 In **main.tf** you can now define your Kubernetes.
 
 ```yaml
-
 resource "digitalocean_kubernetes_cluster" "test" {
-  name   = "test_cluster"
-  region = "nyc1"
-  version = "1.22.11-do.0"
-  node_pool {
-    name       = "worker-pool"
-    size       = "s-2vcpu-2gb"
-    node_count = 3
-  }
+name   = "test_cluster"
+region = "nyc1"
+version = "1.22.11-do.0"
+node_pool {
+name       = "worker-pool"
+size       = "s-2vcpu-2gb"
+node_count = 3
 }
-
+}
 ```
 
 Now that you have your Terraform files prepared, you need three things. First, you need to initiate the DigitalOcean provider. You can do that with **terraform init**.
@@ -196,19 +194,17 @@ For example, if you'd like your Kubernetes cluster to automatically upgrade, you
 To make your freshly deployed cluster automatically upgrade, you just need to add the following to your Kubernetes resource definition in **main.tf** as follows:
 
 ```yaml
-
 resource "digitalocean_kubernetes_cluster" "test" {
-  name   = "test-cluster"
-  region = "nyc1"
-  version = "1.22.11-do.0"
-  auto_upgrade = true
-  node_pool {
-    name       = "worker-pool"
-    size       = "s-2vcpu-2gb"
-    node_count = 3
-  }
+name   = "test-cluster"
+region = "nyc1"
+version = "1.22.11-do.0"
+auto_upgrade = true
+node_pool {
+name       = "worker-pool"
+size       = "s-2vcpu-2gb"
+node_count = 3
 }
-
+}
 ```
 
 But you're not there yet. You can quickly see in the DigitalOcean portal that the cluster currently does not automatically upgrade.
@@ -218,23 +214,20 @@ But you're not there yet. You can quickly see in the DigitalOcean portal that th
 Automatic upgrades are disabled now, so you can run **terraform plan** again to check what Terraform will try to do.
 
 ```yaml
-
 # terraform plan
 
-Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
-  ~ update in-place
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:  ~ update in-place
 Terraform will perform the following actions:
-  # digitalocean_kubernetes_cluster.test will be updated in-place
-  ~ resource "digitalocean_kubernetes_cluster" "test" {
-      ~ auto_upgrade   = false -> true
-        id             = "49fd0517-a4a5-41e8-997d-1412c081e000"
-        name           = "test-cluster"
-        tags           = []
-        # (13 unchanged attributes hidden)
-        # (2 unchanged blocks hidden)
-    }
+   # digitalocean_kubernetes_cluster.test will be updated in-place
+  ~ resource "digitalocean_kubernetes_cluster" "test" {
+  ~ auto_upgrade   = false -> true
+  id             = "49fd0517-a4a5-41e8-997d-1412c081e000"
+  name           = "test-cluster"
+  tags           = []
+  # (13 unchanged attributes hidden)
+  # (2 unchanged blocks hidden)
+  }
 Plan: 0 to add, 1 to change, 0 to destroy
-
 ```
 
 As expected, Terraform will now try to update your cluster in place and add an auto-upgrade option to it. Let's go ahead and apply that change.
@@ -351,4 +344,4 @@ Just like that, the cluster is gone.
 
 And there you have it. That's how you can manage Kubernetes clusters with Terraform. You used DigitalOcean Kubernetes for this purpose, but as mentioned before, the process will be exactly the same for other providers. You'll just need to initiate different providers in **provider.tf** and then adjust the Kubernetes resource definition in **main.tf**. It's best to follow Terraform documentation for that. You'll find examples and argument references for major cloud providers.
 
-Managing infrastructure with Terraform definitely helps you save time, but did you know that you can also easily spin up an environment on [Release](https://release.com/) directly from your docker-compose file? [Give it a shot here](https://release.com/), and if you want to expand your Terraform knowledge further, take a look at our [post about for\_each](https://release.com/blog/terraforms-for-each-examples).
+Managing infrastructure with Terraform definitely helps you save time, but did you know that you can also easily spin up an environment on [Release](https://release.com/) directly from your docker-compose file? [Give it a shot here](https://release.com/), and if you want to expand your Terraform knowledge further, take a look at our [post about for_each](https://release.com/blog/terraforms-for-each-examples).

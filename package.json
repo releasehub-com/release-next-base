@@ -16,7 +16,9 @@
     "enhance-blog-metadata-ai": "ts-node scripts/enhance-blog-metadata-ai.ts",
     "enhance-blog-metadata-ai:dry-run": "ts-node scripts/enhance-blog-metadata-ai.ts --dry-run",
     "enable-cta": "ts-node scripts/enable-cta.ts",
-    "enable-cta:dry-run": "ts-node scripts/enable-cta.ts --dry-run"
+    "enable-cta:dry-run": "ts-node scripts/enable-cta.ts --dry-run",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.1",

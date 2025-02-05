@@ -1,8 +1,8 @@
 ---
 title: How Does Terraform Enable Infrastructure as Code?
-summary: ' In this post, learn about infrastructure as code (IaC) and how Terraform enables infrastructure as code.'
-publishDate: ''
-author: ''
+summary: " In this post, learn about infrastructure as code (IaC) and how Terraform enables infrastructure as code."
+publishDate: ""
+author: ""
 readingTime: 6
 categories: &ref_0
   - platform-engineering
@@ -16,9 +16,9 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=how-does-terraform-enable-infrastructure-as-code
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/65dfbbec321f004011cd90b5d5a9c45e.jpeg
-excerpt: ' In this post, learn about infrastructure as code (IaC) and how Terraform enables infrastructure as code.'
+excerpt: " In this post, learn about infrastructure as code (IaC) and how Terraform enables infrastructure as code."
 tags: *ref_0
 ctaButton: Try Release for Free
 ---
@@ -44,16 +44,18 @@ Developing tools like [Terraform](https://www.terraform.io/) and CloudFormation 
 ## **What Are the Benefits of IaC?**
 
 These are some of the main benefits of IaC. 
-*   Simpler and more consistent provisioning: IaC helps you collaborate on infrastructure management and share infrastructure configurations with other teams and organizations.
-*   Easy and efficient infrastructure replication: By using IaC tools like Terraform, Ansible, and Puppet, we can define how we want our infrastructure to look using code. We can also deploy the configurations to any environment.
-*   Repeatable and auditable changes: You can track changes using version control, which helps keep the infrastructure up to date and reduces the risk of security threats.
+
+- Simpler and more consistent provisioning: IaC helps you collaborate on infrastructure management and share infrastructure configurations with other teams and organizations.
+- Easy and efficient infrastructure replication: By using IaC tools like Terraform, Ansible, and Puppet, we can define how we want our infrastructure to look using code. We can also deploy the configurations to any environment.
+- Repeatable and auditable changes: You can track changes using version control, which helps keep the infrastructure up to date and reduces the risk of security threats.
 
 ## **How do you Write IaC?**
 
 There are several ways to write IaC depending on your project's specific needs and requirements. Some common approaches include: 
-*   Using a declarative language such as YAML or JSON to define the desired state of your infrastructure. This approach allows you to specify your infrastructure and the IaC tool will automatically provision and configure the resources to meet those specifications.
-*   Using a procedural language such as Python or Ruby to write scripts that provision and configure your infrastructure. This approach allows you to specify the steps that need to be taken to provision and configure your infrastructure. The IaC tool will execute those steps to create the desired infrastructure.
-*   Using a configuration management tool such as Ansible or Puppet to manage your infrastructure. These tools provide a set of predefined modules to provision and configure your infrastructure in a repeatable and predictable way.
+
+- Using a declarative language such as YAML or JSON to define the desired state of your infrastructure. This approach allows you to specify your infrastructure and the IaC tool will automatically provision and configure the resources to meet those specifications.
+- Using a procedural language such as Python or Ruby to write scripts that provision and configure your infrastructure. This approach allows you to specify the steps that need to be taken to provision and configure your infrastructure. The IaC tool will execute those steps to create the desired infrastructure.
+- Using a configuration management tool such as Ansible or Puppet to manage your infrastructure. These tools provide a set of predefined modules to provision and configure your infrastructure in a repeatable and predictable way.
 
 ## **What is Terraform?**
 
@@ -77,9 +79,9 @@ HCL is a declarative language that is human-readable and easy to write and under
 
 ## **What Are the Benefits of Using Terraform?**
 
-*   Easy to use: You can codify existing system architecture into declarative configuration files. No more brittle shell scripts and manual operations.
-*   Fast: With Terraform, you can plan, create, and destroy infrastructure for hundreds of services in a matter of seconds. It doesn't require a central database, so it's also easy to install, no matter how big your environment is.
-*   Secure: Terraform provides locking mechanisms to prevent multiple teams from accidentally creating overlapping resources, which could easily happen with manual setups. Terraform also uses standard modules, so it's difficult to expose sensitive data like API keys or passwords accidentally.
+- Easy to use: You can codify existing system architecture into declarative configuration files. No more brittle shell scripts and manual operations.
+- Fast: With Terraform, you can plan, create, and destroy infrastructure for hundreds of services in a matter of seconds. It doesn't require a central database, so it's also easy to install, no matter how big your environment is.
+- Secure: Terraform provides locking mechanisms to prevent multiple teams from accidentally creating overlapping resources, which could easily happen with manual setups. Terraform also uses standard modules, so it's difficult to expose sensitive data like API keys or passwords accidentally.
 
 ![](/blog-images/371353e8ac1d8b4e6c63f7fe811b457e.jpeg)
 
@@ -96,18 +98,19 @@ resource "aws_instance" "example" {
 }
 ```
 
-In this example, you define the **aws\_instance** resource using HCL. This code specifies the desired state of the infrastructure: A virtual machine with a specific AMI and instance type. 
+In this example, you define the **aws_instance** resource using HCL. This code specifies the desired state of the infrastructure: A virtual machine with a specific AMI and instance type. 
 
 When you execute this code using the Terraform command-line interface (CLI), Terraform will provision and configure the resources in AWS to meet these specifications. The virtual machine will be created and configured automatically without requiring manual intervention. 
 
 ### **Key Features of Terraform That Support IaC**
 
 Below are some features of Terraform that support and enable IaC: 
-*   You can use the HCL declarative language to define the desired state of your infrastructure. This allows you to specify how your infrastructure should look.
-*   Support for version control enables organizations to track changes to their infrastructure over time and collaborate with other developers on infrastructure management. This makes it easier to review and test changes to infrastructure and to roll back changes if necessary.
-*   The resource graph allows you to visualize and understand your entire infrastructure.
-*   Execution plans created in Terraform show you the actions that will be required to reach your desired state.
-*   Terraform can also orchestrate multiple services and providers, allowing you to manage your resources across different cloud platforms.
+
+- You can use the HCL declarative language to define the desired state of your infrastructure. This allows you to specify how your infrastructure should look.
+- Support for version control enables organizations to track changes to their infrastructure over time and collaborate with other developers on infrastructure management. This makes it easier to review and test changes to infrastructure and to roll back changes if necessary.
+- The resource graph allows you to visualize and understand your entire infrastructure.
+- Execution plans created in Terraform show you the actions that will be required to reach your desired state.
+- Terraform can also orchestrate multiple services and providers, allowing you to manage your resources across different cloud platforms.
 
 ## **Is Terraform an IaC?**
 

@@ -3,7 +3,7 @@ title: Release Offers Support for ECS
 summary: >-
   Release now supports the use of IaC (Infrastructure as Code: Terraform,
   Pulumi, etc) to create resources in ECS
-publishDate: 'Fri Apr 21 2023 16:55:46 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Fri Apr 21 2023 16:55:46 GMT+0000 (Coordinated Universal Time)"
 author: erik-landerholm
 readingTime: 4
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=release-offers-support-for-ecs
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/24e9b4247f1c58e1a7bc5c20c67777fb.jpg
 excerpt: >-
   Release now supports the use of IaC (Infrastructure as Code: Terraform,
@@ -65,7 +65,8 @@ Two tags with values are required:
                                                            
 
 | Tag Key | Tag Value | Location in UI | Env variable |
-| --- | --- | --- | --- |
+| ------- | --------- | -------------- | ------------ |
+
 |      
 releasehub.com/app
 
@@ -79,7 +80,7 @@ example-voting-app
 
     |      
 
-RELEASE\_APP\_NAME
+RELEASE_APP_NAME
 
      (see default Release environment variables)     |
 |      
@@ -92,7 +93,7 @@ ted3bff
 
     |      
 
-RELEASE\_ENV\_ID
+RELEASE_ENV_ID
 
      (see default Release environment variables)     |
 
@@ -104,8 +105,8 @@ AWS Documentation can be found [here](https://docs.aws.amazon.com/AmazonECS/late
 
 In order to send your ECS task logs to the Release log viewer, you must configure your ECS tasks to use the awslogs log driver:
 
-You can specify the log driver in the task definition. Inside each entry in containerDefinitions, update (or add) the logConfiguration key to specify the logDriver and options. Options must specify awslogs-group, and awslogs-stream-prefix. The logDriver must be awslogs, but you may choose your own group and stream-prefix.  
-  
+You can specify the log driver in the task definition. Inside each entry in containerDefinitions, update (or add) the logConfiguration key to specify the logDriver and options. Options must specify awslogs-group, and awslogs-stream-prefix. The logDriver must be awslogs, but you may choose your own group and stream-prefix.
+
 That section of your task definition should look something like this when you’re done:
 
 ```yaml
@@ -134,6 +135,7 @@ For more details, check out the [AWS documentation on using the awslogs log driv
 ### How to Configure the Terminal
 
 The following requirements must be met before being able to terminal into any ECS task:
+
 1.  ECS Exec needs to be enabled for the task. ([more info](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html#ecs-exec-enabling))
 2.  ECS Exec IAM permissions need to be added for the task. ([more info](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html#ecs-exec-required-iam-permissions))
 

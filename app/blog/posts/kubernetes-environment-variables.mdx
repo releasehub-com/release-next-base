@@ -3,7 +3,7 @@ title: How to Make the Most of Kubernetes Environment Variables
 summary: >-
   There are a few ways to add Kubernetes environment variables. In this post, we
   are going to learn what they are and when
-publishDate: 'Fri Apr 21 2023 19:37:52 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Fri Apr 21 2023 19:37:52 GMT+0000 (Coordinated Universal Time)"
 author: dawid-ziolkowski
 readingTime: 5
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=kubernetes-environment-variables
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/e99f6e1d23023143b231d942ed8b8ff8.jpg
 excerpt: >-
   There are a few ways to add Kubernetes environment variables. In this post, we
@@ -40,17 +40,13 @@ Let's start with the basics. What are environment variables, and why do they exi
 As a user, you can easily create and access your own environment variables. On Unix-based systems, you can do that by executing the **export** command followed by the name of your variable and its value. So, for example, to create an environment variable called **myvar** with a value of **10**, you need to execute the following:
 
 ```yaml
-
 export myvar=10
-
 ```
 
-You can then access the value of your variable using a dollar sign followed by your variable name. In our case to print (using Linux command [echo](https://en.wikipedia.org/wiki/Echo_\(command\))) the value of our variable, we can execute the following:
+You can then access the value of your variable using a dollar sign followed by your variable name. In our case to print (using Linux command [echo](<https://en.wikipedia.org/wiki/Echo_(command)>)) the value of our variable, we can execute the following:
 
 ```yaml
-
 echo $myvar
-
 ```
 
 And if you want to print all the environment variables, you can execute either **printenv** or **env** commands. All of this applies to applications running in your pods too.
@@ -78,24 +74,23 @@ The first option is the most straightforward. You can simply specify environment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: example-app
+   name: example-app
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: example-app
-  template:
-    metadata:
-      labels:
-        app: example-app
-    spec:
-      containers:
-        - name: example-app-dev
-          image: [yourimage]
-          env:
-            - name: ENVIRONMENT
-              value: "development"
-
+   replicas: 1
+   selector:
+     matchLabels:
+       app: example-app
+   template:
+     metadata:
+       labels:
+         app: example-app
+     spec:
+       containers:
+         - name: example-app-dev
+           image: [yourimage]
+           env:
+             - name: ENVIRONMENT
+               value: "development"
 ```
 
 As soon as your application is instructed to read the value of an environment variable called "ENVIRONMENT", you can use it directly to run your application in the desired mode.
@@ -125,16 +120,14 @@ Another way of providing environment variables to your application is by passing
 For example, if you have a Kubernetes secret like this:
 
 ```yaml
-
 apiVersion: v1
 kind: Secret
 metadata:
-  name: secret_data
+   name: secret_data
 type: Opaque
 stringData:
-    username: "example"
-    password: "supersecretpassword"
-
+     username: "example"
+     password: "supersecretpassword"
 ```
 
 and you want to pass the password as an environment variable to your pod, you can reference it in the deployment definition as follows:
@@ -157,13 +150,11 @@ kind: Deployment
 
 ```
 
-In your pod, you will then be able to access the actual password (supersecretpassword) by accessing an environment variable called **secret\_variable**. For example, in Python you could do it like this:  
+In your pod, you will then be able to access the actual password (supersecretpassword) by accessing an environment variable called **secret_variable**. For example, in Python you could do it like this:
 
 ```yaml
-
 import osPASSWORD = os
 .environ.get['secret_variable']
-
 ```
 
 As you can see, in our example we have **username** and **password** defined in Kubernetes secret, but we are only passing the **password** value to the pod. If you want to pass all the secrets from a Kubernetes secret without specifying each key, you can use **secretRef** instead of **secretKeyRef**. This way, you only need to specify the Kubernetes secret object name, and all the values from it will be automatically loaded as environment variables:
@@ -190,15 +181,13 @@ kind: Deployment
 Another way of injecting environment variables into your pods is by using values from [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/). For example, if you have ConfigMap like this:
 
 ```yaml
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: config-data
+   name: config-data
 data:
-  environment: "dev"
-  timezone: "UTC"
-
+   environment: "dev"
+   timezone: "UTC"
 ```
 
 and you want to load both **environment** and **timezone** as environment variables into your pod, you can add the following **valueFrom** definition to your deployment:
@@ -223,13 +212,11 @@ kind: Deployment
 In your pod, you'll then be able to see both environment variables as defined in your ConfigMap:
 
 ```yaml
-
 # env
 
 HOSTNAME=5ad4e9e78e57
 environment=dev
 timezone=UTC
-
 ```
 
 As with secrets, if you don't want to load all values from a ConfigMap, you can define specific keys instead by changing **configMapRef** to **configMapKeyRef.**

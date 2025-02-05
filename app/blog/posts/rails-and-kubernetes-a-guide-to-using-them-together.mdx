@@ -1,16 +1,16 @@
 ---
-title: 'Rails and Kubernetes: A Guide to Using Them Together'
+title: "Rails and Kubernetes: A Guide to Using Them Together"
 summary: >
   Is Kubernetes only for modern, cloud-native, microservices-based applications
   or can it be used with Rails monoliths?
-publishDate: 'Fri Apr 21 2023 18:22:03 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Fri Apr 21 2023 18:22:03 GMT+0000 (Coordinated Universal Time)"
 author: erik-landerholm
 readingTime: 3
 categories: &ref_0
   - kubernetes
   - platform-engineering
 mainImage: /blog-images/20dfb68ea8564e9f6a8f0669a46c11e5.jpg
-imageAlt: 'Rails and Kubernetes: A Guide to Using Them Together'
+imageAlt: "Rails and Kubernetes: A Guide to Using Them Together"
 showCTA: true
 ctaCopy: >-
   Streamline your Rails application deployment on Kubernetes with Release's
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=rails-and-kubernetes-a-guide-to-using-them-together
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/20dfb68ea8564e9f6a8f0669a46c11e5.jpg
 excerpt: >
   Is Kubernetes only for modern, cloud-native, microservices-based applications
@@ -128,9 +128,9 @@ $ docker build -t rails_on_k8s:0.1 .
 Sending build context to Docker daemon  13.58MB
 Step 1/11 : FROM ruby:3.1
 3.1: Pulling from library/ruby
-1671565cc8df: Pull complete 
+1671565cc8df: Pull complete
 (...)
-2e02738a3297: Pull complete 
+2e02738a3297: Pull complete
 Digest: sha256:74f02cae856057841964d471f0a54a5957dec7079cfe18076c132ce5c6b6ea37
 Status: Downloaded newer image for ruby:3.1
  ---> e739755aa18e
@@ -151,7 +151,7 @@ OK, that's pretty much it. That's how you package a Rails application into a Doc
 
 Now what? 
 
-We could start writing out Kubernetes manifest, but it's best to first check if our application is working in the container properly. To do that, run that freshly built image by executing **docker run -p 3000:3000 rails\_on\_k8s:0.1**, and then open your web browser and head to **localhost:3000.** 
+We could start writing out Kubernetes manifest, but it's best to first check if our application is working in the container properly. To do that, run that freshly built image by executing **docker run -p 3000:3000 rails_on_k8s:0.1**, and then open your web browser and head to **localhost:3000.** 
 
 If you see your application, everything is good, and we can proceed. 
 
@@ -164,46 +164,40 @@ It'll be a fairly simple deployment at first. The only thing you need is to uplo
 Once you have your image ready in a container registry, you can create a Kubernetes manifest: 
 
 ```yaml
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rails-on-k8s
+   name: rails-on-k8s
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: rails-k8s
-  template:
-    metadata:
-      labels:
-        app: rails-k8s
-    spec:
-      containers:
-      - name: rails-k8s
-        image: davezworka/rails_on_k8s:0.1
-        ports:
-        - containerPort: 3000
-
+   replicas: 1
+   selector:
+     matchLabels:
+       app: rails-k8s
+   template:
+     metadata:
+       labels:
+         app: rails-k8s
+     spec:
+       containers:
+       - name: rails-k8s
+         image: davezworka/rails_on_k8s:0.1
+         ports:
+         - containerPort: 3000
 ```
 
 Once created, it's time to deploy it. We'll use the **kubectl apply** command and pass the YAML file with the **\-f** parameter followed by the file name: 
 
 ```yaml
-
-$ kubectl apply -f k8s_deployment.yaml 
+$ kubectl apply -f k8s_deployment.yaml
 deployment.apps/rails-on-k8s created
-
 ```
 
 OK, it looks like it worked! Let's check: 
 
 ```yaml
-
 $ kubectl get pods
 NAME                            READY   STATUS    RESTARTS   AGE
 rails-on-k8s-7b9f7fb574-8l74g   1/1     Running   0          48s
-
 ```
 
 It seems like, indeed, we successfully deployed our Rails application on Kubernetes. 
@@ -216,7 +210,7 @@ To validate if the application in the pod is indeed running, we can first check 
 
 $ kubectl logs rails-on-k8s-7b9f7fb574-8l74g
 => Booting Puma
-=> Rails 7.0.3.1 application starting in development 
+=> Rails 7.0.3.1 application starting in development
 => Run `bin/rails server --help` for more startup options
 Puma starting in single mode...
 * Puma version: 5.6.5 (ruby 3.1.2-p20) ("Birdie's Version")
@@ -235,39 +229,33 @@ That looks promising. It seems like our Rails server started properly, so, most 
 In order to create a service for our Rails deployment, create another YAML file with content similar to this, but keep in mind that you may need to adjust the type of the service based on what kind of Kubernetes cluster you're using: 
 
 ```yaml
-
 apiVersion: v1
 kind: Service
 metadata:
-  name: rails-service
+   name: rails-service
 spec:
-  type: LoadBalancer
-  selector:
-    app: rails-k8s
-  ports:
-    - port: 80
-      targetPort: 3000
-
+   type: LoadBalancer
+   selector:
+     app: rails-k8s
+   ports:
+     - port: 80
+       targetPort: 3000
 ```
 
 Apply the above using **kubectl apply**: 
 
 ```yaml
-
-$ kubectl apply -f rails-svc.yaml 
+$ kubectl apply -f rails-svc.yaml
 service/rails-service created
-
 ```
 
 Now, after a few seconds, we should see the IP address of the load balancer that exposes our application: 
 
 ```yaml
-
 $ kubectl get svc
 NAME               TYPE           CLUSTER-IP   EXTERNAL-IP     PORT(S)        AGE
 kubernetes         ClusterIP      10.0.0.1               443/TCP        8h
 rails-service      LoadBalancer   10.0.74.93   20.101.11.115   80:31330/TCP   48s
-
 ```
 
 And if you open that IP address in your web browser, you should see your application, which in our case is showing a simple "Hello world" message: 

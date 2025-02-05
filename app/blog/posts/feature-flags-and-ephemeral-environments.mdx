@@ -3,7 +3,7 @@ title: Feature Flags and Ephemeral Environments
 summary: >-
   Learn about feature flags in devops, feature flags and ephemeral environments,
   and more.
-publishDate: 'Wed Oct 30 2024 19:53:06 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Wed Oct 30 2024 19:53:06 GMT+0000 (Coordinated Universal Time)"
 author: erik-landerholm
 readingTime: 7
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=feature-flags-and-ephemeral-environments
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/6a19ca3dda8d9f11445e6062ff0936f5.jpg
 excerpt: >-
   Learn about feature flags in devops, feature flags and ephemeral environments,
@@ -28,13 +28,14 @@ ctaButton: Try Release for Free
 ---
 
 ### Overview
-*   [Feature Flags in DevOps and Software Development](#devops)
-*   [Feature Flag Environments](#environments)
-*   [Working with Ephemeral Environments](#ephemeral)
-*   Step 1: [Create an Application in Release](#create)
-*   Step 2: [Modify the Application Template](#modify)
-*   Step 3: [Add Environment Variables](#add)
-*   Step 4: [Deploy](#deploy)
+
+- [Feature Flags in DevOps and Software Development](#devops)
+- [Feature Flag Environments](#environments)
+- [Working with Ephemeral Environments](#ephemeral)
+- Step 1: [Create an Application in Release](#create)
+- Step 2: [Modify the Application Template](#modify)
+- Step 3: [Add Environment Variables](#add)
+- Step 4: [Deploy](#deploy)
 
 ‍
 
@@ -43,18 +44,20 @@ ctaButton: Try Release for Free
 Feature Flags are a necessary and ubiquitous part of modern software development. As your company and the complexity of your application grows it becomes imperative to be able to control what features are available to your internal development teams, stakeholders and customers. In the long-ago, before-times, we would just have a variable that you would toggle between true and false to control behavior of your application. However, as application development transitioned to the Web we needed the same kind of control, except that hard-coded feature flags just weren't going to cut it. Enter Dynamic Feature Flags!
 
 Dynamic feature flags were a big improvement over static feature flags, but also added complexity and presented challenges different from static feature flags. Gone were hard-coded flags, but they were replaced with if statements and more importantly, retrieving the appropriate flags for your application. Most people started by rolling their own, but as developing with feature flags gained popularity many different companies popped into existence looking to solve the problems of:
-*   One interface to manage your flags
-*   Easy maintenance of your flags
-*   Very fast and reliable retrieval of your flags
-*   Splitting traffic to one feature or another
+
+- One interface to manage your flags
+- Easy maintenance of your flags
+- Very fast and reliable retrieval of your flags
+- Splitting traffic to one feature or another
 
 While companies like LaunchDarkly, Optimizely, Rollout, Split.io and others made it fairly easy to create and manage these flags this doesn't solve all of your issues. Many software orgs, especially as they grow, need lots of environments for testing. This poses a challenge to your Feature Flag setup specifically if your environments are ephemeral.
 
 Ephemeral environments are like any environment except they will be removed in a relatively short amount of time unlike your staging or production environments. Good examples are:
-*   Feature branches
-*   Sales Demos
-*   Load Testing
-*   Refactors
+
+- Feature branches
+- Sales Demos
+- Load Testing
+- Refactors
 
 These environments may not last a long time, but they are exceedingly important and can be just as complex as production. While a sales demo environment may be able to function with seed data, a load testing environment will need production or production-like data and many replicas of each service to give a valid result. These can be super complex to create and manage and their ephemeral nature can play havoc with your feature flag setup.
 
@@ -68,7 +71,7 @@ Once you move to ephemeral environments most people take the shortcut of assigni
 
 Imagine you have 10 environments all pointing to a single database with writes happening from all those environments: it's the same issue here. The great thing about feature flags is the ability to toggle them and see different behavior, but if every environment is pointing to the same one you now have another resource contention problem. If you toggle Feature A 'on' what's to stop your co-worker from toggling it 'off'? Any issues you have with permanent staging environments are magnified with ephemeral environments.
 
-The best solution would be upon the creation of an ephemeral environment you would create an environment in LaunchDarkly based on something unique about your ephemeral environment and when it comes up, you would make sure it was using the unique SDK api for that particular Feature Flag Environment. Let's implement the workflow and see how that would work with Release!  
+The best solution would be upon the creation of an ephemeral environment you would create an environment in LaunchDarkly based on something unique about your ephemeral environment and when it comes up, you would make sure it was using the unique SDK api for that particular Feature Flag Environment. Let's implement the workflow and see how that would work with Release!
 
 ![](/blog-images/40fe7f59c236984a8877850971f711ec.png)
 
@@ -81,6 +84,7 @@ In order to try this out with Release we need a repository with a Docker File th
 Once you have forked the repository you can navigate to [release.com](https://github.com/elanderholm/rails_postgres_redis) and sign-in using github in order to follow along with this example.
 
 The steps to get our ephemeral environments created in Release with support for environments in LaunchDarkly are:
+
 1.  Create our application in Release
 2.  Create a job with Release to create the environment in LaunchDarkly
 3.  Add some environment variables so the application can contact LaunchDarkly and pull in the SDK Api key from our newly created LaunchDarkly Environment
@@ -113,16 +117,14 @@ Lastly name your application and generate the template for your configuration.
 Before we can deploy our environment(s) we need to make a modification to our application template and add a few environment variables. We also need to create a job that will create our LaunchDarkly environment upon initial environment deployment. Jobs in Release are described in detail [here](https://docs.releasehub.com/reference-guide/application-settings/application-template#jobs). The TL;DR is that with a small amount of configuration you can run any arbitrary script or task in a container. For example, these jobs are very useful for running migrations before a deployment of your backend service. In this case we will run a rake task to set up our LaunchDarkly Environment.
 
 ```yaml
-
 jobs:
-- name: create-launch-darkly-env
-  from_services: api
-  args:
-  - bundle
-  - exec
-  - rake
-  - launch_darkly:create_environment
-
+  - name: create-launch-darkly-env
+    from_services: api
+    args:
+      - bundle
+      - exec
+      - rake
+      - launch_darkly:create_environment
 ```
 
 > _The above yaml represents a job in Release_
@@ -188,18 +190,16 @@ Click 'EDIT' for 'Default Environment Variables' to bring up the editor. We will
 **LAUNCH_DARKLY_PROJECT_NAME**: We will just use 'default' for this example, but if there is another project you would like to test with feel free.
 
 ```yaml
-
 defaults:
-- key: POSTGRES_USER
-  value: postgres
-- key: POSTGRES_PASSWORD
-  value: postgres
-- key: LAUNCH_DARKLY_PROJECT_NAME
-  value: default
-- key: LAUNCH_DARKLY_API_KEY
-  value: your-api-key
-  secret: true
-
+  - key: POSTGRES_USER
+    value: postgres
+  - key: POSTGRES_PASSWORD
+    value: postgres
+  - key: LAUNCH_DARKLY_PROJECT_NAME
+    value: default
+  - key: LAUNCH_DARKLY_API_KEY
+    value: your-api-key
+    secret: true
 ```
 
 Click 'Save' to save your environment variables as part of your application configuration. Then, click 'Build and Deploy'. You will be redirected to the activity dashboard for that application and a Docker build was kicked off in the background. This will be followed by the deployment of the environment for your application. You can view the build and the deployment under the 'builds' and 'deploys' sections respectively.
@@ -245,9 +245,9 @@ Hero Image by [Denys Nevozhai](https://unsplash.com/@dnevozhai?utm_source=unspla
 
 ### Additional Resources
 
-*   [What is an Ephemeral Environment?](https://releasehub.com/ephemeral-environments)
-*   [User Acceptance Testing (UAT) with Release Ephemeral Environments](https://releasehub.com/user-acceptance-testing-with-ephemeral-environments)
-*   [5 Ways To Improve Developer Velocity Using Ephemeral Environments](https://releasehub.com/blog/improve-developer-velocity-with-ephemeral-environments)
-*   [Agile DevOps Methodology](https://releasehub.com/blog/you-need-agile-devops-methodology)
+- [What is an Ephemeral Environment?](https://releasehub.com/ephemeral-environments)
+- [User Acceptance Testing (UAT) with Release Ephemeral Environments](https://releasehub.com/user-acceptance-testing-with-ephemeral-environments)
+- [5 Ways To Improve Developer Velocity Using Ephemeral Environments](https://releasehub.com/blog/improve-developer-velocity-with-ephemeral-environments)
+- [Agile DevOps Methodology](https://releasehub.com/blog/you-need-agile-devops-methodology)
 
 ‍

@@ -3,7 +3,7 @@ title: Extending Release Environments with Terraform
 summary: >-
   This blog shows how to utilize Terraform alongside Release to provision
   additional resources in your cloud account.
-publishDate: ''
+publishDate: ""
 author: josh-dirkx
 readingTime: 5
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=extending-releasehub-environments-with-terraform
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/c710bf4817cae68e73eeb96d596fa5a4.jpg
 excerpt: >-
   This blog shows how to utilize Terraform alongside Release to provision
@@ -56,14 +56,14 @@ In the event of a full or partial failure of your application, you can quickly a
 
 ### _How_ do I use Terraform with Release?
 
-‍_The following example assumes a project layout as outlined in the image below_
+‍*The following example assumes a project layout as outlined in the image below*
 
 ![](/blog-images/ba50f60eb0679702ad5c7fae80ba5645.png)
 
 When writing your Terraform, it's important to keep in mind that you want it to be repeatable without resource naming collisions, regardless of how many times you execute the same combination of resources. This can be achieved by using dynamic values to namespace resources. Release makes available to you all of the Release generated environment variables for use within your _.tfvars_ file, allowing you to use the environments' context as the namespacing material. For example, you might have the following inside of your _.tfvars_ file
 
 ```bash
-# .release/lambda.tfvars  
+# .release/lambda.tfvars
 namespace = "${RELEASE_ACCOUNT_ID}/${RELEASE_ENV_ID}/"
 ```
 
@@ -80,7 +80,7 @@ resource "aws_lambda_function" "lambda" {
 
 ‍
 
-The inclusion of the environment\_id ensures that each time this Terraform is executed by Release, it will be unique.
+The inclusion of the environment_id ensures that each time this Terraform is executed by Release, it will be unique.
 
 WIthin the Application Template for a given Release Application, there is an abstraction over IaC providers, such as Terraform, that we can leverage. For the purposes of this demonstration, we will be using Terraform in conjunction with AWS resources.
 
@@ -92,8 +92,8 @@ To tell Release what we need it to build, we add a new array item to the infrast
 
 ‍
 
-\# Application Template  
-  
+\# Application Template
+
 infrastructure:  
 \- name: lambda  
  **type**: **terraform**  
@@ -104,11 +104,11 @@ infrastructure:
 
 This section tells Release where within the repository to find the code it needs for execution in the workflows. In the future, Release will support remote repositories. Now to execute this, it must be added to your workflows section
 
-\# Application Template  
-  
+\# Application Template
+
 workflows:  
 \- name: setup  
- order\_from:  
+ order_from:  
  - infrastructure.lambda
 
 ‍

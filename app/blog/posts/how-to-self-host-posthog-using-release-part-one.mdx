@@ -3,7 +3,7 @@ title: How to Self-Host PostHog Using Release Part One
 summary: >-
   Learn how to run a hobby version of PostHog on your own cloud infrastructure
   using Release
-publishDate: 'Thu Apr 20 2023 21:44:19 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Thu Apr 20 2023 21:44:19 GMT+0000 (Coordinated Universal Time)"
 author: regis-wilson
 readingTime: 7
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=how-to-self-host-posthog-using-release-part-one
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/0fabd6b01cf2c47c90de069cad6705bb.jpg
 excerpt: >-
   Learn how to run a hobby version of PostHog on your own cloud infrastructure
@@ -61,7 +61,7 @@ When you’ve selected the services to import and analyze, you will fine tune th
 
 ![](/blog-images/541eb5a9942fa0e6db4d0bd129d9be47.png)
 
-You should pay close attention to the workflow steps as the order of the services is important. Reading up on the architecture diagram and understanding the **depends\_on** fields in the docker compose will help you understand the correct workflow as well. This is all organized for you in the [forked version we host and maintain](https://github.com/releasehub-samples/posthog).
+You should pay close attention to the workflow steps as the order of the services is important. Reading up on the architecture diagram and understanding the **depends_on** fields in the docker compose will help you understand the correct workflow as well. This is all organized for you in the [forked version we host and maintain](https://github.com/releasehub-samples/posthog).
 
 ![](/blog-images/622b9013a73cb1dfc968bcf0be779250.png)
 
@@ -71,7 +71,7 @@ Once you are happy with the application template and service definitions, you ca
 
 You can see that I’ve set some environment variable mappings which allow interpolation of Release-injected variables so that the application URLs and internal configuration items work correctly for each environment that will be created. Since we are using a hobby (or ephemeral) version of this application, we are not going to hardcode values or secrets as we might do in a permanent or production environment.
 
-The next steps involve creating build arguments. We always recommend using the **production** value for **NODE\_ENV** since Release ephemeral environments run in production mode, rather than development mode (except when using our [Remote Development](https://docs.release.com/cli/remote-dev) feature).
+The next steps involve creating build arguments. We always recommend using the **production** value for **NODE_ENV** since Release ephemeral environments run in production mode, rather than development mode (except when using our [Remote Development](https://docs.release.com/cli/remote-dev) feature).
 
 ![](/blog-images/712366d3afe51b9063964486a9c082d5.png)
 

@@ -1,9 +1,9 @@
 ---
-title: 'GitOps vs DevOps: Understanding the Difference'
+title: "GitOps vs DevOps: Understanding the Difference"
 summary: >-
   Let's look at a comparison between the classical GitOps vs DevOps. What are
   the key similarities and differences?
-publishDate: 'Fri Apr 21 2023 18:22:03 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Fri Apr 21 2023 18:22:03 GMT+0000 (Coordinated Universal Time)"
 author: vicky-koblinski
 readingTime: 3
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=gitops-vs-devops-understanding-the-difference
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/4752ccf6e76e8eb0b4198dbea7f80c51.jpg
 excerpt: >-
   Let's look at a comparison between the classical GitOps vs DevOps. What are
@@ -36,9 +36,10 @@ DevOps is, put simply, a strategy for increasing the efficiency of coding projec
 #### GitOps: Git for Automation
 
 In many ways, GitOps can seem like a branch of classic DevOps. GitOps represents an approach to DevOps functionality and goals that specifically relies on Git, [the most commonly used version tracking software today](https://www.cyberfella.co.uk/2020/03/23/what-is-devops/). In fact, because Git is so commonly used, many DevOps pipelines also use Git! However, GitOps refers to a practice that builds on the specifics of Git. It prioritizes automation specifically tied to Git's version control systems, and it leans into those functionalities. A few examples of this are: 
-*   Rollouts and rollbacks: With version control tracking, it's easy to deploy a new feature, environment, or other aspect, then quickly revert back to an earlier, more stable version if it doesn't behave as expected.
-*   Infrastructure as code: With Git, environments and infrastructure can be version tracked as well.
-*   Push versus pull: Git allows operations to pull and review changes, and then the requested changes are automatically deployed.
+
+- Rollouts and rollbacks: With version control tracking, it's easy to deploy a new feature, environment, or other aspect, then quickly revert back to an earlier, more stable version if it doesn't behave as expected.
+- Infrastructure as code: With Git, environments and infrastructure can be version tracked as well.
+- Push versus pull: Git allows operations to pull and review changes, and then the requested changes are automatically deployed.
 
 #### GitOps vs DevOps
 
@@ -67,9 +68,10 @@ A good example of this is Release's own [environment configuration tracking](htt
 ### Challenges and Best Practices of GitOps
 
 Ultimately, GitOps is an approach within the DevOps mindset that helps get the most out of Git and its toolkit. A majority of its advantages over traditional DevOps come from the strategic use of its foundations to further streamline a CI/CD pipeline. As such, to get the most out of GitOps, you need to know the foremost challenges that can arise and how to best navigate them. Here are a few of the major points to keep in mind: 
-*   Security: One issue that often arises with Git is security. Sensitive data (such as security keys, passwords, or tokens) cannot be stored in areas that are committed to shared repositories. [Because these cannot be stored in plain text](https://release.com/blog/how-to-manage-gitops-secrets-a-detailed-guide), you need additional tools to either encrypt them or store them elsewhere.
-*   Multi-environment configurations: Git only allows one environment per branch, and it requires that you define the environment within the repository. Any changes to environments, therefore, must be committed and pushed. Even if one environment per branch is enough, it can easily snowball. Release and environments as service (EaaS) provide solutions to manage this.
-*   Scalability: This is one of the challenges that is hardest to manage. Git stores the history of all commits and changes. Over a number of versions and repositories, this can become quite a lot of data to store. While there isn't an easy fix for this, it's something that can be kept in mind. Limit the number of branches, cut down on duplicate code if possible, and keep commit permissions and protocol organized. With adequate planning and care, it's possible to keep GitOps relatively scalable.
+
+- Security: One issue that often arises with Git is security. Sensitive data (such as security keys, passwords, or tokens) cannot be stored in areas that are committed to shared repositories. [Because these cannot be stored in plain text](https://release.com/blog/how-to-manage-gitops-secrets-a-detailed-guide), you need additional tools to either encrypt them or store them elsewhere.
+- Multi-environment configurations: Git only allows one environment per branch, and it requires that you define the environment within the repository. Any changes to environments, therefore, must be committed and pushed. Even if one environment per branch is enough, it can easily snowball. Release and environments as service (EaaS) provide solutions to manage this.
+- Scalability: This is one of the challenges that is hardest to manage. Git stores the history of all commits and changes. Over a number of versions and repositories, this can become quite a lot of data to store. While there isn't an easy fix for this, it's something that can be kept in mind. Limit the number of branches, cut down on duplicate code if possible, and keep commit permissions and protocol organized. With adequate planning and care, it's possible to keep GitOps relatively scalable.
 
 ### Is GitOps an Offshoot of DevOps?
 

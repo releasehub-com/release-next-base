@@ -3,8 +3,8 @@ title: On-Demand Environments Defined and Explained
 summary: >-
   We cover on-demand environments, the best way to implement them, and the
   advantages and disadvantages of on-demand envir
-publishDate: ''
-author: ''
+publishDate: ""
+author: ""
 readingTime: 6
 categories: &ref_0
   - platform-engineering
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=on-demand-environments-defined-and-explained
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/d7cc904aebc0c67b9e417b029995d57f.jpeg
 excerpt: >-
   We cover on-demand environments, the best way to implement them, and the
@@ -42,10 +42,11 @@ Using an on-demand environment automatically gives you an independent [staging e
 ## **Implementing On-Demand Environments**
 
 Typically, we create this environment manually, which includes configuring all your microservices (for example, dependencies, libraries, databases, and third-party software) using a tool like [Terraform](https://www.terraform.io/), but this approach requires a fair amount of precise reconfiguration of your project setup.
-*   **Each Git branch should be prefixed** with the name of the task or feature associated with it. This makes it clear and easy to identify what each feature branch represents. For instance, for **fea-productName-branch-URL, Fea** \= feature name, **productName** = product name, and **branch-URL** = Git branch URL.
-*   **Access and parameterize** all your configurations that might differ between developers. For instance, you can package your configurations in a dataset and store them on the [AWS Systems Manager,](https://aws.amazon.com/systems-manager/) then use Terraform to communicate with them whenever you need them to spin up an environment.
-*   **Define rules and restrictions** for your environments. You can use Terraform with [Azure Policy](https://learn.microsoft.com/en-us/azure/governance/policy/overview) to create policies for what sort of action can be carried out in each environment. For example, for security, you can restrict your developers from communicating with specific databases or even restrict them from using some services in specific locations.
-*   **Consider cost.** You may want to create a configuration that automatically deletes an environment after merging and deleting pull requests. Also, you can configure it to stop every instance of services running on environments that do not require them.
+
+- **Each Git branch should be prefixed** with the name of the task or feature associated with it. This makes it clear and easy to identify what each feature branch represents. For instance, for **fea-productName-branch-URL, Fea** \= feature name, **productName** = product name, and **branch-URL** = Git branch URL.
+- **Access and parameterize** all your configurations that might differ between developers. For instance, you can package your configurations in a dataset and store them on the [AWS Systems Manager,](https://aws.amazon.com/systems-manager/) then use Terraform to communicate with them whenever you need them to spin up an environment.
+- **Define rules and restrictions** for your environments. You can use Terraform with [Azure Policy](https://learn.microsoft.com/en-us/azure/governance/policy/overview) to create policies for what sort of action can be carried out in each environment. For example, for security, you can restrict your developers from communicating with specific databases or even restrict them from using some services in specific locations.
+- **Consider cost.** You may want to create a configuration that automatically deletes an environment after merging and deleting pull requests. Also, you can configure it to stop every instance of services running on environments that do not require them.
 
 ## **Buy an Environment Instead**
 

@@ -2,8 +2,8 @@
 title: Solving for Dynamic OAuth 2.0 Callbacks with Environment Handles
 summary: >-
   In this blog post, we will discuss the concept of Environment Handles and how
-  they can be used to support dynamic OAuth 
-publishDate: 'Fri Apr 21 2023 18:46:03 GMT+0000 (Coordinated Universal Time)'
+  they can be used to support dynamic OAuth
+publishDate: "Fri Apr 21 2023 18:46:03 GMT+0000 (Coordinated Universal Time)"
 author: mat-werber
 readingTime: 8
 categories: &ref_0
@@ -18,11 +18,11 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=solving-for-dynamic-oauth-2-0-callbacks-with-environment-handles
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/b2cbef385b87616e21dd815831068d86.jpg
 excerpt: >-
   In this blog post, we will discuss the concept of Environment Handles and how
-  they can be used to support dynamic OAuth 
+  they can be used to support dynamic OAuth
 tags: *ref_0
 ctaButton: Try Release for Free
 ---
@@ -37,7 +37,7 @@ For example, cloud environments created with [Release](https://release.com/) wil
 
 #### OAuth 2.0 and the Authorization Grant Flow
 
-[OAuth 2.0](https://oauth.net/2/) ("OAuth") is a common standard that allows a user to authorize one application to access their resources hosted within another system.  The OAuth standard provides several different methods, referred to as OAuth flows, for which delegated access can be provisioned. While an in-depth discussion of OAuth and the various flows is outside the scope of this blog, we will define the **authorization grant flow** and refer back to it later as follows:
+[OAuth 2.0](https://oauth.net/2/) ("OAuth") is a common standard that allows a user to authorize one application to access their resources hosted within another system. The OAuth standard provides several different methods, referred to as OAuth flows, for which delegated access can be provisioned. While an in-depth discussion of OAuth and the various flows is outside the scope of this blog, we will define the **authorization grant flow** and refer back to it later as follows:
 
 _The authorization grant flow_ is an OAuth 2.0 flow that allows a user of your **client application** to provide your application with delegated permission to access the user's resources hosted within a 3rd-party system's **resource server**. In practice, your client application will redirect the user to the 3rd party's **authorization server** to authenticate the user and, once authenticated, confirm with the user whether they want to grant your client application one or more permissions (**scopes**) to their resources. If the user approves the access, the authorization server will redirect the user to a predefined **callback URL** (aka redirect URL or sign-in redirect) while providing an **authorization grant** to the client application. The client application will then exchange the grant for an **access token** with the authorization server which ultimately allows the client application to access the user's resources on the resource server. The authorization and resource servers are often part of the same application and domain, but they don't have to be.
 
@@ -49,29 +49,30 @@ When using OAuth 2.0, a client application must be configured within the 3rd-par
 
 #### The Challenge
 
-We now know that:  
-1.  The DNS endpoint (and thus callback URL) of an ephemeral client application environment is typically not known prior to creating the environment  
-    
+We now know that:
+
+1.  The DNS endpoint (and thus callback URL) of an ephemeral client application environment is typically not known prior to creating the environment
 2.  The OAuth 2.0 authorization grant flow that you explicitly define the callback URL(s) _prior_ to actually initiating an actual authorization flow
 
 ‍**This poses an interesting challenge:** how can you use OAuth 2.0 flows that require pre-defined, static callback URLs when the DNS endpoint of your client application and callback URL is dynamic?
 
 #### Environment Handles
 
-Instead of substituting random environment IDs into the hostnames of your ephemeral environments, you can instead create a pool of predefined environment IDs, aka **Environment Handles**. These could be  a simple set of numbers like 1 through 10, a subset of your favorite superhero names, or anything else.
+Instead of substituting random environment IDs into the hostnames of your ephemeral environments, you can instead create a pool of predefined environment IDs, aka **Environment Handles**. These could be a simple set of numbers like 1 through 10, a subset of your favorite superhero names, or anything else.
 
 With this approach, when your platform creates an environment it would randomly select one of the available handles, assign it to the newly-created environment, and mark it as in-use. The handle would remain unavailable until your environment is terminated and the handle is once again marked as available.
 
 For example, say you know that you will have at most five concurrent environments running at any time and you therefore create a list of handles, one through five. Continuing with our previous example, this means that the set of possible application URLs would be:
-*   https://frontend-**1**.example.com
-*   https://frontend-**2**.example.com
-*   https://frontend-**3**.example.com
-*   https://frontend-**4**.example.com
-*   https://frontend-**5**.example.com
+
+- https://frontend-**1**.example.com
+- https://frontend-**2**.example.com
+- https://frontend-**3**.example.com
+- https://frontend-**4**.example.com
+- https://frontend-**5**.example.com
 
 Even though you don't know which environment will get which handle and when, your hostnames are now deterministic because they must be one of the five values above. This ultimately means that you now have a reliable list of callback URLs that you can configure with your 3rd-party OAuth provider and successfully use your ephemeral environments with OAuth 2.0.
 
-As an example, we use Release to deploy demo application environments that rely on OAuth to sign in and access third-party resources in source control providers like GitHub, and we use a pool of our favorite superhero names as environment handles as shown below:  
+As an example, we use Release to deploy demo application environments that rely on OAuth to sign in and access third-party resources in source control providers like GitHub, and we use a pool of our favorite superhero names as environment handles as shown below:
 
 ![](/blog-images/6f0fb6ee691c8dde88aed51d452038ff.png)
 
@@ -114,8 +115,8 @@ _Example - Okta provides a warning if you enable wildcards in your callback URLs
 Depending on the size of your team, number of concurrent environments, or number of OAuth integrations, you may find that you need hundreds of callback URLs or a constantly-increasing number of URLs.
 
 In these scenarios, environment handles may not be practical and you might instead need to build an OAuth 2.0 callback proxy. Implementation details may vary, but as an example, one approach we've helped customers implement involves modifying their client application's initial OAuth 2.0 authorization code request to:
-1.  Use a callback URL that points to a static OAuth2 proxy service with a static hostname (e.g https://_oauth2.example.com/callback) instead of_ the client application's true callback URL.  
-    
+
+1.  Use a callback URL that points to a static OAuth2 proxy service with a static hostname (e.g https://_oauth2.example.com/callback) instead of\_ the client application's true callback URL.
 2.  Encode the client application's true callback URL (e.g. https://_env-123.example.com/callback_) in one of the original request parameters, like **state**.
 
 After the user authenticates and approves any requested resource scopes, the authorization server would return the authorization grant to your OAuth2 proxy service's callback URL, which is the _only_ callback URL you need to allow-list in your OAuth client configuration for test purposes. Your OAuth2 proxy service would then decode the **state** parameter to determine your environment's true callback URL and forward the authorization grant to that destination.

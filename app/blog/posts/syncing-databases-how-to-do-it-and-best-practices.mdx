@@ -1,16 +1,16 @@
 ---
-title: 'Syncing Databases: How to Do It and Best Practices'
+title: "Syncing Databases: How to Do It and Best Practices"
 summary: >-
   Read about database synchronization, what it's used for, how to sync
   databases, & explore tools to simplify the process
-publishDate: 'Wed Oct 23 2024 19:46:55 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Wed Oct 23 2024 19:46:55 GMT+0000 (Coordinated Universal Time)"
 author: regis-wilson
 readingTime: 10
 categories: &ref_0
   - platform-engineering
   - product
 mainImage: /blog-images/16c41e5c650eba2f169b980210a41786.jpg
-imageAlt: 'Syncing Databases: How to Do It and Best Practices'
+imageAlt: "Syncing Databases: How to Do It and Best Practices"
 showCTA: true
 ctaCopy: >-
   Simplify database synchronization with Release's on-demand environments for
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=syncing-databases-how-to-do-it-and-best-practices
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/16c41e5c650eba2f169b980210a41786.jpg
 excerpt: >-
   Read about database synchronization, what it's used for, how to sync
@@ -160,23 +160,26 @@ You can write custom scripts using programming languages such as Python or Java 
 #### **Replication**
 
 This involves copying data from one database to another so that changes made to one are reflected in the other.
-*   [MySQL](https://dev.mysql.com/doc/refman/8.0/en/replication.html) provides built-in replication capabilities, allowing users to replicate data between two or more MySQL servers.
-*   [Microsoft SQL Server](https://learn.microsoft.com/en-us/sql/relational-databases/replication/sql-server-replication?view=sql-server-ver16) also provides built-in replication capabilities, including transactional replication and merge replication.
-*   [PostgreSQL](https://www.postgresql.org/docs/current/runtime-config-replication.html) offers several replication solutions, including streaming replication and [logical replication](https://www.postgresql.org/docs/15/logical-replication.html).
-*   [MongoDB](https://www.mongodb.com/docs/manual/replication/) provides built-in replication features, including replica sets and sharded clusters for horizontal scalability.
+
+- [MySQL](https://dev.mysql.com/doc/refman/8.0/en/replication.html) provides built-in replication capabilities, allowing users to replicate data between two or more MySQL servers.
+- [Microsoft SQL Server](https://learn.microsoft.com/en-us/sql/relational-databases/replication/sql-server-replication?view=sql-server-ver16) also provides built-in replication capabilities, including transactional replication and merge replication.
+- [PostgreSQL](https://www.postgresql.org/docs/current/runtime-config-replication.html) offers several replication solutions, including streaming replication and [logical replication](https://www.postgresql.org/docs/15/logical-replication.html).
+- [MongoDB](https://www.mongodb.com/docs/manual/replication/) provides built-in replication features, including replica sets and sharded clusters for horizontal scalability.
 
 #### **Cloud-based services**
 
 Below are some of the common cloud-based services that you can use to sync databases.
-*   [AWS Database Migration Service (DMS)](https://aws.amazon.com/dms/) can migrate, replicate, and sync databases between different platforms and environments, including on-premises environments and cloud-based environments like Amazon Web Services (AWS).
-*   [Azure Database Migration Service](https://azure.microsoft.com/en-us/products/database-migration) is a fully managed service designed to enable seamless migrations from multiple database sources to Azure.
+
+- [AWS Database Migration Service (DMS)](https://aws.amazon.com/dms/) can migrate, replicate, and sync databases between different platforms and environments, including on-premises environments and cloud-based environments like Amazon Web Services (AWS).
+- [Azure Database Migration Service](https://azure.microsoft.com/en-us/products/database-migration) is a fully managed service designed to enable seamless migrations from multiple database sources to Azure.
 
 #### **Data syncing tools**
 
 Various data syncing tools can automate the process of keeping databases in sync.
-*   [SymmetricDS](https://www.symmetricds.org/) is open-source data synchronization software that supports multiple relational databases, including MySQL, PostgreSQL, Oracle, and more.
-*   [Talend](https://www.talend.com/), [Informatica](https://www.informatica.com/), and [Boomi](https://boomi.com/) can automate the process of keeping databases in sync.
-*   [Oracle GoldenGate](https://www.oracle.com/in/integration/goldengate/) is a real-time data integration and replication software for heterogeneous environments, including Oracle, SQL Server, DB2, and more.
+
+- [SymmetricDS](https://www.symmetricds.org/) is open-source data synchronization software that supports multiple relational databases, including MySQL, PostgreSQL, Oracle, and more.
+- [Talend](https://www.talend.com/), [Informatica](https://www.informatica.com/), and [Boomi](https://boomi.com/) can automate the process of keeping databases in sync.
+- [Oracle GoldenGate](https://www.oracle.com/in/integration/goldengate/) is a real-time data integration and replication software for heterogeneous environments, including Oracle, SQL Server, DB2, and more.
 
 These are some of the popular tooling used for database synchronization. However, the best tool depends on the type of database, the method of synchronization, and the specific requirements of the application.
 

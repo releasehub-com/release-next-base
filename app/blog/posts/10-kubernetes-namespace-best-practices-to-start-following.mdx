@@ -3,7 +3,7 @@ title: 10 Kubernetes Namespace Best Practices to Start Following
 summary: >-
   This post will discuss how you can use kubernetes namespace to achieve even
   more efficiency by following best practices.
-publishDate: 'Wed Oct 30 2024 19:55:21 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Wed Oct 30 2024 19:55:21 GMT+0000 (Coordinated Universal Time)"
 author: marion-newman
 readingTime: 5
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=10-kubernetes-namespace-best-practices-to-start-following
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/b90c46ea0d9d01c1c904f3758308d591.jpg
 excerpt: >-
   This post will discuss how you can use kubernetes namespace to achieve even
@@ -48,10 +48,11 @@ The [Kubernetes namespace](https://release.com/blog/kubernetes-namespaces-the-ul
 ### Types of Kubernetes Namespaces
 
 These are the four initial namespaces that Kubernetes starts with:
-*   **"default"—**The default namespace set by the system. It's intended for objects that don't specify any of the namespaces.
-*   **"kube-system"—**This namespace is assigned to resources that are created by the Kubernetes system.
-*   **"kube-public"—**This namespace is created by the system and is visible to all users, even users that aren't authenticated. Usually, this namespace is focused on the internal use of the platform cluster in situations where some of the resources need to be publicly visible and readable for the entire cluster.
-*   ‍**"kube-node-lease "—**This namespace holds lease objects associated with each node. These leases allow the kubelet to send heartbeats so that you can determine node availability.
+
+- **"default"—**The default namespace set by the system. It's intended for objects that don't specify any of the namespaces.
+- **"kube-system"—**This namespace is assigned to resources that are created by the Kubernetes system.
+- **"kube-public"—**This namespace is created by the system and is visible to all users, even users that aren't authenticated. Usually, this namespace is focused on the internal use of the platform cluster in situations where some of the resources need to be publicly visible and readable for the entire cluster.
+- ‍**"kube-node-lease "—**This namespace holds lease objects associated with each node. These leases allow the kubelet to send heartbeats so that you can determine node availability.
 
 In addition to these four namespaces, you can create custom namespaces.
 
@@ -69,8 +70,7 @@ It's important to note that the actual utility of these practices depends on you
 
 #### 1\. Use Convenient and Scalable Names
 
-Naming is at the root of programming and is one of its basic building blocks. Names should be meaningful and provide context. Therefore, it’s recommended to use names that are expressive and scalable.  
-  
+Naming is at the root of programming and is one of its basic building blocks. Names should be meaningful and provide context. Therefore, it’s recommended to use names that are expressive and scalable.
 
 For example, if you're working on a streaming application, you can name the namespace "stream". For the different development environments, you can scale this name by adding a suffix, for example, "stream-dev" for the development environment, "stream-test" for testing, and "stream-prod" for production.
 
@@ -81,10 +81,8 @@ Labels in Kubernetes are not just a way to distinguish resources, but they're al
 Though it’s considered a best practice to use labels throughout Kubernetes, using them in a namespace is essential when you have a large team. Here is an example:
 
 ```yaml
-
 kubectl create namespace namespace_name
 kubectl label namespaces namespace_name labelname=value --overwrite=true
-
 ```
 
 #### 3\. Use RBAC to Allocate Resources

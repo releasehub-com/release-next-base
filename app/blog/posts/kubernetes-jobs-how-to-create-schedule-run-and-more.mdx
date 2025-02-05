@@ -1,16 +1,16 @@
 ---
-title: 'Kubernetes Jobs: How to Create, Schedule, Run, and More'
+title: "Kubernetes Jobs: How to Create, Schedule, Run, and More"
 summary: >-
   Let's walk through a tutorial on how to create, schedule, configure, and run
   Kubernetes Jobs.
-publishDate: 'Mon Apr 24 2023 22:07:12 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Mon Apr 24 2023 22:07:12 GMT+0000 (Coordinated Universal Time)"
 author: tommy-mcclung
 readingTime: 4
 categories: &ref_0
   - kubernetes
   - platform-engineering
 mainImage: /blog-images/a127125d021b2ea0b1d611e065508bb3.jpg
-imageAlt: 'Kubernetes Jobs: How to Create, Schedule, Run, and More'
+imageAlt: "Kubernetes Jobs: How to Create, Schedule, Run, and More"
 showCTA: true
 ctaCopy: >-
   Simplify Kubernetes job management with Release's ephemeral environments.
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=kubernetes-jobs-how-to-create-schedule-run-and-more
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/a127125d021b2ea0b1d611e065508bb3.jpg
 excerpt: >-
   Let's walk through a tutorial on how to create, schedule, configure, and run
@@ -56,9 +56,10 @@ Now that we know some examples of tasks we can execute using jobs, let's walk th
 ### Prerequisites
 
 In order to follow along better, you'll need to have the following tools and experience: 
-*   Kubernetes installation on your target machine
-*   Basic knowledge of [Docker](https://releasehub.com/blog/6-docker-compose-best-practices-for-dev-and-prod) and Kubernetes
-*   Knowledge of Terminal and CLI
+
+- Kubernetes installation on your target machine
+- Basic knowledge of [Docker](https://releasehub.com/blog/6-docker-compose-best-practices-for-dev-and-prod) and Kubernetes
+- Knowledge of Terminal and CLI
 
 With that out of the way, let's walk through the actual steps for using jobs. 
 
@@ -66,7 +67,7 @@ With that out of the way, let's walk through the actual steps for using jobs. 
 
 Just like most operations in Kubernetes, you create jobs using a [**YAML file**](https://en.wikipedia.org/wiki/YAML). The YAML file will contain all the details about your job, like the name of the job, what should happen when a pod fails, and so on. In later steps, we'll take a closer look at the various job configuration options. 
 
-So, on your machine, create a new file with the name **hello\_world\_job.yaml** and paste the configuration for your new job into it. For this tutorial, we'll use the following code: 
+So, on your machine, create a new file with the name **hello_world_job.yaml** and paste the configuration for your new job into it. For this tutorial, we'll use the following code: 
 
 ```yaml
 
@@ -93,25 +94,19 @@ spec:
 The above configuration is for a job that simply prints "hello world." Next, finish up creating the job by running the following command: 
 
 ```yaml
-
 kubectl apply -f hello_world_job.yaml
-
 ```
 
 You should get the following message on your terminal if the command runs successfully: 
 
 ```yaml
-
 job.batch/hello-world-job created
-
 ```
 
 Also, you can verify that your job was created by running this command: 
 
 ```yaml
-
 kubectl get jobs
-
 ```
 
 The output of this command is a list of all your jobs, similar to the following: 
@@ -122,7 +117,7 @@ From the above photo, we can see that we created our **hello-world-job** success
 
 #### **Step 2: Configuring a Job**
 
-From the previous step, we already have a few configurations for our job. However, let's walk through a few more complex configurations. In order to do that, let's create a new job. Create a new **hello\_world\_4x.yaml** file and add the following code to it: 
+From the previous step, we already have a few configurations for our job. However, let's walk through a few more complex configurations. In order to do that, let's create a new job. Create a new **hello_world_4x.yaml** file and add the following code to it: 
 
 ```yaml
 
@@ -146,9 +141,10 @@ spec:
       restartPolicy: Never
 
 ```
+
 **Completion**: In this bit of code, we introduce a new configuration (i.e., completions). In step 1, Kubernetes created a single pod that runs our task once. However, using completions, we can perform the same task multiple times. Completions run multiple pods one after the other. 
 
-Let's take a look at another configuration option. Again, create a new **hello\_world\_4x\_parallel.yaml** file and add the following code to it: 
+Let's take a look at another configuration option. Again, create a new **hello_world_4x_parallel.yaml** file and add the following code to it: 
 
 ```yaml
 
@@ -211,9 +207,7 @@ In this code, the cron schedule format is the string "\*/5 \* \* \* \*." It cont
 To create the job on your machine, run the following command: 
 
 ```yaml
-
 kubectl create -f your-cronjob-yaml-file
-
 ```
 
 To see the cronjob you just created, simply run the **kubectl create -f cronjob.yaml** command. 

@@ -3,14 +3,14 @@ title: How Release Uses Action Cable and Redux Toolkit
 summary: >-
   Walk through setting up Action Cable messages that are received by a React
   Component hooked up to Redux Toolkit.
-publishDate: 'Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)"
 author: jeremy-kreutzbender
 readingTime: 8
 categories: &ref_0
   - platform-engineering
   - product
 mainImage: /blog-images/4a62d2a6629b891fdae6ce6926d1fb05.jpg
-imageAlt: 'A toolkit that includes several tools such as hammer, saw and file'
+imageAlt: "A toolkit that includes several tools such as hammer, saw and file"
 showCTA: true
 ctaCopy: >-
   Enhance your Redux setup with Release's ephemeral environments for seamless
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=how-release-uses-action-cable-redux-toolkit
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/4a62d2a6629b891fdae6ce6926d1fb05.jpg
 excerpt: >-
   Walk through setting up Action Cable messages that are received by a React
@@ -44,7 +44,7 @@ class Build < ApplicationRecord
   include Logging
 
   has_many :logs
- 
+
   aasm use_transactions: false do
     state :ready, initial: true
     state :running, after_enter: Proc.new { update_started_at; log_start }
@@ -80,7 +80,7 @@ class Build < ApplicationRecord
 
   def log_metadata
     {
-      build_id: self.id, 
+      build_id: self.id,
       aasm_state: self.aasm_state,
       started_at: self.started_at,
       duration: self.total_duration
@@ -94,7 +94,7 @@ end
 
 ```
 
-Whenever the **_Build_** transitions its state, we create a **_Log_** record through the _log\_it_ method. A log level is supplied, along with the message, and metadata about the **_Build_** itself. That metadata is used by the frontend to make changes for the user as you’ll see when we go through the Redux code. _log\_it_ also sends the message to the _logs\_channel_ through Action Cable. Since that wasn’t defined above, let’s look at that now.
+Whenever the **_Build_** transitions its state, we create a **_Log_** record through the _log_it_ method. A log level is supplied, along with the message, and metadata about the **_Build_** itself. That metadata is used by the frontend to make changes for the user as you’ll see when we go through the Redux code. _log_it_ also sends the message to the _logs_channel_ through Action Cable. Since that wasn’t defined above, let’s look at that now.
 
 ```ruby
 
@@ -116,7 +116,7 @@ end
 
 ```
 
-There is not too much to it. We create the **_Log_** record and ensure the message is properly encoded. Then we combine the level, message, and supplied metadata to Action Cable and broadcast it. We use the _log\_it_ method with more classes than just **_Build_** and have found it makes for an easy and reliable way to store and send messages.
+There is not too much to it. We create the **_Log_** record and ensure the message is properly encoded. Then we combine the level, message, and supplied metadata to Action Cable and broadcast it. We use the _log_it_ method with more classes than just **_Build_** and have found it makes for an easy and reliable way to store and send messages.
 
 That takes care of our state transitions. The last piece needed to wrap up our backend setup is to create the **_BuildChannel_**.
 
@@ -144,37 +144,31 @@ As you’ll recall we’re using Redux Toolkit and we’re not going to cover ou
 We’ll start off with the **_BuildsSlice_**.
 
 ```javascript
-
 import { createSlice } from "@reduxjs/toolkit";
 
-import {
-  handleBuildMessageReceived,
-} from "./helpers/actionCable/builds";
+import { handleBuildMessageReceived } from "./helpers/actionCable/builds";
 
 const initialState = {
-  activeBuild: undefined, // object
+  activeBuild: undefined, // object
 };
 
 export const buildsSlice = createSlice({
-  updateBuildFromMessage(state, action) {
-    const message = action.payload;
+  updateBuildFromMessage(state, action) {
+    const message = action.payload;
 
-    const build = state.activeBuild;
-    const newBuild = handleBuildMessageReceived(build, message);
+    const build = state.activeBuild;
+    const newBuild = handleBuildMessageReceived(build, message);
 
-    return {
-      ...state,
-      activeBuild: newBuild,
-    };
-  },
-})
+    return {
+      ...state,
+      activeBuild: newBuild,
+    };
+  },
+});
 
-export const {
-  updateBuildFromMessage,
-} = buildsSlice.actions;
+export const { updateBuildFromMessage } = buildsSlice.actions;
 
 export default buildsSlice.reducer;
-
 ```
 
 You’ll notice that we import _handleBuildMessageReceived_ from a file under _helpers/actionCable_. We wanted to separate out the code for the logic of updating the build from the slice itself so that our slice file does not grow too enormous. Other than that, the slice itself follows the suggested setup of a slice from the [createSlice](https://redux-toolkit.js.org/api/createslice) documentation.
@@ -182,34 +176,31 @@ You’ll notice that we import _handleBuildMessageReceived_ from a file under _h
 Now we need to look at our _handleBuildMessageReceived_ function.
 
 ```javascript
-
 const handleBuildMessageReceived = (build, message) => {
-  const buildId = message["build_id"];
-  const aasmState = message["aasm_state"];
-  const duration = message["duration"];
-  const startedAt = message["started_at"];
-  const level = message["level"];
-  const messageLog = message["message"];
-  
-  const logs = build.logs;
+  const buildId = message["build_id"];
+  const aasmState = message["aasm_state"];
+  const duration = message["duration"];
+  const startedAt = message["started_at"];
+  const level = message["level"];
+  const messageLog = message["message"];
+  const logs = build.logs;
 
-  if (build.id !== buildId) {
-    return build;
-  } else {
-    const newLogLine = { level: level, message: messageLog };
-    const newBuild = {
-      ...build,
-      logs: [...logs, newLogLine],
-      aasm_state: aasmState || build.aasm_state,
-      total_duration: duration || build.total_duration,
-      started_at: startedAt || build.started_at,
-    };
-    return newBuild;
-  }
+  if (build.id !== buildId) {
+    return build;
+  } else {
+    const newLogLine = { level: level, message: messageLog };
+    const newBuild = {
+      ...build,
+      logs: [...logs, newLogLine],
+      aasm_state: aasmState || build.aasm_state,
+      total_duration: duration || build.total_duration,
+      started_at: startedAt || build.started_at,
+    };
+    return newBuild;
+  }
 };
 
 export { handleBuildMessageReceived };
-
 ```
 
 First a sanity check is done to ensure we didn’t somehow receive a message for a **_Build_** that we aren’t viewing. This shouldn’t happen because we open and close our Action Cable subscriptions when we enter and leave a page, but an extra check never hurts. Then we construct a new **_Build_** object by appending the new log line and adding the metadata. If the metadata fields are _undefined_, we’ll retain what the _build_ variable already had.
@@ -217,35 +208,35 @@ First a sanity check is done to ensure we didn’t somehow receive a message for
 We’re ready to receive messages so we need a component that will handle that for us. The **_ActionCableWrapper_** component is just that.
 
 ```javascript
-
 import React, { useEffect, useState } from "react";
 import actionCable from "actioncable";
 
 export default function ActionCableWrapper({ channel, room, onReceived }) {
-  const [actionCableConsumer, setActionCableConsumer] = useState(undefined);
+  const [actionCableConsumer, setActionCableConsumer] = useState(undefined);
 
-  useEffect(() => {
-    if (!actionCableConsumer) {
-      setActionCableConsumer(actionCable.createConsumer("ws://localhost:3000/cable"));
-    } else {
-      actionCableConsumer.subscriptions.create(
-        { channel, room },
-        {
-          received: onReceived,
-        }
-      );
-    }
+  useEffect(() => {
+    if (!actionCableConsumer) {
+      setActionCableConsumer(
+        actionCable.createConsumer("ws://localhost:3000/cable"),
+      );
+    } else {
+      actionCableConsumer.subscriptions.create(
+        { channel, room },
+        {
+          received: onReceived,
+        },
+      );
+    }
 
-    return () => {
-      if (actionCableConsumer) {
-        actionCableConsumer.disconnect();
-      }
-    };
-  }, [actionCableConsumer]);
+    return () => {
+      if (actionCableConsumer) {
+        actionCableConsumer.disconnect();
+      }
+    };
+  }, [actionCableConsumer]);
 
-  return <></>
+  return <></>;
 }
-
 ```
 
 This component will mount and check to see if _actionCableConsumer_ is not _undefined_. However, if it is _undefined_, which it will be on the first pass through the _useEffect_, we will create a consumer through _actionCable.createConsumer_ connecting to a _/cable_ endpoint. _"ws://localhost:3000/cable"_ is hard coded but the URL should come from an environment variable so the component works locally or in production. That consumer is set into the local state _actionCableConsumer_ and the _useEffect_ will trigger a second time.
@@ -255,61 +246,78 @@ In the second pass through, the _else_ block is entered and a subscription is cr
 Pulling it all together, we can create a demo component that will display the state and logs and update whenever it receives a message.
 
 ```javascript
-
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Grid } from "@material-ui/core";
 
-import ActionCableWrapper from "../ActionCableWrapper"; 
+import ActionCableWrapper from "../ActionCableWrapper";
 
 import { updateBuildFromMessage } from "redux/slices/builds";
 
 export default function BuildDetailsCard(props) {
-  const dispatch = useDispatch();
-  const build = useSelector(state => state.builds.activeBuild);
+  const dispatch = useDispatch();
+  const build = useSelector((state) => state.builds.activeBuild);
 
-  const handleMessageReceived = message => dispatch(updateBuildFromMessage(message));
+  const handleMessageReceived = (message) =>
+    dispatch(updateBuildFromMessage(message));
 
-  return (
-    <>
-       <ActionCableWrapper channel="BuildChannel" room={build.id} onReceived={handleMessageReceived} />>
-       <Grid container>
-         <Grid item xs={3}>
-           <div>
-             <b>Repository Name: </b> {build.repository.name}
-           </div>
-           <div>
-             <b>Commit Message: </b> {build.commit_message}
-           </div>
-           <div>
-             <b>Commit SHA: </b> {build.commit_short}
-           </div>
-           <div>
-             <b>State: </b> {build.aasm_state}
-           </div>
-         </Grid>
-         <Grid
-          item
-          xs={9}
-          style={{
-            border: "2px",
-            backgroundColor: "#343a40",
-            fontSize: "0.9rem",
-            fontFamily: "Monaco",
-            color: "white",
-            padding: 10,
-          }}
-        >
-          {build.logs.map(log => (
-             <div>{log.message} </div>
-          ))}
-         </Grid>
-       </Grid>
-    </>
-  );
+  return (
+    <>
+           {" "}
+      <ActionCableWrapper
+        channel="BuildChannel"
+        room={build.id}
+        onReceived={handleMessageReceived}
+      />
+      >      {" "}
+      <Grid container>
+               {" "}
+        <Grid item xs={3}>
+                   {" "}
+          <div>
+                        <b>Repository Name: </b> {build.repository.name}       
+             {" "}
+          </div>
+                   {" "}
+          <div>
+                        <b>Commit Message: </b> {build.commit_message}         {" "}
+          </div>
+                   {" "}
+          <div>
+                        <b>Commit SHA: </b> {build.commit_short}         {" "}
+          </div>
+                   {" "}
+          <div>
+                        <b>State: </b> {build.aasm_state}         {" "}
+          </div>
+                 {" "}
+        </Grid>
+               {" "}
+        <Grid
+          item
+          xs={9}
+          style={{
+            border: "2px",
+            backgroundColor: "#343a40",
+            fontSize: "0.9rem",
+            fontFamily: "Monaco",
+            color: "white",
+            padding: 10,
+          }}
+        >
+                   
+          {build.logs.map((log) => (
+            <div>{log.message} </div>
+          ))}
+                 {" "}
+        </Grid>
+             {" "}
+      </Grid>
+         
+    </>
+  );
 }
-
 ```
 
 For demo purposes I probably went a little overboard with the styling, but I wanted to create something that resembles our actual application which you saw at the start of this post. The two things needed to power the page are the _build_, which is retrieved with _useSelector_ and the _handleMessageReceived_ function, which dispatches _updateBuildFromMessage_ every time we receive a message through Action Cable. We supply the _”BuildChannel”_ and _build.id_ as the channel and room to _ActionCableWrapper_ along with _handleMessageReceived_ as the _onReceived_ function.

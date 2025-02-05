@@ -3,7 +3,7 @@ title: What is GitOps and how to get started with GitOps
 summary: >-
   We recently joined a panel on Gitops. This blog will summarize the key nuggets
   and share tips on where to start
-publishDate: 'Fri Apr 21 2023 19:37:52 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Fri Apr 21 2023 19:37:52 GMT+0000 (Coordinated Universal Time)"
 author: regis-wilson
 readingTime: 7
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=what-is-gitops
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/c3d3cfa735e4839ea2755b862e3e913f.jpg
 excerpt: >-
   We recently joined a panel on Gitops. This blog will summarize the key nuggets
@@ -28,44 +28,46 @@ ctaButton: Try Release for Free
 ---
 
 **We recently joined Kong, Stackhawk, Fairwinds and Devops.com to discuss GitOps. You can click** [**here**](https://www.youtube.com/watch?v=m1VN-RjTHHo&feature=youtu.be) **to watch the panel discussion. If you prefer reading, we summarized some of the nuggets for you.**  
-**Does GitOps replace DevOps or is it just an opinionated instance using more declarative tools?**  
+**Does GitOps replace DevOps or is it just an opinionated instance using more declarative tools?**
 
 In short, 
+
 1.  GitOps is a theory, a way to operate: the philosophy that DevOps people use in response to the challenges of operating distributed applications.
-2.  GitOps = XaC (X=infrastructure, configuration or any dependencies) + DevOps  
-    
+2.  GitOps = XaC (X=infrastructure, configuration or any dependencies) + DevOps
 
-More in length, GitOps is a tool in the DevOps toolbox. If you want to stretch it a bit, you could say that GitOps is a philosophical bent of DevOps practitioners. The mantra for several years has been “X as code” where “X” could be infrastructure, configuration, policy, and so forth. The meaning of GitOps is usually understood as “check in X and Y happens”.  
+More in length, GitOps is a tool in the DevOps toolbox. If you want to stretch it a bit, you could say that GitOps is a philosophical bent of DevOps practitioners. The mantra for several years has been “X as code” where “X” could be infrastructure, configuration, policy, and so forth. The meaning of GitOps is usually understood as “check in X and Y happens”.
 
-Unfortunately, as is usually the case with such broad strokes, there are a few places where this falls down. For example, the most oft-cited example of Infrastructure as Code is usually declarative configuration files that are not code. These “Infrastructure as Code” imposters (to use a negative term) are actually static text files that are copy-pasted and littered about the repository as if they were code. Often, these configuration files are whole directories and subtrees full of hardcoded boilerplate that need to be copy-paste-edited.  
+Unfortunately, as is usually the case with such broad strokes, there are a few places where this falls down. For example, the most oft-cited example of Infrastructure as Code is usually declarative configuration files that are not code. These “Infrastructure as Code” imposters (to use a negative term) are actually static text files that are copy-pasted and littered about the repository as if they were code. Often, these configuration files are whole directories and subtrees full of hardcoded boilerplate that need to be copy-paste-edited.
 
-Even worse, these configuration files often get stale and freeze-dried into branches and can’t be merged due to overlapping changes or schema adaptations that lag behind current versions or upstream fixes.  
+Even worse, these configuration files often get stale and freeze-dried into branches and can’t be merged due to overlapping changes or schema adaptations that lag behind current versions or upstream fixes.
 
-The actual practice of GitOps should not be reduced to an overly simple saying like, “X as code,” but rather should be restated as “X in version control with good templating and deployment strategies”. What is the difference? Well, consider the usual case of configuration files sitting in a repository with names like “env.production”, “env.staging”, “env.qa”, and so on. Is this a good GitOps practice?  
+The actual practice of GitOps should not be reduced to an overly simple saying like, “X as code,” but rather should be restated as “X in version control with good templating and deployment strategies”. What is the difference? Well, consider the usual case of configuration files sitting in a repository with names like “env.production”, “env.staging”, “env.qa”, and so on. Is this a good GitOps practice?
 
-What happens when we need a new environment like “env.qa2”, or even worse, “env.alice\_dev”, “env.bob\_dev”, “env.caden\_dev”, etc.? Instead, you would prefer there be one, maybe two configurations with names like “production” and “testing” where “production” is instantiated many times as staging, qa1, qa2, and so on; and “testing” is instantiated N number of times by anyone and any environment that needs to be created. The “diff” between production and testing configurations should approach zero as time advances to infinity.  
+What happens when we need a new environment like “env.qa2”, or even worse, “env.alice_dev”, “env.bob_dev”, “env.caden_dev”, etc.? Instead, you would prefer there be one, maybe two configurations with names like “production” and “testing” where “production” is instantiated many times as staging, qa1, qa2, and so on; and “testing” is instantiated N number of times by anyone and any environment that needs to be created. The “diff” between production and testing configurations should approach zero as time advances to infinity.
 
 This is why GitOps should not be the only philosophy or tool in the DevOps practitioner’s toolbox. It should be balanced as well by the [twelve factors](https://12factor.net/) of good application development, including “one codebase, many deploys,” “store config in the environment,” and “keep dev, stage, and prod as similar as possible”.
-**Is GitOps it just about managing infrastructure as code or is that just one pain point?**  
+**Is GitOps it just about managing infrastructure as code or is that just one pain point?**
 
-GitOps is not just about infrastructure. It’s about all dependencies, internal and external. However, infrastructure is the main pain point that people address first.  
-*   More of a means to an end. IaaC gives you the option to automate your infrastructure. DevOps teams can then do whatever automation they need. 
-*   Leverage the GitFlow to apply to infrastructure. Rigor of dev process to your infrastructure methodology.
-*   IaaC is the biggest and most. Don’t have data as code, security policy as code. As infra gets checked in, you’ll end up with needs outside of infra.
+GitOps is not just about infrastructure. It’s about all dependencies, internal and external. However, infrastructure is the main pain point that people address first.
 
-‍**Is GitOps a response to continuous delivery obstacles?**  
+- More of a means to an end. IaaC gives you the option to automate your infrastructure. DevOps teams can then do whatever automation they need. 
+- Leverage the GitFlow to apply to infrastructure. Rigor of dev process to your infrastructure methodology.
+- IaaC is the biggest and most. Don’t have data as code, security policy as code. As infra gets checked in, you’ll end up with needs outside of infra.
 
-GitOps is an extension of CD. Automating your release process requires many ingredients in place. One such example is automated testing. The same way continuous testing is an extension of CI, GitOps an extension of CD. Automating version control, code reviews, testing and many other aspects of CI/CD relay on the premise that you have the right environments available at the right time in the release cycle.  
-*   It is a response in part, and a necessary part. Because infra is needed, when you make a code change that needs an S3 bucket, you can define it in IaaC alongside your code. Making sure all of that works adds another layer of complexity.
-*   It is part of the process to get to CD. Let’s get our config into Git. 
-*   You don’t have to do GitOps to get to CD. 
-*   It’s a philosophy… Other tools can be used: Ansible, Puppet, Chef.
-*   Build additional tooling is really required (Release, ah hem)
+‍**Is GitOps a response to continuous delivery obstacles?**
 
-It would almost be impossible to accomplish continuous delivery without something like GitOps.  
+GitOps is an extension of CD. Automating your release process requires many ingredients in place. One such example is automated testing. The same way continuous testing is an extension of CI, GitOps an extension of CD. Automating version control, code reviews, testing and many other aspects of CI/CD relay on the premise that you have the right environments available at the right time in the release cycle.
+
+- It is a response in part, and a necessary part. Because infra is needed, when you make a code change that needs an S3 bucket, you can define it in IaaC alongside your code. Making sure all of that works adds another layer of complexity.
+- It is part of the process to get to CD. Let’s get our config into Git. 
+- You don’t have to do GitOps to get to CD. 
+- It’s a philosophy… Other tools can be used: Ansible, Puppet, Chef.
+- Build additional tooling is really required (Release, ah hem)
+
+It would almost be impossible to accomplish continuous delivery without something like GitOps.
 
 By the way, CD is probably the most challenging part of GitOps and we’re still figuring it out. Testing code we’ve been doing for years. Testing infrastructure is more challenging.
-**How to get started with GitOps? Where do you learn and find the right communities?**  
+**How to get started with GitOps? Where do you learn and find the right communities?**
 
 The two most common tools are [Argo](https://argoproj.github.io/cd/) and Flask. Each supports different applications. If you want to get your hands dirty, try them out and see which one better fits your needs. If you don’t have a Kubernetes cluster, [Release](https://release.com) is the place to go to get started.  
 ‍  
@@ -73,6 +75,6 @@ For the full panel discussion click [here](https://www.youtube.com/watch?v=m1VN-
 
 ### Additional Resources
 
-*   [Increase Developer Velocity by Removing Environment Bottlenecks](https://release.com/blog/increase-developer-velocity-by-removing-environment-bottlenecks)
-*   [What is an Ephemeral Environment?](https://release.com/ephemeral-environments)
-*   [Using Release GitOps](https://docs.releasehub.com/reference-guide/gitops)
+- [Increase Developer Velocity by Removing Environment Bottlenecks](https://release.com/blog/increase-developer-velocity-by-removing-environment-bottlenecks)
+- [What is an Ephemeral Environment?](https://release.com/ephemeral-environments)
+- [Using Release GitOps](https://docs.releasehub.com/reference-guide/gitops)

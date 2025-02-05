@@ -1,9 +1,9 @@
 ---
-title: 'Kubernetes CRDs: What They Are and Why They Are Useful'
+title: "Kubernetes CRDs: What They Are and Why They Are Useful"
 summary: >-
   What are Kubernetes Custom Resource Definitions? What are they useful for and
-  how to create your own? Read all about it 
-publishDate: 'Fri Apr 21 2023 19:37:52 GMT+0000 (Coordinated Universal Time)'
+  how to create your own? Read all about it
+publishDate: "Fri Apr 21 2023 19:37:52 GMT+0000 (Coordinated Universal Time)"
 author: dawid-ziolkowski
 readingTime: 7
 categories: &ref_0
@@ -19,11 +19,11 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=kubernetes-crds
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/25a8e0410945d3fe7afe1b2f30acc552.jpg
 excerpt: >-
   What are Kubernetes Custom Resource Definitions? What are they useful for and
-  how to create your own? Read all about it 
+  how to create your own? Read all about it
 tags: *ref_0
 ctaButton: Try Release for Free
 ---
@@ -60,17 +60,13 @@ Secondly, as already mentioned, you don't need to create any CRDs yourself if yo
 
 One example is [cert-manager](https://cert-manager.io), a very popular Kubernetes tool for managing certificates. It installs a few CRDs on your cluster in order to do its job. If you execute **kubectl get clusterissuers** before installation of cert-manager, your cluster won't know what ClusterIssuers are:
 
-	
 `error: the server doesn't have a resource type "clusterissuers"`
- 
 
 But if you execute the same command after cert-manager installation, you'll get the list of ClusterIssuers on your cluster.
 
 In fact, you can list all custom resource definitions installed on your cluster by executing **kubectl get crd**:
 
-	
 `$ kubectl get crd NAME                                    CREATED AT addons.k3s.cattle.io                    2022-01-23T12:48:31Z helmcharts.helm.cattle.io               2022-01-23T12:48:31Z helmchartconfigs.helm.cattle.io         2022-01-23T12:48:31Z serverstransports.traefik.containo.us   2022-01-23T12:49:48Z tlsoptions.traefik.containo.us          2022-01-23T12:49:48Z ingressroutetcps.traefik.containo.us    2022-01-23T12:49:48Z ingressroutes.traefik.containo.us       2022-01-23T12:49:48Z tlsstores.traefik.containo.us           2022-01-23T12:49:48Z middlewares.traefik.containo.us         2022-01-23T12:49:48Z traefikservices.traefik.containo.us     2022-01-23T12:49:48Z middlewaretcps.traefik.containo.us      2022-01-23T12:49:48Z ingressrouteudps.traefik.containo.us    2022-01-23T12:49:48Z`
- 
 
 The above output comes in the form of **OBJECT.GROUP** and tells me that I can execute commands like **kubectl get addons**...
 
@@ -78,33 +74,27 @@ The above output comes in the form of **OBJECT.GROUP** and tells me that I can e
 
 OK, forget about biscuits. Let's take a look at some more realistic examples. Imagine that you want Kubernetes to somehow manage your custom routers in your datacenter. For that, you could create a custom resource definition similar to this one:
 
-	
 `apiVersion: apiextensions.k8s.io/v1 kind: CustomResourceDefinition metadata:   # Name of your CRD. Must match the spec block below, and be in the form: .  name: routers.example.com spec: # Group name to use for REST API: /apis//  group: example.com  names: # Plural name to be used in the URL: /apis///    plural: routers    # Singular name to be used as an alias on the CLI and for display    singular: router    # Kind is normally the CamelCased singular type. Your resource manifests use this.    kind: Router    # ShortNames allow shorter string to match your resource on the CLI    shortNames:    - rt  # Scope can be either Namespaced or Cluster-wide  scope: Cluster  versions:    - name: v1      # Each version can be enabled/disabled by Served flag.      served: true      # One and only one version must be marked as the storage version.      storage: true      schema:        openAPIV3Schema:          type: object          properties:            spec:              type: object              properties:                dataCenter:                  type: string                rack:                  type: integer                type:                  type: string                  enum:                  - f5                  - virtual              required: ["dataCenter", "rack", "type"]          required: ["spec"]`
- 
 
 You can apply the above CRD to the cluster by executing **kubectl apply -f router-CRD.yaml**. Once you do that, your Kubernetes cluster will already know what "router" is. Therefore, you'll be able to execute **kubectl get routers**. Of course, we just applied the resource definition, not the resource itself. So **kubectl get routers** will return the following:
 
-	
 `No resources found.`
- 
 
 But as you can see, it doesn't return this:
 
-	
 `error: the server doesn't have a resource type "routers"`
- 
 
 Which means we successfully added a new object to the Kubernetes API. To add an actual router resource, you can construct a YAML definition file like with any other object:
 
-	
 `apiVersion: example.com/v1 kind: Router metadata:  name: example-router spec:  dataCenter: eu-1  rack: 3  type: virtual`
-  
+
+ 
 
 Now, you can create a new router on your cluster by executing **kubectl apply - f example-router.yaml**, and if you try to get the list of routers again with **kubectl get routers**, you should see one now:
 
-	
 `$ kubectl get routers NAME             AGE example-router   4s`
-  
+
+ 
 
 Congratulations! You just extended the Kubernetes API.
 

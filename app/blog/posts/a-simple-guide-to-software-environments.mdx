@@ -3,7 +3,7 @@ title: A Simple Guide to Software Environments
 summary: >-
   Learn about tools to scope and limit instances of your software as it
   progresses from development to a finished product.
-publishDate: 'Thu May 02 2024 20:19:24 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Thu May 02 2024 20:19:24 GMT+0000 (Coordinated Universal Time)"
 author: alexander-fridman
 readingTime: 5
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=a-simple-guide-to-software-environments
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/b3927fc80db8ab1869298638402348e7.png
 excerpt: >-
   Learn about tools to scope and limit instances of your software as it
@@ -34,13 +34,14 @@ Building software is hard. It takes a lot of time and effort and it’s a somewh
 ### What Are Software Environments
 
 Software environments are tools to scope and limit instances of your software as it progresses from development to a customer facing product. Each environment contains the following: 
-*   Copy of your software code
-*   Copy of the database tables you use with (possibly) environment-specific data
-*   Internal network so the different microservices your code uses can communicate with each other and with external services
-*   Global values (environment variables)
-*   Access control to limit who can view the application and make changes to it in the specific environment
-*   Infrastructure to support it (servers and such)
-*   Testing software to test the code
+
+- Copy of your software code
+- Copy of the database tables you use with (possibly) environment-specific data
+- Internal network so the different microservices your code uses can communicate with each other and with external services
+- Global values (environment variables)
+- Access control to limit who can view the application and make changes to it in the specific environment
+- Infrastructure to support it (servers and such)
+- Testing software to test the code
 
 Let's elaborate by giving specific examples of different environments. 
 
@@ -53,10 +54,11 @@ The local environment is where a developer writes software code. They may be wri
 ### Development Environment
 
 The development environment is where multiple developers upload their code to. It’s meant to be the first place where other stakeholders can test the code and the application’s different features. Developers merge the code and run a CI/CD pipeline here. The [CI/CD pipeline](https://en.wikipedia.org/wiki/CI/CD) usually consists of the following steps: 
-*   Changes to the database (database migrations)
-*   Static code analysis
-*   Vulnerability scanning
-*   Deployment to the development environment of the end artifact (JAR in Java or a binary)
+
+- Changes to the database (database migrations)
+- Static code analysis
+- Vulnerability scanning
+- Deployment to the development environment of the end artifact (JAR in Java or a binary)
 
 In addition, this environment has more robust and thorough tests than those a developer runs on their laptop (e.g., integration tests). Developers apply the latest updates to the application in the development environment. Because it’s constantly being updated, the application is not stable in the development environment. It has a dedicated URL, environment variables, and better performance than versions run on individual developers’ local PCs. Usually all the developers on the team have access to this the development environment and to its database, which are not accessible outside of the organization (to clients, for instance). 
 

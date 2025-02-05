@@ -1,9 +1,9 @@
 ---
-title: 'Terraform vs Kubernetes: What''s the Difference and Why It Matters'
+title: "Terraform vs Kubernetes: What's the Difference and Why It Matters"
 summary: >-
   We'll look at Terraform and Kubernetes and how you can use them separately or
-  together to automate and scale your cloud 
-publishDate: 'Thu May 02 2024 20:19:24 GMT+0000 (Coordinated Universal Time)'
+  together to automate and scale your cloud
+publishDate: "Thu May 02 2024 20:19:24 GMT+0000 (Coordinated Universal Time)"
 author: eric-goebelbecker
 readingTime: 7
 categories: &ref_0
@@ -19,18 +19,18 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=terraform-vs-kubernetes-whats-the-difference-and-why-it-matters
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/814523c36864bffb33d1170c4b4682ff.jpg
 excerpt: >-
   We'll look at Terraform and Kubernetes and how you can use them separately or
-  together to automate and scale your cloud 
+  together to automate and scale your cloud
 tags: *ref_0
 ctaButton: Try Release for Free
 ---
 
 Terraform vs. Kubernetes. Which tool is better? Which one do you need? 
 
-Sometimes people confuse these two cloud automation tools, but it turns out they're not the same thing, and they're not in competition with each other. As a matter of fact, they work very well together. [Terraform](https://www.terraform.io) is an [infrastructure as code](https://en.wikipedia.org/wiki/Infrastructure_as_code) tool, while [Kubernetes](https://kubernetes.io) is a [container orchestration](https://en.wikipedia.org/wiki/Orchestration_\(computing) system. Terraform can help you build and manage reproducible cloud infrastructure. Kubernetes can help you create more robust cloud applications. 
+Sometimes people confuse these two cloud automation tools, but it turns out they're not the same thing, and they're not in competition with each other. As a matter of fact, they work very well together. [Terraform](https://www.terraform.io) is an [infrastructure as code](https://en.wikipedia.org/wiki/Infrastructure_as_code) tool, while [Kubernetes](https://kubernetes.io) is a [container orchestration](https://en.wikipedia.org/wiki/Orchestration_(computing) system. Terraform can help you build and manage reproducible cloud infrastructure. Kubernetes can help you create more robust cloud applications. 
 
 This post will explain what Terraform and Kubernetes are and how you can use them separately or together to automate and scale your cloud environments. 
 
@@ -41,10 +41,11 @@ This post will explain what Terraform and Kubernetes are and how you can use the
 Terraform is [Hashicorp's](https://www.hashicorp.com) infrastructure as code automation tool for provisioning and configuring cloud services. It has a consistent command-line interface (CLI) to more than 300 different cloud APIs. You describe your cloud environments in a declarative configuration syntax and then execute Terraform [plans](https://www.terraform.io/docs/glossary#plan-verb) to build them. Hashicorp offers both open-source and licensed versions of Terraform. 
 
 With Terraform you: 
-*   Increase your infrastructure automation and eliminate preventable mistakes.
-*   Use the same workflow to build environments in different public clouds
-*   Manage your infrastructure like code with configuration files, pull requests, and reviews
-*   Have a powerful tool for ensuring that your development, staging, and production environment are consistent.
+
+- Increase your infrastructure automation and eliminate preventable mistakes.
+- Use the same workflow to build environments in different public clouds
+- Manage your infrastructure like code with configuration files, pull requests, and reviews
+- Have a powerful tool for ensuring that your development, staging, and production environment are consistent.
 
 Terraform uses Hashicorp Configuration Language (HCL) to describe infrastructure resources. The CLI reads these files and executes your plans using the cloud provider's native APIS. 
 
@@ -173,12 +174,13 @@ Google created K8s, but it is not limited to Google infrastructure. You can run 
 ### K8s Benefits
 
 When you run your app with Kubernetes, you get: 
-*   **Automated deployments:** You tell K8s how you want your application to look, and it figures out how to get there gradually, without disrupting uptime. So, K8s can deploy or roll back your code for you.
-*   **On-the-fly and automatic scaling:** You can tell K8s how much memory and CPU a container needs. Then it figures out how to fit them into the nodes you allocated to your cluster. K8s ability to make the most of your system resources is one of its most powerful abilities.
-*   **Storage management:** K8s coordinates mounting and unmounting storage for your containers. It works with block storage, proprietary cloud systems, and more.
-*   **Dynamic load balancing:** K8s makes containers available via an IP address or DNS name to the outside world. If traffic to a single instance reaches a designated threshold, it will distribute the load to more than one instance.
-*   **Configuration:** K8s has tools for storing and managing configuration information, including secrets and tokens. These tools are a way to safely store secrets and push changes to applications without building a deploying new container.
-*   **Automatic recovery and failover:** When containers fail or stop unexpectedly, K8s will restart them for you. You can provide a custom health check to K8s, and it will restart your container when the check fails.
+
+- **Automated deployments:** You tell K8s how you want your application to look, and it figures out how to get there gradually, without disrupting uptime. So, K8s can deploy or roll back your code for you.
+- **On-the-fly and automatic scaling:** You can tell K8s how much memory and CPU a container needs. Then it figures out how to fit them into the nodes you allocated to your cluster. K8s ability to make the most of your system resources is one of its most powerful abilities.
+- **Storage management:** K8s coordinates mounting and unmounting storage for your containers. It works with block storage, proprietary cloud systems, and more.
+- **Dynamic load balancing:** K8s makes containers available via an IP address or DNS name to the outside world. If traffic to a single instance reaches a designated threshold, it will distribute the load to more than one instance.
+- **Configuration:** K8s has tools for storing and managing configuration information, including secrets and tokens. These tools are a way to safely store secrets and push changes to applications without building a deploying new container.
+- **Automatic recovery and failover:** When containers fail or stop unexpectedly, K8s will restart them for you. You can provide a custom health check to K8s, and it will restart your container when the check fails.
 
 So with Kubernetes, you get the portability of containers combined with a robust automated infrastructure that runs in the cloud. 
 

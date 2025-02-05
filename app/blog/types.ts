@@ -16,5 +16,9 @@ export interface BlogPost {
     bodyTop: string;
     bodyBottom: string;
     relatedPosts: string[];
+    ogImage?: string;
+    excerpt?: string;
+    tags?: string[];
+    updatedDate?: string;
   };
 }

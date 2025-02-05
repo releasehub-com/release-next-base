@@ -3,7 +3,7 @@ title: How to set Docker Compose Environment Variables
 summary: >-
   How to define environment variables directly in a Docker Compose file, or copy
   tnem from the host's environment.
-publishDate: 'Wed Oct 30 2024 19:55:42 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Wed Oct 30 2024 19:55:42 GMT+0000 (Coordinated Universal Time)"
 author: regis-wilson
 readingTime: 4
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=how-to-set-docker-compose-environment-variables
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/4c0d3d08781f13bb6a55f737ccdd49d2.jpg
 excerpt: >-
   How to define environment variables directly in a Docker Compose file, or copy
@@ -37,12 +37,13 @@ We'll use a simplified version of the [official getting started](https://docs.do
 
 If you want to follow along, clone our [Example Docker Compose Project](https://github.com/ritza-co/docker-compose-environment-variables-demo). You'll also need Docker and Docker Compose installed on your machine.
 
-We'll assume that you want to pass an environment variable called _SECRET\_ENV_ to your application.
+We'll assume that you want to pass an environment variable called _SECRET_ENV_ to your application.
 
 The project consists of:
-*   An _app.py_ file that returns a string containing the _SECRET\_ENV_ value.
-*   A Dockerfile that starts up the Flask app.
-*   A Docker Compose that defines the variable and starts the Dockerfile.
+
+- An _app.py_ file that returns a string containing the _SECRET_ENV_ value.
+- A Dockerfile that starts up the Flask app.
+- A Docker Compose that defines the variable and starts the Dockerfile.
 
 A _requirements.txt_ file that installs the Flask framework.
 
@@ -90,7 +91,7 @@ services:
 
 ```
 
-Save the file and run _export HOST\_SECRET=my\_secret\_from\_host_ in your shell. This sets the environment variable on your host machine, which will be read by the _docker-compose.yml_ file after you rebuild with Compose.
+Save the file and run _export HOST_SECRET=my_secret_from_host_ in your shell. This sets the environment variable on your host machine, which will be read by the _docker-compose.yml_ file after you rebuild with Compose.
 
 Now run _docker compose build && docker compose up_ again.
 
@@ -102,9 +103,9 @@ Visit [http://localhost:8000](http://localhost:8000/) in your browser and you'll
 
 If you have a lot of environment variables or you want to be sure you don't lose them, you can define them in a file called _.env_ in the same directory as your _docker-compose.yml_ file.
 
-Quit your shell to clear the _HOST\_SECRET_ variable that you set before and open a new shell. Create a file called _.env_ containing the following:
+Quit your shell to clear the _HOST_SECRET_ variable that you set before and open a new shell. Create a file called _.env_ containing the following:
 
-HOST\_SECRET=my\_secret\_from\_dot\_env\_file
+HOST_SECRET=my_secret_from_dot_env_file
 
 Save the file and run _docker compose build && docker compose up_ again.
 
@@ -114,7 +115,7 @@ Now you'll see the variable as you defined it in your _.env_ file. Usually, you 
 
 ### Understanding the priority of environment variables
 
-If you define the same variable in a _.env_ file and directly in your environment (for example, using _export HOST\_SECRET=my\_secret\_from\_host_), Docker Compose will give priority to your environment. The variable in your _.env_ file will be ignored.
+If you define the same variable in a _.env_ file and directly in your environment (for example, using _export HOST_SECRET=my_secret_from_host_), Docker Compose will give priority to your environment. The variable in your _.env_ file will be ignored.
 
 If you want to check exactly what is being used by your _docker-compose.yml_ file without building the whole project, you can run:
 
@@ -123,31 +124,26 @@ _docker compose convert_
 This will output the model it uses, based on your _docker-compose.yml_ file but with any environment variables replaced with their real values. If you run it now, you'll see it still picks up the value from the _.env_ file.
 
 ```yml
-
-...
-    environment:
-      SECRET_ENV: my_secret_from_dot_env_file 
-...
-
+---
+   environment:
+     SECRET_ENV: my_secret_from_dot_env_file
 ```
 
-If you run _export HOST\_SECRET=my\_secret\_from\_host_ and _docker compose convert_ again, you'll see it prefers the variable you set explicitly over the one in the _.env_ file.
+If you run _export HOST_SECRET=my_secret_from_host_ and _docker compose convert_ again, you'll see it prefers the variable you set explicitly over the one in the _.env_ file.
 
 ```yml
-
-...
-    environment:
-      SECRET_ENV: my_secret_from_host
-...
-
+---
+   environment:
+     SECRET_ENV: my_secret_from_host
 ```
 
 ### The best way to handle environment variables in your Docker Compose projects
 
 To recap, you can:
-*   Hard code your variables directly in your _docker-compose.yml_.
-*   Pull the variables from the host environment.
-*   Define the variables in a _.env_ file.
+
+- Hard code your variables directly in your _docker-compose.yml_.
+- Pull the variables from the host environment.
+- Define the variables in a _.env_ file.
 
 For non-sensitive variables that don't change very often, it's easiest to simply put the values directly in the _docker-compose.yml_ file. This means you don't have to spend extra time and effort tracking down the values and messing around with multiple files.
 

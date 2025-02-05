@@ -3,7 +3,7 @@ title: What are the Challenges Faced During UAT Testing?
 summary: >-
   In this blog post you'll learn the challenges in UAT testing and examples of
   user acceptance testing environment.
-publishDate: 'Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)"
 author: tommy-mcclung
 readingTime: 5
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=what-are-the-challenges-faced-during-uat-testing
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/21f37447ab5490033e2c49ad4a80b4e1.jpg
 excerpt: >-
   In this blog post you'll learn the challenges in UAT testing and examples of
@@ -28,10 +28,11 @@ ctaButton: Try Release for Free
 ---
 
 This is a 4-part series on User Acceptance Testing (UAT)
-*   Part 1: [What is User Acceptance Testing and its Best Practices](https://release.com/blog/user-acceptance-testing-best-practices)
-*   Part 2: [How to Prepare for User Acceptance Testing?](https://release.com/blog/how-do-you-prepare-for-user-acceptance-testing)
-*   **Part 3: User Acceptance Testing Challenges & UAT Environment Examples**
-*   Part 4: [UAT Checklist](https://release.com/blog/user-acceptance-testing-checklist)
+
+- Part 1: [What is User Acceptance Testing and its Best Practices](https://release.com/blog/user-acceptance-testing-best-practices)
+- Part 2: [How to Prepare for User Acceptance Testing?](https://release.com/blog/how-do-you-prepare-for-user-acceptance-testing)
+- **Part 3: User Acceptance Testing Challenges & UAT Environment Examples**
+- Part 4: [UAT Checklist](https://release.com/blog/user-acceptance-testing-checklist)
 
 ### User Acceptance Testing Challenges
 
@@ -39,27 +40,27 @@ User acceptance testing often uncovers various challenges and clarifies requirem
 
 Here are some of these challenges that you might face during UAT:
 
-#### Mimicking the right testing environment  
+#### Mimicking the right testing environment
 
 UAT is often conducted in the same environment used by the design team, potentially bypassing most of the real-world issues that will likely arise for the end-user. We highly recommend [replicating your production environment](https://releasehub.com/user-acceptance-testing-with-ephemeral-environments) and making sure you perform UAT on a replica that is as close to production as possible including the right data, services, infrastructure to test both the functionality, user experience and performance. Given the complexity of today’s software architecture, too often organizations settle for an environment that is limited thus many issues slip to production.
 
 Many times UAT requires testing different types of users and different states hence in some cases multiple environments might be required to properly run UAT. 
 
-#### Determining time frames  
+#### Determining time frames
 
 This is another challenge that you might face when you're defining the UAT project plan at the beginning of a project. It is recommended to always include criteria for the standard time frame that the organization expects. While most places accept two weeks, it should be ideally defined for each UAT project.
 
-#### Reviewing your test plans  
+#### Reviewing your test plans
 
 UAT test plans can have errors similar to any other type of software project documentation. To navigate this effectively, UAT plans can be reviewed by the UAT team, QA team, project manager, facilitator, or anyone else with knowledge of testing and the project.
 
-#### Ambiguous requirements  
+#### Ambiguous requirements
 
 Ambiguous requirements will typically bubble up during UAT as the tester needs to decide whether a certain experience meets the requirements or not. If requirements are not well defined, it would be up to the tester’s own judgement to check the box or not on certain requirements. 
 
 If the requirements are not well defined log it as a defect. The end-user/customer then expects these errors to be fixed in the current release without considering the time for any change requests and impact on the release plan. 
 
-#### Asking functional test team to perform user acceptance testing  
+#### Asking functional test team to perform user acceptance testing
 
 Asking the functional test team to perform UAT just to offload the responsibility to the test team for reasons such as lack of resources can. The purpose of UAT testing gets compromised in such cases, and you also run the risk of the end-users quickly spotting the issues that are not considered real-world scenarios by the functional testers.
 
@@ -69,26 +70,27 @@ Depending on what exactly you are evaluating, there can be various user acceptan
 
 Below are some of the UAT environment examples:
 
-#### Single-purpose UAT environment  
+#### Single-purpose UAT environment
 
 When a developer wishes to test a particular aspect of their product or software, the best option is a single-purpose UAT environment as it clearly outlines the test and its description along with different parameters.
 
-#### Priority-based UAT environment  
+#### Priority-based UAT environment
 
-When there is a range of aspects to be evaluated and assessed, it is best to use an environment that offers the option to prioritize different testing criteria. This allows developers to address various critical issues, followed by focusing on small bugs and fixes.  
+When there is a range of aspects to be evaluated and assessed, it is best to use an environment that offers the option to prioritize different testing criteria. This allows developers to address various critical issues, followed by focusing on small bugs and fixes.
 
-#### Multi-purpose UAT environment  
+#### Multi-purpose UAT environment
 
 In case a tester or developer is looking to evaluate a range of different applications, it is always best to rely on a flexible user acceptance testing environment that also enables them to accumulate data regarding their product.
 
-#### Customer-focused UAT scenario  
+#### Customer-focused UAT scenario
 
-Testers and developers use this UAT environment when they wish to involve customers in the testing process as it enables them to engage the target audience and also collect relevant data when it comes to addressing various customer-oriented issues.  
+Testers and developers use this UAT environment when they wish to involve customers in the testing process as it enables them to engage the target audience and also collect relevant data when it comes to addressing various customer-oriented issues.
 
 ### Disadvantages of Acceptance Testing
 
 While there are several benefits of UAT, there are some disadvantages too. For instance, as per the testing plan, the customer has to write their requirements in their own words and by themselves. However, there are two main problems here-
-*   Customers are not willing to do this, and it defeats the entire purpose of acceptance testing.
-*   In case the test cases are written by someone else, the customer does not understand them. The tester then has to perform the inspections by themselves only.
+
+- Customers are not willing to do this, and it defeats the entire purpose of acceptance testing.
+- In case the test cases are written by someone else, the customer does not understand them. The tester then has to perform the inspections by themselves only.
 
 If the process of UAT is done in this manner, it completely defeats the very purpose of the acceptance testing.

@@ -3,7 +3,7 @@ title: 6 Docker Compose Best Practices for Dev and Prod
 summary: >-
   Docker Compose is an excellent optimization tool for development and
   production. Learn best practices for Docker Compose
-publishDate: 'Wed Oct 30 2024 19:55:56 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Wed Oct 30 2024 19:55:56 GMT+0000 (Coordinated Universal Time)"
 author: regis-wilson
 readingTime: 5
 categories: &ref_0
@@ -19,7 +19,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=6-docker-compose-best-practices-for-dev-and-prod
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/3ae1bcb14fb4d151cd6a705f7e9101d8.jpg
 excerpt: >-
   Docker Compose is an excellent optimization tool for development and
@@ -63,14 +63,12 @@ Note: You can also use a link in your code instead of the bind mount, but the do
 Some files are only necessary during development and not production. For example, developing a JavaScript application using any of its frameworks needs [webpack](https://webpack.js.org/). Thus, an override file will mimic the compose file but with webpack as a service. When you spin up the container, the compose files will bundle together during development. Therefore, when you make changes in the code base, you'll see the changes in real time. This allows you to have separate settings for the production and development environment by avoiding redundancy. Your **docker-compose.override.yml** file will have the following:
 
 ```yaml
-
 services:
-  webpack:
-    build:
-      context: "."
-      target: "webpack"
-    command: "yarn run watch"
-
+   webpack:
+     build:
+       context: "."
+       target: "webpack"
+     command: "yarn run watch"
 ```
 
 ### Use YAML Anchors
@@ -110,7 +108,7 @@ As mentioned, dev and production may have slight configuration differences. So n
 
 ### Leverage the Docker Restart Policy
 
-Occasionally, you'll face a scenario when a service fails to start. A common reason is that another service on your host machine has changed, and Docker Compose uses the old environment variables. To ensure this doesn't happen, set the restart behavior to **restart: always** and configure your services with **update\_config: true**. This will refresh the environment variables for each run. However, if your app relies on other services (MySQL, Redis, etc.) outside of Docker Compose, then you should take extra precautions. Make sure they are configured correctly.
+Occasionally, you'll face a scenario when a service fails to start. A common reason is that another service on your host machine has changed, and Docker Compose uses the old environment variables. To ensure this doesn't happen, set the restart behavior to **restart: always** and configure your services with **update_config: true**. This will refresh the environment variables for each run. However, if your app relies on other services (MySQL, Redis, etc.) outside of Docker Compose, then you should take extra precautions. Make sure they are configured correctly.
 
 ### Correct Cleanup Order of Docker Images
 
@@ -129,16 +127,14 @@ Notice we've added the **\--remove-orphans** flag because that ensures Docker Co
 You can configure Docker to limit the CPU and memory of your containers by passing arguments into the **docker-compose.yml** file before starting your container. For example, the following command will start a web service with one CPU:
 
 ```yaml
-
 web:
-    deploy:
-      resources:
-        limits:
-          cpus: "1"
-
+     deploy:
+       resources:
+         limits:
+           cpus: "1"
 ```
 
-If you set a specific number of CPUs in the **multi\_cpu** key, it will only be used when available. If you fail to set the limit, the service will use the maximum resources it requires.
+If you set a specific number of CPUs in the **multi_cpu** key, it will only be used when available. If you fail to set the limit, the service will use the maximum resources it requires.
 
 Tip: If you want to run multiple containers with different memory limits on the same machine, ensure that all your containers have different memory limits. This is because each container views how much memory it needs.
 

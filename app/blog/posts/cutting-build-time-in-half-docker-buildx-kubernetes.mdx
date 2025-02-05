@@ -3,7 +3,7 @@ title: Cutting Build Time In Half with Docker’s Buildx Kubernetes Driver
 summary: >-
   At Release, environments are our main focus, but we can’t create environments
   without builds. Recently we undertook a pr
-publishDate: 'Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)"
 author: jeremy-kreutzbender
 readingTime: 5
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=cutting-build-time-in-half-docker-buildx-kubernetes
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/0e25329b235434c91db7ac0845e8f6a1.jpg
 excerpt: >-
   At Release, environments are our main focus, but we can’t create environments
@@ -31,7 +31,7 @@ At Release, environments are our main focus, but we can’t create environments 
 
 The title of the article already spoiled the solution, and the alternative ‘Release Did This One Thing To Cut Their Build Time In Half!’ didn’t quite fly with the rest of the company, but Docker’s new [buildx](https://github.com/docker/buildx) project fit the bill. First, we’ll cover what our original infrastructure looked like and how long builds on an example project were taking. Then, we’ll describe the changes we made to use buildx and the speed increases we observed.
 
-Let’s start off with a diagram of what our original infrastructure looked like.  
+Let’s start off with a diagram of what our original infrastructure looked like.
 
 ![release-builder-architecture](/blog-images/269489a2760994029b69e9de205f1093.png)
 
@@ -81,42 +81,36 @@ Each specified target will run in parallel as part of the build.
 bake intrigued us because it seemed to be a built-in command for us to avoid using Ruby threading for our parallelism. bake takes an input of a file, which can either be in the form of a docker-compose, .json, or .hcl. We initially tested bake with the docker-compose from example-voting-app and we were blown away at how smoothly it built directly out of the box and how quickly it was able to build the three images! However, we opted to create our own .json file generator in Ruby, parsing our [Application Template](https://releasehub.com/blog/cutting-build-time-in-half-docker-buildx-kubernetes) into an output. Here is our generated file for example-voting-app.
 
 ```json
-
 {
-  "group": {
-    "default": {
-      "targets": [
-        "vote",
-        "result",
-        "worker"
-      ]
-    }
-  },
-  "target": {
-    "vote": {
-      "context": "./vote",
-      "tags": [
-        ".dkr.ecr.us-west-2.amazonaws.com/jer-k/release-example-voting-app/vote:latest",
-        ".dkr.ecr.us-west-2.amazonaws.com/jer-k/release-example-voting-app/vote:buildx-builders"
-      ]
-    },
-    "result": {
-      "context": "./result",
-      "tags": [
-        ".dkr.ecr.us-west-2.amazonaws.com/jer-k/release-example-voting-app/result:latest",
-        ".dkr.ecr.us-west-2.amazonaws.com/jer-k/release-example-voting-app/result:buildx-builders"
-      ]
-    },
-    "worker": {
-      "context": "./worker",
-      "tags": [
-        ".dkr.ecr.us-west-2.amazonaws.com/jer-k/release-example-voting-app/worker:latest",
-        ".dkr.ecr.us-west-2.amazonaws.com/jer-k/release-example-voting-app/worker:buildx-builders"
-      ]
-    }
-  }
+  "group": {
+    "default": {
+      "targets": ["vote", "result", "worker"]
+    }
+  },
+  "target": {
+    "vote": {
+      "context": "./vote",
+      "tags": [
+        ".dkr.ecr.us-west-2.amazonaws.com/jer-k/release-example-voting-app/vote:latest",
+        ".dkr.ecr.us-west-2.amazonaws.com/jer-k/release-example-voting-app/vote:buildx-builders"
+      ]
+    },
+    "result": {
+      "context": "./result",
+      "tags": [
+        ".dkr.ecr.us-west-2.amazonaws.com/jer-k/release-example-voting-app/result:latest",
+        ".dkr.ecr.us-west-2.amazonaws.com/jer-k/release-example-voting-app/result:buildx-builders"
+      ]
+    },
+    "worker": {
+      "context": "./worker",
+      "tags": [
+        ".dkr.ecr.us-west-2.amazonaws.com/jer-k/release-example-voting-app/worker:latest",
+        ".dkr.ecr.us-west-2.amazonaws.com/jer-k/release-example-voting-app/worker:buildx-builders"
+      ]
+    }
+  }
 }
-
 ```
 
 There are other inputs which can make their way into this file, such as build args, but since example-voting-app does not have any, they are omitted.
@@ -148,12 +142,12 @@ The default sticky means that the builds should always end up on the same server
 
 ```none
 
-loadbalance=(sticky|random) - Load-balancing strategy. 
+loadbalance=(sticky|random) - Load-balancing strategy.
 If set to "sticky", the pod is chosen using the hash of the context path. Defaults to "sticky"
 
 ```
 
-Using the same example-voting-app repository as before, I created a new branch buildx\_builders and pointed the code to the buildx servers.
+Using the same example-voting-app repository as before, I created a new branch buildx_builders and pointed the code to the buildx servers.
 
 ![uncached-buildx](/blog-images/6301520361c0659740b319b30b8d8bee.png)
 

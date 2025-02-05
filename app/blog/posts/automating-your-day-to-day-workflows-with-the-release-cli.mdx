@@ -3,7 +3,7 @@ title: Automating your day-to-day workflows with the Release CLI
 summary: >-
   Walk you through a hypothetical bug scenario and how Release can make your
   day-to-day workflows more enjoyable.
-publishDate: 'Thu Jul 25 2024 16:27:39 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Thu Jul 25 2024 16:27:39 GMT+0000 (Coordinated Universal Time)"
 author: luiz-felipe
 readingTime: 4
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=automating-your-day-to-day-workflows-with-the-release-cli
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/a07cfb35baa2e31696bd68b5af23bda0.png
 excerpt: >-
   Walk you through a hypothetical bug scenario and how Release can make your
@@ -65,9 +65,7 @@ Figuring out the state around the bug more often than not requires you to dig th
 
 Our Release CLI allows us to very easily dive right into the environment we just spun up and poke around. For this we’re going to use the **instances** command, which lists the running instances and lets us open up a terminal inside those containers. All we need to do is type:
 
-	
-		`release instances terminal`
-	
+    	`release instances terminal`
 
 Select our app/instance and boom: we’re in! If we use something like Rails we can access our console here or alternatively we can connect to the database directly, given this environment is attached to our database and we have the environment variables needed to connect to it.
 
@@ -75,17 +73,13 @@ Select our app/instance and boom: we’re in! If we use something like Rails we 
 
 Now that we’ve investigated and replicated our bug, we can finally fix it! For this we can use another very handy tool from Release: [development environments](https://docs.release.com/cli/remote-dev). Rather than making changes, deploying them to the environment and then checking it, we can simplify all that by running our local code inside the release environment. Let’s start our development environment:
 
-	
-		`release development start –app my_app –environment my_env`
-	
+    	`release development start –app my_app –environment my_env`
 
 This will insert our local machine’s code into the environment and forward the configured ports right into our localhost. We get the best of both worlds: release is running our code (along all those services it depends on) and we get instant feedback from our changes. We can now fix the issue and close this ticket once and for all.
 
 With our changes done, we can commit those in and create our pull request. Tools like GitHub and GitLab provide nice CLIs which make it easy to automate this part. At Release we use GitHub and I personally use the [hub](https://github.com/github/hub) CLI for this.
 
-	
-		`hub pull-request -o -m “Fix all the things”`
-	
+    	`hub pull-request -o -m “Fix all the things”`
 
 With our pull request open, we can also update our ticket to the appropriate state, if it’s not already done automatically. Now we can ask our teammates to review our code, give us the all important “LGTM” (Let Go The Mayo!) and merge that bad boy in.
 

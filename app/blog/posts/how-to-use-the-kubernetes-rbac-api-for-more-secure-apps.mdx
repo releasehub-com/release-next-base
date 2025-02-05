@@ -3,7 +3,7 @@ title: How to Use the Kubernetes RBAC API for More Secure Apps
 summary: >-
   RBAC API gives permissions to an object in a Kubernetes cluster to improve
   governance & strengthen secuity.
-publishDate: 'Fri Apr 21 2023 17:05:06 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Fri Apr 21 2023 17:05:06 GMT+0000 (Coordinated Universal Time)"
 author: tommy-mcclung
 readingTime: 4
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=how-to-use-the-kubernetes-rbac-api-for-more-secure-apps
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/514418c7a457bea6c774f627b909a699.jpg
 excerpt: >-
   RBAC API gives permissions to an object in a Kubernetes cluster to improve
@@ -30,10 +30,11 @@ ctaButton: Try Release for Free
 If you manage a Kubernetes cluster, sooner or later, you'll need to assign roles and permissions to users so that everyone has visibility and access only to the resources they need. For example, some users must have read-only access, while others must only be able to write to certain resources or APIs. In addition, there must be users with unlimited access to all available resources. 
 
 Suppose you have a team of four users: 
-*   Patricia: leader of the dev team
-*   James: part of the dev team
-*   Oliver: leader of the QA team
-*   Amelia: part of the QA team
+
+- Patricia: leader of the dev team
+- James: part of the dev team
+- Oliver: leader of the QA team
+- Amelia: part of the QA team
 
 James works on one of the many projects within the company's cluster and therefore needs access to your namespace. Patricia, being the dev leader, needs full access to all projects. Oliver, likewise, needs full read access to all objects in the cluster. However, Amelia is working on the same project as James and can only have read access in this namespace. 
 
@@ -56,11 +57,12 @@ Objects in a Kubernetes cluster are YAML manifests, and permissions determine wh
 Before we go into how RBAC works in Kubernetes, it's important to understand what a user is in Kubernetes. Everyone who sends requests to the API server is a user in a Kubernetes cluster. This means that not only administrators and developers are users, but also various CI/CD scripts and control plane, **kubelet**, and **kube-proxy** components on nodes are considered users.  
 
 The RBAC model includes five entities:  
-*   Role
-*   RoleBinding
-*   ClusterRole
-*   ClusterRoleBinding
-*   ServiceAccount
+
+- Role
+- RoleBinding
+- ClusterRole
+- ClusterRoleBinding
+- ServiceAccount
 
 Let's explore each entity in more detail. **‍**
 
@@ -75,9 +77,7 @@ If you restrict the user to execute **kubectl exec**, but that user has access t
 We can go to the cluster, and in **ns ingress-nginx**, look at the **role: ingress-nginx**: 
 
 ```yaml
-
 kubectl get role -n ingress-nginx ingress-nginx -o yaml
-
 ```
 
 Here we are interested in the rules section. This is a list of rules that describe access rights. 
@@ -109,16 +109,14 @@ The **verbs:** parameter is a list of actions that you can perform on the resour
 Let's now look at the **RoleBinding** manifest: 
 
 ```yaml
-
 kubectl get rolebinding ingress-nginx -n ingress-nginx -o yaml
-
 ```
 
 It has two types of fields: **roleRef** and **subjects:** 
 
 ```yaml
 
-roleRef: 
+roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: ingress-nginx
@@ -136,9 +134,10 @@ subjects:
 ```
 
 Here's what we have: 
-*   **roleRef** specifies the role.
-*   **subjects** specifies who will be assigned this role.
-*   **kind** specifies permissions for requests not authenticated through a token from the service account.
+
+- **roleRef** specifies the role.
+- **subjects** specifies who will be assigned this role.
+- **kind** specifies permissions for requests not authenticated through a token from the service account.
 
 ### ClusterRole
 
@@ -147,9 +146,7 @@ The **role** entity is namespace dependent and we can create roles with the same
 Kubernetes has many preconfigured cluster roles. These include the **admin**, **edit**, and **view** roles, which describe the rights that allow administrating, editing, or only viewing entities. If you have administrator rights, you can view the role in your cluster with the following command: 
 
 ```yaml
-
 kubectl get clusterrole edit -o yaml
-
 ```
 
 ### ClusterRoleBinding
@@ -249,11 +246,9 @@ metadata:
 4\. Create tokens: 
 
 ```yaml
-
 kubectl get secret $(kubectl get serviceaccount test-sa-one -o jsonpath='{.secrets[0].name}' --namespace test-one) -o jsonpath='{.data.token}' --namespace test-one | base64 -d
 
 kubectl get secret $(kubectl get serviceaccount test-sa-two -o jsonpath='{.secrets[0].name}' --namespace test-two) -o jsonpath='{.data.token}' --namespace test-two | base64 -d
-
 ```
 
 5\. Manually add tokens to users in the **kubeconfig.yaml** file for authorization without a password: 
@@ -264,10 +259,10 @@ users:
 ...
 - name: test-sa-one
 user:
-  token: 
+  token:
 - name: test-sa-two
 user:
-  token: 
+  token:
 ...
 
 ```

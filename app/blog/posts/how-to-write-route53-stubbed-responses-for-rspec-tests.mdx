@@ -3,7 +3,7 @@ title: How To Write Route53 Stubbed Responses For Rspec Tests
 summary: >-
   Short Example for writing AWS Ruby SDK unit tests for Route53 API calls with
   stubbed responses
-publishDate: 'Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)"
 author: regis-wilson
 readingTime: 6
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=how-to-write-route53-stubbed-responses-for-rspec-tests
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/be577b12dad97ecf46a4f0ff2cdd1d35.jpg
 excerpt: >-
   Short Example for writing AWS Ruby SDK unit tests for Route53 API calls with
@@ -29,7 +29,7 @@ ctaButton: Try Release for Free
 
 ### How to Write Route53 Stubbed Responses For Rspec Tests
 
-In this blog post, I will go over a recent exercise to fix some bugs, refactor, and write tests for some of our code related to Route53. Route53 is an AWS service that creates, updates, and provides Domain Name Service (DNS) for the internet. The reason that code unit tests are so important is because it helps reveal bugs, creates supportable and high quality code, and allows restructuring and refactoring with confidence. The downside to writing unit tests is that it can be time consuming, difficult at times, and bloating to the normal code base. It is not uncommon for unit tests’ "lines of code" (LOC) count to far exceed the LOC for the actual codebase. You would not be crazy to have nearly an order of magnitude difference in LOC for actual codebase versus LOC for unit test cases.  
+In this blog post, I will go over a recent exercise to fix some bugs, refactor, and write tests for some of our code related to Route53. Route53 is an AWS service that creates, updates, and provides Domain Name Service (DNS) for the internet. The reason that code unit tests are so important is because it helps reveal bugs, creates supportable and high quality code, and allows restructuring and refactoring with confidence. The downside to writing unit tests is that it can be time consuming, difficult at times, and bloating to the normal code base. It is not uncommon for unit tests’ "lines of code" (LOC) count to far exceed the LOC for the actual codebase. You would not be crazy to have nearly an order of magnitude difference in LOC for actual codebase versus LOC for unit test cases.
 
 In this case, interacting with the AWS Route53 API was daunting to test and stubbing responses seemed incredibly difficult until I found some examples written by another one of our engineers that showed how the rspec and API SDKs could be made to work in a fairly straightforward and (dare I say) downright fun method for unit testing Ruby code.
 
@@ -111,7 +111,7 @@ end
 
 ### Write A Fixture
 
-Perfect, now we can test our new **cannonicalise** and **parse\_hosted\_zone\_id** methods and we have a stubbed response coming from the Route53 API calls. Let’s write a simple new test to uncover some bugs by testing the api responses we get. The first step is to write some fixtures we can test with. Here we generate two faked stubbed responses for a very [common domain](https://example.com).
+Perfect, now we can test our new **cannonicalise** and **parse_hosted_zone_id** methods and we have a stubbed response coming from the Route53 API calls. Let’s write a simple new test to uncover some bugs by testing the api responses we get. The first step is to write some fixtures we can test with. Here we generate two faked stubbed responses for a very [common domain](https://example.com).
 
 ```ruby line-numbers
 
@@ -146,7 +146,7 @@ end
 
 ```
 
-If you’re wondering how to make these fixtures, you can easily read the [AWS Ruby SDK V3 documentation](https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/Route53/Client.html#list_hosted_zones_by_name-instance_method) for sample inputs and outputs, or you can make API calls via the AWS CLI and inspect the responses, or you can even just put in some values and see what happens when you run rspec. For example, if I remove, say, the \`caller\_reference\` parameter, I’ll get an error that helpfully identifies the problem.
+If you’re wondering how to make these fixtures, you can easily read the [AWS Ruby SDK V3 documentation](https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/Route53/Client.html#list_hosted_zones_by_name-instance_method) for sample inputs and outputs, or you can make API calls via the AWS CLI and inspect the responses, or you can even just put in some values and see what happens when you run rspec. For example, if I remove, say, the \`caller_reference\` parameter, I’ll get an error that helpfully identifies the problem.
 
 ![](/blog-images/1533e9e3859e67cfef95708dd3aadb80.png)
 

@@ -3,7 +3,7 @@ title: Training ChatGPT with Custom Libraries Using Extensions
 summary: >-
   How we are now leveraging embeddings and vector databases to generate prompts
   for ChatGPT.
-publishDate: 'Thu Jul 25 2024 16:27:39 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Thu Jul 25 2024 16:27:39 GMT+0000 (Coordinated Universal Time)"
 author: david-giffin
 readingTime: 6
 categories: &ref_0
@@ -73,7 +73,7 @@ The folks who helped build the Supabase AI functionality also created an open so
 
 ### What are Embeddings?
 
-Both the ChatGPT Retrieval Plugin and Supabase's AI Documentation Search rely on generating, storing and searching embeddings. So what is an embedding?  
+Both the ChatGPT Retrieval Plugin and Supabase's AI Documentation Search rely on generating, storing and searching embeddings. So what is an embedding?
 
 Embeddings are a way to represent text, images, or other types of data in a numerical format that can be easily processed by machine learning algorithms. In the context of natural language processing (NLP), word embeddings are vector representations of words, where each word is mapped to a fixed-size vector in a high-dimensional space. These vectors capture the semantic and syntactic relationships between words, allowing us to perform mathematical operations on them. The following diagram shows the relationship between various sentences:
 
@@ -109,7 +109,7 @@ All of these databases support three basic things: storing embeddings as vectors
 
 [OpenAI provides an API endpoint](https://platform.openai.com/docs/api-reference/embeddings) to generate embeddings from any text string. 
 
-```ruby
+````ruby
 
 ```ruby
         # OpenAI recommends replacing newlines with spaces
@@ -119,16 +119,18 @@ All of these databases support three basic things: storing embeddings as vectors
 
         token_count = response['usage']['total_tokens'] # number of tokens used
         embedding = response['data'].first['embedding'] # array of 1536 floats
-```
+````
 
-```
+````
 
 Storing this data in Redis [redis-stack-server](https://redis.io/docs/stack/) and making it searchable requires an index. To create an index using redis-stack-server you need to issue the following command:
 
 ```ruby
 
-```
+````
+
 FT.CREATE index ON JSON PREFIX 1 item: SCHEMA $.id AS id TEXT $.content AS content TEXT $.token_count AS token_count NUMERIC $.embedding AS embedding VECTOR FLAT 6 DIM 1536 DISTANCE_METRIC COSINE TYPE FLOAT64
+
 ```
 
 ```
@@ -143,7 +145,7 @@ Now we can store items into Redis and havethem indexed with the following comman
 }
 ```
 
-```
+````
 
 Note that if you don't provide all 1536 dimensions of the vector your data will not be indexed by Redis and it will give you no error response.
 
@@ -152,7 +154,7 @@ Searching Redis for results and sorting them can be done with the following comm
 ```redis
 FT.SEARCH index @embedding:[VECTOR_RANGE $r $BLOB]=>{$YIELD_DISTANCE_AS: my_scores} \
   PARAMS 4 BLOB \x00\x00\x00 r 5 LIMIT 0 10 SORTBY my_scores DIALECT 2
-```
+````
 
 ```
 
@@ -173,3 +175,4 @@ By combining the power of embeddings, vector databases, and language models like
 We're excited about the potential of this technology, and we're looking forward to exploring new ways to leverage it in the future. As we continue to develop and refine our product offerings, we're committed to staying at the forefront of AI and NLP research. Our goal is to create tools and solutions that empower businesses and individuals to harness the power of language models in meaningful and impactful ways.
 
 Thank you for taking the time to read our blog post. We hope you found it informative and that it sparked your curiosity about the exciting possibilities that embeddings, vector databases, and language models like ChatGPT have to offer. If you have any questions or would like to learn more about our work at Release, [please feel free to reach out to us or book a demo.](https://release.com/book-a-demo) We'd love to hear from you!
+```

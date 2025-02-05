@@ -1,16 +1,16 @@
 ---
-title: 'Kubernetes Volumes: What They Are and How to Use Them'
+title: "Kubernetes Volumes: What They Are and How to Use Them"
 summary: >-
   Learn how to inject file systems into Kubernetes pods using volumes and talk
   about the different types of their uses.
-publishDate: 'Fri Apr 21 2023 18:22:03 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Fri Apr 21 2023 18:22:03 GMT+0000 (Coordinated Universal Time)"
 author: erik-landerholm
 readingTime: 5
 categories: &ref_0
   - kubernetes
   - platform-engineering
 mainImage: /blog-images/e2fad2ca4879f4bfe48dc3b52c46df72.jpg
-imageAlt: 'A table with a cell phone, pencil, glasses and a plant'
+imageAlt: "A table with a cell phone, pencil, glasses and a plant"
 showCTA: true
 ctaCopy: >-
   Discover how Release.com's dynamic environments streamline Kubernetes volume
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=kubernetes-volumes-what-they-are-and-how-to-use-them
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/e2fad2ca4879f4bfe48dc3b52c46df72.jpg
 excerpt: >-
   Learn how to inject file systems into Kubernetes pods using volumes and talk
@@ -50,22 +50,20 @@ A volume has to first be defined using the **volumes** key, and then used by a c
 Below is a partial YAML snippet to illustrate how we can define and use volumes in a pod. Depending on the type of volume, its definition and usage could be in separate places. 
 
 ```yaml
-
 apiVersion: v0
 kind: Pod
 metadata:
-  name: my-pod
+   name: my-pod
 spec:
-  containers:
-  - image: some-image-name
-    name: my-container
-    volumeMounts:
-    - mountPath: /tempfiles
-      name: temp-files-volume
-  volumes:
-  - name: temp-files-volume
-    emptyDir: {}
-
+   containers:
+   - image: some-image-name
+     name: my-container
+     volumeMounts:
+     - mountPath: /tempfiles
+       name: temp-files-volume
+   volumes:
+   - name: temp-files-volume
+     emptyDir: {}
 ```
 
 Here, we've defined a volume of the **emptyDir** type. We'll see more about this later. 
@@ -121,7 +119,6 @@ For instance, when using NFS, we need to set up the NFS share first, and then we
 Let's look at an example configuration for an NFS volume. 
 
 ```yaml
-
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -130,13 +127,12 @@ spec:
 capacity:
 storage: 1Mi
 accessModes:
-- ReadWriteMany
+  - ReadWriteMany
 nfs:
 server: nfs-server-name
 path: "/"
 mountOptions:
-- nfsvers=4.1
-
+  - nfsvers=4.1
 ```
 
 The name, capacity, and accessModes are common to all types of volumes, whereas the section at the end, "nfs" in this case, is specific to the type of volume. 
@@ -144,9 +140,7 @@ The name, capacity, and accessModes are common to all types of volumes, whereas 
 We can create the volume with **kubectl apply**. To get information about a volume, we would use 
 
 ```yaml
-
-kubectl get pv 
-
+kubectl get pv
 ```
 
 Now, create a persistent volume claim, and again with kubectl apply 
@@ -172,9 +166,7 @@ Here, we can request a particular storage class (useful for dynamic provisioning
 We can query for a claim using 
 
 ```yaml
-
-kubectl get pvc 
-
+kubectl get pvc
 ```
 
 Finally, we can use the claim in a pod: 

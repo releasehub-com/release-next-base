@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 import type { Config } from "tailwindcss";
-import colors from 'tailwindcss/colors';
+import colors from "tailwindcss/colors";
 
 const config: Config = {
   darkMode: ["class"],
@@ -58,7 +58,7 @@ const config: Config = {
         },
         gray: {
           ...colors.gray,
-          750: '#2A2F3C',
+          750: "#2A2F3C",
         },
       },
       borderRadius: {
@@ -91,21 +91,18 @@ const config: Config = {
       typography: {
         DEFAULT: {
           css: {
-            'code::before': {
-              content: '""'
+            "code::before": {
+              content: '""',
             },
-            'code::after': {
-              content: '""'
-            }
-          }
-        }
-      }
+            "code::after": {
+              content: '""',
+            },
+          },
+        },
+      },
     },
   },
-  plugins: [
-    require("tailwindcss-animate"),
-    require("@tailwindcss/typography"),
-  ],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 };
 
 export default config;

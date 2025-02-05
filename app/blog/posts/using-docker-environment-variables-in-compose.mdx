@@ -3,14 +3,14 @@ title: Using Docker Environment Variables in Compose
 summary: >-
   This post will explain what Docker Compose variables are, their use, and the
   risks involved with environment variables.
-publishDate: ''
+publishDate: ""
 author: mercy-kibet
 readingTime: 6
 categories: &ref_0
   - platform-engineering
   - product
-mainImage: ''
-imageAlt: ''
+mainImage: ""
+imageAlt: ""
 showCTA: true
 ctaCopy: >-
   Unlock streamlined environment management with Release.com for secure Docker
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=using-docker-environment-variables-in-compose
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog/default-og-image.png
 excerpt: >-
   This post will explain what Docker Compose variables are, their use, and the
@@ -43,7 +43,7 @@ A Docker environment variable is a variable that's passed to a Docker container 
 
 You can set environment variables in several ways, such as using the **ENV** instruction in a Dockerfile, using the **\-e** flag when running the **docker run** command, or using environment files.
 
-When a container is created, the environment variables are passed to it. You can access them within the container. For example, you can access environment variables in a Linux-based container using the **$** notation like **$APP\_ENV** or echo $APP\_ENV.
+When a container is created, the environment variables are passed to it. You can access them within the container. For example, you can access environment variables in a Linux-based container using the **$** notation like **$APP_ENV** or echo $APP_ENV.
 
 Using Docker environment variables keeps your application configuration flexible.
 
@@ -70,28 +70,22 @@ Using environment variables in a Compose file can make your application more fle
 ### How to use Docker Environment Variables in Compose
 
 You can set and pass Docker environment variables in several ways in Compose. Some of these ways include the following:
-**Environment Key:** You can configure a container by setting environment variables in the Compose file. If you want to use your app in production mode, you can set the value of the APP\_ENV variable like so:
+**Environment Key:** You can configure a container by setting environment variables in the Compose file. If you want to use your app in production mode, you can set the value of the APP_ENV variable like so:
 
-	
 `services:   web:     environment:       - APP_ENV=production`
- 
-**\-e Flag:** You can also set environment variables when running a container by using the -e flag. For example, you can set the variable APP\_ENV with a value of production when running a container like this:
 
-	
+**\-e Flag:** You can also set environment variables when running a container by using the -e flag. For example, you can set the variable APP_ENV with a value of production when running a container like this:
+
 `docker compose run -e APP_ENV=production myimage`
- 
+
 **Environment Files:** You can also use environment files to set environment variables. This can be useful when you have multiple environment variables that you want to set or when you want to keep your environment variables separate from your Compose file.
 
-	
 `services:   web:     env_file:       - Docker/web/web.env`
- 
 
 To use environment files, you can pass the --env-file flag when running the Compose command: docker-compose --env-file /path/toenv.env up. This will override the default path.
 **.env:** The .env file is a simple text file containing key-value pairs, with one pair per line. The .env file should be in the same directory as the **docker-compose.yml** file. You don't need to pass any flag when running the Compose command. Compose will automatically pick the .env file. If you defined a version to your web app in your .env file, this is how you'll use it in Compose:
 
-	
 `services:   web:     image: "webapp:${VERSION}"`
- 
 
 Always remember that environment variables passed to a container are only visible to the processes running in that container. If you need to share environment variables between containers, you can use a tool such as Docker Compose's environment key or a third-party tool like a key-value store.
 
@@ -108,11 +102,12 @@ This approach allows you to keep your environment-specific values separate from 
 ### The Security Risks of Putting Secrets in Environment Variables
 
 There are risks associated with putting secrets such as passwords and API keys in environment variables. Here are a few examples:
-*   Anyone with access to the host system can access environment variables. If attackers gain access to the host system, they might access any secrets stored in environment variables.
-*   Any process running on the host system can access environment variables. Thus, an attacker can run a malicious process to access the sensitive information stored in the environment variable and gain control of your application.
-*   If an environment variable contains a secret, it might be logged or displayed in plain text, allowing anyone with access to the logs or display to see the secrets.
-*   Suppose a developer pushes code to a public repository with a file containing secret environment variables. In that case, the secret might be exposed to anyone with access to the repository.
-*   To mitigate these risks, it's important to be careful when using environment variables to store secrets and to use other secure methods, such as encrypted secrets stores or secret management tools, whenever possible.
+
+- Anyone with access to the host system can access environment variables. If attackers gain access to the host system, they might access any secrets stored in environment variables.
+- Any process running on the host system can access environment variables. Thus, an attacker can run a malicious process to access the sensitive information stored in the environment variable and gain control of your application.
+- If an environment variable contains a secret, it might be logged or displayed in plain text, allowing anyone with access to the logs or display to see the secrets.
+- Suppose a developer pushes code to a public repository with a file containing secret environment variables. In that case, the secret might be exposed to anyone with access to the repository.
+- To mitigate these risks, it's important to be careful when using environment variables to store secrets and to use other secure methods, such as encrypted secrets stores or secret management tools, whenever possible.
 
 ![](/blog-images/905a0239a88ecb381cd171d5404bd2e5.png)
 

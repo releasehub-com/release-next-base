@@ -1,9 +1,9 @@
 ---
-title: 'How To: Get a Free Minecraft Server Running on Release'
+title: "How To: Get a Free Minecraft Server Running on Release"
 summary: >-
   Setup your own free Minecraft Server running on release.com One of the coolest
   things about working at Release
-publishDate: 'Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)"
 author: tommy-mcclung
 readingTime: 6
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=free-minecraft-server-running-on-releaseapp-io
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/5341d2909ed85617cef2b40c9a1d025c.jpg
 excerpt: >-
   Setup your own free Minecraft Server running on release.com One of the coolest
@@ -45,7 +45,7 @@ If you want to see a live version of this setup, we fired up our own Minecraft s
 
 ### Detailed instructions to get your Minecraft Server up and running
 
-#### Background  
+#### Background
 
 At the time of this writing, we have a ["Starter" plan](https://releasehub.com/pricing) that's free so you can give this a shot and have some Holiday fun on Release. Since we're hosting all of the environments on Release on the starter plan we have a limitation of 2Gb/container. That's sufficient for a Minecraft server for your kids and their friends.
 
@@ -62,25 +62,24 @@ For this walkthrough, we're going to bring up a vanilla Minecraft server with an
 The master branch of this repo is already setup to work with this docker-compose file in Release. Take a look at the .release.yaml file in the root of the repo's directory.
 
 ```markdown
-
 compose: examples/docker-compose-with-rcon.yml
-
 ```
 
-  
 This sets the compose directive to \`examples/docker-compose-with-rcon.yml' which tells Release that's the docker-compose file you want to use. If you want to play around with a Forge server or other examples, just point the .release.yaml file at the corresponding docker-compose.
 
 #### 1\. Create a new application in Release
 
 Ok, let's setup the server.
-*   Fork, clone or copy this repo: [https://github.com/awesome-release/docker-minecraft-server](https://github.com/awesome-release/docker-minecraft-server) [Here are some simple instructions on how to copy this repo over to your account.](https://docs.github.com/en/free-pro-team@latest/github/creating-cloning-and-archiving-repositories/duplicating-a-repository)
-*   Login or create an account on Release here: [https://release.com](https://release.com)
-*   Follow the steps to create your account. Once your account is created, click the "Create an application" button.
-*   Select your docker-minecraft-server repo. If you don't see it in the list, click Configure the Release app on Github link to assign permissions to your repo.
+
+- Fork, clone or copy this repo: [https://github.com/awesome-release/docker-minecraft-server](https://github.com/awesome-release/docker-minecraft-server) [Here are some simple instructions on how to copy this repo over to your account.](https://docs.github.com/en/free-pro-team@latest/github/creating-cloning-and-archiving-repositories/duplicating-a-repository)
+- Login or create an account on Release here: [https://release.com](https://release.com)
+- Follow the steps to create your account. Once your account is created, click the "Create an application" button.
+- Select your docker-minecraft-server repo. If you don't see it in the list, click Configure the Release app on Github link to assign permissions to your repo.
 
 ![](/blog-images/a89dd77b4c398ceab315d9f30c4e86ca.png)
-*   Add a name for your application. Note this name is used in your server hostname.
-*   Click Generate App Template.
+
+- Add a name for your application. Note this name is used in your server hostname.
+- Click Generate App Template.
 
 ![](/blog-images/5f870faf272b9393efc03492ebcaf3c1.png)
 
@@ -103,25 +102,29 @@ So let's make the changes necessary to setup the Application Template correctly.
 ##### Update memory to 2Gb
 
 ![](/blog-images/abeda7a470111ccd00db09f965aac549.png)
-*   The Minecraft server is setup to use 1Gb of max memory so we need to set the default memory limit in Release to 2Gb to leave enough room with some overhead. Edit the app template to allow the services to use up to 2Gb of memory.
+
+- The Minecraft server is setup to use 1Gb of max memory so we need to set the default memory limit in Release to 2Gb to leave enough room with some overhead. Edit the app template to allow the services to use up to 2Gb of memory.
 
 ##### Update hostnames and ports
 
 ![](/blog-images/4326ec140793b380eaf79ab9e6b1a7c4.gif)
-*   Change the port type for 25575 to container_port and remove the target_port line.
-*   Add a loadbalancer: true for port 25565.
-*   Add a hostname field at the same level as ports in the file and set to `hostname: my-server-ENV_ID-domain`. You can set my-server to anything you'd like. The ENV_ID and domain values are automatically filled in by Release to customize your domain.  
-    ‍
+
+- Change the port type for 25575 to container_port and remove the target_port line.
+- Add a loadbalancer: true for port 25565.
+- Add a hostname field at the same level as ports in the file and set to `hostname: my-server-ENV_ID-domain`. You can set my-server to anything you'd like. The ENV_ID and domain values are automatically filled in by Release to customize your domain.  
+  ‍
 
 ![](/blog-images/c85bb2c3e67c537ccc493d9eda22425e.gif)
-*   Remove the ALB hostname for the minecraft service. (We only need the minecraft service exposed on port 25565 via an ELB not an ALB which is for http/https).
-*   Click "Save and Continue".
+
+- Remove the ALB hostname for the minecraft service. (We only need the minecraft service exposed on port 25565 via an ELB not an ALB which is for http/https).
+- Click "Save and Continue".
 
 #### 3\. Setup Environment Variables
 
 We need to set a few passwords via environment variables and an [environment variable mapping](https://docs.releasehub.com/reference-guide/reference-examples/environment-variable-mappings) for the rcon websocket hostname. For more information about these environment variables, see the documentation/README files here:
-*   [Rcon environment variables for the minecraft service.](https://github.com/awesome-release/docker-minecraft-server/blob/master/README.md#rcon)
-*   [Environment variables for rcon-web-admin](https://github.com/rcon-web-admin/rcon-web-admin#environment-variables)
+
+- [Rcon environment variables for the minecraft service.](https://github.com/awesome-release/docker-minecraft-server/blob/master/README.md#rcon)
+- [Environment variables for rcon-web-admin](https://github.com/rcon-web-admin/rcon-web-admin#environment-variables)
 
 In this diagram we show the passwords that need to be set via environment variables.
 
@@ -134,10 +137,11 @@ In this diagram we show the passwords that need to be set via environment variab
 On the minecraft service we need to set a password for its local rcon service on port 25575 so other containers can connect to it. RCON_PASSWORD is the environment variable that needs to be set for this and on the rcon and rcon-ws service we need to set RWA_RCON_PASSWORD to the same value so those services can control the minecraft server.
 
 ![](/blog-images/433a262c803989cbfce78b2e4981c892.gif)
-*   Click on "Edit" for "Default Environment Variables".
-*   Set RCON_PASSWORD in the minecraft service and add secret: true. To encrypt this value in the database.
-*   Set RWA_RCON_PASSWORD to the same value as you set in step 2 on both the rcon and rcon-ws services.
-*   Set RWA_PASSWORD which will be the default password used for the RCON Web Administration tool in both the rcon and rcon-ws services. Make sure to add secret: true to encrypt this value.
+
+- Click on "Edit" for "Default Environment Variables".
+- Set RCON_PASSWORD in the minecraft service and add secret: true. To encrypt this value in the database.
+- Set RWA_RCON_PASSWORD to the same value as you set in step 2 on both the rcon and rcon-ws services.
+- Set RWA_PASSWORD which will be the default password used for the RCON Web Administration tool in both the rcon and rcon-ws services. Make sure to add secret: true to encrypt this value.
 
 ##### Setup mapping of environment variable RWA_WEBSOCKET_URL_SSL
 
@@ -148,13 +152,12 @@ The last environment variable we need to add is a mapping that tells Release to 
 RCON_WS_INGRESS_HOST is automatically created everytime a new environment is created by Release and always conatins the correct hostname for rcon-ws. This value can change when new environments are created, thus we can't just hard set RWA_WEBSOCKET_URL_SSL. This is where an environment variable mapping comes into play. The diagram above represents the change we need to add in our Default Environment Variables.
 
 ![](/blog-images/f022b2ff1fc09bdbf8b25239a3a912f7.gif)
-*   Add a mapping: directive and map RWA_WEBSOCKET_URL_SSL to the top of the file.
+
+- Add a mapping: directive and map RWA_WEBSOCKET_URL_SSL to the top of the file.
 
 ```yaml
-
 mapping:
   RWA_WEBSOCKET_URL_SSL: wss://${RCON_WS_INGRESS_HOST}
-  
 ```
 
 When these chages and your env passwords have been made, your file should look like this:
@@ -164,63 +167,66 @@ When these chages and your env passwords have been made, your file should look l
 mapping:
   RWA_WEBSOCKET_URL_SSL: wss://${RCON_WS_INGRESS_HOST}
 defaults:
-- key: RWA_RCON_HOST
-  value: minecraft
+  - key: RWA_RCON_HOST
+    value: minecraft
 services:
   minecraft:
-  - key: EULA
-    value: 'TRUE'
-  - key: MAX_MEMORY
-    value: 1G
-  - key: ENABLE_RCON
-    value: true
-  - key: RCON_PASSWORD
-    value: "rcon_password"
-    secret: true
-  - key: VIEW_DISTANCE
-    value: 15
-  - key: MAX_BUILD_HEIGHT
-    value: 256
+    - key: EULA
+      value: "TRUE"
+    - key: MAX_MEMORY
+      value: 1G
+    - key: ENABLE_RCON
+      value: true
+    - key: RCON_PASSWORD
+      value: "rcon_password"
+      secret: true
+    - key: VIEW_DISTANCE
+      value: 15
+    - key: MAX_BUILD_HEIGHT
+      value: 256
   rcon:
-  - key: RWA_RCON_HOST
-    value: minecraft
-  - key: RWA_RCON_PASSWORD
-    value: "rcon_password"
-    secret: TRUE
-  - key: RWA_PASSWORD
-    value: "rwa_password"
-    secret: true
+    - key: RWA_RCON_HOST
+      value: minecraft
+    - key: RWA_RCON_PASSWORD
+      value: "rcon_password"
+      secret: TRUE
+    - key: RWA_PASSWORD
+      value: "rwa_password"
+      secret: true
   rcon-ws:
-  - key: RWA_RCON_HOST
-    value: minecraft
-  - key: RWA_RCON_PASSWORD
-    value: "rcon_password"
-    secret: TRUE
-  - key: RWA_PASSWORD
-    value: "rwa_password"
-    secret: true
-    
+    - key: RWA_RCON_HOST
+      value: minecraft
+    - key: RWA_RCON_PASSWORD
+      value: "rcon_password"
+      secret: TRUE
+    - key: RWA_PASSWORD
+      value: "rwa_password"
+      secret: true
 ```
-*   Click 'Save & Deploy'
+
+- Click 'Save & Deploy'
 
 Your environment is now deploying, you can click on the deploy and watch its progress. When it's done, navigate to the environment screen and inspect your created hostnames.
 
 #### 4\. Setup the Minecraft Client to Connect to your new server and login to the RCON web admin tool.
 
 ![](/blog-images/6693f0654bc562ed1607cd8ba4dee908.gif)
-*   Using the minecraft hostname that was created by Release, create a new server within the Minecraft Client.
+
+- Using the minecraft hostname that was created by Release, create a new server within the Minecraft Client.
 
 ![](/blog-images/c89a424e4158b038f9d686bf7d6c23cc.gif)
-*   Click on the rcon hostname that was created by Release to access the RCON Web Admin user interface.
-*   Login using the same password you set for the RWA_PASSWORD environment variable.
-*   Add the minecraft server.
-*   Add the console widget.
-*   Run admin commands on your server!
+
+- Click on the rcon hostname that was created by Release to access the RCON Web Admin user interface.
+- Login using the same password you set for the RWA_PASSWORD environment variable.
+- Add the minecraft server.
+- Add the console widget.
+- Run admin commands on your server!
 
 ### What if it doesn't work???
 
 If for any reason you made a mistake and something doesn't work. You can navigate to your App Settings and edit your Application Template and your Default Environment Variables. Double check you've made the proper settings. Once you've made these edits, navigate to your environments screen, delete your environment and create a new one. The beauty of Release is environments can be torn down and up whenever you want. Here are the links to the docs on how to edit your App Template and Default Environment Variables.
-*   [Modify Application Settings](https://docs.releasehub.com/reference-guide/application-settings)
+
+- [Modify Application Settings](https://docs.releasehub.com/reference-guide/application-settings)
 
 ##### Delete and Create a new Environment
 

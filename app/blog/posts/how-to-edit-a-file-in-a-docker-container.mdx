@@ -3,7 +3,7 @@ title: How to edit a file in a Docker container
 summary: >-
   See how to edit files in Docker containers with command line editors or
   through connecting VS Code.
-publishDate: 'Wed Oct 30 2024 19:56:20 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Wed Oct 30 2024 19:56:20 GMT+0000 (Coordinated Universal Time)"
 author: regis-wilson
 readingTime: 3
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=how-to-edit-a-file-in-a-docker-container
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/9ad01e7b63d384efa30ad9fe35b9e74b.jpg
 excerpt: >-
   See how to edit files in Docker containers with command line editors or
@@ -44,17 +44,13 @@ Here's our step-by-step guide to editing a file in Docker.
 If your container is not already running, run the container with the following:
 
 ```yaml
-
 docker run --name  -d -t
-
 ```
 
 To check all your running containers, you can use the command:
 
 ```yaml
-
 docker ps
-
 ```
 
 You should be met with something like this:
@@ -66,9 +62,7 @@ This list indicates your target container is up and running. Note that every con
 To gain root access to the container, run:
 
 ```yaml
-
-docker exec -it 
-
+docker exec -it
 ```
 
 You should see something like this:
@@ -82,25 +76,19 @@ As you can see, **root@CONTAINER_ID:/#** indicates we now have root access to th
 It's a good idea to update your package manager before you install the editor. This ensures that you install the latest stable release of the editor. On Ubuntu, that command is:
 
 ```yaml
-
 apt-get update
-
 ```
 
 To install your preferred editor, such as Vim, Nano or GNU Emacs:
 
 ```yaml
-
-apt-get install 
-
+apt-get install
 ```
 
 For example, to install Vim:
 
 ```yaml
-
 apt-get install vim
-
 ```
 
 #### #3 Edit the File
@@ -108,25 +96,19 @@ apt-get install vim
 To edit the file, ensure you are in the appropriate directory and use the command:
 
 ```yaml
-
 vim yourfilename.yaml
-
 ```
 
 Once you've made the edit to the file, you can remove the editor (in our case, Vim) like this:
 
 ```yaml
-
 apt-get remove vim
-
 ```
 
 Or like this:
 
 ```yaml
-
 apt-get purge vim
-
 ```
 
 The command "remove" will remove only Vim, and no other config files or dependencies involved in the initial install. The command "purge" will remove all config files associated with Vim. In the interest of leaving no trace, the purge command is probably appropriate in this case.
@@ -140,10 +122,8 @@ The above steps are useful for one-off changes, but if you need to make changes 
 Add your editor to the Dockerfile like this:
 
 ```yaml
-
 RUN["apt-get", "update"]
 RUN["apt-get", "install", "vim"]
-
 ```
 
 Every image created with that Dockerfile will have Vim pre-installed and ready to go.

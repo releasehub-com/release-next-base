@@ -1,16 +1,16 @@
 ---
-title: 'Kubernetes StatefulSet: When and How to Use It'
+title: "Kubernetes StatefulSet: When and How to Use It"
 summary: >-
   At first glance, StatefulSets are very similar to standard Deployments, but
   there are some important differences.
-publishDate: 'Fri Apr 21 2023 18:22:03 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Fri Apr 21 2023 18:22:03 GMT+0000 (Coordinated Universal Time)"
 author: nick-busey
 readingTime: 5
 categories: &ref_0
   - kubernetes
   - platform-engineering
 mainImage: /blog-images/029fddb95501b95dac344adedfa94257.jpg
-imageAlt: 'a cell phone with the screen saying eat, sleep, code, repeat'
+imageAlt: "a cell phone with the screen saying eat, sleep, code, repeat"
 showCTA: true
 ctaCopy: >-
   Looking to manage stateful applications in Kubernetes like a pro? Try
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=kubernetes-statefulset-when-and-how-to-use-it
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/029fddb95501b95dac344adedfa94257.jpg
 excerpt: >-
   At first glance, StatefulSets are very similar to standard Deployments, but
@@ -68,44 +68,39 @@ We already mentioned that if your application needs to be deployed or updated in
 Enough theory. Let's create some StatefulSets. The YAML definition of StatefulSets is very similar to standard Deployments and in a simple example looks like this: 
 
 ```yaml
-
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: example-statefulset
+   name: example-statefulset
 spec:
-  selector:
-    matchLabels:
-      app: nginx
-  replicas: 1
-  serviceName: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-      - name: nginx
-        image: registry.k8s.io/nginx-slim:0.8
-        ports:
-        - containerPort: 80
-          name: web
-
+   selector:
+     matchLabels:
+       app: nginx
+   replicas: 1
+   serviceName: nginx
+   template:
+     metadata:
+       labels:
+         app: nginx
+     spec:
+       containers:
+       - name: nginx
+         image: registry.k8s.io/nginx-slim:0.8
+         ports:
+         - containerPort: 80
+           name: web
 ```
 
 Once you save the above code in a YAML file, you can deploy it, as usual, using **kubectl apply**: 
 
 ```yaml
-
-$ kubectl apply -f statefulset.yaml 
+$ kubectl apply -f statefulset.yaml
 statefulset.apps/example-statefulset created
-
 ```
 
 You can then validate that everything is working with **kubectl get**: 
 
 ```yaml
-
 $ kubectl get statefulsets
 NAME                  READY   AGE
 example-statefulset   1/1     2m4s
@@ -113,7 +108,6 @@ example-statefulset   1/1     2m4s
 $ kubectl get pods
 NAME                    READY   STATUS    RESTARTS   AGE
 example-statefulset-0   1/1     Running   0          2m8s
-
 ```
 
 OK, your first StatefulSet is up and running. Congratulations. This was, however, a very simple example with only one pod in your StatefulSet. But you'll most likely use StatefulSets with multiple pods to get all the benefits. 
@@ -125,16 +119,13 @@ OK, your first StatefulSet is up and running. Congratulations. This was, however
 Let's spice things up a little to see StatefulSets doing its job. Execute the following command to scale your nginx from one to ten replicas: 
 
 ```yaml
-
 $ kubectl scale statefulsets example-statefulset --replicas=10
 statefulset.apps/example-statefulset scaled
-
 ```
 
 Now, if you watch what's happening, you'll see the specific behavior of StatefulSets: 
 
 ```yaml
-
 $ kubectl get pods
 NAME                    READY   STATUS              RESTARTS   AGE
 example-statefulset-0   1/1     Running             0          11m
@@ -167,7 +158,6 @@ example-statefulset-6   1/1     Running   0          3m12s
 example-statefulset-7   1/1     Running   0          3m10s
 example-statefulset-8   1/1     Running   0          3m9s
 example-statefulset-9   1/1     Running   0          3m7s
-
 ```
 
 You can see that Kubernetes provisioned all replicas in order, one by one. This is one of the differences between Deployments and StatefulSets. In Deployments, all pods will be deployed in random order, with more than one pod being created at once. In StatefulSets, it happens sequentially, and pods are even numbered and do not get a random hash assigned as part of the name, which is the case in Deployments. Moreover, if at any point one of the replicas fails to start, the whole process will stop. So, for example, Kubernetes will only create **example-statefulset-5** after **example-statefulset-4** is up and running. 

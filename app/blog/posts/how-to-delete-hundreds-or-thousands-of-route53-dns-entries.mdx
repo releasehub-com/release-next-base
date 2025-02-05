@@ -3,7 +3,7 @@ title: How to Delete Hundreds or Thousands of Route53 DNS Entries
 summary: >-
   How do Delete Hundreds, or Possibly Thousands of Route53 DNS Entries Quickly
   and Easily
-publishDate: 'Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)'
+publishDate: "Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)"
 author: regis-wilson
 readingTime: 6
 categories: &ref_0
@@ -18,7 +18,7 @@ ctaCopy: >-
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=how-to-delete-hundreds-or-thousands-of-route53-dns-entries
 relatedPosts:
-  - ''
+  - ""
 ogImage: /blog-images/a40c6571d6ad435527d1213a49721a90.jpg
 excerpt: >-
   How do Delete Hundreds, or Possibly Thousands of Route53 DNS Entries Quickly
@@ -104,12 +104,10 @@ Each batch is ready to be delivered on one line as shown above, however, before 
 Now we are ready to actually apply the records and see how much damage we can do! Take the entire output of your records with this kind of query:
 
 ```yaml
-
 aws route53 list-resource-record-sets \
-  --hosted-zone-id ${hostedzoneid} \
-  --max-items 10000 \
-  --output json
-
+--hosted-zone-id ${hostedzoneid} \
+--max-items 10000 \
+--output json
 ```
 
 And pipe it into the handy command line options provided at the bottom of your screen in the jq player application:
@@ -127,21 +125,17 @@ jq --compact-output '[.ResourceRecordSets[] |
 And use split to create a bunch of individual files:
 
 ```yaml
-
 split -l 1
-
 ```
 
 Then loop over all your files to apply them in Route53:
 
 ```yaml
-
 for file in x*; do
-  aws route53 change-resource-record-sets \
-  --hosted-zone-id=${hostedzoneid} \
-  --cange-batch=file://${file}
+aws route53 change-resource-record-sets \
+--hosted-zone-id=${hostedzoneid} \
+--cange-batch=file://${file}
 done
-
 ```
 
 #### Step 7, Profit
