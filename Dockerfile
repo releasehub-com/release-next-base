@@ -1,4 +1,4 @@
-FROM node:20-slim AS base
+FROM node:18-alpine AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
@@ -6,9 +6,17 @@ RUN apt-get update && apt-get install curl -y
 
 # Install dependencies only when needed
 FROM base AS deps
+RUN apk add --no-cache libc6-compat
 WORKDIR /build
-COPY package.json pnpm-lock.yaml .npmrc ./
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+
+# Install pnpm explicitly
+RUN npm install -g pnpm@8.15.4
+
+# Copy package files
+COPY package.json pnpm-lock.yaml ./
+
+# Install dependencies with frozen lockfile and enable pre/post scripts
+RUN pnpm install --frozen-lockfile --enable-pre-post-scripts
 
 # Rebuild the source code only when needed and upload the sourcemaps
 FROM base AS builder

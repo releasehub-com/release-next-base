@@ -1,11 +1,13 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import { BlogPost } from '@/app/blog/types';
+import Link from "next/link";
+import Image from "next/image";
+import { BlogPost } from "@/app/blog/types";
 
 export default function RelatedPosts({ posts }: { posts: BlogPost[] }) {
   return (
     <div className="mt-16 pt-8 border-t border-gray-800">
-      <h2 className="text-2xl font-bold text-white mb-8">You might also like</h2>
+      <h2 className="text-2xl font-bold text-white mb-8">
+        You might also like
+      </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {posts.map((post) => (
           <Link key={post.slug} href={`/blog/${post.slug}`} className="group">
@@ -34,4 +36,4 @@ export default function RelatedPosts({ posts }: { posts: BlogPost[] }) {
       </div>
     </div>
   );
-} 
+}

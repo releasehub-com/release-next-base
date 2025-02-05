@@ -29,7 +29,7 @@ Release supports using both Docker and Docker Compose so you would be able to us
 
 ChatGPT Plugins seemed like the best way to give ChatGPT outside knowledge from its training set. We signed up for the ChatGPT Plugin waitlist and eventually got access to [ChatGPT Plugins](https://openai.com/blog/chatgpt-plugins). The [ChatGPT Retrieval Plugin](https://github.com/openai/chatgpt-retrieval-plugin) seemed like a place to start experimenting with ChatGPT Plugins and get an understanding of how they work.
 
-After adding a few files to the [chatgpt-retrival-plugin](https://github.com/openai/chatgpt-retrieval-plugin/compare/main...davidgiffin:chatgpt-retrieval-plugin:main?expand=1) we had it running Release. Then we started working on loading the data into the plugin, converting all of our docs into JSON and uploading them into the retrieval plugin using the \`/upsert\` endpoint. Once the plugin was configured ChatGPT we were able to ask ChatGPT to “How do I create an application template in Release”
+After adding a few files to the [chatgpt-retrival-plugin](https://github.com/openai/chatgpt-retrieval-plugin/compare/main...davidgiffin:chatgpt-retrieval-plugin:main?expand=1) we had it running Release. Then we started working on loading the data into the plugin, converting all of our docs into JSON and uploading them into the retrieval plugin using the \`/upsert\` endpoint. Once the plugin was configured ChatGPT we were able to ask ChatGPT to "How do I create an application template in Release"
 
 ![Image of a solicitiation in ChatGPT](/blog-images/2dee5aa12a753b1dbd6e6f6dda136721.png)
 
@@ -37,7 +37,7 @@ After adding a few files to the [chatgpt-retrival-plugin](https://github.com/ope
 
 ### Using Embeddings and Prompt Generation
 
-As our team continued to explore the AI space we came across an article from the [Supabase Blog](https://supabase.com/blog/chatgpt-supabase-docs). The article explained a different approach to “train” ChatGPT. Instead of ChatGPT having access to our documentation directly you could feed snippets of the docs to ChatGPT in the prompt. Here is the prompt template that takes the users question and the relevant snippets from the docs to answer a users question:
+As our team continued to explore the AI space we came across an article from the [Supabase Blog](https://supabase.com/blog/chatgpt-supabase-docs). The article explained a different approach to "train" ChatGPT. Instead of ChatGPT having access to our documentation directly you could feed snippets of the docs to ChatGPT in the prompt. Here is the prompt template that takes the users question and the relevant snippets from the docs to answer a users question:
 
 ```none
 
@@ -63,7 +63,7 @@ The folks who helped build the Supabase AI functionality also created an open so
 
 ### What are Embeddings?
 
-Both the ChatGPT Retrieval Plugin and Supabase’s AI Documentation Search rely on generating, storing and searching embeddings. So what is an embedding?  
+Both the ChatGPT Retrieval Plugin and Supabase's AI Documentation Search rely on generating, storing and searching embeddings. So what is an embedding?  
 
 Embeddings are a way to represent text, images, or other types of data in a numerical format that can be easily processed by machine learning algorithms. In the context of natural language processing (NLP), word embeddings are vector representations of words, where each word is mapped to a fixed-size vector in a high-dimensional space. These vectors capture the semantic and syntactic relationships between words, allowing us to perform mathematical operations on them. The following diagram shows the relationship between various sentences:
 
@@ -77,7 +77,7 @@ Embeddings can be used to find words that are semantically similar to a given wo
 
 Vector databases, also known as vector search engines, are specialized databases designed to store and search for high-dimensional vectors efficiently. They enable fast similarity search and nearest neighbor search, which are essential operations when working with embeddings.
 
-Supabase’s AI Documentation Search uses [pgvector](https://github.com/pgvector/pgvector) to store and retrieve embeddings. But many other vector databases exist today:
+Supabase's AI Documentation Search uses [pgvector](https://github.com/pgvector/pgvector) to store and retrieve embeddings. But many other vector databases exist today:
 
 [Pinecone](https://github.com/openai/openai-cookbook/tree/main/examples/vector_databases/pinecone), a fully managed vector database
 
@@ -93,7 +93,7 @@ Supabase’s AI Documentation Search uses [pgvector](https://github.com/pgvector
 
 [Typesense](https://typesense.org/docs/0.24.0/api/vector-search.html), fast open source vector search
 
-All of these databases support three basic things: storing embeddings as vectors, the ability to search the embedding/vectors and finally sorting the results based on similarity. When using OpenAI’s \`text-embedding-ada-002\` model to generate embeddings OpenAI recommends using [cosine similarity](https://typesense.org/docs/0.24.0/api/vector-search.html) which is built into most of the vector databases listed above. 
+All of these databases support three basic things: storing embeddings as vectors, the ability to search the embedding/vectors and finally sorting the results based on similarity. When using OpenAI's \`text-embedding-ada-002\` model to generate embeddings OpenAI recommends using [cosine similarity](https://typesense.org/docs/0.24.0/api/vector-search.html) which is built into most of the vector databases listed above. 
 
 ### How to Generate, Store and Search Embeddings
 
@@ -126,21 +126,22 @@ FT.CREATE index ON JSON PREFIX 1 item: SCHEMA $.id AS id TEXT $.content AS conte
 Now we can store items into Redis and havethem indexed with the following command:
 
 ```JSON
+{
+  "id": "963a2117895ec9a29f242f906fd188c6",
+  "content": "# App Imports: …",
+  "embedding": [0.008565563, 0.012807296]
+}
+```
 
 ```
-JSON.SET item:1002020 $ '{"id":"963a2117895ec9a29f242f906fd188c6", "content":"# App Imports: …”, "embedding":[0.008565563,0.012807296…]}’
-```
 
-```
-
-Note that if you don’t provide all 1536 dimensions of the vector your data will not be indexed by Redis and it will give you no error response.
+Note that if you don't provide all 1536 dimensions of the vector your data will not be indexed by Redis and it will give you no error response.
 
 Searching Redis for results and sorting them can be done with the following command:
 
-```JSON
-
-```
-FT.SEARCH index @embedding:[VECTOR_RANGE $r $BLOB]=>{$YIELD_DISTANCE_AS: my_scores} PARAMS 4 BLOB \x00\x00\x00 r 5 LIMIT 0 10 SORTBY my_scores DIALECT 2
+```redis
+FT.SEARCH index @embedding:[VECTOR_RANGE $r $BLOB]=>{$YIELD_DISTANCE_AS: my_scores} \
+  PARAMS 4 BLOB \x00\x00\x00 r 5 LIMIT 0 10 SORTBY my_scores DIALECT 2
 ```
 
 ```
@@ -153,7 +154,7 @@ We have replaced the backend [next.js OpenAI Search Starter](https://github.com/
 
 ![](/blog-images/21df17a7235a67ebe788dd7d1ea3d26b.png)
 
-We have a [working example](https://frontend-vapey-prod.releaseapp.gethandsup.com/) of the Release AI Powered Documentation Search using slightly modified version of the [next.js OpenAI Search Starter.](https://github.com/supabase-community/nextjs-openai-doc-search\)) We’ve added support for scrolling, better rendering of markdown (which the Supabase version had) and the ability to plugin your search API backend.
+We have a [working example](https://frontend-vapey-prod.releaseapp.gethandsup.com/) of the Release AI Powered Documentation Search using slightly modified version of the [next.js OpenAI Search Starter.](https://github.com/supabase-community/nextjs-openai-doc-search\)) We've added support for scrolling, better rendering of markdown (which the Supabase version had) and the ability to plugin your search API backend.
 
 ### Conclusion
 

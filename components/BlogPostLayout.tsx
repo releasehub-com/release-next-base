@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from "next/image";
 
 interface BlogPostLayoutProps {
   children: React.ReactNode;
@@ -14,7 +14,10 @@ interface BlogPostLayoutProps {
   };
 }
 
-export default function BlogPostLayout({ children, frontmatter }: BlogPostLayoutProps) {
+export default function BlogPostLayout({
+  children,
+  frontmatter,
+}: BlogPostLayoutProps) {
   return (
     <>
       {frontmatter.mainImage && (
@@ -27,7 +30,7 @@ export default function BlogPostLayout({ children, frontmatter }: BlogPostLayout
           />
         </div>
       )}
-      
+
       <header className="mb-8">
         <div className="flex gap-2 mb-4">
           {frontmatter.categories?.map((category) => (
@@ -36,19 +39,23 @@ export default function BlogPostLayout({ children, frontmatter }: BlogPostLayout
             </span>
           ))}
         </div>
-        <h1 className="text-4xl font-bold text-white mb-4">{frontmatter.title}</h1>
+        <h1 className="text-4xl font-bold text-white mb-4">
+          {frontmatter.title}
+        </h1>
         <p className="text-xl text-gray-400 mb-6">{frontmatter.summary}</p>
         <div className="flex items-center gap-4 text-sm text-gray-400">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-gray-700" />
-            <span className="capitalize">{frontmatter.author.replace(/-/g, ' ')}</span>
+            <span className="capitalize">
+              {frontmatter.author.replace(/-/g, " ")}
+            </span>
           </div>
           <span>•</span>
           <time dateTime={frontmatter.publishDate}>
-            {new Date(frontmatter.publishDate).toLocaleDateString('en-US', {
-              month: 'long',
-              day: 'numeric',
-              year: 'numeric'
+            {new Date(frontmatter.publishDate).toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
             })}
           </time>
           <span>•</span>
@@ -59,4 +66,4 @@ export default function BlogPostLayout({ children, frontmatter }: BlogPostLayout
       {children}
     </>
   );
-} 
+}

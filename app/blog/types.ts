@@ -17,4 +17,4 @@ export interface BlogPost {
     bodyBottom: string;
     relatedPosts: string[];
   };
-} 
+}

@@ -20,7 +20,7 @@ relatedPosts:
 
 Twitter users are flying the coop in droves and many are turning to Mastodon, an open-source federated social network.
 
-Unlike Twitter’s centralized architecture, a federated social network consists of thousands of individual social networks, called _instances_, each with its own users.
+Unlike Twitter's centralized architecture, a federated social network consists of thousands of individual social networks, called _instances_, each with its own users.
 
 Federation is sometimes described as being similar to email in the sense that email users can send each other messages, even if they have different email hosts and use different domains.
 
@@ -28,9 +28,9 @@ Mastodon instances fetch content from other instances, which allows a user on on
 
 To the DevOps-minded among us, the most compelling thing about the fastest-growing Twitter alternative is figuring out how to host and scale this exciting new platform.
 
-At Release, we enable teams to create development, staging, and production environments for their apps. If you intend to add new features or otherwise modify your Mastodon instances, Release can provide the environment you need to move your project forward. Whether you want to just take Mastodon for a spin to see what it’s all about, or run a production Mastodon instance that can scale up as you need, [using Release](https://release.com/book-a-demo) means you don’t have to trade off simplicity for power. You can easily collaborate with your colleagues, preview the latest features, and upgrade to the latest builds.
+At Release, we enable teams to create development, staging, and production environments for their apps. If you intend to add new features or otherwise modify your Mastodon instances, Release can provide the environment you need to move your project forward. Whether you want to just take Mastodon for a spin to see what it's all about, or run a production Mastodon instance that can scale up as you need, [using Release](https://release.com/book-a-demo) means you don't have to trade off simplicity for power. You can easily collaborate with your colleagues, preview the latest features, and upgrade to the latest builds.
 
-In this post, we’ll put Mastodon’s welcoming community and complex federation protocols aside so that we can focus on the nuts and bolts of hosting a Mastodon instance.
+In this post, we'll put Mastodon's welcoming community and complex federation protocols aside so that we can focus on the nuts and bolts of hosting a Mastodon instance.
 
 ### What makes a Mastodon instance
 
@@ -40,23 +40,23 @@ Mastodon Services Diagram
 
 A Mastodon instance consists of seven services:
 1.  A **web server**, which runs on Ruby on Rails.
-2.  A **streaming server** that enables the instance’s local users to send and receive real-time updates to the server.
-3.  **Sidekiq**, a job scheduler that runs background tasks, polls other instances’ web servers, and sends data to other instances’ web servers.
+2.  A **streaming server** that enables the instance's local users to send and receive real-time updates to the server.
+3.  **Sidekiq**, a job scheduler that runs background tasks, polls other instances' web servers, and sends data to other instances' web servers.
 4.  A **Redis server** that stores jobs for Sidekiq and caches data such as feeds for local users.
 5.  A **PostgreSQL database** that stores posts, user profiles, and instance settings.
 6.  **File storage** to store and serve media such as images and videos.
 
-An **SMTP email server** to send messages to local users’ email accounts.
+An **SMTP email server** to send messages to local users' email accounts.
 
-### How we’ll run a Mastodon instance on Release and AWS
+### How we'll run a Mastodon instance on Release and AWS
 
 Release creates Kubernetes clusters in your AWS account.
 
-Although all seven of Mastodon’s services could be hosted on Kubernetes, we’ll use a few AWS-provided services to host supporting systems.
+Although all seven of Mastodon's services could be hosted on Kubernetes, we'll use a few AWS-provided services to host supporting systems.
 
-We’ll create containers to run Mastodon’s web server, streaming server, and Sidekiq in Kubernetes.
+We'll create containers to run Mastodon's web server, streaming server, and Sidekiq in Kubernetes.
 
-From AWS, we’ll use:
+From AWS, we'll use:
 *   Amazon ElastiCache for Redis
 *   Amazon RDS to host a PostgreSQL server
 *   Amazon S3 as a file store
@@ -64,7 +64,7 @@ From AWS, we’ll use:
 
 ### **Prepare your Release account**
 
-Before we get started, you’ll need to [create a Release account](https://docs.releasehub.com/getting-started/create-an-account) and upgrade to a paid account.
+Before we get started, you'll need to [create a Release account](https://docs.releasehub.com/getting-started/create-an-account) and upgrade to a paid account.
 
 Next, [verify your domain](https://docs.releasehub.com/guides-and-examples/domains-and-dns/external-dns) in Release, and [create a cluster](https://docs.releasehub.com/guides-and-examples/advanced-guides/create-a-cluster) using the AWS integration.
 
@@ -80,13 +80,13 @@ Your **node group**.
 
 ### Prepare your local machine
 
-On your local system, you’ll need to install Git and Docker.
+On your local system, you'll need to install Git and Docker.
 
-Keep a text editor handy to take notes. We’ll gather configuration details as we go along, and saving these in a central file will make setting up your environment much easier later.
+Keep a text editor handy to take notes. We'll gather configuration details as we go along, and saving these in a central file will make setting up your environment much easier later.
 
 ### Fork the Mastodon repository on GitHub
 
-Fork the Mastodon repository from GitHub to your GitHub, Bitbucket, or GitLab account. We’ll use GitHub in this guide.
+Fork the Mastodon repository from GitHub to your GitHub, Bitbucket, or GitLab account. We'll use GitHub in this guide.
 1.  Log into your GitHub account.
 2.  Fork the [Mastodon](https://github.com/mastodon/mastodon/fork) repository.
 
@@ -98,7 +98,7 @@ Make a note of your **repository name** from GitHub.
 
 ### Clone your Mastodon fork to your local machine
 
-1.  On the main page of your repository on GitHub.com, click **<>Code**.
+1.  On the main page of your repository on GitHub.com, click the **Code** button
 2.  Copy the URL for the repository.
 3.  Open your terminal and navigate to where you want to clone your repository.
 4.  Clone your repository using the URL you copied
@@ -118,7 +118,7 @@ cd mastodon
 
 ### **Generate Mastodon secret keys and VAPID keys**
 
-Mastodon needs three secret keys and one public key to run. We’ll generate these using the tootsuite/mastodon Docker image on our local machine.
+Mastodon needs three secret keys and one public key to run. We'll generate these using the tootsuite/mastodon Docker image on our local machine.
 1.  Set a local environment variable SECRET\_KEY\_BASE. In your terminal, run:
 
 ```docker
@@ -138,12 +138,12 @@ OTP_SECRET=$(docker run --rm -it tootsuite/mastodon:v4.0.2 bin/rake secret)
 ```docker
 
 docker run --rm \
-   -e OTP_SECRET=$OTP_SECRET \
-   -e SECRET_KEY_BASE=$SECRET_KEY_BASE \
-   -it tootsuite/mastodon:v4.0.2 \
-   bin/rake mastodon:webpush:generate_vapid_key && \
-   echo "SECRET_KEY_BASE=$SECRET_KEY_BASE" && \
-   echo "OTP_SECRET=$OTP_SECRET"
+   -e OTP_SECRET=$OTP_SECRET \
+   -e SECRET_KEY_BASE=$SECRET_KEY_BASE \
+   -it tootsuite/mastodon:v4.0.2 \
+   bin/rake mastodon:webpush:generate_vapid_key && \
+   echo "SECRET_KEY_BASE=$SECRET_KEY_BASE" && \
+   echo "OTP_SECRET=$OTP_SECRET"
 ```
 
 ### **Configuration details to save**
@@ -177,13 +177,13 @@ _RDS create database_
 ![RDS create database steps 2 to 4](/blog-images/657c13cc97a0c58231008fbc90e3bd39.png)
 
 _RDS create database steps 2 to 4_
-5.  Select **Free tier** if you’re only setting up a small/test instance.
-6.  Set the _DB instance identifier_ to mastodon-1. We’ll need to refer to this again later.
+5.  Select **Free tier** if you're only setting up a small/test instance.
+6.  Set the _DB instance identifier_ to mastodon-1. We'll need to refer to this again later.
 
 ![RDS create database steps 5 to 6](/blog-images/9e77fd3763b23a49be6d22ab0586cfc1.png)
 
 _RDS create database steps 5 to 6_
-7.  To make sure you don’t use more space than needed, change the _allocated storage_ to 20 GiB.
+7.  To make sure you don't use more space than needed, change the _allocated storage_ to 20 GiB.
 8.  Disable autoscaling.
 9.  Under the **connectivity** section, select the virtual private cloud (VPC) that Release created for your cluster. This will enable services running in the cluster to reach your new database.
 
@@ -214,7 +214,7 @@ _RDS PostgreSQL configuration details_
 
 ### AWS Step 2: Create a Redis cache using Amazon ElastiCache
 
-Before we create a Redis cache, we’ll need to get the VPC ID for our Release cluster (Amazon ElastiCache does not show the full VPC name when creating a Redis cluster).
+Before we create a Redis cache, we'll need to get the VPC ID for our Release cluster (Amazon ElastiCache does not show the full VPC name when creating a Redis cluster).
 
 In AWS, navigate to **VPC**, then note down the VPC ID for your Release cluster.
 
@@ -230,7 +230,7 @@ With the VPC ID at hand, we can create a Redis cluster. In your AWS account, nav
 
 _ElastiCache_
 
-This opens up the **cluster settings** page, where we’ll configure our Redis cluster.
+This opens up the **cluster settings** page, where we'll configure our Redis cluster.
 
 Under **cluster info**, set a name for this Redis cluster, for example, mastodon-redis.
 
@@ -239,8 +239,8 @@ Under **cluster info**, set a name for this Redis cluster, for example, mastodon
 _Redis configuration section_
 
 In the **connectivity** section:
-1.  Set a name for the Redis cluster’s subnet, for example, mastodon-redis-subnet.
-2.  Select your Release cluster’s **VPC ID** from the dropdown.
+1.  Set a name for the Redis cluster's subnet, for example, mastodon-redis-subnet.
+2.  Select your Release cluster's **VPC ID** from the dropdown.
 
 ![Screenshot of Redis connectivity section](/blog-images/c9e88c18c4248cb0849aa8eabc18332c.png)
 
@@ -250,7 +250,7 @@ Click **Next**.
 
 Under **selected security groups**, click **Manage**.
 1.  Filter the security groups to find one that starts with eks-cluster-sg-.
-2.  Select the security group that starts with eks-cluster-sg- followed by your Release cluster’s context.
+2.  Select the security group that starts with eks-cluster-sg- followed by your Release cluster's context.
 3.  Click **choose**.
 
 ![Screenshot of Redis advanced settings page](/blog-images/799f15d8d6037eb172573272b40a6f99.png)
@@ -265,7 +265,7 @@ AWS will take a moment to create your Redis cluster.
 
 #### Configuration details to save
 
-Open the Redis cluster’s details and copy the Redis cluster’s endpoint (you can omit the port number).
+Open the Redis cluster's details and copy the Redis cluster's endpoint (you can omit the port number).
 
 ![Screenshot of Redis Cluster details](/blog-images/4646a089f3c224805a89809e571aad8e.png)
 
@@ -281,7 +281,7 @@ Enter a unique bucket name, for example, mastodon-media-example.
 
 Uncheck **Block all public access**.
 
-Check “I acknowledge that the current settings might result in this bucket and the objects within becoming public”.
+Check "I acknowledge that the current settings might result in this bucket and the objects within becoming public".
 
 Click **create bucket**.
 
@@ -308,7 +308,7 @@ Finally, click **Create user**.
 
 #### **Configuration details to save**
 
-Note down the access key ID and secret access key. Keep in mind that you won’t be able to see this secret again, so you’ll need to save it now and keep it secure.
+Note down the access key ID and secret access key. Keep in mind that you won't be able to see this secret again, so you'll need to save it now and keep it secure.
 
 ### AWS Step 5: Create an Amazon SES identity
 
@@ -319,7 +319,7 @@ Click **Create identity**.
 2.  Enter an email address where you can receive emails.
 3.  Click **Create identity**.
 
-You’ll need to log in to the inbox for the email address you entered and verify the SES sending identity by clicking a link. Look for an email with the subject “Amazon Web Services – Email Address Verification Request”.
+You'll need to log in to the inbox for the email address you entered and verify the SES sending identity by clicking a link. Look for an email with the subject "Amazon Web Services – Email Address Verification Request".
 
 Back in AWS, you should now see that the identity status has changed to **verified**. If not, reload the page.
 
@@ -331,7 +331,7 @@ Click **Create**.
 
 #### Configuration details to save
 
-Toggle **Show User SMTP Security Credentials**, then copy and save the SMTP username and password. You won’t have access to the password again after this step, so keep it secure.
+Toggle **Show User SMTP Security Credentials**, then copy and save the SMTP username and password. You won't have access to the password again after this step, so keep it secure.
 
 After saving the credentials, click **Close**.
 
@@ -378,7 +378,7 @@ This template is a YAML file that Release uses to generate new environments. It 
 
 #### Double-check the template context and domain
 
-Make sure the context in your application template matches your Release cluster’s context and that the domain matches the verified domain you’d like to use for this application.
+Make sure the context in your application template matches your Release cluster's context and that the domain matches the verified domain you'd like to use for this application.
 
 #### Replace hostnames with rules
 
@@ -386,7 +386,7 @@ Release automatically generates hostname templates for services that have node p
 
 On a Mastodon server, the public services web and streaming share a hostname but are served at different paths.
 
-Release configures a Kubernetes ingress controller to route traffic to your applications, based on the hostnames or rules settings, but only one of these settings can be used per environment. We’ll use only rules.
+Release configures a Kubernetes ingress controller to route traffic to your applications, based on the hostnames or rules settings, but only one of these settings can be used per environment. We'll use only rules.
 
 Update the template to **replace** hostnames with the following rules:
 
@@ -394,13 +394,13 @@ Update the template to **replace** hostnames with the following rules:
 
 rules:
 - service: web
-  hostnames:
-  - mastodon-${env_id}.${domain}
-  path: "/"
+  hostnames:
+  - mastodon-${env_id}.${domain}
+  path: "/"
 - service: streaming
-  hostnames:
-  - mastodon-${env_id}.${domain}
-  path: "/api/v1/streaming"
+  hostnames:
+  - mastodon-${env_id}.${domain}
+  path: "/api/v1/streaming"
 
 ```
 
@@ -408,17 +408,17 @@ The changes should look like this:
 
 ```docker
 - hostnames:
--   streaming: streaming-mastodon-${env_id}.${domain}
--   web: web-mastodon-${env_id}.${domain}
+-   streaming: streaming-mastodon-${env_id}.${domain}
+-   web: web-mastodon-${env_id}.${domain}
 + rules:
 + - service: web
-+   hostnames:
-+   - mastodon-${env_id}.${domain}
-+   path: "/"
++   hostnames:
++   - mastodon-${env_id}.${domain}
++   path: "/"
 + - service: streaming
-+   hostnames:
-+   - mastodon-${env_id}.${domain}
-+   path: "/api/v1/streaming"
++   hostnames:
++   - mastodon-${env_id}.${domain}
++   path: "/api/v1/streaming"
 
 ```
 
@@ -430,16 +430,16 @@ In the sidekiq service, replace the readiness\_probe with the following:
 
 ```docker
 
-  readiness_probe:
-    exec:
-      command:
-      - bash
-      - "-c"
-      - ps aux | grep '[s]idekiq\ 6' || false
-    period_seconds: 30
-    timeout_seconds: 30
-    failure_threshold: 3
-    initial_delay_seconds: 10
+  readiness_probe:
+    exec:
+      command:
+      - bash
+      - "-c"
+      - ps aux | grep '[s]idekiq\ 6' || false
+    period_seconds: 30
+    timeout_seconds: 30
+    failure_threshold: 3
+    initial_delay_seconds: 10
 
 ```
 
@@ -449,14 +449,14 @@ In the web service, replace the readiness\_probe with the following:
 
 ```docker
 
-  readiness_probe:
-    http_get:
-      path: "/health"
-      port: 3000
-    initial_delay_seconds: 20
-    period_seconds: 30
-    timeout_seconds: 30
-    failure_threshold: 3
+  readiness_probe:
+    http_get:
+      path: "/health"
+      port: 3000
+    initial_delay_seconds: 20
+    period_seconds: 30
+    timeout_seconds: 30
+    failure_threshold: 3
 
 ```
 
@@ -466,26 +466,26 @@ In the streaming server, replace the readiness\_probe with the following:
 
 ```docker
 
-  readiness_probe:
-    http_get:
-      path: "/api/v1/streaming/health"
-      port: 4000
-    initial_delay_seconds: 20
-    period_seconds: 30
-    timeout_seconds: 30
-    failure_threshold: 3
+  readiness_probe:
+    http_get:
+      path: "/api/v1/streaming/health"
+      port: 4000
+    initial_delay_seconds: 20
+    period_seconds: 30
+    timeout_seconds: 30
+    failure_threshold: 3
 
 ```
 
 ### Add database migrations as jobs
 
-Release can run jobs in your environments to handle once-off or repeat tasks. These can be triggered by steps in an environment’s workflows.
+Release can run jobs in your environments to handle once-off or repeat tasks. These can be triggered by steps in an environment's workflows.
 
-For example, when Release first creates an environment for Mastodon, a db:setup job needs to be run to create Mastodon’s database schema. Release calls this stage in the workflow setup.
+For example, when Release first creates an environment for Mastodon, a db:setup job needs to be run to create Mastodon's database schema. Release calls this stage in the workflow setup.
 
-Mastodon also needs to run database migrations during version upgrades, so that the database schema is updated along with the code. We can use Release’s patch stage for this job.
+Mastodon also needs to run database migrations during version upgrades, so that the database schema is updated along with the code. We can use Release's patch stage for this job.
 
-During version upgrades, Mastodon splits pre-deployment and post-deployment database migrations. We’ll add two migration jobs, dbmigratepre and dbmigrate.
+During version upgrades, Mastodon splits pre-deployment and post-deployment database migrations. We'll add two migration jobs, dbmigratepre and dbmigrate.
 
 Add the following jobs to your template:
 
@@ -493,50 +493,50 @@ Add the following jobs to your template:
 
 jobs:
 - name: dbmigratepre
-  command:
-  - "/usr/bin/tini"
-  - "--"
-  args:
-  - bash
-  - "-c"
-  - rails db:version && export SKIP_POST_DEPLOYMENT_MIGRATIONS=true && rails db:migrate || rails db:setup
-  from_services: web
+  command:
+  - "/usr/bin/tini"
+  - "--"
+  args:
+  - bash
+  - "-c"
+  - rails db:version && export SKIP_POST_DEPLOYMENT_MIGRATIONS=true && rails db:migrate || rails db:setup
+  from_services: web
 - name: dbmigrate
-  command:
-  - "/usr/bin/tini"
-  - "--"
-  args:
-  - bash
-  - "-c"
-  - rails db:version && rails db:migrate || rails db:setup
-  from_services: web
+  command:
+  - "/usr/bin/tini"
+  - "--"
+  args:
+  - bash
+  - "-c"
+  - rails db:version && rails db:migrate || rails db:setup
+  from_services: web
 
 ```
 
 ### Add an admin user as a job
 
-After our services are live and the database is ready, we’ll use the Mastodon CLI to create an admin user.
+After our services are live and the database is ready, we'll use the Mastodon CLI to create an admin user.
 
 Add the following job to the jobs you created earlier:
 
 ```docker
 - name: mastodonuser
-  command:
-  - "/usr/bin/tini"
-  - "--"
-  args:
-  - bash
-  - "-c"
-  - tootctl accounts create $MASTODON_OWNER_USERNAME --email $MASTODON_OWNER_EMAIL --role Owner
-  from_services: web
+  command:
+  - "/usr/bin/tini"
+  - "--"
+  args:
+  - bash
+  - "-c"
+  - tootctl accounts create $MASTODON_OWNER_USERNAME --email $MASTODON_OWNER_EMAIL --role Owner
+  from_services: web
 
 ```
 
 ### Add jobs to workflows
 
-Let’s update the workflows section to run these jobs during setup and patch stages.
+Let's update the workflows section to run these jobs during setup and patch stages.
 
-Because the order in which our new jobs are run is important, we’ll update the parallelize sections in these stages to create new steps.
+Because the order in which our new jobs are run is important, we'll update the parallelize sections in these stages to create new steps.
 
 Replace the workflows section of the template with the following:
 
@@ -544,39 +544,39 @@ Replace the workflows section of the template with the following:
 
 workflows:
 - name: setup
-  parallelize:
-  - step: dbmigratepre
-    tasks:
-    - jobs.dbmigratepre
-  - step: services
-    tasks:
-    - services.sidekiq
-    - services.streaming
-    - services.web
-  - step: dbmigrate
-    tasks:
-    - jobs.dbmigrate
-  - step: mastodonuser
-    tasks:
-    - jobs.mastodonuser
+  parallelize:
+  - step: dbmigratepre
+    tasks:
+    - jobs.dbmigratepre
+  - step: services
+    tasks:
+    - services.sidekiq
+    - services.streaming
+    - services.web
+  - step: dbmigrate
+    tasks:
+    - jobs.dbmigrate
+  - step: mastodonuser
+    tasks:
+    - jobs.mastodonuser
 - name: patch
-  parallelize:
-  - step: dbmigratepre
-    tasks:
-    - jobs.dbmigratepre
-  - step: services
-    tasks:
-    - services.sidekiq
-    - services.streaming
-    - services.web
-  - step: dbmigrate
-    tasks:
-    - jobs.dbmigrate
+  parallelize:
+  - step: dbmigratepre
+    tasks:
+    - jobs.dbmigratepre
+  - step: services
+    tasks:
+    - services.sidekiq
+    - services.streaming
+    - services.web
+  - step: dbmigrate
+    tasks:
+    - jobs.dbmigrate
 - name: teardown
-  parallelize:
-  - step: remove_environment
-    tasks:
-    - release.remove_environment
+  parallelize:
+  - step: remove_environment
+    tasks:
+    - release.remove_environment
 
 ```
 
@@ -586,7 +586,7 @@ Click **Next Step** to save your template, and move on to your environment varia
 
 ### Edit the default environment variables
 
-For this step, you’ll need to retrieve the following information that we saved previously:
+For this step, you'll need to retrieve the following information that we saved previously:
 
 #### Generated on your local machine using Docker
 
@@ -628,73 +628,73 @@ In Release, paste the following environment variables file in the default enviro
 ```yaml
 ---
 defaults:
-  - key: SINGLE_USER_MODE
-    value: true
-  - key: SECRET_KEY_BASE
-    value: 
-    secret: true
-  - key: OTP_SECRET
-    value: 
-    secret: true
-  - key: VAPID_PRIVATE_KEY
-    value: 
-    secret: true
-  - key: VAPID_PUBLIC_KEY
-    value: 
-  - key: DB_HOST
-    value: 
-  - key: DB_PORT
-    value: 5432
-  - key: DB_USER
-    value: postgres
-  - key: DB_PASS
-    value: 
-    secret: true
-  - key: REDIS_HOST
-    value: 
-  - key: REDIS_PORT
-    value: 6379
-  - key: SMTP_SERVER
-    value: 
-  - key: SMTP_PORT
-    value: 587
-  - key: SMTP_LOGIN
-    value: 
-  - key: SMTP_PASSWORD
-    value: 
-    secret: true
-  - key: SMTP_AUTH_METHOD
-    value: plain
-  - key: SMTP_OPENSSL_VERIFY_MODE
-    value: none
-  - key: SMTP_FROM_ADDRESS
-    value: 
-  - key: S3_ENABLED
-    value: true
-  - key: S3_BUCKET
-    value: mastodon-media-example
-  - key: AWS_ACCESS_KEY_ID
-    value: 
-  - key: AWS_SECRET_ACCESS_KEY
-    value: 
-    secret: true
-  - key: S3_REGION
-    value: 
-  - key: S3_PROTOCOL
-    value: https
-  # MASTODON_OWNER_USERNAME can't be admin, owner, user
-  - key: MASTODON_OWNER_USERNAME
-    value: 
-  - key: MASTODON_OWNER_EMAIL
-    value: 
+  - key: SINGLE_USER_MODE
+    value: true
+  - key: SECRET_KEY_BASE
+    value: 
+    secret: true
+  - key: OTP_SECRET
+    value: 
+    secret: true
+  - key: VAPID_PRIVATE_KEY
+    value: 
+    secret: true
+  - key: VAPID_PUBLIC_KEY
+    value: 
+  - key: DB_HOST
+    value: 
+  - key: DB_PORT
+    value: 5432
+  - key: DB_USER
+    value: postgres
+  - key: DB_PASS
+    value: 
+    secret: true
+  - key: REDIS_HOST
+    value: 
+  - key: REDIS_PORT
+    value: 6379
+  - key: SMTP_SERVER
+    value: 
+  - key: SMTP_PORT
+    value: 587
+  - key: SMTP_LOGIN
+    value: 
+  - key: SMTP_PASSWORD
+    value: 
+    secret: true
+  - key: SMTP_AUTH_METHOD
+    value: plain
+  - key: SMTP_OPENSSL_VERIFY_MODE
+    value: none
+  - key: SMTP_FROM_ADDRESS
+    value: 
+  - key: S3_ENABLED
+    value: true
+  - key: S3_BUCKET
+    value: mastodon-media-example
+  - key: AWS_ACCESS_KEY_ID
+    value: 
+  - key: AWS_SECRET_ACCESS_KEY
+    value: 
+    secret: true
+  - key: S3_REGION
+    value: 
+  - key: S3_PROTOCOL
+    value: https
+  # MASTODON_OWNER_USERNAME can't be admin, owner, user
+  - key: MASTODON_OWNER_USERNAME
+    value: 
+  - key: MASTODON_OWNER_EMAIL
+    value: 
 services:
-  sidekiq: []
-  streaming: []
-  web: []
+  sidekiq: []
+  streaming: []
+  web: []
 mapping:
-  LOCAL_DOMAIN: WEB_INGRESS_HOST
-  S3_HOSTNAME: s3-${S3_REGION}.amazonaws.com
-  DB_NAME: mastodon_prod_${RELEASE_RANDOMNESS}
+  LOCAL_DOMAIN: WEB_INGRESS_HOST
+  S3_HOSTNAME: s3-${S3_REGION}.amazonaws.com
+  DB_NAME: mastodon_prod_${RELEASE_RANDOMNESS}
 
 ```
 
@@ -702,7 +702,7 @@ Click **Next Step** to save your default environment variables.
 
 ### Deploy the app
 
-You can skip over the **build arguments** step because we’re not adding any build arguments to this application.
+You can skip over the **build arguments** step because we're not adding any build arguments to this application.
 
 ![Screenshot of app deploy button](/blog-images/3e2d9f50bb3b9f18a6acbfc354b31c4d.png)
 
@@ -746,15 +746,15 @@ Mastodon in action
 
 Release really shines when you create environments for different branches in your codebase.
 
-Test this by creating a feature branch with a small change, and follow Release’s guide on [creating a new environment](https://docs.releasehub.com/getting-started/create-an-environment) for your new branch.
+Test this by creating a feature branch with a small change, and follow Release's guide on [creating a new environment](https://docs.releasehub.com/getting-started/create-an-environment) for your new branch.
 
 ### Further reading
 
-Even if Mastodon doesn’t replace Twitter, it will likely only grow in popularity. If you plan to host a public instance for your organization, you may want to make sure you focus on two important aspects: moderation and scaling.
+Even if Mastodon doesn't replace Twitter, it will likely only grow in popularity. If you plan to host a public instance for your organization, you may want to make sure you focus on two important aspects: moderation and scaling.
 
 Running any community on the internet is notoriously hard to get right. Keeping users, the public, and your servers happy might seem impossible, but many have gone before us and shared their experiences.
 
-Here’s a quick overview of recent writing on these topics:
+Here's a quick overview of recent writing on these topics:
 *   [Scaling up your server](https://docs.joinmastodon.org/admin/scaling/): The official Mastodon documentation on scaling your server, which might not be as suited to a Kubernetes-hosted instance.
 *   [Moderation actions](https://docs.joinmastodon.org/admin/moderation/): The official Mastodon documentation on available moderation tools. These are invaluable if you plan to allow public content on your instance.
 *   [Mastodon Server Covenant](https://joinmastodon.org/covenant): A covenant which can also inform your moderation and hosting decisions.

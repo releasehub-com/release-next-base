@@ -1,30 +1,37 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Search } from 'lucide-react';
-import { blogConfig } from '../config';
-import { BlogPost } from '../types';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Search } from "lucide-react";
+import { blogConfig } from "../config";
+import { BlogPost } from "../types";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const POSTS_PER_PAGE = 15;
 
-export default function BlogIndex({ 
-  initialPosts,
-  initialCategories 
-}: { 
-  initialPosts: BlogPost[];
-  initialCategories: string[];
-}) {
+interface BlogIndexProps {
+  searchParams: {
+    category?: string;
+    page?: string;
+    search?: string;
+  };
+  posts: BlogPost[];
+  categories: string[];
+}
+
+export default function BlogIndex({
+  searchParams,
+  posts,
+  categories,
+}: BlogIndexProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const selectedCategory = searchParams.get('category');
-  const currentPage = Number(searchParams.get('page')) || 1;
-  const searchQuery = searchParams.get('search') || '';
-  
+  const selectedCategory = searchParams.category;
+  const currentPage = Number(searchParams.page) || 1;
+  const searchQuery = searchParams.search || "";
+
   // Local state for search input
   const [searchInput, setSearchInput] = useState(searchQuery);
 
@@ -33,26 +40,34 @@ export default function BlogIndex({
     setSearchInput(searchQuery);
   }, [searchQuery]);
 
-  const featuredPost = initialPosts.find(post => post.slug === blogConfig.featuredPost);
-  
+  const featuredPost = posts.find(
+    (post) => post.slug === blogConfig.featuredPost,
+  );
+
   // Filter posts by search query and category
-  const filteredPosts = initialPosts.filter(post => {
-    const matchesSearch = searchQuery 
-      ? (post.frontmatter.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-         post.frontmatter.summary.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredPosts = posts.filter((post) => {
+    const matchesSearch = searchQuery
+      ? post.frontmatter.title
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        post.frontmatter.summary
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
       : true;
 
     const matchesCategory = selectedCategory
-      ? post.frontmatter.categories?.some(cat => 
-          cat.toLowerCase() === selectedCategory.toLowerCase()
+      ? post.frontmatter.categories?.some(
+          (cat) => cat.toLowerCase() === selectedCategory.toLowerCase(),
         )
       : true;
 
     return matchesSearch && matchesCategory;
   });
-  
+
   // Get regular posts (excluding featured post)
-  const allRegularPosts = filteredPosts.filter(post => post.slug !== blogConfig.featuredPost);
+  const allRegularPosts = filteredPosts.filter(
+    (post) => post.slug !== blogConfig.featuredPost,
+  );
 
   // Calculate pagination
   const totalPosts = allRegularPosts.length;
@@ -65,25 +80,25 @@ export default function BlogIndex({
     setSearchInput(query);
     const params = new URLSearchParams(searchParams);
     if (query) {
-      params.set('search', query);
-      params.delete('page'); // Reset to first page on new search
+      params.set("search", query);
+      params.delete("page"); // Reset to first page on new search
     } else {
-      params.delete('search');
+      params.delete("search");
     }
     router.push(`/blog?${params.toString()}`, { scroll: false });
   };
 
   const handleCategoryClick = (category?: string) => {
-    const newUrl = category 
+    const newUrl = category
       ? `/blog?category=${category.toLowerCase()}`
-      : '/blog';
-    
+      : "/blog";
+
     router.push(newUrl, { scroll: false });
   };
 
   const handlePageChange = (page: number) => {
     const params = new URLSearchParams(searchParams);
-    params.set('page', page.toString());
+    params.set("page", page.toString());
     router.push(`/blog?${params.toString()}`, { scroll: false });
   };
 
@@ -94,12 +109,17 @@ export default function BlogIndex({
         <div className="max-w-7xl mx-auto px-4 py-12">
           <div className="mb-8">
             <span className="text-purple-500 font-medium">Product</span>
-            <h1 className="text-4xl font-bold text-white mt-2">Latest Articles</h1>
+            <h1 className="text-4xl font-bold text-white mt-2">
+              Latest Articles
+            </h1>
           </div>
 
           {/* Featured Post - always show */}
           {featuredPost && (
-            <Link href={`/blog/${featuredPost.slug}`} className="group block mb-16">
+            <Link
+              href={`/blog/${featuredPost.slug}`}
+              className="group block mb-16"
+            >
               <article className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-750 transition-colors">
                 <div className="grid md:grid-cols-2 gap-6">
                   {featuredPost.frontmatter.mainImage && (
@@ -116,7 +136,10 @@ export default function BlogIndex({
                     {featuredPost.frontmatter.categories?.length > 0 && (
                       <div className="flex gap-2 mb-4">
                         {featuredPost.frontmatter.categories.map((category) => (
-                          <span key={category} className="text-xs text-purple-400 font-medium">
+                          <span
+                            key={category}
+                            className="text-xs text-purple-400 font-medium"
+                          >
                             {category}
                           </span>
                         ))}
@@ -131,13 +154,19 @@ export default function BlogIndex({
                     <div className="flex items-center gap-2">
                       <div className="w-6 h-6 rounded-full bg-gray-700 flex-shrink-0" />
                       <div className="flex items-center text-sm text-gray-400">
-                        <span className="capitalize">{featuredPost.frontmatter.author.replace(/-/g, ' ')}</span>
+                        <span className="capitalize">
+                          {featuredPost.frontmatter.author.replace(/-/g, " ")}
+                        </span>
                         <span className="mx-2">•</span>
-                        <span>{new Date(featuredPost.frontmatter.publishDate).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric'
-                        })}</span>
+                        <span>
+                          {new Date(
+                            featuredPost.frontmatter.publishDate,
+                          ).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </span>
                         <span className="mx-2">•</span>
                         <span>{featuredPost.frontmatter.readingTime} min</span>
                       </div>
@@ -171,21 +200,21 @@ export default function BlogIndex({
               <button
                 onClick={() => handleCategoryClick()}
                 className={`px-4 py-2 rounded-full text-sm transition-colors ${
-                  !selectedCategory 
-                    ? 'bg-purple-600 text-white' 
-                    : 'bg-gray-800 text-white hover:bg-gray-700'
+                  !selectedCategory
+                    ? "bg-purple-600 text-white"
+                    : "bg-gray-800 text-white hover:bg-gray-700"
                 }`}
               >
                 All Articles
               </button>
-              {initialCategories.map((category) => (
+              {categories.map((category) => (
                 <button
                   key={category}
                   onClick={() => handleCategoryClick(category)}
                   className={`px-4 py-2 rounded-full text-sm transition-colors ${
                     selectedCategory?.toLowerCase() === category.toLowerCase()
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-gray-800 text-white hover:bg-gray-700'
+                      ? "bg-purple-600 text-white"
+                      : "bg-gray-800 text-white hover:bg-gray-700"
                   }`}
                 >
                   {category}
@@ -196,7 +225,7 @@ export default function BlogIndex({
             {/* Search Results Count */}
             {searchQuery && (
               <div className="text-gray-400">
-                Found {totalPosts} {totalPosts === 1 ? 'result' : 'results'} 
+                Found {totalPosts} {totalPosts === 1 ? "result" : "results"}
                 for "{searchQuery}"
                 {selectedCategory && ` in ${selectedCategory}`}
               </div>
@@ -206,7 +235,11 @@ export default function BlogIndex({
           {/* Regular Posts Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {regularPosts.map((post) => (
-              <Link key={post.slug} href={`/blog/${post.slug}`} className="group">
+              <Link
+                key={post.slug}
+                href={`/blog/${post.slug}`}
+                className="group"
+              >
                 <article className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-750 transition-colors">
                   {post.frontmatter.mainImage && (
                     <div className="relative h-48 overflow-hidden">
@@ -222,7 +255,10 @@ export default function BlogIndex({
                     {post.frontmatter.categories?.length > 0 && (
                       <div className="flex gap-2 mb-4">
                         {post.frontmatter.categories.map((category) => (
-                          <span key={category} className="text-xs text-purple-400 font-medium">
+                          <span
+                            key={category}
+                            className="text-xs text-purple-400 font-medium"
+                          >
                             {category}
                           </span>
                         ))}
@@ -237,13 +273,19 @@ export default function BlogIndex({
                     <div className="flex items-center gap-2">
                       <div className="w-6 h-6 rounded-full bg-gray-700 flex-shrink-0" />
                       <div className="flex items-center text-sm text-gray-400">
-                        <span className="capitalize">{post.frontmatter.author.replace(/-/g, ' ')}</span>
+                        <span className="capitalize">
+                          {post.frontmatter.author.replace(/-/g, " ")}
+                        </span>
                         <span className="mx-2">•</span>
-                        <span>{new Date(post.frontmatter.publishDate).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric'
-                        })}</span>
+                        <span>
+                          {new Date(
+                            post.frontmatter.publishDate,
+                          ).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </span>
                         <span className="mx-2">•</span>
                         <span>{post.frontmatter.readingTime} min</span>
                       </div>
@@ -265,20 +307,22 @@ export default function BlogIndex({
                   Previous
                 </button>
               )}
-              
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  onClick={() => handlePageChange(page)}
-                  className={`px-4 py-2 rounded-lg transition-colors ${
-                    currentPage === page
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-gray-800 text-white hover:bg-gray-700'
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    onClick={() => handlePageChange(page)}
+                    className={`px-4 py-2 rounded-lg transition-colors ${
+                      currentPage === page
+                        ? "bg-purple-600 text-white"
+                        : "bg-gray-800 text-white hover:bg-gray-700"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ),
+              )}
 
               {currentPage < totalPages && (
                 <button
@@ -306,4 +350,4 @@ export default function BlogIndex({
       <Footer />
     </>
   );
-} 
+}

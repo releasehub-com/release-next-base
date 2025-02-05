@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import PathStorage from "./components/PathStorage";
-import 'highlight.js/styles/github-dark.css';
+import "highlight.js/styles/github-dark.css";
 
 const inter = Inter({ subsets: ["latin"] });
 

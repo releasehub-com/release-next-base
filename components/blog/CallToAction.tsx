@@ -1,10 +1,16 @@
-export default function CallToAction({ copy, link }: { copy: string; link: string }) {
+export default function CallToAction({
+  copy,
+  link,
+}: {
+  copy: string;
+  link: string;
+}) {
   return (
     <div className="my-12 p-8 bg-gray-800 rounded-lg">
       <div className="max-w-3xl mx-auto text-center">
-        <div 
+        <div
           className="text-lg text-gray-200 mb-6"
-          dangerouslySetInnerHTML={{ __html: copy }} 
+          dangerouslySetInnerHTML={{ __html: copy }}
         />
         <a
           href={link}
@@ -15,4 +21,4 @@ export default function CallToAction({ copy, link }: { copy: string; link: strin
       </div>
     </div>
   );
-} 
+}

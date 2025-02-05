@@ -93,9 +93,9 @@ Take a look at the example. This is how achieving the same results as above woul
 
 resource "google_compute_instance" "vm" {
 for_each = {
-  "vm1" = "e2-small"
-  "vm2" = "e2-medium"
-  "vm3" = "f1-micro"
+  "vm1" = "e2-small"
+  "vm2" = "e2-medium"
+  "vm3" = "f1-micro"
 }
 name = each.key
 machine_type = each.value
@@ -113,9 +113,9 @@ What if you want to pass more than just two (key and value) parameters? For exam
 
 resource "google_compute_instance" "vm" {
 for_each = {
-  "vm1" = { vm_size = "e2-small", zone = "us-central1-a" }
-  "vm2" = { vm_size = "e2-medium", zone = "us-central1-b" }
-  "vm3" = { vm_size = "f1-micro", zone = "us-central1-c" }
+  "vm1" = { vm_size = "e2-small", zone = "us-central1-a" }
+  "vm2" = { vm_size = "e2-medium", zone = "us-central1-b" }
+  "vm3" = { vm_size = "f1-micro", zone = "us-central1-c" }
 }
 name = each.key
 machine_type = each.value.vm_size
@@ -125,7 +125,7 @@ zone = each.value.zone
 
 ```
 
-You can pass as many parameters in the value as you want. Then in the actual resource configuration, you can reference them with \`each.value.<parameter\_key>**\`**.
+You can pass as many parameters in the value as you want. Then in the actual resource configuration, you can reference them with \`each.value.parameter_key**.**
 
 To keep your code clean and have the ability to reuse values for different resources, you can even extract the actual parameters into a variable:
 
@@ -133,9 +133,9 @@ To keep your code clean and have the ability to reuse values for different resou
 
 locals {
 virtual_machines = {
-  "vm1" = { vm_size = "e2-small", zone = "us-central1-a" },
-  "vm2" = { vm_size = "e2-medium", zone = "us-central1-b" },
-  "vm3" = { vm_size = "f1-micro", zone = "us-central1-c" }
+  "vm1" = { vm_size = "e2-small", zone = "us-central1-a" },
+  "vm2" = { vm_size = "e2-medium", zone = "us-central1-b" },
+  "vm3" = { vm_size = "f1-micro", zone = "us-central1-c" }
  }
 }
 

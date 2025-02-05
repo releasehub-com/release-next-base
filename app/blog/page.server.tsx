@@ -1,22 +1,20 @@
-import BlogIndex from './page';
-import { getBlogPosts } from './utils';
+import { getBlogPosts } from "./utils";
 
 export default async function BlogPage({
   searchParams,
 }: {
   searchParams: { category?: string };
 }) {
+  // Move this logic to the client component
   const posts = await getBlogPosts();
-  
-  // Get unique categories from all posts
-  const allCategories = Array.from(new Set(
-    posts.flatMap(post => post.frontmatter.categories || [])
-  )).sort();
+  const allCategories = Array.from(
+    new Set(posts.flatMap((post) => post.frontmatter.categories || [])),
+  ).sort();
 
-  return (
-    <BlogIndex 
-      initialPosts={posts} 
-      initialCategories={allCategories}
-    />
-  );
-} 
+  // Pass searchParams to BlogIndex
+  return {
+    searchParams,
+    posts,
+    categories: allCategories,
+  };
+}

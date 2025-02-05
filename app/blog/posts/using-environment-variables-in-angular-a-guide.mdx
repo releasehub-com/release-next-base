@@ -64,19 +64,49 @@ Let's explore this a bit.
 
 In the **src/app/app.component.ts** file, import the **isDevMode** from **@angular/core**:
 
+```typescript
 import { Component, isDevMode } from '@angular/core';
+```
 
 Then, create a variable called **environment** inside the AppComponent:
 
-export class AppComponent {  title = 'angular-environment-variables';  environment = '';   }
+```typescript
+@Component({
+  selector: 'app-root',
+  template: '<h1>{{title}}</h1>'
+})
+export class AppComponent {
+  title = "angular-environment-variables";
+  environment = "";
+}
+```
 
 Now we can use the **isDevMode** to populate the **environment** variable above:
 
-export class AppComponent {  title = 'angular-environment-variables';  environment = '';  ngOnInit() {    if (isDevMode()) {      this.environment='Development'    } else {      this.environment='Production'    }  } }
+```typescript
+@Component({
+  selector: 'app-root',
+  template: '<h1>{{title}}</h1>'
+})
+export class AppComponent {
+  title = "angular-environment-variables";
+  environment = "";
+  
+  ngOnInit() {
+    if (isDevMode()) {
+      this.environment = "Development";
+    } else {
+      this.environment = "Production";
+    }
+  }
+}
+```
 
 Let's now render the **environment** variable in the component's HTML:
 
-# This is Angular app running in {{environment}} Environment
+```html
+<h1>This is Angular app running in {{environment}} Environment</h1>
+```
 
 If you visit your Angular development server, it should tell you that your Angular app is running in a development environment:
 
@@ -92,41 +122,93 @@ Now that you understand how Angular maintains and keeps track of the environment
 
 First, let's look at the default contents of each. The **/src/environments/environment.ts** file contains the following code by default:
 
-// This file can be replaced during build by using the \`fileReplacements\` array. // \`ng build\` replaces \`environment.ts\` with \`environment.prod.ts\`. // The list of file replacements can be found in \`angular.json\`. export const environment = {  production: false }; /\* \* For easier debugging in development mode, you can import the following file \* to ignore zone related error stack frames such as \`zone.run\`, \`zoneDelegate.invokeTask\`. \* \* This import should be commented out in production mode because it will have a negative impact \* on performance if an error is thrown. \*/ // import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
+```typescript
+// This file can be replaced during build by using the `fileReplacements` array.
+// `ng build` replaces `environment.ts` with `environment.prod.ts`.
+// The list of file replacements can be found in `angular.json`.
+export const environment = {
+  production: false
+};
 
-There's a variable or object called **environment**. It has a key called **production**, which is set to **false**. Hence, we can say this is the environment file for the development environment.
+/*
+ * For easier debugging in development mode, you can import the following file
+ * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
+ *
+ * This import should be commented out in production mode because it will have a negative impact
+ * on performance if an error is thrown.
+ */
+// import 'zone.js/plugins/zone-error';
+// Included with Angular CLI.
+```
 
 Similarly, if we look at the **/src/environmnets/environment.prod.ts** file, we see this:
 
-export const environment = {  production: true };
-
-The **production: true** in the code above indicates this file is meant for the **production** environment.
+```typescript
+export const environment = {
+  production: true
+};
+```
 
 Now, let's say you wish to add API URLs for the development and production environment. Here's how the **/src/environments/environment.ts** file could look:
 
-export const environment = {  production: false,  apiUrl:'local api url' };
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: 'local api url'
+};
+```
 
 And your **/src/environments/environments.prod.ts** file could look like this:
 
-export const environment = {  production: true,  apiUrl:'production api url' };
+```typescript
+export const environment = {
+  production: true,
+  apiUrl: 'production api url'
+};
+```
 
 Now, let's go and use these environment variables in our app component. Update the **app.component.ts** file with the following:
 
-import { Component, isDevMode } from '@angular/core'; import { environment } from '../environments/environment'; @Component({  selector: 'app-root',  templateUrl: './app.component.html',  styleUrls: \['./app.component.css'\] }) export class AppComponent {  title = 'angular-environment-variables';  environment = '';  apiUrl=environment.apiUrl;  ngOnInit() {    if (isDevMode()) {      this.environment=\`Development\`    } else {      this.environment=\`Production\`    }  } }
+```typescript
+// app.component.ts
+import { Component, isDevMode } from '@angular/core';
+import { environment } from '../environments/environment';
+
+@Component({
+  selector: 'app-root',
+  template: '<h1>{{title}}</h1>'
+})
+export class AppComponent {
+  title = "angular-environment-variables";
+  environment = "";
+  apiUrl = environment.apiUrl;
+  
+  ngOnInit() {
+    if (isDevMode()) {
+      this.environment = "Development";
+    } else {
+      this.environment = "Production";
+    }
+  }
+}
+```
 
 Then, we can update the template:
 
-# This is Angular app running in {{environment}} Environment
-
-### API URL: {{apiUrl}}
+```html
+<h1>This is Angular app running in {% raw %}{{environment}}{% endraw %} Environment</h1>
+<h3>API URL: {% raw %}{{apiUrl}}{% endraw %}</h3>
+```
 
 And we should now see the **apiUrl** referring to the development environment on the page:
 
 ![](/blog-images/3fd86c11ab5c50104e9886c3487f5b28.png)
 
-But if you close the Angular development server and run it in production mode using this command
+But if you close the Angular development server and run it in production mode using this command:
 
+```bash
 ng serve --configuration=production
+```
 
 that should render the template for the production environment as shown below:
 
@@ -144,17 +226,39 @@ Let's say we were to add a new staging environment.
 
 First, under the **build** configurations, we'll add the following **fileReplacements** array for our staging environment:
 
-{ ... "staging":{              "fileReplacements": \[                {                  "replace": "src/environments/environment.ts",                  "with": "src/environments/environment.stage.ts"                }              \]     ... }
+```json
+{
+  "staging": {
+    "fileReplacements": [
+      {
+        "replace": "src/environments/environment.ts",
+        "with": "src/environments/environment.stage.ts"
+      }
+    ]
+  }
+}
+```
 
 Then, under the **serve** configurations, we'll add the **browserTarget** configuration for our staging environment:
 
-{ ... "staging":{              "browserTarget": "angular-environment-variables:build:staging"            }  ... }
+```json
+{
+  "staging": {
+    "browserTarget": "angular-environment-variables:build:staging"
+  }
+}
+```
 
 Almost there!
 
 Now, we'll create a new file called **environment.stage.ts** inside the **/src/environments** directory with the following contents:
 
-export const environment = {    production: false,    apiUrl:'staging api url'  };
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: 'staging api url'
+};
+```
 
 Awesome!
 

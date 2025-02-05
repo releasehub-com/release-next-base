@@ -49,21 +49,23 @@ In the event of a full or partial failure of your application, you can quickly a
 
 ![](/blog-images/ba50f60eb0679702ad5c7fae80ba5645.png)
 
-When writing your Terraform, it’s important to keep in mind that you want it to be repeatable without resource naming collisions, regardless of how many times you execute the same combination of resources. This can be achieved by using dynamic values to namespace resources. Release makes available to you all of the Release generated environment variables for use within your _.tfvars_ file, allowing you to use the environments’ context as the namespacing material. For example, you might have the following inside of your _.tfvars_ file
+When writing your Terraform, it's important to keep in mind that you want it to be repeatable without resource naming collisions, regardless of how many times you execute the same combination of resources. This can be achieved by using dynamic values to namespace resources. Release makes available to you all of the Release generated environment variables for use within your _.tfvars_ file, allowing you to use the environments' context as the namespacing material. For example, you might have the following inside of your _.tfvars_ file
 
-\# .release/lambda.tfvars  
-  
-namespace = "${RELEASE\_ACCOUNT\_ID}/${RELEASE\_ENV\_ID}/"
+```bash
+# .release/lambda.tfvars  
+namespace = "${RELEASE_ACCOUNT_ID}/${RELEASE_ENV_ID}/"
+```
 
 ‍
 
-When specifying the name of a resource, we’ll use a Lambda as an example, you would reference that namespace in the name, like below
+When specifying the name of a resource, we'll use a Lambda as an example, you would reference that namespace in the name, like below
 
-\# terraform/lambda.tf  
-  
-resource "aws\_lambda\_function" "lambda" {  
- function\_name = "${vars.namespace}/lambda"  
- ...
+```hcl
+resource "aws_lambda_function" "lambda" {
+  function_name = "${vars.namespace}/lambda"
+  # ...
+}
+```
 
 ‍
 

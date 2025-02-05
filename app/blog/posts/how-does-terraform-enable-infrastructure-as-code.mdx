@@ -80,11 +80,16 @@ Terraform enables IaC by providing a declarative language and tools that allow o
 
 Here's an example of how Terraform can enable IaC: 
 
-\# Define a virtual machine using the HashiCorp Configuration Language (HCL) resource "aws\_instance" "web\_server" {  ami           = "ami-123456"  instance\_type = "t2.micro"  vpc\_security\_group\_ids = \[aws\_security\_group.web\_server.id\]  tags = {    Name = "Web Server"  } } # Define a security group for the virtual machine resource "aws\_security\_group" "web\_server" {  name        = "web\_server"  description = "Security group for the web server"  ingress {    from\_port   = 80    to\_port     = 80    protocol    = "tcp"    cidr\_blocks = \["0.0.0.0/0"\]  }  egress {    from\_port   = 0    to\_port     = 0    protocol    = "-1"    cidr\_blocks = \["0.0.0.0/0"\]  } }
+```hcl
+resource "aws_instance" "example" {
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = "t2.micro"
+}
+```
 
-In this example, you define the **aws\_instance** and **aws\_security\_group** resources using HCL. This code specifies the desired state of the infrastructure: A virtual machine with a specific AMI and instance type and a security group that allows incoming traffic on port **80**. 
+In this example, you define the **aws\_instance** resource using HCL. This code specifies the desired state of the infrastructure: A virtual machine with a specific AMI and instance type. 
 
-When you execute this code using the Terraform command-line interface (CLI), Terraform will provision and configure the resources in AWS to meet these specifications. The virtual machine and security group will be created and configured automatically without requiring manual intervention. 
+When you execute this code using the Terraform command-line interface (CLI), Terraform will provision and configure the resources in AWS to meet these specifications. The virtual machine will be created and configured automatically without requiring manual intervention. 
 
 ### **Key Features of Terraform That Support IaC**
 

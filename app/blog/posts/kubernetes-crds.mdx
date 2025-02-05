@@ -42,7 +42,7 @@ Why is that such a great thing? Because CRDs together with Kubernetes operators 
 
 Before we dive into creating our own CRD, you need to know two things.
 
-Firstly, creating a custom resource definition is an advanced topic. Many companies don't even need to create any CRDs. The Kubernetes community finds interesting solutions for common problems all the time, and it’s likely that any use case you encounter probably already has a CRD you can use! And if you're still new to Kubernetes, you definitely shouldn't jump into CRDs before you understand the basics well.
+Firstly, creating a custom resource definition is an advanced topic. Many companies don't even need to create any CRDs. The Kubernetes community finds interesting solutions for common problems all the time, and it's likely that any use case you encounter probably already has a CRD you can use! And if you're still new to Kubernetes, you definitely shouldn't jump into CRDs before you understand the basics well.
 
 Secondly, as already mentioned, you don't need to create any CRDs yourself if you don't feel the need to. However, many Kubernetes tools will install their own CRDs, so even if you don't create any yourself, you'll probably still end up having some on your cluster.
 
@@ -60,7 +60,7 @@ In fact, you can list all custom resource definitions installed on your cluster 
 `$ kubectl get crd NAME                                    CREATED AT addons.k3s.cattle.io                    2022-01-23T12:48:31Z helmcharts.helm.cattle.io               2022-01-23T12:48:31Z helmchartconfigs.helm.cattle.io         2022-01-23T12:48:31Z serverstransports.traefik.containo.us   2022-01-23T12:49:48Z tlsoptions.traefik.containo.us          2022-01-23T12:49:48Z ingressroutetcps.traefik.containo.us    2022-01-23T12:49:48Z ingressroutes.traefik.containo.us       2022-01-23T12:49:48Z tlsstores.traefik.containo.us           2022-01-23T12:49:48Z middlewares.traefik.containo.us         2022-01-23T12:49:48Z traefikservices.traefik.containo.us     2022-01-23T12:49:48Z middlewaretcps.traefik.containo.us      2022-01-23T12:49:48Z ingressrouteudps.traefik.containo.us    2022-01-23T12:49:48Z`
  
 
-The above output comes in the form of **<object>.<group>** and tells me that I can execute commands like **kubectl get addons**, **kubectl get helmcharts**, or **kubectl get middlewares**. None of them are defined in vanilla Kubernetes and are only there because they were defined as custom resource definitions.
+The above output comes in the form of **OBJECT.GROUP** and tells me that I can execute commands like **kubectl get addons**...
 
 ### How to Create CRDs
 
