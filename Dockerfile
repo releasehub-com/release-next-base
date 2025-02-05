@@ -2,7 +2,7 @@ FROM node:18-alpine AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
-RUN apt-get update && apt-get install curl -y
+RUN apk add --no-cache curl
 
 # Install dependencies only when needed
 FROM base AS deps
