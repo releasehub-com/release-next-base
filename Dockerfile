@@ -64,6 +64,9 @@ RUN adduser --system --uid 1001 nextjs
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
+# Install pnpm globally in the runner stage
+RUN npm install -g pnpm@8.15.4
+
 COPY package.json pnpm-lock.yaml .npmrc ./
 
 COPY --from=builder /app/node_modules /app/node_modules
