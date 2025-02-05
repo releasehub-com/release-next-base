@@ -1,0 +1,41 @@
+---
+title: Why I'm excited about environment-as-a-service and Release
+summary: >-
+  Jimmy recently joined Release from AWS. This post summarizes why he is excited
+  about environment-as-a-service.
+publishDate: Fri Apr 21 2023 20:13:19 GMT+0000 (Coordinated Universal Time)
+author: jimmy-bried
+readingTime: 4
+categories: []
+mainImage: /blog-images/608de72bf2f20433c6fb4dd6232b2ffa.jpg
+imageAlt: Jimmy Bried headshot
+showCTA: false
+ctaCopy: ''
+ctaLink: ''
+relatedPosts:
+  - ''
+---
+
+I recently concluded an incredible four-year journey at Amazon Web Services. I partnered with hundreds of customers across virtually every industry, from early seed startups to the 100+ year old enterprise companies, helping them leverage AWS to bring their ideas to reality. While differences in company size, funding, and industry brought their own unique requirements, it was their shared and seemingly universal challenges that really caught my attention:  
+1.  Increase revenue with new features and faster time to market
+2.  Reduce cost (whether it be operational, fixed, or variable)
+3.  Develop a work environment that attracts the best technical talent
+4.  Automate and simplify business processes to become agile and effective
+
+After 2 years of working with some of the most innovative and disruptive startups, I decided it was time to embark on the startup journey myself. I was extremely thoughtful in my selection. I knew I wanted to get in early and have a hand in building out the sales organization while wearing many other hats. I also knew that I wanted to work for a company that helps customers solve all the above business challenges / goals. Outside of that, I considered the experience of founders / leadership, credibility of investors, total addressable market, unique or disruptive offering, and the company’s culture. [Release](https://releasehub.com/) checked every single box for me.  
+
+[Release](https://releasehub.com/) is a YC, Sequoia and CRV-backed environment-as-a-service startup. It creates, runs, and manages infrastructure environments of any complexity on demand. Release [raised a $20M Series A](https://releasehub.com/blog/releasehub-20-million-series-a-led-by-crv) in October 2021 and they are solving a unique challenge that every customer with cloud infrastructure faces in some capacity.
+
+#### Why Do Environments Matter?
+
+Every member of product development is dependent on [environments](https://releasehub.com/ephemeral-environments). With applications becoming increasingly complex, creating and managing environments at scale becomes difficult. I saw this with customers at AWS. The cloud helped them with their infrastructure, but their IT teams needed something to operationalize their cloud resources to be effective and fast. I worked with legacy enterprise customers who tried to build an internal solution to meet this need but frequently hit walls in the process and eventually gave up. There wasn’t anything in the market to my knowledge that completely solved this. When developers (or their teams) have to manage the undifferentiated heavy lifting of building and maintaining an environment in order to test code, it results in slower time to market, lower software quality, and exorbitant operational costs. Alternative solutions are either ill-matched (CI/CD utilities, container tools, IDEs) or require building home-grown solutions that require dedicated employees, and might take years to build.
+
+#### What is Environment-as-a-service?
+
+Release makes it easy to create ephemeral or permanent environments around any code commit for performance testing, [QA](https://releasehub.com/staging-environments), migrations, [sales demos](https://releasehub.com/usecase/sales-demo-environments), [VPC deployments](https://releasehub.com/usecase/running-your-production-environments) and more. Customers can integrate with their source control system of choice and Release will create temporary or permanent branch-based environments with every code push or pull request. You can automate creation of complex environments, replicate copies of that environment in minutes and continually update environments whenever a change is made. We do all this in an EKS cluster built and managed by us which allows you to benefit from Kubernetes even if your team is unfamiliar with the orchestration system.
+
+#### How EaaS Impacts Release Cycles?
+
+During the due diligence process I spoke to multiple Release customers, but one customer’s testimony told me all I needed to know about Release. _“ It deployed the environment super quick and it literally just works. I don’t even know how to come up with a previous metric compared to what I just witnessed.”._ Release is giving customers faster time to market in an increasingly competitive environment,  and cost reduction both from removing the undifferentiated heavy lifting and from making the best use of existing dev employees. Customers get best practice DevOps out of the box, up to date instant data sets for realistic experiences, isolated environments, and they are creating an exciting work environment where developers can do what they do best.. Make cool applications.
+
+If you are looking to join an incredible organization with experienced founders, top-tier investors, and a solution that is disrupting the cloud industry, please feel free to reach out to me directly ([jimmy@release.com](mailto:jimmy@release.com)) or apply to any of the various open roles we have [Here](https://releasehub.com/company#hire).

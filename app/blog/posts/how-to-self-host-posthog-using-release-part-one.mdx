@@ -1,0 +1,120 @@
+---
+title: How to Self-Host PostHog Using Release Part One
+summary: >-
+  Learn how to run a hobby version of PostHog on your own cloud infrastructure
+  using Release
+publishDate: Thu Apr 20 2023 21:44:19 GMT+0000 (Coordinated Universal Time)
+author: regis-wilson
+readingTime: 7
+categories: []
+mainImage: /blog-images/0fabd6b01cf2c47c90de069cad6705bb.jpg
+imageAlt: Image of two women sitting in front of a computer
+showCTA: false
+ctaCopy: ''
+ctaLink: ''
+relatedPosts:
+  - ''
+---
+
+This first part of a series explains how to run a hobby version of [PostHog](https://github.com/PostHog/posthog) on your own cloud infrastructure using Release. Check back later to read how to perform the self-hosted enterprise version. You can read the [PostHog FAQ](https://posthog.com/faq) for more details on the software and self-hosting options for hobby and enterprise options.
+
+### Introduction
+
+PostHog is an open source tool for collecting and analyzing behavior metrics and events from your application without sending data to a third party hosting provider. As the GitHub repository says, “_…third-party analytics tools do not work in a world of cookie deprecation, GDPR, HIPAA, CCPA, and many other four-letter acronyms. PostHog is the alternative to sending all of your customers' personal information and usage data to third-parties._”
+
+This goes together with the Release philosophy of deploying high-quality, full-stack environments in your own cloud accounts. Deploying PostHog next to your development environments for complete testing and development, or as a shared staging location for integration testing is a valuable component for developing and testing user interactions and metrics collection that would be much harder to support without Release.
+
+This article will walk you through the simple steps for configuring a PostHog application template that you can deploy to your own cloud infrastructure using Release in about 30 minutes or so. The hobby version is a full functionality installation of PostHog but will not be configured with redundant services and long-term storage and backup solutions like the enterprise version would. The most common use-case for wanting to install the hobby version is to support developer environments for testing in isolation or for QA environments for complete end-to-end testing of product analytics.
+
+We will cover the enterprise version for permanent installations (like staging or production) in a followup post. The most common use-case to install the enterprise version is to self-host and scale your own analytics engine and data from your product customers _without sending the data outside your organization or to a third-party Software-as-a-Service (SAAS)_. Release allows you to self-host applications in your own cloud environments keeping your and your customers’ data safe and secure.
+
+### Prerequisites
+
+To get started, open a [Release account](https://app.release.com/) which allows you to have unlimited applications and pay only for the environments you are running. You can test out Release by creating a trial account in a shared environment; or if you already have a paid plan, you can use your Release account to host these environments in your own cloud infrastructure next to your existing applications. See our [quickstart documentation](https://docs.release.com/getting-started/quickstart) for more details.
+
+Next, fork the [PostHog GitHub repo](https://github.com/PostHog/posthog) using either [our fork with the configuration options already built in](https://github.com/releasehub-samples/posthog), or the original upstream repository. You can also use one of our integrations with GitLab or BitBucket but you will need to clone and push the repository separately before you get started.
+
+### Configure the PostHog Application
+
+The first step is to import the application into Release by analyzing the repository and reading in the docker-compose and package.json files to get a running version of the repository in your account. If you are using the fork from our repository, then you will have a head start by using our configuration YAML already integrated into the repository. These instructions will work for the plain upstream version and they show how the process works.
+
+First, click the “Create New App” button and select your forked repository (note: if the repository does not show up, go to your profile page and make sure you have configured the correct permissions and scope for the version control system integration you are using). Give the application a name and go to the next step.
+
+![](/blog-images/10ec97ac01beb4f2710783919ee94f48.png)
+
+Next, analyze the repository using a branch and the common hint files we search for to configure this application. Select at least one docker-compose file and then select the services to your preference as shown in the following image. The hobby version will not include any helm charts or cloud native service integrations, but this is a good example and low-cost way to test out the functionality of the application.
+
+![](/blog-images/b8e462a3651cb4737f55c299509cd1b9.png)
+
+When you’ve selected the services to import and analyze, you will fine tune the application template so that it has the specific customizations and workflows you would like to use for testing purposes. You can start by editing the hostnames for each service (you will only need a service hostname for **web**, **maildev**, and **clickhouse** for example). You can also customize the domain you will deploy the test application URLs to.
+
+![](/blog-images/541eb5a9942fa0e6db4d0bd129d9be47.png)
+
+You should pay close attention to the workflow steps as the order of the services is important. Reading up on the architecture diagram and understanding the **depends\_on** fields in the docker compose will help you understand the correct workflow as well. This is all organized for you in the [forked version we host and maintain](https://github.com/releasehub-samples/posthog).
+
+![](/blog-images/622b9013a73cb1dfc968bcf0be779250.png)
+
+Once you are happy with the application template and service definitions, you can proceed with fine-tuning the environment variables for the application. Here, the [PostHog documentation](https://posthog.com/docs/self-host/configure/environment-variables) is excellent in helping you compare the defaults and necessary customization you will need side-by-side.
+
+![](/blog-images/a769c73048831a444eee0f9d7d5d409f.png)
+
+You can see that I’ve set some environment variable mappings which allow interpolation of Release-injected variables so that the application URLs and internal configuration items work correctly for each environment that will be created. Since we are using a hobby (or ephemeral) version of this application, we are not going to hardcode values or secrets as we might do in a permanent or production environment.
+
+The next steps involve creating build arguments. We always recommend using the **production** value for **NODE\_ENV** since Release ephemeral environments run in production mode, rather than development mode (except when using our [Remote Development](https://docs.release.com/cli/remote-dev) feature).
+
+![](/blog-images/712366d3afe51b9063964486a9c082d5.png)
+
+When those steps are done, you can go back to review all your work and confirm it looks good or you can immediately deploy your environment and see the results of your hard work! The application template and environment variables will be deployed into your cloud environment in a completely isolated environment that you can test and play with. When you are done with testing the environment, it can be expired, removed, or you can redeploy it with any changes and tweaks you need to make until you are satisfied with the results.
+
+![](/blog-images/cb365819d78882a5f18edf44d4fea1a2.png)
+
+### Deploy the Application as an Environment
+
+You should see your deploy starting up and an ephemeral environment is immediately spun up to begin playing with!
+
+![](/blog-images/24557fb18ce0c2ab42185d775f7006e2.jpg)
+
+‍  
+Once  complete, you can visit the environment status page which shows you a list of clickable URL links for your application (we recommend editing those down to services that you actually need, for example, **redis** and **postgres** are not going to be reachable on the internet and you should remove those from your configuration).
+
+![](/blog-images/4eee429f2d8daec7fb395cffeb83c1be.jpg)
+
+### Debug and Test the Environment
+
+You can inspect the services and statuses of each underlying instance that is running in your kubernetes namespace. This gives you the up-to-date picture of what is started and what is running properly, what needs to be investigated for errors, logs, and so-forth. Alternatively, you can jump into a terminal session on a service for immediate debugging and testing.
+
+![](/blog-images/b40b177ea3e84beda653ba1118ae0525.jpg)
+
+Clicking on each service link, you can see Clickhouse works
+
+![](/blog-images/5decc8a2d4443f5481f0d105d30df86a.png)
+
+And the same with Maildev:
+
+![](/blog-images/c1e2f7df42f3529ccde1b981f55afe6a.png)
+
+### Login and Configure the Application
+
+But the most important thing to look at is the PostHog application itself. We will click on “Just experimenting” for now.
+
+![](/blog-images/bf9f16972343f2acf6d63595d524143a.png)
+
+We can verify that all the services and prerequisites are running:
+
+![](/blog-images/50f0aae29aca94afc38ff10ce41b7199.png)
+
+Then get started by creating an account:
+
+![](/blog-images/81dd405ea02fb45c47387a53e51aa374.png)
+
+And finally you can start configuring your application and settings to use in your new isolated hobby experience:
+
+![](/blog-images/629fc0d4e252b78520be21c7655226aa.png)
+
+### Conclusion
+
+Using Release to deploy a hobby version of PostHog allows you to run an isolated version of analytics and metrics collection during the development and testing of your own application code. PostHog can be deployed alongside every application deployment you use for each developer or for each branch/feature/pull request that needs to integrate with PostHog, depending on your workflow and requirements.
+
+With Release, it is easy to spin up environments for almost any conceivable use case and this empowers developer teams to deploy applications without relying on a devops or an infrastructure team and minimizing costs associated with provisioning and maintaining the application. You can deploy dependencies or third-party tools that need to be tested or verified when performing application changes or when rolling out new features. Verifying this functionality with third party tools and services is a valuable way to ensure that features reaching staging or production will work even during the earliest phases of development.
+
+Ready to get started? Open a [Release account](https://app.release.com/) and start your free trial today or check out our [quickstart documentation](https://docs.release.com/getting-started/quickstart) for additional information.

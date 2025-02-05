@@ -1,0 +1,230 @@
+---
+title: How to Make the Most of Kubernetes Environment Variables
+summary: >-
+  There are a few ways to add Kubernetes environment variables. In this post, we
+  are going to learn what they are and when
+publishDate: Fri Apr 21 2023 19:37:52 GMT+0000 (Coordinated Universal Time)
+author: dawid-ziolkowski
+readingTime: 5
+categories: []
+mainImage: /blog-images/e99f6e1d23023143b231d942ed8b8ff8.jpg
+imageAlt: kubernetes environment variable secret
+showCTA: false
+ctaCopy: ''
+ctaLink: ''
+relatedPosts:
+  - ''
+---
+
+In traditional systems, environment variables play an important role but not always a crucial one. Some applications make more use of environment variables than others. Some prefer configuration files over environment variables. However, when it comes to Kubernetes, environment variables are more important than you may think. It's partially due to how containers work in general and partially due to the specifics of Kubernetes. In this post, you'll learn all about environment variables in Kubernetes.
+
+![environment variables are dynamic key value variables](/blog-images/fa1486359141ce02924db9ee4ba2a0e8.png)
+
+### The Basics
+
+Let's start with the basics. What are environment variables, and why do they exist? Traditionally, environment variables are dynamic key value variables that are accessible to any process running on the system. The operating system itself will set many environment variables that help running processes understand the specifics of the system. Thanks to this, software developers can include logic in their software that makes the programs adjustable to a specific operating system. Environment variables also hold a lot of important information about the user. Things like username, preferred language, user home directory path, and many other useful bits of information.
+
+### User-Defined Environment Variables
+
+As a user, you can easily create and access your own environment variables. On Unix-based systems, you can do that by executing the **export** command followed by the name of your variable and its value. So, for example, to create an environment variable called **myvar** with a value of **10**, you need to execute the following:
+
+```yaml
+
+export myvar=10
+
+```
+
+You can then access the value of your variable using a dollar sign followed by your variable name. In our case to print (using Linux command [echo](https://en.wikipedia.org/wiki/Echo_\(command\))) the value of our variable, we can execute the following:
+
+```yaml
+
+echo $myvar
+
+```
+
+And if you want to print all the environment variables, you can execute either **printenv** or **env** commands. All of this applies to applications running in your pods too.
+
+### Environment Variables in Kubernetes
+
+The basic principle of environment variables in Kubernetes is the same. However, Kubernetes uses environment variables quite extensively and for a few different things. Therefore, it's good to understand what role environment variables play in Kubernetes. That's especially true if you want to migrate an existing application that doesn't use environment variables that much. You can still create your pods without any environment variables. But if you ignore environment variables in Kubernetes completely, you may lose some of the value of the more powerful Kubernetes features.
+
+Before we move any further, you also need to know that it's generally good practice when developing microservices to provide configuration to your Docker containers as environment variables whenever possible. This way you can make your Docker image more generic and possibly reuse the same image for different purposes. With that being said, let's see how you can inject some environment variables into your Kubernetes pods.
+
+![The main use case for environment variables in Kubernetes](/blog-images/54e9ae96af3ef573e4be8b343d09d1fd.png)
+
+### Configuration for Your Pods
+
+The main use case for environment variables in Kubernetes is similar to the one from traditional software development. That is to provide information about the environment to your software. This information is usually used to alter or adapt the way software works to the specifics of the environment. The definition may seem vague, so let me give you an example. Instead of having separate Docker images for your development and production environments, you can use the same image but run your application in a development or production mode based on an environment variable.
+
+In Kubernetes, environment variables are scoped to a container, and there are three main ways of adding them. Let's break them down.
+
+#### Direct
+
+The first option is the most straightforward. You can simply specify environment variables directly in your deployment definition with an **env** keyword:
+
+```yaml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-app
+  template:
+    metadata:
+      labels:
+        app: example-app
+    spec:
+      containers:
+        - name: example-app-dev
+          image: [yourimage]
+          env:
+            - name: ENVIRONMENT
+              value: "development"
+
+```
+
+As soon as your application is instructed to read the value of an environment variable called "ENVIRONMENT", you can use it directly to run your application in the desired mode.
+
+To run the same application in a production mode, you can simply reuse the same deployment definition. You'll only need to change the environment variable value (and optionally a name of the pod):
+
+```yaml
+---
+apiVersion: apps/v1
+kind: Deployment
+(...)
+      containers:
+        - name: example-app-prod
+          image: [yourimage]
+          env:
+            - name: ENVIRONMENT
+              value: "production"
+
+```
+
+Here's another example: Imagine that you have a web application that needs to download a product catalogue. This catalogue will then be served to the users. This catalogue may differ in a few ways (by, for example, a country, month, or supplier). This is a perfect use case for an environment variable. Instead of creating many different versions of your application to accommodate different download options, your application can remain generic. Which catalogue it has to download will be determined by the value of some specific environment variable.
+
+#### Secrets
+
+Another way of providing environment variables to your application is by passing them from Kubernetes [secrets](https://kubernetes.io/docs/concepts/configuration/secret/). You may guess that this is a good option when you need to pass some sensitive information like passwords or tokens. This way you don't specify the value of the environment variable directly in the deployment as we did before. Instead, you instruct Kubernetes to take the value of a specified secret object and use it as a value of an environment variable for your pod.
+
+For example, if you have a Kubernetes secret like this:
+
+```yaml
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secret_data
+type: Opaque
+stringData:
+    username: "example"
+    password: "supersecretpassword"
+
+```
+
+and you want to pass the password as an environment variable to your pod, you can reference it in the deployment definition as follows:
+
+```yaml
+---
+apiVersion: apps/v1
+kind: Deployment
+(...)
+      containers:
+        - name: example-app-prod
+          image: [yourimage]
+          env:
+            # Inject variables from a Kuberentes secret
+            - name: secret_variables
+              valueFrom:
+                secretKeyRef:
+                  name: secret_data
+                  key: password
+
+```
+
+In your pod, you will then be able to access the actual password (supersecretpassword) by accessing an environment variable called **secret\_variable**. For example, in Python you could do it like this:  
+
+```yaml
+
+import osPASSWORD = os
+.environ.get['secret_variable']
+
+```
+
+As you can see, in our example we have **username** and **password** defined in Kubernetes secret, but we are only passing the **password** value to the pod. If you want to pass all the secrets from a Kubernetes secret without specifying each key, you can use **secretRef** instead of **secretKeyRef**. This way, you only need to specify the Kubernetes secret object name, and all the values from it will be automatically loaded as environment variables:
+
+```yaml
+---
+apiVersion: apps/v1
+kind: Deployment
+(...)
+      containers:
+        - name: example-app-prod
+          image: [yourimage]
+          env:
+            # Inject variables from a Kuberentes secret
+            - name: secret_variables
+              valueFrom:
+                secretRef:
+                  name: secret_data
+
+```
+
+#### ConfigMaps
+
+Another way of injecting environment variables into your pods is by using values from [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/). For example, if you have ConfigMap like this:
+
+```yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-data
+data:
+  environment: "dev"
+  timezone: "UTC"
+
+```
+
+and you want to load both **environment** and **timezone** as environment variables into your pod, you can add the following **valueFrom** definition to your deployment:
+
+```yaml
+---
+apiVersion: apps/v1
+kind: Deployment
+(...)
+      containers:
+        - name: example-app-prod
+          image: [yourimage]
+          env:
+            # Inject variables from a Kuberentes ConfigMap
+            - name: config_variables
+              valueFrom:
+                configMapRef:
+                  name: config-data
+
+```
+
+In your pod, you'll then be able to see both environment variables as defined in your ConfigMap:
+
+```yaml
+
+# env
+
+HOSTNAME=5ad4e9e78e57
+environment=dev
+timezone=UTC
+
+```
+
+As with secrets, if you don't want to load all values from a ConfigMap, you can define specific keys instead by changing **configMapRef** to **configMapKeyRef.**
+
+The main difference between passing environment variables from ConfigMaps and specifying them directly as in the first example is the fact that here the environment variable lifecycle is separated from the pod lifecycle. This means you can update the value of your variable independently from the running pod. Or, to put it differently, you'll need to restart the pod yourself in order to load the new value of the environment variables into the pod. On the other hand, when you specify environment variables directly in the deployment, every change to the variables will automatically trigger pod restart.
+
+### Summary
+
+Environment variables play an important role in Kubernetes. You can use them not only to provide basic information about the operating system to your application. You can also use them as the main configuration mechanism for your pods or for passing sensitive information. It's not uncommon in Kubernetes to extract as much configuration as possible info ConfigMaps and environment variables to keep your Docker images as generic as possible. As you can see, even something simple like environment variables have a few options in Kubernetes. If you want to learn more, [Regis Wilson wrote about why Kubernetes is hard and what you can do about it.](https://release.com/blog/why-kubernetes-is-so-hard)

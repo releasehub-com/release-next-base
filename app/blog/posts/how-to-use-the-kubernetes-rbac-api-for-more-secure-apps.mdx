@@ -1,0 +1,301 @@
+---
+title: How to Use the Kubernetes RBAC API for More Secure Apps
+summary: >-
+  RBAC API gives permissions to an object in a Kubernetes cluster to improve
+  governance & strengthen secuity.
+publishDate: Fri Apr 21 2023 17:05:06 GMT+0000 (Coordinated Universal Time)
+author: tommy-mcclung
+readingTime: 4
+categories: []
+mainImage: /blog-images/514418c7a457bea6c774f627b909a699.jpg
+imageAlt: Close-up of people shaking hands
+showCTA: false
+ctaCopy: ''
+ctaLink: ''
+relatedPosts:
+  - ''
+---
+
+If you manage a Kubernetes cluster, sooner or later, you'll need to assign roles and permissions to users so that everyone has visibility and access only to the resources they need. For example, some users must have read-only access, while others must only be able to write to certain resources or APIs. In addition, there must be users with unlimited access to all available resources. 
+
+Suppose you have a team of four users: 
+*   Patricia: leader of the dev team
+*   James: part of the dev team
+*   Oliver: leader of the QA team
+*   Amelia: part of the QA team
+
+James works on one of the many projects within the company's cluster and therefore needs access to your namespace. Patricia, being the dev leader, needs full access to all projects. Oliver, likewise, needs full read access to all objects in the cluster. However, Amelia is working on the same project as James and can only have read access in this namespace. 
+
+Role-based access control (RBAC) is an authorization mechanism built to handle such cases. In this article, we will discuss what RBAC API is and how you can use Kubernetes RBAC API to develop secure applications. 
+
+![Close-up of people shaking handsDescription automatically generated](/blog-images/c86b1152882a95adcd1ae1ebf5677e4d.jpeg)
+
+### What is RBAC?
+
+The concept of role-based access control is not something new. RBAC is based on the concepts of roles, permissions, and user groups, and it's one of the most widespread access control models being used in organizations today.  
+
+In organizational use, RBAC allows you to create secure access models based on the real functions that people have within the organization rather than on the actions they must be able to perform. 
+
+### What is the RBAC API, and how is it used in Kubernetes?
+
+Kubernetes (as of version 1.6) introduced the concept of role-based access control as a system for distributing access rights to various objects in a Kubernetes cluster. 
+
+Objects in a Kubernetes cluster are YAML manifests, and permissions determine which user can only view the manifests and who can create, modify, or even delete them. 
+
+Before we go into how RBAC works in Kubernetes, it's important to understand what a user is in Kubernetes. Everyone who sends requests to the API server is a user in a Kubernetes cluster. This means that not only administrators and developers are users, but also various CI/CD scripts and control plane, **kubelet**, and **kube-proxy** components on nodes are considered users.  
+
+The RBAC model includes five entities:  
+*   Role
+*   RoleBinding
+*   ClusterRole
+*   ClusterRoleBinding
+*   ServiceAccount
+
+Let's explore each entity in more detail. **‍**
+
+### Role
+
+The **role** is a YAML manifest that describes a set of rights on Kubernetes cluster objects. 
+
+Here it's important to understand that cluster objects are YAML manifests stored in **etcd**. The API server checks all rights as they relate to the requests that the API server receives.  
+
+If you restrict the user to execute **kubectl exec**, but that user has access to the worker node, then they will not be able to block it from entering the worker node and doing docker exec in the RBAC container. 
+
+We can go to the cluster, and in **ns ingress-nginx**, look at the **role: ingress-nginx**: 
+
+```yaml
+
+kubectl get role -n ingress-nginx ingress-nginx -o yaml
+
+```
+
+Here we are interested in the rules section. This is a list of rules that describe access rights. 
+
+In each rule, we have three parameters. Let's look at an example: 
+
+```yaml
+
+apiGroups:
+  - extensions
+  - networking.k8s.io
+ resources:
+  - ingresses
+ verbs:
+  - get
+  - list
+  - watch
+
+```
+
+Here **apiGroups:** describes the manifest API group. If only the version is specified in apiVersion—without a group, for example, as in the Pod manifest—then this manifest is considered to have the so-called root group (core-group). In the role, the root group is specified as an empty string. 
+
+The **resources:** parameter refers to a list of resources to which we describe access. You can view the list of resources in your cluster with the command **kubectl api-resources**. Some sub-resources describe specific actions. For example, the **pods/log** sub-resource allows you to view container logs in a pod.  
+
+The **verbs:** parameter is a list of actions that you can perform on the resources described above: get, view the list, monitor changes, edit, delete, etc. 
+
+### RoleBinding
+
+Let's now look at the **RoleBinding** manifest: 
+
+```yaml
+
+kubectl get rolebinding ingress-nginx -n ingress-nginx -o yaml
+
+```
+
+It has two types of fields: **roleRef** and **subjects:** 
+
+```yaml
+
+roleRef: 
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: ingress-nginx
+subjects:
+- kind: ServiceAccount
+  name: ingress-nginx
+  namespace: ingress-nginx
+- kind: User
+  name: jane              # "name" is case sensitive
+  apiGroup: rbac.authorization.k8s.io
+- kind: Group
+  name: developer      
+  apiGroup: rbac.authorization.k8s.io
+
+```
+
+Here's what we have: 
+*   **roleRef** specifies the role.
+*   **subjects** specifies who will be assigned this role.
+*   **kind** specifies permissions for requests not authenticated through a token from the service account.
+
+### ClusterRole
+
+The **role** entity is namespace dependent and we can create roles with the same name in different namespaces. While **ClusterRole** is a cluster object, this entity describes the rights to objects in the entire cluster. 
+
+Kubernetes has many preconfigured cluster roles. These include the **admin**, **edit**, and **view** roles, which describe the rights that allow administrating, editing, or only viewing entities. If you have administrator rights, you can view the role in your cluster with the following command: 
+
+```yaml
+
+kubectl get clusterrole edit -o yaml
+
+```
+
+### ClusterRoleBinding
+
+RoleBinding only gives access to entities in the same namespace as the RoleBinding manifest. **ClusterRoleBinding** allows you to grant access to entities in all cluster namespaces simultaneously. 
+
+### Service Account
+
+Kubernetes knows nothing about users in the form we are used to seeing them in when it comes to other access restriction systems, where users have a login or a password. Still, it has mechanisms for calling external password verification services, such as **oidc**, a user certificate verification option, or even the usual HTTP basic auth with the classic Apache file **htpasswd**. 
+
+‍**ServiceAccount** was created primarily to limit the rights of applications that run in a cluster. All communication between cluster components goes through requests to the API server, and a special JWT token just authorizes each such request. This token is automatically generated when an object of the **ServiceAccount** type is created and placed in [secret.](https://release.com/blog/kubernetes-secrets-management-a-practical-guide)  
+
+### How to use RBAC API in Kubernetes
+
+[RBAC authorization](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) is one way to assign roles to users in a Kubernetes cluster. Here are the steps: 
+
+1\. Connect the [service account token](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/). Without this token, you will need to re-download **kubeconfig** after any change in roles. 
+
+2\. Assign roles. Here's an example manifest that creates two namespaces and two users, each of which will only be able to [manage pods](https://release.com/blog/kubernetes-pod-a-beginners-guide-to-an-essential-resource) in their own namespace: 
+
+```yaml
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test-one
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test-two
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods-one
+  namespace: test-one
+subjects:
+- kind: ServiceAccount
+  name: test-sa-one
+  apiGroup: ""
+roleRef:
+  kind: Role
+  name: pod-reader-one
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods-two
+  namespace: test-two
+subjects:
+- kind: ServiceAccount
+  name: test-sa-two
+  apiGroup: ""
+roleRef:
+  kind: Role
+  name: pod-reader-two
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: test-one
+  name: pod-reader-one
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: test-two
+  name: pod-reader-two
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: test-one
+  name: test-sa-one
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: test-two
+  name: test-sa-twoRun the manifest.
+
+```
+
+3\. Run the manifest.
+
+4\. Create tokens: 
+
+```yaml
+
+kubectl get secret $(kubectl get serviceaccount test-sa-one -o jsonpath='{.secrets[0].name}' --namespace test-one) -o jsonpath='{.data.token}' --namespace test-one | base64 -d
+
+kubectl get secret $(kubectl get serviceaccount test-sa-two -o jsonpath='{.secrets[0].name}' --namespace test-two) -o jsonpath='{.data.token}' --namespace test-two | base64 -d
+
+```
+
+5\. Manually add tokens to users in the **kubeconfig.yaml** file for authorization without a password: 
+
+```yaml
+
+users:
+...
+- name: test-sa-one
+user:
+  token: 
+- name: test-sa-two
+user:
+  token: 
+...
+
+```
+
+6\. Check the distribution of roles: 
+
+```yaml
+
+kubectl config set-context --current --user=test-sa-two
+Context "admin@kubernetes" modified.
+
+kubectl get pods --namespace test-two
+No resources found in test-two namespace.
+
+kubectl get pods --namespace test-one
+Error from server (Forbidden): pods is forbidden: User "system:serviceaccount:test-two:test-sa-two" cannot list resource "pods" in API group "" in the namespace "test-one"
+________
+
+kubectl config set-context --current --user=test-sa-one
+Context "admin@kubernetes" modified.
+
+kubectl get pods --namespace test-two
+Error from server (Forbidden): pods is forbidden: User "system:serviceaccount:test-one:test-sa-one" cannot list resource "pods" in API group "" in the namespace "test-two"
+
+kubectl get pods --namespace test-one
+No resources found in test-one namespace.
+
+```
+
+The test-sa-two user now has access to pods in the **test-two** namespace and no access to the **test-one** namespace. Similarly, the "test-sa-one" user has access to pods in the **test-one** namespace but not those in the **test-two** namespace.
+
+### Kubernetes RBAC as a Security Strategy
+
+The RBAC model has proved particularly effective for managing roles and is now considered a Kubernetes security best practice.  
+
+RBAC reduces the risk of unwanted access to critical resources and allows you to implement the principle of least privilege by giving access to only needed resources, which makes your cluster more secure.  
+
+Moreover, if you are using RBAC, you don't have to check the individual permissions assigned to each user. You can monitor who has access to resources simply by consulting roles, which makes auditing easier. 
+
+### Conclusion
+
+In summary, RBAC API is a role-based approach to giving permissions to an object in a Kubernetes cluster. By making it part of the Kubernetes pipeline, you can improve governance and significantly strengthen security.

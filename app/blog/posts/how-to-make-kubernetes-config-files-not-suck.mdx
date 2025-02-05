@@ -1,0 +1,160 @@
+---
+title: How Do You Make Kubernetes Config Files Not Suck?
+summary: >-
+  I know that when I try out a new product if it’s hard to see what it does
+  quickly I usually move on. 
+publishDate: Thu May 02 2024 20:19:24 GMT+0000 (Coordinated Universal Time)
+author: regis-wilson
+readingTime: 4
+categories:
+  - kubernetes
+mainImage: /blog-images/ade0049406c93db8b827edd0f4966435.jpg
+imageAlt: Pile of trash representing bad Kubernetes Config Files
+showCTA: false
+ctaCopy: ''
+ctaLink: ''
+relatedPosts:
+  - ''
+---
+
+### How Do You Make Kubernetes Config Files Not Suck?
+
+Nothing makes me break out in a panic and cold sweat faster than someone saying, “Edit the YAML config files and push it to production.” I have so many welts and scars on my backside from years of YAML file mishaps in production. I have also personally witnessed and had to try to fix many more such production outages due to YAML files being edited and pushed to production. In some cases, just figuring out what was wrong with the YAML file, much less how to fix it took seemingly endless minutes of frantic searching and scrambling to save a production website that was down and losing money.
+
+Please note, this is not a JSON vs. YAML or Yet Another Data Language vs. YAML(because YAML Ain’t Markup Language) religious war! You can actually use JSON for Kubernetes configuration files _if you want to_. The real issue is that _there are so many_ of them and _they repeat so often_ and _I don’t know what to put where_ or even _where to find out where to start_.
+
+There is a very good page of [best practices](https://kubernetes.io/docs/concepts/configuration/overview/) and the documentation for Kubernetes does tend to be surprisingly useful. There are tons of useful videos on Youtube that are helpful, so I am not even complaining about that.
+
+The problem begins with just trying to connect to a cluster the very first time! The mysteries of the ~/.kube/ directory arise swiftly from the depths and bottom out the boat on your Kubernetes journey before you’ve even begun. Fortunately, there are a lot of ways you can avoid editing or creating the configuration files with a few steps that were enlightening to me; hopefully they will be useful for you.
+
+I like to keep my configuration files separated and specify them explicitly. This prevents me from, say, deploying or sending commands to a production environment by accident. I also tend to have a few pre-production or even developer environments laying about and I want to choose which one I interact with each time. I also don’t want to overwrite any important credentials I may have stored in a default location so I like to keep all my files separated away from the default file names if possible.
+
+### Prerequisites
+
+We use Amazon Web Services (AWS) managed Kubernetes service called EKS and so my configuration setup is pretty AWS-centric, but by no means unusual. I also run a local Ubuntu 20.20 instance on Windows 10, so even though I have Windows, I’m not a Powershell or Command Prompt user. This will be a Linux/AWS configuration example but it should be usable on a Macintosh, or with proper translation, a native Windows environment. Similarly, you can use the same approach for other cloud providers or on-premise clusters.
+
+You will need an AWS account, AWS credentials (preferably an Admin, but if your cluster is already created, then just a user), the AWS CLI, EKSCTL, Kubectl commands installed.
+
+#### Your AWS credentials
+
+The first step is to set up your AWS credentials. You can setup default credentials just by typing
+
+```yaml
+
+$ aws configure
+AWS Access Key ID [None]: accesskey
+AWS Secret Access Key [None]: secretkey
+Default region name [None]: us-west-2
+Default output format [None]:
+
+$ aws ec2 describe-instances
+
+```
+
+This works well for defaults or if you’ve never setup AWS credentials on your computer before. However, I will always move these credentials into a profile that I can access only when needed. Edit your ~/.aws/credentials file with an editor and move your credentials from \[default\] to some other named profile, for example if you have a production and development account, your file might look like the following.
+
+```yaml
+
+[default]
+
+[production]
+aws_access_key_id = SOMETHING
+aws_secret_access_key = SOMETHINGELSE
+
+[development]
+aws_access_key_id = SOMETHING
+aws_secret_access_key = SOMETHINGELSE
+
+```
+
+The great thing about this setup is you can choose which environment you want to deploy into, and you won’t accidentally deploy to production if you switch terminal windows or pick up where you left off after a break. On the downside, you will have to remember to always specify your profile in one of several ways, for example:
+
+```yaml
+
+$ AWS_PROFILE=production aws ec2 describe-instances
+$ aws ec2 describe-instances --profile=production
+
+```
+
+You may find that less than convenient, but I enjoy it. I even go so far as not specifying a default region, so that I have to specify both profile and region in my commands (but it prevents me from making a lot of mistakes I would otherwise make):
+
+```yaml
+
+$ AWS_DEFAULT_REGION=us-west-2 AWS_PROFILE=production aws ec2 describe-instances
+$ aws ec2 describe-instances --profile=production --region=us-west-2
+
+```
+
+And finally, in [Terraform](https://registry.terraform.io/providers/hashicorp/aws/latest/docs#shared-credentials-file), you can easily switch environments by using this existing setup and specifying an input variable for the provider profile.
+
+```yaml
+
+provider {
+    region = var.aws_region
+    profile = var.credentials_profile
+}
+
+```
+
+### The EKS Cluster Configuration
+
+Now, you need to connect to an EKS cluster by generating a file which is known as a kubeconfig. By default, the kubeconfig files will be merged or written into your ~/.kube/config file, or if you have a $KUBECONFIG variable set, into the first file in that list (more on the $KUBECONFIG variable later).
+
+Again, I break out in hives around anything to do with YAML files and merging multiple configurations into one default file sounds like an easy recipe for disaster or rolling out the wrong changes to production late at night. Ideally, I’d like to keep all my configurations separate and specify them when I need them. I also want to avoid editing files or updating labels in dense, hard to read YAML.
+
+If you have more than one EKS cluster, and perhaps in separate AWS accounts, I want to make sure I keep them straight. The first step is to create a cluster configuration file and save it to a specific file:
+
+```yaml
+
+$ AWS_PROFILE=production AWS_DEFAULT_REGION=us-west-2 \
+aws eks update-kubeconfig --name=prodEKS --alias=production \
+--kubeconfig=~/.kube/config-prod-us-west-2
+
+```
+
+One of the great tools you should check out is EKSCTL which has a similar use case:
+
+```yaml
+
+$ eksctl utils write-kubeconfig --cluster=prodEKS \
+--kubeconfig=~/.kube/config-prod-us-west-2 \
+--set-kubeconfig-context --profile=production \
+--region=us-west-2
+
+```
+
+I also like to use the --auto-kubeconfig option instead of --kubeconfig because it will save the file in ~/.kube/clusters/<clustername> by default.</clustername>
+
+Now, you can access your cluster by name, for example:
+
+```yaml
+
+$ AWS_PROFILE=prod kubectl get pods -A -o wide \
+--kubeconfig=~/.kube/config-prod-us-west-2
+
+```
+
+So it gets a bit hairy to keep listing the file to specify which cluster you want to connect with. There must be a better way to do this, and there is luckily a way to specify a [context and merge files](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/#the-kubeconfig-environment-variable) to get this to work.
+
+So let’s say that all your cluster configurations are stored in separate files (which I like) and they all have a convention of starting with ~/.kube/config-\* or exist in a subdirectory like ~/.kube/clusters/\*. Now you can create a KUBECONFIG colon-separated list of the files like so:
+
+```
+
+FILES=(~/.kube/config-*); IFS=: eval 'export KUBECONFIG="${FILES[*]}"'
+
+```
+
+Add the above snippet to your ~/.bash\_aliases (or whatever bashrc script you prefer) and then start a new shell and you’ll be able to select a cluster by context:
+
+```
+
+$ exec bash -l # This just loads my exports if I have updated anything
+$ AWS_PROFILE=production kubectl get pods -A -o wide --context=production
+
+```
+
+So you will need to specify your AWS profile (to gain access credentials to your assumed role for EKS) and also specify the context in order to choose a cluster to connect to. But I find it fairly usable and keeps all my configuration files in separate locations while still being relatively easy to maintain and manage. I also remove the accidental possibility of accessing the incorrect cluster or environment and wreaking havoc.
+
+### Conclusion
+
+It is possible to keep YAML file configuration and management of EKS kubernetes clusters separate and yet accessible with some flags that switch into the correct environment. Adding and removing clusters and credentials is easily managed in the filesystem and without editing files directly. Also, defaults are removed so that a command does not get executed on the wrong cluster inadvertently.

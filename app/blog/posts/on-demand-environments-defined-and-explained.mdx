@@ -1,0 +1,77 @@
+---
+title: On-Demand Environments Defined and Explained
+summary: >-
+  We cover on-demand environments, the best way to implement them, and the
+  advantages and disadvantages of on-demand envir
+publishDate: ''
+author: ''
+readingTime: 6
+categories: []
+mainImage: /blog-images/d7cc904aebc0c67b9e417b029995d57f.jpeg
+imageAlt: ''
+showCTA: false
+ctaCopy: ''
+ctaLink: ''
+relatedPosts:
+  - ''
+---
+
+There is no better feeling than having a seamless development process. However, teams that use a shared staging environment to test their features often complain about feature conflicts and code-breaking. In this post, you’ll learn about on-demand environments and how they can help improve your development process.
+
+![](/blog-images/fefc582df66e8014144f0be8412dbff2.png)
+
+## **What is an On-Demand Environment?** 
+
+An on-demand environment is a temporary, isolated environment that developers set up to test features, build features, or fix bugs without disrupting other development processes. On-demand environments create a full-fledged replica of your project, which includes all microservices and dependencies that your app needs to function. You can create as many on-demand environments as you want and they can run simultaneously. In other words, every developer on your team working on specific features can have their own little playground to make and break their code without hindering other developers' work. And if they mess the replica up completely, they can throw it away and create another one.
+
+Using an on-demand environment automatically gives you an independent [staging environment](https://releasehub.com/staging-environments) for every single feature. This is great because your developers have a place they can verify that their work meets expectations before merging it into production. In contrast, using a shared staging environment to test features might lead to a bottleneck. The on-demand environment approach is a much better way to go about feature testing in your software development process.
+
+![On-demand environment](/blog-images/e4805408c84441f7f99b3ec3b63b10f1.jpeg)
+
+## **Implementing On-Demand Environments**
+
+Typically, we create this environment manually, which includes configuring all your microservices (for example, dependencies, libraries, databases, and third-party software) using a tool like [Terraform](https://www.terraform.io/), but this approach requires a fair amount of precise reconfiguration of your project setup.
+*   **Each Git branch should be prefixed** with the name of the task or feature associated with it. This makes it clear and easy to identify what each feature branch represents. For instance, for **fea-productName-branch-URL, Fea** \= feature name, **productName** = product name, and **branch-URL** = Git branch URL.
+*   **Access and parameterize** all your configurations that might differ between developers. For instance, you can package your configurations in a dataset and store them on the [AWS Systems Manager,](https://aws.amazon.com/systems-manager/) then use Terraform to communicate with them whenever you need them to spin up an environment.
+*   **Define rules and restrictions** for your environments. You can use Terraform with [Azure Policy](https://learn.microsoft.com/en-us/azure/governance/policy/overview) to create policies for what sort of action can be carried out in each environment. For example, for security, you can restrict your developers from communicating with specific databases or even restrict them from using some services in specific locations.
+*   **Consider cost.** You may want to create a configuration that automatically deletes an environment after merging and deleting pull requests. Also, you can configure it to stop every instance of services running on environments that do not require them.
+
+## **Buy an Environment Instead**
+
+These days, many organizations use remote automated tools for creating on-demand environments. This lets them enjoy all the privileges of a full-fledged environment without bothering themselves or their DevOps team with the task of creating one manually. These automated tools allow you and your team to concentrate on more important tasks, like developing an application with all the features it needs, but without headaches.
+
+Automation tools can create an on-demand environment out of the box for you, which would include the full-fledged application, its frontend and backend, and every service or dependency it may require to fully function. These tools make creating an environment on demand quite easy and accessible. It takes care of most of the heavy lifting for you, like managing configurations and dependencies and destroying the environment when necessary. In contrast, if you use the manual process of creating these environments, you have to handle all these manipulations by yourself.
+
+## **Advantages of On-Demand Environments**
+
+### **Faster App Release Time**
+
+The traditional way to test every feature in development involved a shared staging environment. This is not idle, because a staging environment merges all the features in the app for testing and that can result in feature conflict. This delays production because a fix needs to happen before you carry on. On-demand environments come in handy because your team gets an isolated environment where they can work on every feature in your app independently, without worrying about it affecting other development work. This ultimately lets you avoid bottlenecks in your development process, giving your app a faster time to market. And this gives you an edge over competitors that don’t use on-demand environments.
+
+### **Dedicated Testing for Each Feature**
+
+A good software development company seizes any chance they get to test that their product meets exceptions. With an on-demand environment, you get another chance to test your product and you get to test every feature independently. This gives you and your team more time to figure out what works and what doesn’t.
+
+### **Product Quality**
+
+Imagine a team using a shared staging environment for testing features in their app. Because of all the problems they might face with testing in a shared staging environment, they might run out of patience and release products that, at the end of the day, don’t really impress. But with on-demand environments, every developer working on a feature gets an isolated environment to build and test their feature before shipping to a staging or production environment. This can immensely improve the quality of your product. Note that you don't have to have a staging environment when you use on-demand environments, but a staging environment lets you test all the features that you worked on individually in the on-demand environment as a unit.
+
+### **Time Saving**
+
+It takes a lot of time to resolve feature conflicts in a staging environment because you have to figure out which code change or feature broke the code. This wastes time unnecessarily. Time is precious and you need to complete other tasks. On-demand environments let other work continue, so you don’t waste time while you fix broken code. With an isolated development area, the development of your main app continues, unaffected.
+
+### **Happy Team**
+
+Avoiding work stoppages because of feature conflicts makes teams happy and we can all agree that when your team is happy, you're bound to have quality work.
+
+![](/blog-images/087fdf64fb6fd421d4a70b7883ab56b8.png)
+
+## **Disadvantages of On-Demand Environments**
+
+One of the major concerns with on-demand environments is cost. Because all your micro-services actively work in more than one instance of your application, bills start to pile up. You can mitigate this by using an automation tool that manages the lifespan of all your environments, from when you activate them to when you disable them. These tools can automatically destroy any environment you no longer need, saving you money. You can also define policies for the maximum number of environments that you or your team can create.
+
+## **Conclusion** 
+
+We covered on-demand environments, the best way to implement them, and the advantages and disadvantages of on-demand environments. Now the only thing left is putting the icing on the cake.
+
+If you read this post in full, you now know some of the tremendous benefits on-demand environments can bring to your development process. [Release](https://releasehub.com/ebook/the-complete-guide-to-automated-software-environments) is one tool you can use to spin up environments on-demand without dealing with lengthy set ups or convoluted processes. It doesn't matter if you have a complex app with [Docker Compose](https://docs.docker.com/compose/) or you just want to deploy a simple [static app](https://docs.releasehub.com/reference-documentation/static-service-deployment) with package.json, Release can generate a template using these files to build your environment on-demand. If any of this intrigues you and you are yearning for an effortless means of creating environments for your projects, don't hesitate to learn about the magic of [Release](https://releasehub.com/ebook/the-complete-guide-to-automated-software-environments).

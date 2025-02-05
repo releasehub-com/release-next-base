@@ -1,0 +1,104 @@
+---
+title: >-
+  Creating Private AI Environments with Release AI: Keep Your Data and
+  Intelligence Under Your Control
+summary: >-
+  Learn the simple steps to set up a secure, efficient AI workspace without
+  sending sensitive data over the internet.
+publishDate: Tue Aug 27 2024 19:33:36 GMT+0000 (Coordinated Universal Time)
+author: tommy-mcclung
+readingTime: 5
+categories:
+  - ai; product
+mainImage: /blog-images/f8fb624d18480efe410061a55bcb695a.jpg
+imageAlt: ''
+showCTA: false
+ctaCopy: ''
+ctaLink: ''
+relatedPosts:
+  - ''
+---
+
+Let's talk about how to create AI environments in Release AI that keep your AI data and intelligence fully within your control. To understand why this matters, we'll start by looking at how traditional AI applications work when you're not fully in control.
+
+#### The Problem with Traditional AI Applications
+
+![](/blog-images/fc88b2cd61dbddda01a22fdc52b07b2d.png)
+
+_Traditional AI application data flow diagram_
+
+Here's what typically happens:
+1.  Your application runs in your data center.
+2.  When you need AI capabilities - like observations, reasoning, or actions - you send data over the internet.
+3.  This data might include context, embeddings, or other sensitive information (think RAG applications).
+4.  Your data hits inference servers and GPUs in someone else's data center.
+5.  Your data could end up in their AI models, potentially used for training.
+6.  You have no control over anything outside your VPC or cloud.
+
+#### Introducing Release AI's Private AI Environments
+
+Now, let's look at how Release AI changes this:
+
+‍
+
+![](/blog-images/de2f5740a575897b930d7ac64a4bf4e7.png)
+
+_Release AI private environment diagram_
+
+With Release AI's private AI environments:
+*   Everything stays within your control.
+*   Your application and data sources live in your VPC and cloud account.
+*   Your data never goes out to the internet.
+*   You host inference with models you've either gotten (like open-source models) or trained yourself.
+*   All your data and AI intelligence stays completely within your control.
+
+The best part? Setting this up with Release AI is incredibly simple. Let me show you how.
+
+#### Creating a Private AI Environment with Release AI
+
+1.  Connect to Your Cloud Account
+*   Click "Create Cloud Integration"
+*   Give it a name
+*   Pick your cloud provider (AWS or GCP)
+
+‍
+
+![](/blog-images/37700bc0f118e71ef08a90e0b9907104.png)
+
+_Cloud integration setup screen_
+
+This lets Release AI interact with your cloud to create an environment that's completely under your control.
+2.  Create a Cluster
+
+![](/blog-images/c224023da67fa279fa32dccc420f5517.png)
+
+Cluster creation screen
+
+Next, you create a cluster that runs in your cloud account. In this example, I've already made one called "release-ai-demo".
+3.  Configure Your Cluster
+
+Let's look at the details:
+*   It's using the cloud integration we just set up
+*   It's a Kubernetes EKS cluster running version 1.29
+*   It's fully running within your AWS or GCP account
+*   All the nodes (in this case, I'm using G5 instances for AI workloads) are in your AWS account
+
+![](/blog-images/7dc3afccc0ccb87126e2e1822db79e91.png)
+
+Cluster creation screen - details
+
+#### **Why This Matters**
+
+When you make queries to these instances, no data ever escapes your AI environment. Everything stays put:
+*   All your data
+*   All your compute
+*   All your infrastructure
+
+It's completely within your control. You don't have to worry about sending your data over the internet into somebody else's SaaS application where they could use it to train, fine-tune, or do who-knows-what with it.
+
+#### **Bottom Line**
+
+By having a private AI environment running in your AWS account on your infrastructure, your applications, AI intelligence, and data stay fully within your control. It's that simple.  
+‍
+
+Watch the full demo [here](https://www.youtube.com/watch?v=0ysZ_bY0Gv8&t=2s).

@@ -1,0 +1,102 @@
+---
+title: How to Evolve Your Development and Deployment Workflow
+summary: >-
+  See how on-demand environments can provide an effective development experience
+  for your team.
+publishDate: Thu Jul 25 2024 16:27:39 GMT+0000 (Coordinated Universal Time)
+author: nick-busey
+readingTime: 8
+categories:
+  - product
+mainImage: /blog-images/b5626524d4eecf94addcab5f6b464918.jpg
+imageAlt: ''
+showCTA: false
+ctaCopy: ''
+ctaLink: ''
+relatedPosts:
+  - ''
+---
+
+In my recent PlatformCon talk [“From skateboard to car: How to evolve your developer experience”](https://www.youtube.com/watch?v=9BDfebNQTGM&list=PLR74Ng-6aEfBOEdyuk3OMZu2cLFma4r6b&index=13&t=1s) I talked about different ways teams can evolve their development and deployment workflows. As your team grows and your application becomes more complex, it's important to upgrade your development and deployment workflow to keep up with the needs of the team. In this article I will recap the main points of the talk, and show how on-demand environments can provide an effective development experience for your team.
+
+### What are Environments?
+
+An environment is any machine or group of machines that serves an application, API, or service. From your laptop to an entire data center, everything in between can be an environment.
+
+Environments can be categorized into different types, depending on the purpose and level of access. For instance, a development environment is where developers write and test their code. A testing environment is where the code is tested in a close-to-production environment. A staging environment is a replica of the production environment, where the code is tested before deployment.
+
+### The Problem
+
+As your team and application grow, you may experience bottlenecks and coordination overhead in your shared "sandbox" environment. Waiting for test environments to be created or updated can slow down development and cause frustration.
+
+The traditional model of testing in a single environment can lead to problems. For example, if multiple developers are working on the same code and trying to test it in the same environment, it can lead to conflicts. Also, if developers are waiting for an environment to be created, they are not able to work on other things during that time. This can lead to a lot of downtime and lower productivity.
+
+### The Solution
+
+One way to solve this problem is to use ephemeral environments. These are temporary environments that are created on demand and then destroyed when they are no longer needed.
+
+Ephemeral environments can reduce developer burnout by removing bottlenecks and reducing the time it takes to ship features and bug fixes. When developers have to wait hours, days, or sometimes even longer for test environments to be created or updated, it can slow down the development process and create frustration.
+
+Ephemeral environments remove this bottleneck by allowing developers to create their own environments on demand, without having to wait for someone else to do it for them. This means that developers can test their code in an environment that is specific to their needs without having to worry about conflicts with other developers.
+
+Also, ephemeral environments are cost-effective and can lead to a more efficient workflow. They allow developers to work more independently and focus on their work instead of coordinating with others to get access to an environment.
+
+### Implementing On-Demand Environments
+
+There are many different tools available to implement on-demand environments, with varying levels of complexity and functionality. We'll start with an example "skateboard" approach, and discuss more advanced tooling until we get to the "car" level.
+
+#### 🛹 Skateboard
+
+The simplest option is to just build your environments by hand. This requires a lot of manual effort, but it does work. Typically done on an on-premise server or a cloud VPS, this is usually the first stop for most teams. Make a "QA" or "staging" environment, maybe both if you're feeling fancy, and call it good.
+
+Data issues crop up often at this level. Seed files are notoriously difficult to wrangle into actually representing anything close to what production data would look like. This often leads to bugs slipping through the cracks, because the data just isn't there to expose the bug in the first place.  
+
+This approach is suitable for small teams, but it can quickly become unmanageable as the team grows, and it is not on-demand.
+**🎯 When to use:** Small team; Very early stage
+**🧩 How to build it:** On-prem server or Cloud server; Lots of manual work
+**👍 Pros:** Simplest to set up initially; Easiest to understand and debug
+**👎 Cons:** Creates bottlenecks; Coordination and maintenance overhead
+
+#### 🚲 Bicycle
+
+Tools like GitLab and Rancher can automate environment creation on a per-branch basis or through a button push. This approach is more automated and can save time and effort by reducing the toil of coordinating who/what gets to use which environment when, while still giving you a lot of control over the environment.  
+GitHub Codespaces integrates tightly with your existing workflow, but you'll still need to know enough about how your infrastructure is designed to be able to configure everything correctly.
+
+This approach reduces coordination overhead but still requires significant maintenance, and the data issues often still persist at this level.
+**🎯 When to use:** Growing team; Encountering environment bottlenecks
+**🧩 How to build it:** [GitLab](https://about.gitlab.com/) + [Rancher](https://www.rancher.com/) or [GitHub Codespaces](https://github.com/features/codespaces)
+**👍 Pros**: Low costs; Low maintenance overhead
+**👎 Cons:** Limited flexibility; Still decent bit of initial set up
+
+#### 🛵 Motorcycle
+
+Cloud-based platforms like Heroku automate environment deployments, but can lead to high vendor lock-in and cost. This stage is generally most useful for teams without much or any dedicated infrastructure / DevOps / SRE resources, and while requiring less maintenance than a home baked deployment system, it can lead to some pretty high bills.
+
+🎯 **When to use:** Medium to large dev team(s); Limited ops talent
+**🧩 How to build it:** [Heroku](https://www.heroku.com/home); [Fly.io](https://fly.io/); [Render](https://render.com/); [Vercel](https://vercel.com/)
+**👍 Pros:** Easier setup than manual options; Offload operational overhead
+
+👎 **Cons:** Cost can be higher; More reliant on 3rd party services
+
+#### 🏎️ Car
+
+Enterprise-ready Environment-as-a-Service companies like Okteto, Ergomake, and Release provide the most fully-featured environment solution, but can be costly.  
+Each of these options has its own advantages and disadvantages. The best option for your team will depend on your specific needs and budget.
+
+This stage may seem like overkill for smaller teams, but I would argue the benefits outweigh the drawbacks. Having as close to production environments as possible will increase the velocity of teams of any size, and give you confidence when deploying new code that it's already been tested in a production-like environment. Depending on the provider, you can use helm charts with your own kubernetes cluster to automatically spin up and tear down environments that mirror production at the individual component level.
+
+Some allow you to pause environments when not in use, reducing the costs. And some have features like Instant Datasets that mirror production data (scrubbed of PII) and avoid data integrity issues. Many services also offer Remote Development options, where developers can edit code on their local machine, and those changes are synced directly and immediately to the cloud environment. \\It really is the best of both worlds as far as speed of iteration and environment correctness.
+
+It really is the best of both worlds as far as speed of iteration and environment correctness.
+**🎯 When to use:** Need enterprise features; On-prem requirement; Advanced use cases
+**🧩 How to build it:** [Release.com](https://release.com/); [Okteto](https://www.okteto.com/); [Ergomake](https://ergomake.dev/); [BunnyShell](https://www.bunnyshell.com/); [Massdriver](https://blog.massdriver.cloud/changelog/2023-01-19-preview-environments/); [Shipyard](https://shipyard.build/); [Acorn](https://docs.acorn.io/#what-is-acorn); [Tugboat](https://www.tugboatqa.com/)
+**👍 Pros:** Professional level support; Easy onboarding; Power-user features
+**👎 Cons:** Switching costs can be high; Many features leads to more footguns
+
+### Conclusion
+
+Whether you choose to go with a skateboard, a car, or something in between, the most important thing is to find the approach that works best for your team and your product. Continually reevaluating your needs as your team and application grow is crucial. By providing fast, efficient, and fulfilling environments, you can increase productivity, avoid burnout, and provide better outcomes for your product and users.
+
+The benefits of using on-demand environments are clear. They can help you reduce coordination overhead, increase productivity, and improve the quality of your code. By implementing the right tools and processes, you can create an environment that is tailored to the needs of your team and your product. And by adopting new technologies and best practices, you can ensure that your team is always working at their best.
+
+‍

@@ -1,0 +1,145 @@
+---
+title: 6 Docker Compose Best Practices for Dev and Prod
+summary: >-
+  Docker Compose is an excellent optimization tool for development and
+  production. Learn best practices for Docker Compose
+publishDate: Wed Oct 30 2024 19:55:56 GMT+0000 (Coordinated Universal Time)
+author: regis-wilson
+readingTime: 5
+categories:
+  - docker
+mainImage: /blog-images/3ae1bcb14fb4d151cd6a705f7e9101d8.jpg
+imageAlt: a person holding a pen
+showCTA: true
+ctaCopy: >-
+  <p>Optimize Docker container orchestration and streamline your dev-to-prod
+  workflows with Release.</p>
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=6-docker-compose-tips
+relatedPosts:
+  - ''
+---
+
+Docker solves the "but it runs on my machine" problem by introducing containerization. However, with a multifaceted code base, you must simultaneously run several containers like the back and front end. Further, this will require you to leverage tools such as Docker Compose.
+
+Docker Compose is an excellent tool for optimizing the process of creating development, testing, staging, and production environments. With Docker Compose, you'll use a single file to build your environment instead of several files with complex scripts with a lot of branching logic. You can also share this single file with other developers on your team, making it easy to work from the same baseline environment.
+
+This post is about the best practices of Docker Compose for development and production.
+
+![A picture containing text, stationaryDescription automatically generated](/blog-images/45fc21380e5ae96bca6b4050e7cf9ad8.jpeg)
+
+### What Is Docker Compose Good for?
+
+Docker Compose is a tool for defining and running multi-container Docker applications. It allows you to bring up and link multiple containers into one logical unit. If you want to use Docker containers, you create one container that listens on an unused port on your machine. All other containers will connect to this server container on the same machine. Linking is where the different Docker services are connected and communicate with each other through a central node. This enables them to share data like configuration or databases.
+
+Docker Compose allows you to deploy your application's services as containers and lets you manage these containers as an organized and working whole in a single place—without having to worry about configuring your application's dependencies. For instance, if your app depends on three other services—like a database, an email server, and a messaging server—using Compose means you won't have to manage them individually.
+
+Instead, Docker handles that part for you so that all four services are available within one cohesive environment. This significantly [reduces the time](https://release.com/blog/cutting-build-time-in-half-docker-buildx-kubernetes) needed to get a service up and running. You can make changes simultaneously across all services. Therefore, Docker Compose is an excellent tool for building complex applications that utilize several services.
+
+![Graphical user interface, applicationDescription automatically generated with medium confidence](/blog-images/cf39ebfc109dd02e05b0daad24a81828.png)
+
+### Docker Compose Best Practices for Development
+
+During development, you may have the advantage of leveraging local storage, which is not the case during production. In production, resources like storage are costly; thus, you must carefully structure the **docker-compose** file. Essentially, the configuration in development and production slightly differ, and the best practices also differ. Below are the best practices you should employ when using Docker Compose during development.
+
+### Mount Your Code as Volume to Avoid Unnecessary Rebuilds
+
+By mounting the project directory (current directory) on the host to code within the container using the **new volumes** key, you may make changes to the code as you go without having to recompile the image. This also means you do not have to rebuild and push your image to change between development and production environments. You must delete or stop your local Docker machine and start it again.
+
+Note: You can also use a link in your code instead of the bind mount, but the downside to this approach is that you'll have to rebuild and repush your Docker image each time you change. With a bind mount, all you need to do is restart the container.
+
+![LogoDescription automatically generated with low confidence](/blog-images/5c7b48f49c580cf62a9e6f1bc35781fc.jpeg)
+
+### Use an Override File
+
+Some files are only necessary during development and not production. For example, developing a JavaScript application using any of its frameworks needs [webpack](https://webpack.js.org/). Thus, an override file will mimic the compose file but with webpack as a service. When you spin up the container, the compose files will bundle together during development. Therefore, when you make changes in the code base, you'll see the changes in real time. This allows you to have separate settings for the production and development environment by avoiding redundancy. Your **docker-compose.override.yml** file will have the following:
+
+```yaml
+
+services:
+  webpack:
+    build:
+      context: "."
+      target: "webpack"
+    command: "yarn run watch"
+
+```
+
+### Use YAML Anchors
+
+YAML anchors let you reuse parts of your YAML file-like functions. You can use them to share default settings between services. For example, let's say you want to create two services: **api** and **web**. Both of them will use Redis as a cache and a database, but the **web** service will need additional volumes mounted. It would be cumbersome to set all these things in the web service's **docker-compose.yml** file because it would have to duplicate those lines in the **api** service's file.
+
+Using YAML anchors to share those settings, you can set the volumes section in the **web** service's file like this:
+
+```yaml
+
+x-app: &default-app
+  build:
+    context: "."
+    target: "app"
+  depends_on:
+    - "postgres"
+    - "redis"
+  env_file:
+    - ".env"
+  restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
+  api:
+    <<: *default-app
+    ports:
+      - "8000:8000"
+  web:
+    <<: *default-app
+    ports:
+      - "8000:5000"
+
+```
+
+Additionally, you may alter an aliased property by overriding it in a particular service. If you wanted to, you could set **port:5000** in the example above to only the **web** service. The alias will give it precedence. This method is beneficial when two services could share a Dockerfile and a code base but have some slight variations.
+
+### Docker Compose Best Practices for Production
+
+As mentioned, dev and production may have slight configuration differences. So now, let's look at some best practices to help your app be production ready.
+
+### Leverage the Docker Restart Policy
+
+Occasionally, you'll face a scenario when a service fails to start. A common reason is that another service on your host machine has changed, and Docker Compose uses the old environment variables. To ensure this doesn't happen, set the restart behavior to **restart: always** and configure your services with **update\_config: true**. This will refresh the environment variables for each run. However, if your app relies on other services (MySQL, Redis, etc.) outside of Docker Compose, then you should take extra precautions. Make sure they are configured correctly.
+
+### Correct Cleanup Order of Docker Images
+
+You need to clean up the order of your images during production. Do not use **docker rm -f** as it may destroy useful images. Always run docker **rm -f --remove-orphans**. If you're working in the dev stage, this is not an issue because Docker Compose builds images only once, then exposes them. Thus there's no need to worry about removing old images. However, in production, Docker loops through all images when the container stops and restarts.
+
+Consequently, there's no way for you to be sure that an image wasn't destroyed, even when **docker-compose down** is called. If a container is stopped and restarted, then the exposed images can change, and you can't be sure they're still in use. Using **docker rm -f** to delete containers is a mistake. Docker Compose reuses port bindings, so an old service is still available, even though its container was destroyed.
+
+![Graphical user interface, text, applicationDescription automatically generated with medium confidence](/blog-images/54d365baed2380c9df53ddc5f32fd4b8.png)
+
+Since you cannot tell which containers might be potentially in use, you must delete all of them using the **\--remove-orphans** flag. If a container is restarted by Docker Compose (or something else) and it reuses the same port, the new image will have the same image ID as the old one.
+
+Notice we've added the **\--remove-orphans** flag because that ensures Docker Compose only deletes containers and images that are no longer in use, regardless of whether we or a running container uses them. This is crucial if you have services restarting.
+
+### Setting Your Containers' CPU and Memory Limits
+
+You can configure Docker to limit the CPU and memory of your containers by passing arguments into the **docker-compose.yml** file before starting your container. For example, the following command will start a web service with one CPU:
+
+```yaml
+
+web:
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+
+```
+
+If you set a specific number of CPUs in the **multi\_cpu** key, it will only be used when available. If you fail to set the limit, the service will use the maximum resources it requires.
+
+Tip: If you want to run multiple containers with different memory limits on the same machine, ensure that all your containers have different memory limits. This is because each container views how much memory it needs.
+
+Note: You can use this technique for multiple services if you'd like. Docker Compose will automatically get the values from the **env** file for each container when it starts up.
+
+Consequently, you need to understand the resource requirements of your service. This will prevent you from wasting resources and minimize production costs.
+
+### Conclusion
+
+Hopefully, these tips will help you use Docker Compose more effectively in development and production. After trying out the above configuration and optimization, you should be able to build your containers efficiently. If you feel that the above approach reduces the complexity of your Docker composition setup, don't worry. There are much easier ways to organize your containerized services for development and production at [Release](https://release.com/).
+
+‍

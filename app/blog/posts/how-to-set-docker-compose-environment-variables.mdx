@@ -1,0 +1,155 @@
+---
+title: How to set Docker Compose Environment Variables
+summary: >-
+  How to define environment variables directly in a Docker Compose file, or copy
+  tnem from the host's environment.
+publishDate: Wed Oct 30 2024 19:55:42 GMT+0000 (Coordinated Universal Time)
+author: regis-wilson
+readingTime: 4
+categories:
+  - docker
+mainImage: /blog-images/4c0d3d08781f13bb6a55f737ccdd49d2.jpg
+imageAlt: Cog wheels
+showCTA: true
+ctaCopy: >-
+  <p id="">Streamline Docker Compose environments and manage secrets
+  effortlessly with Release.</p>
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=docker-compose-envs
+relatedPosts:
+  - ''
+---
+
+Docker Compose lets you run multi-container Docker applications. If you want to use Docker Compose with environment variables, you have several options. The [official documentation](https://docs.docker.com/compose/environment-variables/) is a good reference, but it's hard to understand and very abstract!
+
+Let's take a practical look at how to pass environment variables to your Docker containers using Docker Compose.
+
+We'll use a simplified version of the [official getting started](https://docs.docker.com/compose/gettingstarted/) Docker Compose app, which is a basic web application built with Python and Flask, but you'll be able to use the same method to access environment variables using any other programming language.
+
+### Setting up the example project
+
+If you want to follow along, clone our [Example Docker Compose Project](https://github.com/ritza-co/docker-compose-environment-variables-demo). You'll also need Docker and Docker Compose installed on your machine.
+
+We'll assume that you want to pass an environment variable called _SECRET\_ENV_ to your application.
+
+The project consists of:
+*   An _app.py_ file that returns a string containing the _SECRET\_ENV_ value.
+*   A Dockerfile that starts up the Flask app.
+*   A Docker Compose that defines the variable and starts the Dockerfile.
+
+A _requirements.txt_ file that installs the Flask framework.
+
+### Defining the environment variable in the Docker Compose file
+
+The easiest way to send an environment variable to your Docker app is by defining it using an _environment:_ section in your _docker-compose.yml_ file as in the example below:
+
+```yml
+
+version: "3.9"
+services:
+  web:
+    environment:
+      - SECRET_ENV=my_secret_defined_in_docker_compose_yml
+    build: .
+    ports:
+      - "8000:5000"
+  redis:
+    image: "redis:alpine"
+
+```
+
+If you do this, run _docker compose build && docker compose up_, and visit [http://localhost:8000](http://localhost:8000/) in your web browser. You'll see the variable displayed.
+
+![](/blog-images/d3ceded73b3651835e9c323cd8bb9279.png)
+
+This is easy, but not very useful. If you don't want to have the variable in your application code, you probably don't want it in your _docker-compose.yml_ file either.
+
+### Passing an environment variable from the host
+
+Press Ctrl + C twice to stop the Docker server and edit the _docker-compose.yml_ file to look as follows:
+
+```yml
+
+version: "3.9"
+services:
+  web:
+    environment:
+      - SECRET_ENV=${HOST_SECRET}
+    build: .
+    ports:
+      - "8000:5000"
+  redis:
+    image: "redis:alpine"
+
+```
+
+Save the file and run _export HOST\_SECRET=my\_secret\_from\_host_ in your shell. This sets the environment variable on your host machine, which will be read by the _docker-compose.yml_ file after you rebuild with Compose.
+
+Now run _docker compose build && docker compose up_ again.
+
+Visit [http://localhost:8000](http://localhost:8000/) in your browser and you'll see that the app now displays the new secret variable.
+
+![](/blog-images/a5a9a53631c94d3cdf9609560003edd3.png)
+
+### Passing an environment variable from a _.env_ file
+
+If you have a lot of environment variables or you want to be sure you don't lose them, you can define them in a file called _.env_ in the same directory as your _docker-compose.yml_ file.
+
+Quit your shell to clear the _HOST\_SECRET_ variable that you set before and open a new shell. Create a file called _.env_ containing the following:
+
+HOST\_SECRET=my\_secret\_from\_dot\_env\_file
+
+Save the file and run _docker compose build && docker compose up_ again.
+
+Now you'll see the variable as you defined it in your _.env_ file. Usually, you would add this file to _.gitignore_ and recreate it on each machine you run the code on, which means that your (sensitive) environment variables are not stored with your codebase.
+
+![](/blog-images/234d1b8930c3fd22ef37cdf72aa6346e.png)
+
+### Understanding the priority of environment variables
+
+If you define the same variable in a _.env_ file and directly in your environment (for example, using _export HOST\_SECRET=my\_secret\_from\_host_), Docker Compose will give priority to your environment. The variable in your _.env_ file will be ignored.
+
+If you want to check exactly what is being used by your _docker-compose.yml_ file without building the whole project, you can run:
+
+_docker compose convert_
+
+This will output the model it uses, based on your _docker-compose.yml_ file but with any environment variables replaced with their real values. If you run it now, you'll see it still picks up the value from the _.env_ file.
+
+```yml
+
+...
+    environment:
+      SECRET_ENV: my_secret_from_dot_env_file 
+...
+
+```
+
+If you run _export HOST\_SECRET=my\_secret\_from\_host_ and _docker compose convert_ again, you'll see it prefers the variable you set explicitly over the one in the _.env_ file.
+
+```yml
+
+...
+    environment:
+      SECRET_ENV: my_secret_from_host
+...
+
+```
+
+### The best way to handle environment variables in your Docker Compose projects
+
+To recap, you can:
+*   Hard code your variables directly in your _docker-compose.yml_.
+*   Pull the variables from the host environment.
+*   Define the variables in a _.env_ file.
+
+For non-sensitive variables that don't change very often, it's easiest to simply put the values directly in the _docker-compose.yml_ file. This means you don't have to spend extra time and effort tracking down the values and messing around with multiple files.
+
+For sensitive values, such as database passwords and API tokens, you should ideally only define these directly in secure environments (for example, your production server). However, it's inconvenient to lose all of these values every time you need to restart your server or change to a new machine.
+
+Therefore a good tradeoff between security and convenience is to use a _.env_ file containing your sensitive environment variables. It's important to keep any copies of this file in a secure place, such as a secrets manager or vault, and to not check in this file as part of your code base.
+
+### Managing environment variables and secrets with ReleaseHub
+
+If you're looking for a simple and powerful platform to manage all of your environments for you, take a look at [Release](https://release.com/). Using our custom application template file, you can easily set environment variables and map them to specific environments, ensuring that your secret management is both secure and convenient.
+
+‍

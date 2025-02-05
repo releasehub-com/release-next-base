@@ -1,0 +1,238 @@
+---
+title: Feature Flags and Ephemeral Environments
+summary: >-
+  Learn about feature flags in devops, feature flags and ephemeral environments,
+  and more.
+publishDate: Wed Oct 30 2024 19:53:06 GMT+0000 (Coordinated Universal Time)
+author: erik-landerholm
+readingTime: 7
+categories: []
+mainImage: /blog-images/6a19ca3dda8d9f11445e6062ff0936f5.jpg
+imageAlt: Top view of city traffic
+showCTA: true
+ctaCopy: >-
+  <p>Streamline deployment with feature flags in ephemeral environments with
+  Release.</p>
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=feature-flags-ephem-envs
+relatedPosts:
+  - ''
+---
+
+### Overview
+*   [Feature Flags in DevOps and Software Development](#devops)
+*   [Feature Flag Environments](#environments)
+*   [Working with Ephemeral Environments](#ephemeral)
+*   Step 1: [Create an Application in Release](#create)
+*   Step 2: [Modify the Application Template](#modify)
+*   Step 3: [Add Environment Variables](#add)
+*   Step 4: [Deploy](#deploy)
+
+‍
+
+### Feature Flags in DevOps
+
+Feature Flags are a necessary and ubiquitous part of modern software development. As your company and the complexity of your application grows it becomes imperative to be able to control what features are available to your internal development teams, stakeholders and customers. In the long-ago, before-times, we would just have a variable that you would toggle between true and false to control behavior of your application. However, as application development transitioned to the Web we needed the same kind of control, except that hard-coded feature flags just weren’t going to cut it. Enter Dynamic Feature Flags!
+
+Dynamic feature flags were a big improvement over static feature flags, but also added complexity and presented challenges different from static feature flags. Gone were hard-coded flags, but they were replaced with if statements and more importantly, retrieving the appropriate flags for your application. Most people started by rolling their own, but as developing with feature flags gained popularity many different companies popped into existence looking to solve the problems of:
+*   One interface to manage your flags
+*   Easy maintenance of your flags
+*   Very fast and reliable retrieval of your flags
+*   Splitting traffic to one feature or another
+
+While companies like LaunchDarkly, Optimizely, Rollout, Split.io and others made it fairly easy to create and manage these flags this doesn’t solve all of your issues. Many software orgs, especially as they grow, need lots of environments for testing. This poses a challenge to your Feature Flag setup specifically if your environments are ephemeral.
+
+Ephemeral environments are like any environment except they will be removed in a relatively short amount of time unlike your staging or production environments. Good examples are:
+*   Feature branches
+*   Sales Demos
+*   Load Testing
+*   Refactors
+
+These environments may not last a long time, but they are exceedingly important and can be just as complex as production. While a sales demo environment may be able to function with seed data, a load testing environment will need production or production-like data and many replicas of each service to give a valid result. These can be super complex to create and manage and their ephemeral nature can play havoc with your feature flag setup.
+
+### Feature Flag Environments to the Rescue…Sort of
+
+LaunchDarkly (and others) recognized this issue and created the concept of environments in their own applications. You can read about their implementation here. They have apis that allow you to create and manipulate these sets of feature flags on an environment by environment basis. This works great if you have a finite set of environments and the set of them doesn’t change often, but with ephemeral environments the ability to spin them up and down is a feature not a bug.
+
+In order to simplify this issue most people create two kinds of environments in their favorite Feature Flag provider: one for development (or test) and one for production. In larger organizations development teams may have a few, such as development, test, uat, staging, and production. This works fine as long as you don’t want to add another one or you never take the plunge toward truly ephemeral application environments.
+
+Once you move to ephemeral environments most people take the shortcut of assigning every ephemeral environment to a single Feature Flag environment, which is simple enough, but creates a large problem with people stepping on each other’s toes.
+
+Imagine you have 10 environments all pointing to a single database with writes happening from all those environments: it’s the same issue here. The great thing about feature flags is the ability to toggle them and see different behavior, but if every environment is pointing to the same one you now have another resource contention problem. If you toggle Feature A ‘on’ what’s to stop your co-worker from toggling it ‘off’? Any issues you have with permanent staging environments are magnified with ephemeral environments.
+
+The best solution would be upon the creation of an ephemeral environment you would create an environment in LaunchDarkly based on something unique about your ephemeral environment and when it comes up, you would make sure it was using the unique SDK api for that particular Feature Flag Environment. Let’s implement the workflow and see how that would work with Release!  
+
+![](/blog-images/40fe7f59c236984a8877850971f711ec.png)
+
+Ephemeral Environment Creation Workflow
+
+### Working with Ephemeral Environments
+
+In order to try this out with Release we need a repository with a Docker File that has implemented Feature Flags with LaunchDarkly. I’m going to use [this](https://github.com/elanderholm/rails_postgres_redis) repository on Github and you can do the same by first forking the repository so you can use it to create an application with Release.
+
+Once you have forked the repository you can navigate to [release.com](https://github.com/elanderholm/rails_postgres_redis) and sign-in using github in order to follow along with this example.
+
+The steps to get our ephemeral environments created in Release with support for environments in LaunchDarkly are:
+1.  Create our application in Release
+2.  Create a job with Release to create the environment in LaunchDarkly
+3.  Add some environment variables so the application can contact LaunchDarkly and pull in the SDK Api key from our newly created LaunchDarkly Environment
+4.  Deploy our Ephemeral Environment
+
+> _If you don’t have a launch darkly account, you can create one for free for 30 days to use for this example. You will also need to create at least one feature flag. If you already have a launch darkly account with a lot of feature flags you can just skip this step._
+
+![](/blog-images/b5c97492651bfb28602db700fcac9847.png)
+
+‍
+
+### _Create_ the Application In Release
+
+Once we are logged into Release we want to click **Create New Application** in the left-hand sidebar. After doing that we will be presented with Create New Application Workflow.
+
+![](/blog-images/d4f8f32c20255f0f69fd15650e994390.png)
+
+First, we will click the “refresh” button to find our newly forked repository. Then, we will select that repository and “Docker” for the “api” service. Finally, name your application. Once you have finished click the purple “Generate App Template” button.
+
+![](/blog-images/03da5feb8004cd4b44710be338ca0f14.png)
+
+Lastly name your application and generate the template for your configuration.
+
+![](/blog-images/370c8324a4c8b543213337e5cc10737b.png)
+
+‍
+
+### Modify the Application Template
+
+Before we can deploy our environment(s) we need to make a modification to our application template and add a few environment variables. We also need to create a job that will create our LaunchDarkly environment upon initial environment deployment. Jobs in Release are described in detail [here](https://docs.releasehub.com/reference-guide/application-settings/application-template#jobs). The TL;DR is that with a small amount of configuration you can run any arbitrary script or task in a container. For example, these jobs are very useful for running migrations before a deployment of your backend service. In this case we will run a rake task to set up our LaunchDarkly Environment.
+
+```yaml
+
+jobs:
+- name: create-launch-darkly-env
+  from_services: api
+  args:
+  - bundle
+  - exec
+  - rake
+  - launch_darkly:create_environment
+
+```
+
+> _The above yaml represents a job in Release_
+
+We will place the above lines right before the “services” stanza in our application template.
+
+```none
+
+memory:
+   limits: 1Gi
+   requests: 100Mi
+ replicas: 1
+jobs:
+  - name: create-launch-darkly-env
+    from_services: api
+    args:
+    - bundle
+    - exec
+    - rake
+    - launch_darkly:create_environment
+services:
+  - name: api
+    image: erik-opsnuts-test-001/rails_postgres_redis/api
+    has_repo: true
+    static: false
+
+```
+
+> _Place the jobs snippet into the Application Template_
+
+In order for Release to utilize this job as part of the workflow to deploy an environment we will need to add one line near the bottom of the file in the ‘workflows\` section. Under ‘setup’:’order\_from’ we will add **jobs.create-launch-darkly-env**. Then, click “Save and Continue.”
+
+```none
+
+workflows:
+- name: setup
+  order_from:
+  - jobs.create-launch-darkly-env
+  - services.all
+- name: patch
+  order_from:
+  - services.api
+  - services.sidekiq
+  - services.db
+  - services.redis
+
+```
+
+> _Place jobs.create-launch-darkly-env before services.all under the workflows stanza_
+
+‍**That’s all the configuration needed, now we just need to add two environment variables before we deploy!**
+
+‍
+
+### Adding Environment Variables
+
+![](/blog-images/955467d85b9685ec1351a814fb6289b2.png)
+
+Click ‘EDIT’ for ‘Default Environment Variables’ to bring up the editor. We will add two environment variables that contain information about LaunchDarkly. They are:
+**LAUNCH\_DARKLY\_API\_KEY**: Your LaunchDarkly Api Key which is found here. If you don’t have an api token create the “+ TOKEN” button to make one. You will want to give it admin privileges. If you can’t do that contact your administrator. **_Once you create it, make sure you copy it and paste it somewhere you can retrieve it._** LaunchDarkly will obfuscate your token and if you don’t save it somewhere you will need to generate a new one.
+
+![](/blog-images/825b07bdb6f6bfb0ddcd03b4a7cf7667.png)
+**LAUNCH\_DARKLY\_PROJECT\_NAME**: We will just use ‘default’ for this example, but if there is another project you would like to test with feel free.
+
+```yaml
+
+defaults:
+- key: POSTGRES_USER
+  value: postgres
+- key: POSTGRES_PASSWORD
+  value: postgres
+- key: LAUNCH_DARKLY_PROJECT_NAME
+  value: default
+- key: LAUNCH_DARKLY_API_KEY
+  value: your-api-key
+  secret: true
+
+```
+
+Click ‘Save’ to save your environment variables as part of your application configuration. Then, click ‘Build and Deploy’. You will be redirected to the activity dashboard for that application and a Docker build was kicked off in the background. This will be followed by the deployment of the environment for your application. You can view the build and the deployment under the ‘builds’ and ‘deploys’ sections respectively.
+
+![](/blog-images/4e9d5eb53f63754d6ebeb974fd1c3f2b.png)
+
+‍
+
+### Your Environment
+
+This process of doing the docker build will take a few minutes the first time. Once the build and deployment have finished you can find the url for your new environment by clicking ‘Environments’ on the left and then by clicking into your new environment.
+
+![](/blog-images/d7ffae114d550925ce4397e67d7e1f3b.png)
+
+Once you click on the url for your newly created ephemeral environment another window in your browser will open to the example rails site with postgres and redis. It should look something like this:
+
+![](/blog-images/5513d5ff58106e72c89f7b71551aeccf.png)
+
+If you have a flag named ‘test-flag’ in your launch darkly account you can go ahead and toggle it from ‘false’ to ‘true’ and vice versa and reload your environment to see the changes. If you would like to use a different flag, you only need to make one change in: **app/views/welcome/index.html.erb**
+
+<% test\_flag="Rails.configuration.ld\_client.variation(" test-flag","="" {key:="" "user@test.com"},="" false)="" %=""></%>
+
+Once you have changed ‘test-flag’ to the flag name of your choosing, you only need to commit and push the change to github. Once that happens, Release will automatically do a build and then deploy your changes. When the process finishes, you will be able to see the welcome page change based on your new flag.
+
+In your LaunchDarkly interface you will see a newly created environment with a name of the form ‘tedfe34\`. This name is the same as your **RELEASE\_ENV\_ID** environment variable that Release creates automatically for your new environment. You will see this value in a few places in the Release UI besides the environment variable editor.
+
+![](/blog-images/9d8569299b8c2b955944204408f47141.png)
+
+### Conclusion - What’s next?
+
+Now that you can get pristine feature flag environments dedicated to your Release environments what’s next? In this example the clean-up would need to be done manually, not a huge deal, but we can do better. Release will be implementing a deeper integration with LaunchDarkly in the near future to make this seamless and handle deleting the environments in LaunchDarkly when your Release environment is removed.
+
+Stay tuned for integrations with other feature flag providers in the future. If you would like to have environments for your applications that are fast, simple to define and incredibly powerful send us a note at [support@releasehub.com](mailto:support@releasehub.com) and we will help you and your team become more efficient utilizing ephemeral environments with Release.
+
+Hero Image by [Denys Nevozhai](https://unsplash.com/@dnevozhai?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/s/photos/traffic?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)
+
+### Additional Resources
+
+*   [What is an Ephemeral Environment?](https://releasehub.com/ephemeral-environments)
+*   [User Acceptance Testing (UAT) with Release Ephemeral Environments](https://releasehub.com/user-acceptance-testing-with-ephemeral-environments)
+*   [5 Ways To Improve Developer Velocity Using Ephemeral Environments](https://releasehub.com/blog/improve-developer-velocity-with-ephemeral-environments)
+*   [Agile DevOps Methodology](https://releasehub.com/blog/you-need-agile-devops-methodology)
+
+‍

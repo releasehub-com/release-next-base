@@ -1,0 +1,52 @@
+---
+title: 'Mat Werber: Why I joined Release'
+summary: >-
+  I’m very excited to join Release to build their new Solutions Architecture
+  (SA) team.
+publishDate: ''
+author: mat-werber
+readingTime: 4
+categories: []
+mainImage: /blog-images/8662186006e5c23e06aa2ae6165576ee.jpg
+imageAlt: Release Welcomes Mat Werber
+showCTA: false
+ctaCopy: ''
+ctaLink: ''
+relatedPosts:
+  - ''
+---
+
+#### _Can you introduce yourself and tell us a little bit about your professional background and what you'll be doing at Release?_
+
+My name is Mat Werber and I’ve worn many hats over my eleven-year career, ranging from IT & financial auditor, ERP implementation, business intelligence, and - most recently four years as a cloud solutions architect at AWS and Apple helping companies of virtually every size and industry innovate faster by building their applications in cloud environments. 
+
+I’m very excited to join Release to build their new Solutions Architecture (SA) team. SAs serve as technical advisors, providing our customers like [Datasaur.ai](https://releasehub.com/casestudy/datasaurai) and [Monad](https://releasehub.com/casestudy/monad) with guidance that allows them to to bring their ideas to the world more easily, powered by the ephemeral and persistent environments-as-a-service offered by Release. 
+
+#### _How did your experience at previous roles impact your decision to join Release?_ 
+
+It’s really quite amazing when you look at how modern cloud services have and continue to transform the developer experience. As engineers, we no longer have to have to wait months or years to build data centers or establish contracts with colocation facilities, rack and stack hardware, or worry about heating, cooling, power, networking, or physical security. With a few API calls, we can offload all of that work to providers like AWS, GCP, Azure and others.  
+
+At the same time, demand for infrastructure has and continues to skyrocket, driven by greater access to broadband internet, advancements in hardware and software, an explosion of data from new IoT, new streaming music and video platforms, and more. To keep up with this demand, commercial and open source communities continue to create new cloud services, scale-out technologies like Kubernetes and Apache Spark, and design patterns and tooling like microservices, serverless, and CI/CD.
+
+Time and time again, I saw that my customers adopting these technologies were merely shifting complexity to another team or service within the company rather than eliminating it. 
+
+For example, containers helped us solve“it worked on my machine, so why did it fail in staging?”, platforms like Kubernetes (K8s) solved “how do I run this at scale?”, and services like Amazon EKS solved “how do I easily _create_ and manage a K8s control plane?”. However, even with all of this in place, you still have a lot of work to do before that cluster is running your application in production.
+
+Now, I am _not_ picking on Kubernetes. It’s a great technology backed by an awesome open source community and used all across the globe. Rather, I only mean to illustrate the ever-growing complexity needed to build an environment. And, that’s just _one part_ of an environment… you also need to think about how you learn, build, and stitch together:  
+*   Cloud VPC, DNS, IAM, security, scaling, load balancing
+*   Infrastructure-as-code (Terraform, CloudFormation, Pulumi, etc.)
+*   Integration and delivery/deployment pipelines
+
+As a cloud architect, I had a unique vantage point that allowed me to see hundreds of customers deal with these same questions.  
+
+What really caught my attention was that even when my customers built a well-designed environment, much of their work inevitably became tech debt as they scaled. For example, at a certain point, they would outgrow their single dev/test/prod environments and realize that they’ll need to create _multiple_ copies of environments to prevent development from slowing to a crawl. Then, there’s the question of how to coordinate deployments when environments have dependencies with one another, rolling back environments due to drift, refreshing or resetting data in test / QA, added infrastructure cost of new environments, engineering-hours to operate all of this, and more. 
+
+_Every customer_ I’ve met who develops software relies on environments, and whether boldly testing in prod (_please don’t!),_ managing a few environments or hundreds, they are _all_ encountering the same challenges and forced to reinvent and refactor the wheel on an ongoing basis. Sure, engineers are _paid_ to solve complex problems…but society benefits the most when those problems differentiate their business.
+
+#### _What makes you most excited about the mission and upcoming journey at Release?_
+
+I was first drawn to Release for the same reason I became a cloud architect: I’m passionate about helping others make the world a better place, driven by bringing ideas to life through automation and cloud. Release not only shares this vision but _delivers_ on it by handling the heavy lifting of infrastructure, pipelines, and data needed to transform their customers’ commits into reality. 
+
+My excitement only grew after seeing how comprehensive and widely applicable our platform was to the developer community. Just to name a few, we provide our customers with a multi-cloud solution that offers persistent and ephemeral environments, ephemeral databases with clean, near-production fidelity data, support for serverless, microservices and monoliths, custom cloud resources using customers’ infra-as-code framework of choice, and integration with partner services like LaunchDarkly.  
+
+Most importantly, the company culture and every teammate embody our founding principles and are driving toward the same mission: Allowing customers to release their ideas faster. We’re growing rapidly. If you’re interested, see more information on Release [here](https://releasehub.com/company), or reach me directly regarding open roles.

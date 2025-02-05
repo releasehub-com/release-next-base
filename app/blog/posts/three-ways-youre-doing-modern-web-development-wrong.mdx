@@ -1,0 +1,63 @@
+---
+title: Three ways you're doing modern web development wrong
+summary: >-
+  Ensure that your team is using modern development practices with these 3 best
+  practices
+publishDate: Thu Apr 20 2023 21:44:19 GMT+0000 (Coordinated Universal Time)
+author: nick-busey
+readingTime: 3
+categories: []
+mainImage: /blog-images/f6d54e0d3ec06d682bc6894ce90e2a79.jpg
+imageAlt: a computer screen with a keyboard
+showCTA: false
+ctaCopy: ''
+ctaLink: ''
+relatedPosts:
+  - ''
+---
+
+Modern web development has come a long way in the past 20 years, but many companies seem like they're still stuck in the late 90s with the way they do development.
+
+Ensuring that your team is using modern development practices is beneficial in many ways, including easier hiring and onboarding, faster feature development, reduced bugs, and increased developer velocity. Not to mention keeping your developers happy and “in the zone”. Make things easier on your developers, and they will be able to complete work faster, at a higher quality, and be happier while doing it. These problems may not be obvious at first, but as you scale, they quickly become more and more painful. Here are three common mistakes you are probably making right now.
+
+### Mistake #1: Working In A Fixed Number Of Environments
+
+Your developer has finally written code, and now wants QA to review and test it. QA should not be testing on their local machines, they should be testing in something that more closely resembles a production environment. This leaves only cloud or on-premises environments as viable options for testing.
+
+If you haven't done the undifferentiated heavy lifting of setting up an in-house auto-scaling environment solution, then you are likely stuck with a fixed number of environments for developers and QA teams to share.
+
+This can slow the entire team down, and the added overhead of coordinating who is using what environments can be painful. ("Is anyone using dev3?" Sound familiar?)
+
+#### Improvement #1: Get Ephemeral
+
+Use an EaaS platform like Release. Creating an internal EaaS system is likely not your business’s core competency, and isn’t going to differentiate you in your industry. Just like you probably shouldn’t try and roll your own email delivery system, you are better off focusing on providing your customers value through features and bug fixes, rather than reinventing the wheel on building something that has already been built in a more fully featured manner than what is likely to come from an internal tool.
+
+### Mistake #2: Not Using Production-Like Data
+
+Seeding your dev environment with a predefined set of records is a very common way to do things, and also a very common cause of uncaught bugs making their way into production.
+
+There is simply no way that developers will be able to maintain a set of database seed files that will accurately represent the way your system is used in the real world.
+
+Developer-defined seed files tend to stay on the happy path, while the sad path, where data are incomplete, incorrect, or conflicting, often remains untested.
+
+#### Improvement #2: Fresh Data Every Time
+
+Use a system that provides your developers with access to a fresh copy of production-like data to use every time they start work on a new branch. With Release’s Instant Datasets feature, you can get this going on day one.
+
+If you have sensitive data in your production database such as PII, you can use a tool like tonic.ai to fuzz or obfuscate sensitive data before using Release’s Instant Dataset feature, allowing every environment to have access to real, fresh, legally compliant data.
+
+### Mistake #3: Running Everything Locally
+
+While it is good to have the ability to run locally when needed (example: working without internet access), it tends to slow down actual development in modern stacks.
+
+Running 10 different services when you're only working on or trying debug a single one of them, is an unnecessary drain on the battery, extra load on the developer’s machine, and can lead to what I refer to as "hovercraft mode", when the laptop fans spin so fast it sounds like your laptop is about to take off.
+
+In addition to all of that, onboarding tends to be much slower due to having to get every new hire’s development machine setup exactly right with all the dependencies required across multiple different tech stacks.
+
+#### Improvement #3: Look To The Cloud
+
+Instead of relying on local dev for everything, you could utilize a cloud based development model. Release Remote Development Environments allow developers to work in the exact type of environment their code will eventually be executed in, which can reduce bugs that come from environment and configuration problems. Beyond that a hybrid approach can offer the best of both worlds and bridge the gap between fully committing to either method. For example, you can run only the frontend locally, while the rest of the stack runs in a shared cloud environment.
+
+### Time to Modernize
+
+To avoid these issues and improve your team's development practices, consider investing in modern development tools and processes, such as [Remote Development Environments](https://release.com/blog/remote-development-environments) and using [Production Data for testing](https://docs.releasehub.com/reference-documentation/instant-datasets-aws). These changes may require some initial effort and investment, but they will pay off in the long run by making your team more efficient, effective, and happy.

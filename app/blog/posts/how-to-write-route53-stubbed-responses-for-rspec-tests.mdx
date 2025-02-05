@@ -1,0 +1,220 @@
+---
+title: How To Write Route53 Stubbed Responses For Rspec Tests
+summary: >-
+  Short Example for writing AWS Ruby SDK unit tests for Route53 API calls with
+  stubbed responses
+publishDate: Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)
+author: regis-wilson
+readingTime: 6
+categories: []
+mainImage: /blog-images/be577b12dad97ecf46a4f0ff2cdd1d35.jpg
+imageAlt: A person hands holding wires and making tests on a circuit board
+showCTA: false
+ctaCopy: ''
+ctaLink: ''
+relatedPosts:
+  - ''
+---
+
+### How to Write Route53 Stubbed Responses For Rspec Tests
+
+In this blog post, I will go over a recent exercise to fix some bugs, refactor, and write tests for some of our code related to Route53. Route53 is an AWS service that creates, updates, and provides Domain Name Service (DNS) for the internet. The reason that code unit tests are so important is because it helps reveal bugs, creates supportable and high quality code, and allows restructuring and refactoring with confidence. The downside to writing unit tests is that it can be time consuming, difficult at times, and bloating to the normal code base. It is not uncommon for unit tests’ "lines of code" (LOC) count to far exceed the LOC for the actual codebase. You would not be crazy to have nearly an order of magnitude difference in LOC for actual codebase versus LOC for unit test cases.  
+
+In this case, interacting with the AWS Route53 API was daunting to test and stubbing responses seemed incredibly difficult until I found some examples written by another one of our engineers that showed how the rspec and API SDKs could be made to work in a fairly straightforward and (dare I say) downright fun method for unit testing Ruby code.
+
+### The Code Under Examination
+
+This straightforward code snippet was my first target for unit testing. It is very simple and only does one thing. It is ripe for refactoring for readability and reusability for other sections of the code. This should be the best way to begin the project and get familiar with the rspec templates I’d be using later. Before I start refactoring and fixing bugs, I wanted to write tests. Other than the fairly “inliney” and hard to follow syntax and “magical” code, can you spot any bugs?
+
+```ruby line-numbers
+
+def route53_hosted_zone_id(subdomain)
+  route53.list_hosted_zones_by_name.map do |response|
+    response.hosted_zones.detect{|zone| zone.name == "#{subdomain}." }&.id&.gsub(/.*\//, '')
+  end.flatten.compact.first
+end
+
+```
+
+### Write Helpers Before the Refactor
+
+I am already itching to remove the magical subdomain rewriting and gsub deleting into separate methods that can be reused and are easier to read:
+
+```ruby line-numbers
+
+def cannonicalise(hostname)
+  hostname = domain_parts(hostname).join('.')
+
+  "#{hostname}."
+end
+
+def parse_hosted_zone_id(hosted_zone_id)
+  return nil if hosted_zone_id.blank?
+
+  hosted_zone_id.gsub(%r{.*/+}, '')
+end
+
+```
+
+### Stub and Test the New Methods
+
+First things first, we need to do a little bit of boilerplate to get the API calls mocked and stubbed, then add a few very simple tests to get started.
+
+```ruby line-numbers
+
+# frozen_string_literal: true
+
+require 'rails_helper'
+
+RSpec.describe Cloud::Aws::Route53 do
+  let(:route53) { Aws::Route53::Client.new(stub_responses: true) }
+
+  subject { FactoryBot.create(:v2_cloud_integration) }
+
+  before do
+    allow(subject).to receive(:route53).and_return(route53)
+  end
+
+  describe '#parse_hosted_zone_id' do
+    context 'with a valid hostedzone identifier' do
+      it 'returns just the zoneid' do
+        expect(subject.parse_hosted_zone_id('/hostedzone/Z1234ABC')).to eq('Z1234ABC')
+      end
+    end
+  end
+  describe '#cannonicalise' do
+    context 'without a dot' do
+      it 'returns the zone with a dot' do
+        expect(subject.cannonicalise('some.host')).to eq('some.host.')
+      end
+    end
+    context 'with a dot' do
+      it 'returns the zone with a dot' do
+        expect(subject.cannonicalise('some.host.')).to eq('some.host.')
+      end
+    end
+  end
+end
+
+```
+
+### Write A Fixture
+
+Perfect, now we can test our new **cannonicalise** and **parse\_hosted\_zone\_id** methods and we have a stubbed response coming from the Route53 API calls. Let’s write a simple new test to uncover some bugs by testing the api responses we get. The first step is to write some fixtures we can test with. Here we generate two faked stubbed responses for a very [common domain](https://example.com).
+
+```ruby line-numbers
+
+  context 'an AWS cloud integration' do
+    before do
+      route53.stub_responses(:list_hosted_zones_by_name, {
+                               is_truncated: false,
+                               max_items: 100,
+                               hosted_zones: [
+                                 {
+                                   id: '/hostedzone/Z321EXAMPLE',
+                                   name: 'example.com.',
+                                   config: {
+                                     comment: 'Some comment 1',
+                                     private_zone: true
+                                   },
+                                   caller_reference: SecureRandom.hex
+                                 },
+                                 {
+                                   id: '/hostedzone/Z123EXAMPLE',
+                                   name: 'example.com.',
+                                   config: {
+                                     comment: 'Some comment 2',
+                                     private_zone: false
+                                   },
+                                   caller_reference: SecureRandom.hex
+                                 }
+                               ]
+                             })
+    end
+end
+
+```
+
+If you’re wondering how to make these fixtures, you can easily read the [AWS Ruby SDK V3 documentation](https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/Route53/Client.html#list_hosted_zones_by_name-instance_method) for sample inputs and outputs, or you can make API calls via the AWS CLI and inspect the responses, or you can even just put in some values and see what happens when you run rspec. For example, if I remove, say, the \`caller\_reference\` parameter, I’ll get an error that helpfully identifies the problem.
+
+![](/blog-images/1533e9e3859e67cfef95708dd3aadb80.png)
+
+Removing required parameters gives a helpful error message to correct the problem.
+
+You really can’t go wrong with the SDK validation and stubbed responses taken from the examples or from live requests you make with the CLI! This is already a tremendous benefit and we’re not even testing our own code yet.
+
+### Write a Test Case with the Stubbed Responses
+
+Now we can write some unit test cases and loop through several responses that we expect to find the hosted zone. Voilá we’ve uncovered some bugs just by being a little creative with our inputs! Do you see why?
+
+```ruby line-numbers
+
+describe '#route53_hosted_zone_id' do
+  %w[
+    example.com
+    example.com.
+    www.example.com
+    www.example.com.
+    test.www.example.com
+    test.www.example.com.
+    deep.test.www.example.com
+  ].each do |hostname|
+    context 'for hosts that exist in the parent zone' do
+      it "returns the hosted_zone_id for #{hostname}" do
+        expect(route53).to receive(:list_hosted_zones_by_name).with(no_args).and_call_original
+        hosted_zone_id = subject.route53_hosted_zone_id(hostname)
+        expect(hosted_zone_id).to eq('Z123EXAMPLE')
+      end
+    end
+  end
+end
+
+```
+
+![](/blog-images/62c5d2015dd19e4280f0680a300995af.png)
+
+With some creativity in test inputs and stubbed responses from the API, we can uncover some edge cases and bugs to fix!
+
+What these failed test cases are telling us is that the code worked under perfect conditions but in strange scenarios that may not be uncommon (for example, having an internal private zone and public zone with the same name, or selecting a two-level-deep name in a zone) could cause unpredictable behaviours.
+
+### The Solution is an Exercise for the Reader
+
+Now we merely need to write or refactor the code from our original snippet to pass all of our new test cases. One of the issues that our test cases revealed was that two-level-deep names (say, test.www.example.com in the zone example.com) would be missed. We also needed a way to ensure that zones are not private, perhaps with an optional parameter to specify private zones. Here is an example that passes all the existing tests and welcome feedback on any other bugs or optimisations you find.
+
+```ruby line-numbers
+
+def route53_hosted_zone_ids_by_name(is_private_zone: false)
+  # TODO: danger, does not handle duplicate zone names!!!
+  hosted_zone_ids_by_name = {}
+  route53.list_hosted_zones_by_name.each do |response|
+    response.hosted_zones.each do |zone|
+      if !!zone.config.private_zone == is_private_zone
+        hosted_zone_ids_by_name[zone.name] = parse_hosted_zone_id(zone.id)
+      end
+    end
+  end
+  hosted_zone_ids_by_name
+end
+
+def route53_hosted_zone_id(hostname)
+  # Recursively look for the zone id of the nearest parent (host, subdomain, or apex)
+  hosted_zone_ids_by_name = route53_hosted_zone_ids_by_name
+
+  loop do
+    hostname = cannonicalise(hostname)
+    break if hosted_zone_ids_by_name[hostname].present?
+
+    # Strip off one level and try again
+    hostname = domain_parts(hostname).drop(1).join('.')
+    break if hostname.blank?
+  end
+  hosted_zone_ids_by_name[hostname]
+end
+
+```
+
+### Congratulations
+
+All test cases now pass! Keep writing tests until you get nearly 100% coverage!
+
+> Hero Image by [Jeswin Thomas](https://unsplash.com/@jeswinthomas?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/s/photos/testing?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)

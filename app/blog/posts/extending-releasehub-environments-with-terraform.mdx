@@ -1,0 +1,109 @@
+---
+title: Extending Release Environments with Terraform
+summary: >-
+  This blog shows how to utilize Terraform alongside Release to provision
+  additional resources in your cloud account.
+publishDate: ''
+author: josh-dirkx
+readingTime: 5
+categories: []
+mainImage: /blog-images/c710bf4817cae68e73eeb96d596fa5a4.jpg
+imageAlt: ''
+showCTA: false
+ctaCopy: ''
+ctaLink: ''
+relatedPosts:
+  - ''
+---
+
+[  
+](https://app.diagrams.net/?page-id=4EaHbZaufD5BJVQ07xAE&scale=auto#G1ZjCA67a8oFC8ztyAz2rx3ehoodHwKE2D)
+
+![](/blog-images/23436a0da5744c17b36da806862964fc.png)
+
+[Release](https://release.com/) offers the ability to easily reproduce your production environment _N_ times in your cloud account. The construction of environments can be accomplished using our website, CLI or API and are useful for a variety of purposes - from quality assurance testing and user acceptance to sales demonstrations and penetration testing.
+
+Environments today typically extend beyond a set of Docker images to include a variety of resources from your chosen cloud provider. In order to consistently get those resources alongside your Docker images when building environments, the instructions to get those resources instantiated must be codified somewhere in your application with some flavor of Infrastructure-as-Code (IaC).
+
+A recently launched abstraction within the Release Application Template removes the previous requirements of packaging your Terraform into a Dockerfile, creating the scripts to apply/update/teardown your resources, and managing the variables required to namespace appropriately. Using this new abstraction, the process becomes much more streamlined. Write your Terraform, tell us where to find it, and then tell us when to execute it.
+
+### What is Terraform?
+
+[Terraform](https://www.terraform.io/) is declarative Infrastructure as Code. Said another way, it is a way of programmatically specifying what resources you need created in your cloud provider.
+
+There are two approaches to IaC - declarative (what) versus imperative (how). Declarative focuses on the desired end state; you tell the system what resources you want provisioned and it figures out how to get you there. Imperative, on the other hand, focuses on the instruction set to get to your end state; you are responsible for maintaining the order of operations required to get to your desired end state.
+
+Another important concept behind IaC is state and state management. Terraform is no exception here, by default it uses JSON in a local file to persist the state of real world resources created by it. Configurations can be added to allow for remote storage, such as in S3.
+
+### Why should I use Terraform?
+
+Terraform, or any IaC, is an important piece of the puzzle to modern, cloud infrastructure stacks. Codifying the instructions to your production environment allows you to increase visibility and auditability of changes - alterations to your stack are now managed within your source control, allowing you to use change requests for granular inspection of changes before they are applied.
+
+Your infrastructure becomes repeatable, predictable and consistent. Running the _terraform apply_ command will produce the same results every time. This stands in contrast to the manual process of clicking through a web console based on a document containing instructions, or from memory.
+
+In the event of a full or partial failure of your application, you can quickly and easily replace _everything_.
+
+### _How_ do I use Terraform with Release?
+
+‍_The following example assumes a project layout as outlined in the image below_
+
+![](/blog-images/ba50f60eb0679702ad5c7fae80ba5645.png)
+
+When writing your Terraform, it’s important to keep in mind that you want it to be repeatable without resource naming collisions, regardless of how many times you execute the same combination of resources. This can be achieved by using dynamic values to namespace resources. Release makes available to you all of the Release generated environment variables for use within your _.tfvars_ file, allowing you to use the environments’ context as the namespacing material. For example, you might have the following inside of your _.tfvars_ file
+
+\# .release/lambda.tfvars  
+  
+namespace = "${RELEASE\_ACCOUNT\_ID}/${RELEASE\_ENV\_ID}/"
+
+‍
+
+When specifying the name of a resource, we’ll use a Lambda as an example, you would reference that namespace in the name, like below
+
+\# terraform/lambda.tf  
+  
+resource "aws\_lambda\_function" "lambda" {  
+ function\_name = "${vars.namespace}/lambda"  
+ ...
+
+‍
+
+The inclusion of the environment\_id ensures that each time this Terraform is executed by Release, it will be unique.
+
+WIthin the Application Template for a given Release Application, there is an abstraction over IaC providers, such as Terraform, that we can leverage. For the purposes of this demonstration, we will be using Terraform in conjunction with AWS resources.
+
+A new section has been added to the template at the top level - infrastructure. This section takes an array with a few required and optional fields. Required fields are name (this is how you will reference the aforementioned Terraform in the workflows section) and type (for now, the only supported type is Terraform but over time we will add abstractions for Pulumi, CDK, etc.). Optionally, you can also specify a directory (where to find the Terraform) and values (where to find environment variables). By default, if no directory is specified then Release will assume your Terraform is at the root of the repository and if no values file is given, we assume this file does not exist.
+
+We need to add a few things to our Application Template to support this. We need to first tell Release what to build, then we specify when we execute it.
+
+To tell Release what we need it to build, we add a new array item to the infrastructure key in our Application Template.
+
+‍
+
+\# Application Template  
+  
+infrastructure:  
+\- name: lambda  
+ **type**: **terraform**  
+ directory: "./terraform"  
+ values: ".release/lambda.tfvar"
+
+‍
+
+This section tells Release where within the repository to find the code it needs for execution in the workflows. In the future, Release will support remote repositories. Now to execute this, it must be added to your workflows section
+
+\# Application Template  
+  
+workflows:  
+\- name: setup  
+ order\_from:  
+ - infrastructure.lambda
+
+‍
+
+This adds the creation of the Lambda function synchronously to the workflow. Workflows may be parallelized if order of execution is not important during a given step, for more information on how to parallelize your workflows, visit our [documentation](https://docs.releasehub.com/reference-documentation/application-settings/application-template/schema-definition#workflow-parallelization).
+
+Resources created during the execution of the workflow will have their state written to the local file store. In an already planned update, Release will extend this functionality to include the additional support of remote backends, like [Amazon S3](https://aws.amazon.com/s3/).
+
+### Summary
+
+This blog covered at a high level the concepts around Infrastructure-as-Code, some specifics related to Terraform and how to use Terraform in combination with Release Environments to extend their functionality. A repository containing the code written in this sample can be found [here](https://github.com/releasehub-samples/terraform-runner-example). If you have any questions, find me on [LinkedIn](https://www.linkedin.com/in/joshdirkx/) or reach me at josh@release.com.

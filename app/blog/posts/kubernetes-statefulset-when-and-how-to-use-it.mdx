@@ -1,0 +1,196 @@
+---
+title: 'Kubernetes StatefulSet: When and How to Use It'
+summary: >-
+  At first glance, StatefulSets are very similar to standard Deployments, but
+  there are some important differences.
+publishDate: Fri Apr 21 2023 18:22:03 GMT+0000 (Coordinated Universal Time)
+author: nick-busey
+readingTime: 5
+categories: []
+mainImage: /blog-images/029fddb95501b95dac344adedfa94257.jpg
+imageAlt: a cell phone with the screen saying eat, sleep, code, repeat
+showCTA: false
+ctaCopy: ''
+ctaLink: ''
+relatedPosts:
+  - ''
+---
+
+‍[Kubernetes](https://en.wikipedia.org/wiki/Kubernetes) was designed with stateless microservices in mind. But these days, it also comes with support for stateful applications, which is especially handy if you want to migrate your applications gradually. At first glance, StatefulSets are very similar to standard Kubernetes Deployments, but there are some important differences. In this post, you'll learn what StatefulSets actually are and when and how to use them. 
+
+### What Are Stateful Applications?
+
+Before we start explaining Kubernetes StatefulSets, you need to understand what stateful means and the difference between stateless and stateful applications. When you think about cloud-native applications, you most likely have a picture of an application that can run in multiple copies and where any copy can be restarted at any time while traffic is being redirected effortlessly to other instances. 
+
+In order for this model to work, the application needs to get some data from somewhere, execute some functions, and return the data. It can't store the data itself, and it shouldn't be dependent on other pods. If it were, you wouldn't be able to easily kill that instance without risking data loss. But in general, if an application doesn't store data itself in persistent storage and doesn't need to be started together with other microservices in a specific order, then it's stateless. 
+
+#### Stateful vs Stateless
+
+And as you can probably guess, stateful applications are the opposite. They do need to keep some data in order to work. The most common example of a stateful application is a database. The whole point of, for example, MongoDB or MySQL applications is to store data. Therefore, both MongoDB and MySQL are stateful. You can't simply kill the instance of MongoDB and restart it somewhere else and expect it to work. 
+
+First of all, by killing it unexpectedly, the data may get corrupted. And second, you can't simply restart MongoDB somewhere else because you need to first somehow reference the same data for it, which usually means either copying data or attaching the same persistent storage to it. 
+
+Using persistent data is not the only thing that can make an application stateful. If your microservice doesn't store any data but needs to be started in a specific order with other microservices, then it's also stateful. Or if you can't simply roll out a new version of the application because you also need to follow specific update procedures, then your application is most likely stateful. 
+
+Now that you have that clear, let's talk about Kubernetes StatefulSets. 
+
+![Graphical user interface, text, applicationDescription automatically generated](/blog-images/f8993a6902e8b36420f0fc82ff271a93.png)
+
+#### Kubernetes StatefulSet
+
+Traditionally, a normal Kubernetes Deployment assumes that your application is stateless. Therefore, Kubernetes may, at any point, just kill one of your instances and redeploy it elsewhere on the cluster when necessary. If your application is stateful, this could easily create an issue. You would either end up with corrupted data or your application could simply crash and require manual intervention. 
+
+Therefore, specifically for stateful applications, Kubernetes offers so-called StatefulSets. These are special Kubernetes objects that will create and manage pods for your stateful application. Unlike in a standard Deployment, StatefulSets are aware that your application is stateful and will therefore treat it accordingly. 
+
+#### Stable And Ordered
+
+Kubernetes StatefulSets provide two main advantages (for stateful applications) over Deployments: a stable identity of the pods and the ability to follow specific Deployment orders. 
+
+Stable identity means persistent identity in this case. And persistent pod identity means that when a pod gets rescheduled for whatever reason, it will have the same network identifiers and the same storage assigned to it. So, from the perspective of other pods, it will look like the same pod. This is not the case when using Deployments, and it's very important for the proper working of stateful applications. 
+
+We already mentioned that if your application needs to be deployed or updated in a specific order, that's a good indication that it's stateful. In a traditional Deployment, if you'll have multiple pods in one Deployment, they would be deployed in a random order, which in the case of stateful application would probably mean that the application won't start properly. And therefore, this ability to follow a specific order when deploying or updating is built into the StatefulSets. 
+
+![Graphical user interface, text, applicationDescription automatically generated](/blog-images/c340926b66f892274a9e48f60dc44fef.png)
+
+#### Creating StatefulSet
+
+Enough theory. Let's create some StatefulSets. The YAML definition of StatefulSets is very similar to standard Deployments and in a simple example looks like this: 
+
+```yaml
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: example-statefulset
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 1
+  serviceName: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: registry.k8s.io/nginx-slim:0.8
+        ports:
+        - containerPort: 80
+          name: web
+
+```
+
+Once you save the above code in a YAML file, you can deploy it, as usual, using **kubectl apply**: 
+
+```yaml
+
+$ kubectl apply -f statefulset.yaml 
+statefulset.apps/example-statefulset created
+
+```
+
+You can then validate that everything is working with **kubectl get**: 
+
+```yaml
+
+$ kubectl get statefulsets
+NAME                  READY   AGE
+example-statefulset   1/1     2m4s
+
+$ kubectl get pods
+NAME                    READY   STATUS    RESTARTS   AGE
+example-statefulset-0   1/1     Running   0          2m8s
+
+```
+
+OK, your first StatefulSet is up and running. Congratulations. This was, however, a very simple example with only one pod in your StatefulSet. But you'll most likely use StatefulSets with multiple pods to get all the benefits. 
+
+![TextDescription automatically generated with medium confidence](/blog-images/5b3db806e95be1ac41e59ed74e466982.jpeg)
+
+### StatefulSets Specifics
+
+Let's spice things up a little to see StatefulSets doing its job. Execute the following command to scale your nginx from one to ten replicas: 
+
+```yaml
+
+$ kubectl scale statefulsets example-statefulset --replicas=10
+statefulset.apps/example-statefulset scaled
+
+```
+
+Now, if you watch what's happening, you'll see the specific behavior of StatefulSets: 
+
+```yaml
+
+$ kubectl get pods
+NAME                    READY   STATUS              RESTARTS   AGE
+example-statefulset-0   1/1     Running             0          11m
+example-statefulset-1   0/1     ContainerCreating   0          1s
+
+$ kubectl get pods
+NAME                    READY   STATUS              RESTARTS   AGE
+example-statefulset-0   1/1     Running             0          11m
+example-statefulset-1   1/1     Running             0          2s
+example-statefulset-2   0/1     ContainerCreating   0          0s
+
+$ kubectl get pods
+NAME                    READY   STATUS              RESTARTS   AGE
+example-statefulset-0   1/1     Running             0          11m
+example-statefulset-1   1/1     Running             0          4s
+example-statefulset-2   1/1     Running             0          2s
+example-statefulset-3   0/1     ContainerCreating   0          1s
+
+(...)
+
+$ kubectl get pods
+NAME                    READY   STATUS    RESTARTS   AGE
+example-statefulset-0   1/1     Running   0          14m
+example-statefulset-1   1/1     Running   0          3m19s
+example-statefulset-2   1/1     Running   0          3m17s
+example-statefulset-3   1/1     Running   0          3m16s
+example-statefulset-4   1/1     Running   0          3m14s
+example-statefulset-5   1/1     Running   0          3m13s
+example-statefulset-6   1/1     Running   0          3m12s
+example-statefulset-7   1/1     Running   0          3m10s
+example-statefulset-8   1/1     Running   0          3m9s
+example-statefulset-9   1/1     Running   0          3m7s
+
+```
+
+You can see that Kubernetes provisioned all replicas in order, one by one. This is one of the differences between Deployments and StatefulSets. In Deployments, all pods will be deployed in random order, with more than one pod being created at once. In StatefulSets, it happens sequentially, and pods are even numbered and do not get a random hash assigned as part of the name, which is the case in Deployments. Moreover, if at any point one of the replicas fails to start, the whole process will stop. So, for example, Kubernetes will only create **example-statefulset-5** after **example-statefulset-4** is up and running. 
+
+### Name Stays the Same
+
+Following the same logic, if something happens to any of the pods, it will be recreated with the same name. 
+
+```
+
+$ kubectl delete pod example-statefulset-3
+pod "example-statefulset-3" deleted
+
+$ kubectl get pods
+NAME                    READY   STATUS    RESTARTS   AGE
+example-statefulset-0   1/1     Running   0          20m
+example-statefulset-1   1/1     Running   0          9m41s
+example-statefulset-2   1/1     Running   0          9m39s
+example-statefulset-4   1/1     Running   0          9m36s
+example-statefulset-5   1/1     Running   0          9m35s
+example-statefulset-6   1/1     Running   0          9m34s
+example-statefulset-7   1/1     Running   0          9m32s
+example-statefulset-8   1/1     Running   0          9m31s
+example-statefulset-9   1/1     Running   0          9m29s
+example-statefulset-3   1/1     Running   0          1s
+
+```
+
+This, again, differs from Deployments, where you'd get another randomly named pod. This is important for stateful applications because, most likely, each pod will hold its own state. Therefore, it's crucial not to mix them up. Also, other microservices that would connect to these pods will probably need to always connect to the same pod even if it dies and is rescheduled. 
+
+The same applies to networking. You can always connect to a specific pod by its domain name, like **example-statefulset-6.nginx.default.svc.cluster.local,** and you'll have a guarantee that you'll always reach the same pod. That's not the case with Deployments. 
+
+### Summary
+
+Kubernetes StatefulSets are really useful. In theory, using them means doing something that Kubernetes wasn't designed to work with in the first place. But it's really hard to have every single application on your cluster stateless. Especially in big environments with dozens or even hundreds of applications, there will always be some microservice that needs to hold some state. In some cases, it simply doesn't make sense to spend time and money on redesigning a stateless application to be stateful if it won't bring much difference or business value. 
+
+In this post, you learned what [StatefulSets](https://docs.releasehub.com/reference-documentation/application-settings/application-template/schema-definition#stateful-sets-and-deployments) are and how to create them. If you want to learn more about other Kubernetes resources, take a look at [our blog](https://release.com/blog).

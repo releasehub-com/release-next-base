@@ -1,0 +1,121 @@
+---
+title: 'Kubernetes CRDs: What They Are and Why They Are Useful'
+summary: >-
+  What are Kubernetes Custom Resource Definitions? What are they useful for and
+  how to create your own? Read all about it 
+publishDate: Fri Apr 21 2023 19:37:52 GMT+0000 (Coordinated Universal Time)
+author: dawid-ziolkowski
+readingTime: 7
+categories: []
+mainImage: /blog-images/25a8e0410945d3fe7afe1b2f30acc552.jpg
+imageAlt: a close-up of a keyboard
+showCTA: false
+ctaCopy: ''
+ctaLink: ''
+relatedPosts:
+  - ''
+---
+
+One of the main reasons that Kubernetes became so popular is the fact that it's so flexible. When we say Kubernetes, we typically think about deploying and managing containers. And while this is, in fact, Kubernetes's main job, it can actually do much more than that. This is possible thanks to something called Custom Resource Definitions, or CRDs for short. In this post, you'll learn what CRDs are and what you can use them for. We'll also take a look at how to create them.
+
+![](/blog-images/470546e1232748209628bb1f33220896.png)
+
+### Kubernetes API
+
+Before we dive into custom resource definitions, let's first talk about Kubernetes in general. If I asked you, "What is Kubernetes?" then you'd probably answer, "Kubernetes is a container orchestrator." This would, of course, be one correct answer.
+
+But by looking under the Kubernetes hood, you could see that the main component of Kubernetes is an API server and etcd data store. And there are other, more important components like kube-scheduler, kube-controller-manager, and cloud-controller-manager, but pretty much any operation on your cluster needs to go through an API server.
+
+That API has a few built-in objects that it understands. Things you may be familiar with like Pods, Namespaces, ConfigMaps, Services, or Nodes are all API objects. That's why whenever you execute **kubectl get pods** or **kubectl get nodes**, you get a list of pods or nodes. But if you try to get a list of objects that don't exist in the Kubernetes API—like, for example, **kubectl get biscuits**—you'd get a response similar to this:
+
+error: the server doesn't have a resource type "biscuits"
+
+And this is because there is no such thing as "biscuits" defined in the Kubernetes API. Quite logical, right? Well, what if I told you that you could add a biscuits definition to your Kubernetes cluster? In fact, you can extend your Kubernetes API with any custom object you like. That's exactly what custom resource definitions are for.
+
+### Why CRDs?
+
+So what's the point of adding a biscuits definition to your Kubernetes cluster? Remember when I mentioned earlier that the success of Kubernetes comes from its flexibility? The ability to extend the Kubernetes API with custom resource definitions is a really great feature that lets you do something magical. It allows you to instruct Kubernetes to manage more than just containers.
+
+Why is that such a great thing? Because CRDs together with Kubernetes operators give you almost unlimited possibilities. You can adapt Kubernetes in a way that it will take care of older parts of your infrastructure. If you do it right, you'll be able to avoid bottlenecks and easily modernise things that normally would require long and costly redesigns.
+
+### CRDs on Your Cluster
+
+Before we dive into creating our own CRD, you need to know two things.
+
+Firstly, creating a custom resource definition is an advanced topic. Many companies don't even need to create any CRDs. The Kubernetes community finds interesting solutions for common problems all the time, and it’s likely that any use case you encounter probably already has a CRD you can use! And if you're still new to Kubernetes, you definitely shouldn't jump into CRDs before you understand the basics well.
+
+Secondly, as already mentioned, you don't need to create any CRDs yourself if you don't feel the need to. However, many Kubernetes tools will install their own CRDs, so even if you don't create any yourself, you'll probably still end up having some on your cluster.
+
+One example is [cert-manager](https://cert-manager.io), a very popular Kubernetes tool for managing certificates. It installs a few CRDs on your cluster in order to do its job. If you execute **kubectl get clusterissuers** before installation of cert-manager, your cluster won't know what ClusterIssuers are:
+
+	
+`error: the server doesn't have a resource type "clusterissuers"`
+ 
+
+But if you execute the same command after cert-manager installation, you'll get the list of ClusterIssuers on your cluster.
+
+In fact, you can list all custom resource definitions installed on your cluster by executing **kubectl get crd**:
+
+	
+`$ kubectl get crd NAME                                    CREATED AT addons.k3s.cattle.io                    2022-01-23T12:48:31Z helmcharts.helm.cattle.io               2022-01-23T12:48:31Z helmchartconfigs.helm.cattle.io         2022-01-23T12:48:31Z serverstransports.traefik.containo.us   2022-01-23T12:49:48Z tlsoptions.traefik.containo.us          2022-01-23T12:49:48Z ingressroutetcps.traefik.containo.us    2022-01-23T12:49:48Z ingressroutes.traefik.containo.us       2022-01-23T12:49:48Z tlsstores.traefik.containo.us           2022-01-23T12:49:48Z middlewares.traefik.containo.us         2022-01-23T12:49:48Z traefikservices.traefik.containo.us     2022-01-23T12:49:48Z middlewaretcps.traefik.containo.us      2022-01-23T12:49:48Z ingressrouteudps.traefik.containo.us    2022-01-23T12:49:48Z`
+ 
+
+The above output comes in the form of **<object>.<group>** and tells me that I can execute commands like **kubectl get addons**, **kubectl get helmcharts**, or **kubectl get middlewares**. None of them are defined in vanilla Kubernetes and are only there because they were defined as custom resource definitions.
+
+### How to Create CRDs
+
+OK, forget about biscuits. Let's take a look at some more realistic examples. Imagine that you want Kubernetes to somehow manage your custom routers in your datacenter. For that, you could create a custom resource definition similar to this one:
+
+	
+`apiVersion: apiextensions.k8s.io/v1 kind: CustomResourceDefinition metadata:   # Name of your CRD. Must match the spec block below, and be in the form: .  name: routers.example.com spec: # Group name to use for REST API: /apis//  group: example.com  names: # Plural name to be used in the URL: /apis///    plural: routers    # Singular name to be used as an alias on the CLI and for display    singular: router    # Kind is normally the CamelCased singular type. Your resource manifests use this.    kind: Router    # ShortNames allow shorter string to match your resource on the CLI    shortNames:    - rt  # Scope can be either Namespaced or Cluster-wide  scope: Cluster  versions:    - name: v1      # Each version can be enabled/disabled by Served flag.      served: true      # One and only one version must be marked as the storage version.      storage: true      schema:        openAPIV3Schema:          type: object          properties:            spec:              type: object              properties:                dataCenter:                  type: string                rack:                  type: integer                type:                  type: string                  enum:                  - f5                  - virtual              required: ["dataCenter", "rack", "type"]          required: ["spec"]`
+ 
+
+You can apply the above CRD to the cluster by executing **kubectl apply -f router-CRD.yaml**. Once you do that, your Kubernetes cluster will already know what "router" is. Therefore, you'll be able to execute **kubectl get routers**. Of course, we just applied the resource definition, not the resource itself. So **kubectl get routers** will return the following:
+
+	
+`No resources found.`
+ 
+
+But as you can see, it doesn't return this:
+
+	
+`error: the server doesn't have a resource type "routers"`
+ 
+
+Which means we successfully added a new object to the Kubernetes API. To add an actual router resource, you can construct a YAML definition file like with any other object:
+
+	
+`apiVersion: example.com/v1 kind: Router metadata:  name: example-router spec:  dataCenter: eu-1  rack: 3  type: virtual`
+  
+
+Now, you can create a new router on your cluster by executing **kubectl apply - f example-router.yaml**, and if you try to get the list of routers again with **kubectl get routers**, you should see one now:
+
+	
+`$ kubectl get routers NAME             AGE example-router   4s`
+  
+
+Congratulations! You just extended the Kubernetes API.
+
+![](/blog-images/785fbfe1e3cec8abffd9eff571966715.png)
+
+### **What to Do With CRDs**
+
+You may be thinking, "OK, great, but that router doesn't do anything!" And yes, that's right. In its current form, our CRD doesn't do anything besides being processed and stored by the Kubernetes API. And while there are use cases where this is enough, usually CRDs are combined with custom controllers.
+
+Custom controllers are another concept in Kubernetes that lets you actually do something with your custom resources. In our case, we would like to actually create or configure the routers in our datacenter. Therefore, we'd have to write a custom controller and instruct it to listen to the Kubernetes API and wait for any changes to our custom **router** objects.
+
+Custom controllers under the hood are just applications or scripts written in your programming language of choice. They're deployed on the cluster as pods, and their job is to listen to the Kubernetes API and perform some actions based on defined logic.
+
+#### CRD vs. ConfigMap
+
+Last but not least, by looking at CRDs, you may see some similarities with a Kubernetes built-in object, ConfigMap. And if you use CRDs without a custom controller, they may, in fact, serve a similar purpose. They both can be used to store custom configurations. However, there are noticeable differences between them.
+
+First of all, ConfigMaps by design are meant to provide configuration for your pods. They can be mounted as files or environment variables into the pod. They work well if you have well-defined config files like, for example, Apache or MySQL config.
+
+CRDs can also be consumed by pods but only by contacting the Kubernetes API. They simply have a different purpose than ConfigMaps. They're not meant to be used to provide configuration to your pods but to extend the Kubernetes API in order to build custom automation.
+
+### Summary
+
+Kubernetes's flexibility is what made it so successful (among other things, of course). Now, you can make use of that flexibility by creating your own Kubernetes objects. The possibilities are almost limitless, and it's only up to you how you'll make use of CRDs.
+
+Come back to us for more Kubernetes articles. [Here's](https://release.com/blog/kubernetes-daemonset-tutorial) our article explaining another Kubernetes object, DaemonSets. Also, feel free to take a look at our offerings. We simplify the development process by providing [Environments as a Service.](https://release.com/)

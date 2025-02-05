@@ -1,0 +1,58 @@
+---
+title: New and Improved Instant Datasets 2.0
+summary: >-
+  Our most popular feature gets an upgrade. Now it's even easier to build and
+  test with production-like data.
+publishDate: Thu Jul 25 2024 16:27:39 GMT+0000 (Coordinated Universal Time)
+author: erik-landerholm
+readingTime: 5
+categories:
+  - product
+mainImage: /blog-images/9caeec0a356eac449e6eef994c90f2d1.jpg
+imageAlt: ''
+showCTA: false
+ctaCopy: ''
+ctaLink: ''
+relatedPosts:
+  - 12-things-you-didnt-know-you-could-do-with-release-part-1
+---
+
+I don’t know about you, but for me the most frustrating thing about local development, remote development, basically any kind of development is getting access to production or production-like data. Getting data, modifying data, securing data, and removing data when finished, these are some of the hardest things about dealing with multiple environments. And almost any sufficiently complicated feature development can benefit from real data. Ephemeral environments are great for developing and testing complicated features, solving race conditions, etc, but none of that is possible without something that gives you instant access to production-like data.
+
+We created Instant Datasets to allow you to get access to production-like data for your ephemeral environments, instantly.  If you are an existing Release user, you know that Instant Datasets capability has been part of Release from the very beginning and is one of the most popular features of the platform. As such, we are constantly thinking about ways to make it faster, better, and more useful to all developers. Our most recent set of improvements include an architectural overhaul, addition of a new key functionality – a native data obfuscation integration, and (soon) the ability to use Instant Datasets as a stand-alone product, launching July 25th.
+
+### What’s New?
+
+Under the hood Instant Datasets 1.0 consisted of a homegrown workflow engine, a few state machines and background job processing. This has served us well, but when we decided to improve our data cleansing options, we knew we needed to use a real workflow engine.
+
+Before, you needed to clean your production data during the deployment process. This greatly increased the time of deployment and was incumbent on our customer to manage this process. The new architecture allows us to simplify the process and add integrations our customers wanted.
+
+We had great experiences implementing [Temporal](https://github.com/temporalio/temporal) for internal workflows and knew it would also serve us well in this application. Temporal gives us the scalability, durability, performance and extensibility we need to create our world class platform. At the moment, working with Temporal and Ruby/Rails is not a trivial exercise and we faced a number of interesting challenges making it work. But overall it was the right choice for this task. (Keep your eyes open for a deeper dive into how we use Temporal at Release!)
+
+Now, this new architecture gives us the tools to build a workflow that allows our customers to plug in ANY data obfuscation tool as a custom task. To make it even simpler for our users, we created a native integration with [Tonic.ai](http://tonic.ai/) to quickly build an obfuscated dataset and easily use it with your environments. Here is how the Tonic integration works:
+
+![](/blog-images/9b9c951a1aa3dc01dde04a001cb18cc0.png)
+
+_Tonic and Release instant dataset creation workflows._
+
+All configurations are done in one simple UI in Release. You select your RDS snapshot. Release creates source and destination databases to be processed in Tonic. You provide your Tonic api and workspace ids and Tonic does its magic. Once finished, you get a pool of obfuscated, cleaned, truncated and otherwise modified databases instantly available for all your environments!
+
+![](/blog-images/2033fb58c0704aac9a6081f68f8f3a7e.png)
+
+_Select the source snapshot and configure Tonic all in one simple UI_
+
+To learn more about the Tonic integration, see the docs [here](https://docs.release.com/reference-documentation/instant-dataset-tasks/tonic-cloud). For more information on Instant Datasets in Release check out our documentation on AWS [here](https://docs.release.com/reference-documentation/instant-datasets-aws) and GCP [here](https://docs.release.com/reference-documentation/instant-datasets-gcp).
+
+_\*At the time of this post, we have not finished migrating all of our dataset integrations from our Instant Datasets 1.0 architecture to 2.0. For now, the ability to cleanse your data is limited to AWS (RDS and Aurora), but we are actively working on our GCP support and it will be available shortly\*_  
+
+### What’s Next?
+
+With our new architecture in hand we have a lot of new functionality to add to Instant Datasets in the coming weeks:
+*   **Add GCP support on our new architecture.**  At the moment we only support our Tonic integration and new architecture when using AWS databases, both RDS and Aurora are supported. We have support for [CloudSql](https://cloud.google.com/sql) in our Instant Datasets 1.0 and will have that same functionality plus the Tonic integration very soon.
+*   **Bring your own obfuscation tool!** Tonic is great, we use it, but if you have other tools or just scripts in a container you would like to run when creating your Instant Dataset we will have support for that in the next couple of weeks also.
+*   **More Integrations!** Instant Datasets are useful beyond your traditional databases.  Any set of data that can be cloned or used to create an example can be used by Release to create an Instant Dataset for your environments. We will be adding support for MongoDB Atlas, Neon Serverless, and more in the near future!
+*   **Stand-alone Instant Datasets** soon available to all developers, regardless if they already use the Release platform or not. We believe that production-like data is the best kind of data to develop and test with, so we are making Instant Datasets available to everyone, at no cost. [Sign up to be the first to know when stand-alone Instant Datasets launches on July 25th.](https://www2.release.com/instant-datasets)
+
+### What’s in it for you?
+
+Testing and developing with production-like data has always been our default at Release. It allows us to prevent rework, makes potential bugs apparent much sooner, and gives us a realistic preview of how our app will behave under actual loads. We want to share those benefits with the wider developer community and continue adding useful functionality to our platform. Take the new and improved Instant Datasets for a spin and [let us know](mailto:hello@release.com) what you think (and what we should add next).

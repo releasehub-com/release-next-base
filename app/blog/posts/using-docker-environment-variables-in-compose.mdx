@@ -1,0 +1,112 @@
+---
+title: Using Docker Environment Variables in Compose
+summary: >-
+  This post will explain what Docker Compose variables are, their use, and the
+  risks involved with environment variables.
+publishDate: ''
+author: mercy-kibet
+readingTime: 6
+categories: []
+mainImage: ''
+imageAlt: ''
+showCTA: false
+ctaCopy: ''
+ctaLink: ''
+relatedPosts:
+  - ''
+---
+
+As a developer, you probably use Docker to run your application efficiently. Containerizing helps you avoid the "but it works on my computer" problem. You might even use Docker Compose to manage different services that run on different containers.
+
+Some services managed by Docker Compose, like backend services, may have sensitive information that should be kept secret. This is where you need to use environment variables to specify your configuration. But what are Docker environment variables in Compose?
+
+This post will explain what Docker Compose variables are, how you can use them in Compose, and the risks associated with putting secrets in an environment variable.
+
+![](/blog-images/9c896058ea675ccb883dc3596b6c371d.png)
+
+### What is a Docker Environment Variable?
+
+Environment variables are used in programs to store values that the program checks at runtime. This means that the value is not stored in code but is instead stored in a separate file.
+
+A Docker environment variable is a variable that's passed to a Docker container when it's created. You can use environment variables to configure your application. Also, you can use them to store sensitive information like keys and passwords.
+
+You can set environment variables in several ways, such as using the **ENV** instruction in a Dockerfile, using the **\-e** flag when running the **docker run** command, or using environment files.
+
+When a container is created, the environment variables are passed to it. You can access them within the container. For example, you can access environment variables in a Linux-based container using the **$** notation like **$APP\_ENV** or echo $APP\_ENV.
+
+Using Docker environment variables keeps your application configuration flexible.
+
+### What is Docker Compose?
+
+[Docker Compose](https://docs.docker.com/compose/) is a tool that spins up instances of your Dockerfile where your Dockerfile is the blueprint of your application. It helps you manage and configure your app's specific requirements. It also gives you the flexibility to define different services your app needs. For example, you may have different Dockerfiles for different services, such as the frontend and the backend.
+
+By using Docker Compose, you can use one file to configure the relationship between the two services. This single file gives you the ability to use only a single command to build your entire application.
+
+![](/blog-images/9e2d3acac8f698700a5019ce789f41ca.png)
+
+### Can I use Environment Variables in a Docker Compose File?
+
+Yes, you can use environment variables in a Docker Compose file.
+
+Docker and Compose work together to provide a way to manage and run containers. When using Compose, you define your application's services, networks, and volumes in a single **docker-compose.yml** file.
+
+Use environment variables to set specific options in the Compose file, such as image name, command, ports, volumes, and links. You can set these values in different ways, such as by using the **environment** key in the compose file, by using the **\-e** flag when running the Docker run command, or by using environment files.
+
+When you run the **docker-compose up** command, Compose reads the **docker-compose.yml** file and creates the specified services, networks, and volumes. As part of this process, Compose also sets the environment variables for each service as specified in the Compose file.
+
+Using environment variables in a Compose file can make your application more flexible and configurable. You can use different environment variables to set different values for different stages of your application, such as development, staging, and production.
+
+### How to use Docker Environment Variables in Compose
+
+You can set and pass Docker environment variables in several ways in Compose. Some of these ways include the following:
+**Environment Key:** You can configure a container by setting environment variables in the Compose file. If you want to use your app in production mode, you can set the value of the APP\_ENV variable like so:
+
+	
+`services:   web:     environment:       - APP_ENV=production`
+ 
+**\-e Flag:** You can also set environment variables when running a container by using the -e flag. For example, you can set the variable APP\_ENV with a value of production when running a container like this:
+
+	
+`docker compose run -e APP_ENV=production myimage`
+ 
+**Environment Files:** You can also use environment files to set environment variables. This can be useful when you have multiple environment variables that you want to set or when you want to keep your environment variables separate from your Compose file.
+
+	
+`services:   web:     env_file:       - Docker/web/web.env`
+ 
+
+To use environment files, you can pass the --env-file flag when running the Compose command: docker-compose --env-file /path/toenv.env up. This will override the default path.
+**.env:** The .env file is a simple text file containing key-value pairs, with one pair per line. The .env file should be in the same directory as the **docker-compose.yml** file. You don't need to pass any flag when running the Compose command. Compose will automatically pick the .env file. If you defined a version to your web app in your .env file, this is how you'll use it in Compose:
+
+	
+`services:   web:     image: "webapp:${VERSION}"`
+ 
+
+Always remember that environment variables passed to a container are only visible to the processes running in that container. If you need to share environment variables between containers, you can use a tool such as Docker Compose's environment key or a third-party tool like a key-value store.
+
+### How to Substitute Environment Variables
+
+Using environment variables in Compose allows substituting values at runtime rather than hard coding them in the Compose file. This makes it easy to switch between different [environments](https://release.com/blog/environments-as-a-service-eaas-top-3-benefits), such as development, staging, and production, without modifying the Compose file.
+
+One way to manage this is by using multiple environment files, each with its own values. For example, you can have a **development.env** file with development-specific values and a **production.env** file with production-specific values.
+
+When running the Compose command, you can specify which environment file to use with the **\-f** flag. For example, docker-compose -f docker-compose.yml -f development.env will start the containers with the values specified in the **development.env** file.
+
+This approach allows you to keep your environment-specific values separate from your Compose file, making it easy to switch between environments and maintain different configurations for different application stages.
+
+### The Security Risks of Putting Secrets in Environment Variables
+
+There are risks associated with putting secrets such as passwords and API keys in environment variables. Here are a few examples:
+*   Anyone with access to the host system can access environment variables. If attackers gain access to the host system, they might access any secrets stored in environment variables.
+*   Any process running on the host system can access environment variables. Thus, an attacker can run a malicious process to access the sensitive information stored in the environment variable and gain control of your application.
+*   If an environment variable contains a secret, it might be logged or displayed in plain text, allowing anyone with access to the logs or display to see the secrets.
+*   Suppose a developer pushes code to a public repository with a file containing secret environment variables. In that case, the secret might be exposed to anyone with access to the repository.
+*   To mitigate these risks, it's important to be careful when using environment variables to store secrets and to use other secure methods, such as encrypted secrets stores or secret management tools, whenever possible.
+
+![](/blog-images/905a0239a88ecb381cd171d5404bd2e5.png)
+
+### Conclusion
+
+Docker environment variables are useful for configuring and managing containerized applications with Compose. You can use them to pass information to the containers at runtime and to override the default values defined in the Compose file. Be careful when handling sensitive information as environment variables are stored in plain text and visible to any process inside the container. Having looked at how you can use environment variables in Compose, you should also look at the [benefits of having environments as a service.](https://release.com/blog/environments-as-a-service-eaas-top-3-benefits)
+
+_This post was written by Mercy Kibet._ [_Mercy_](https://hashnode.com/@eiMJay) _is a full-stack developer with a knack for learning and writing about new and intriguing tech stacks._

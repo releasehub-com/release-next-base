@@ -1,0 +1,131 @@
+---
+title: 'Kubernetes Pod: A Beginner''s Guide to an Essential Resource'
+summary: >-
+  Pods are essential to any Kubernetes cluster. Learn everything about one of
+  the most important Kubernetes resources.
+publishDate: Fri Apr 21 2023 18:22:03 GMT+0000 (Coordinated Universal Time)
+author: regis-wilson
+readingTime: 4
+categories: []
+mainImage: /blog-images/2266b02b751a19c98eb0df977859ad01.jpg
+imageAlt: a laptop on a desk
+showCTA: false
+ctaCopy: ''
+ctaLink: ''
+relatedPosts:
+  - ''
+---
+
+Kubernetes is a complex tool, but taking your first steps is relatively easy. This is especially true today when all major cloud providers offer easy one-click creation of Kubernetes clusters; you can have a fully working Kubernetes cluster in a matter of minutes. So, what do you do then? You'll probably deploy some pods. Pods are arguably the most important Kubernetes resources. You may have heard about them already, since deploying pods is usually one of the first things in any Kubernetes tutorial. You may have even heard "they're kind of like containers." In this post, you'll learn everything you need to know about pods. 
+
+![A picture containing vegetable, green, pea, edible-pod peaDescription automatically generated](/blog-images/143080a00967445b7f95074d3051b41d.jpeg)
+
+### Kubernetes Pods 101
+
+Before Kubernetes, everyone was talking about containers. When you wanted to deploy only one small microservice, you'd say that you needed to deploy "one container." On Kubernetes, everyone talks about pods instead. So, when you only want to deploy one microservice, you'll say that you need to deploy one pod. 
+
+Are pods the same as containers, then? Well, not really. A pod is the smallest deployable unit in a Kubernetes world. This means that you can't directly deploy a single container in Kubernetes. If you want one container running, you need to package it into a pod and deploy one pod. A pod can also contain more than one container. It's basically like a box for containers. 
+
+Long story short: if you mainly deploy single containers, there isn't much difference between a pod and a container. Technically, a pod encapsulates your container, but in general you can treat it similarly to a container. But pods' ability to contain more than one container is what opens doors of possibilities. We'll dive into that later in this post. But before that, let's talk about pod lifecycles. 
+
+![Graphical user interface, text, applicationDescription automatically generated](/blog-images/c49d794341cb6fa950f9c4407002f7bd.png)
+
+### Pod Lifecycles
+
+Just like many other resources Kubernetes pods can be in a pending, running, or succeeded/failed state. You can check the status of your pod by executing **kubectl describe pod \[your\_pod\_name\]:** 
+
+```yaml
+
+$ kubectl describe pod nginx-deployment-6595874d85-hnjzw
+Name:           nginx-deployment-6595874d85-hnjzw
+Namespace:      default
+Priority:       0
+Node:           k3s-worker3/10.133.106.222
+Start Time:     Sun, 21 Aug 2022 12:24:58 +0200
+Labels:         app=nginx
+                pod-template-hash=6595874d85
+Annotations:    
+Status:         Pending
+(...)
+
+```
+
+As you can see from the snippet above, my pod is in a **Pending** state. So, what do these states mean? 
+
+### Pending
+
+Pending, as the name suggests, means that the pod is waiting for something. Usually, it means that Kubernetes is trying to determine where to deploy that pod. So, in normal circumstances, you'll see your pod in the pending state for the first few seconds after creation. But it may also stay in a pending state longer if, for example, all your nodes are full and Kubernetes can't find a suitable node for your pending pod. In such a case, your pod will stay in a pending state until some other pods finish and free up resources or until you add another node to your cluster. 
+
+### Running
+
+Running is pretty straightforward: It's when everything is working correctly and your pod is active. There is a small caveat to this, though. If your pod consists of multiple containers, then your pod will be in the status "running" if at least one of its primary containers starts successfully. This means there's a chance that your pod will be in a running state even though not all containers are actually running. So, in the case of multiple containers, it's always best to double-check individual container states to be sure. 
+
+### Succeeded/Failed
+
+Succeeded or failed is what comes after running. As you can imagine, you'll see "succeeded" when your pod did its job and finished as expected, and you'll see "failed" when your pod terminated due to some error. And again, in the case of multiple containers in one pod, you need to be aware that your pod will end up in a failed state if at least one of the containers ends up having issues. 
+
+### Unknown
+
+The other phase a pod can be in is called "unknown," and you probably won't see it often. A pod will be in a state unknown when Kubernetes literally doesn't know what's happening with the pod. This is usually due to networking issues between the Kubernetes control plane and the node on which the pod suppose to run.   
+
+### What Are Pods Used for?
+
+Now, the big question: What are pods actually used for? The simple answer would be "to run your application." At the end of the day, the point of running Kubernetes is to run containerized applications on it. And pods are the actual resources that make it possible. They encapsulate your containerized application and allow you to run it on your Kubernetes cluster. 
+
+![ApplicationDescription automatically generated with medium confidence](/blog-images/05e25541f21a570d7cd3d31bfb7edba2.png)
+
+However, it's worth mentioning that usually you won't actually be deploying pods themselves. You'll be using other, higher-level Kubernetes resources like [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) or [DaemonSets](https://release.com/blog/kubernetes-daemonset-tutorial) that will create pods for you. 
+
+### Pods vs. Other Resources
+
+Pods are only one of many Kubernetes resource types. Most other types are directly or indirectly related to pods, because as we already said, pods are resources that will actually be running your application on the cluster. Therefore, pretty much anything that your application may need—be it a secret or storage or a load balancer—will all need to somehow relate or connect to a pod. 
+
+Kubernetes secrets can be consumed by pods. Kubernetes service resources used to expose a containerized application on your cluster to the network or internet need to reference a pod. Volumes in Kubernetes are mounted to pods. Kubernetes ConfigMaps used to store configuration files are loaded to pods. These are just a few examples, but in general, pods are usually at the center of everything that's happening on Kubernetes. 
+
+![A picture containing pea, vegetable, edible-pod peaDescription automatically generated](/blog-images/ca65057279804f39a7884105ed6dfba7.jpeg)
+
+### How to Create A Pod
+
+I'll show you how to create a pod, but be aware that normally you wouldn't create pods directly. You should use higher-level resources like [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) that will take care of creating pods for you. But if you ever need it for testing or learning purposes, you can create a pod with the following YAML definition: 
+
+```yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod-example
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+
+```
+
+You can apply it just like any other Kubernetes YAML definition, using **kubectl apply -f:** 
+
+```yaml
+
+$ kubectl apply -f pod.yaml 
+pod/nginx-pod-example created
+
+$ kubectl get pod nginx-pod-example
+NAME                READY   STATUS    RESTARTS   AGE
+nginx-pod-example   1/1     Running   0          6s
+
+```
+
+### Pods With Multiple Containers
+
+We mentioned pods with multiple containers already, so let's dive into that a bit more. The first thing for you to know is that pods' ability to run multiple containers is not something you should overuse. For example, it's not meant to be used to combine front-end and back-end microservices into one pod. Quite the opposite; you actually shouldn't combine multiple functional microservices into one pod. 
+
+Why does Kubernetes give you that option then? Well, it's for a different purpose. Putting more than one container into a single pod is useful for adding containers that are like assistants or helpers to your main container. A common example is log gathering containers. Their only job is to read logs from your main container and forward it (usually to some centralized log management solution). Another example is secret management containers. Their job is to securely load secrets from some secret vault and securely pass it to your main container. 
+
+As you can see, multiple containers in a pod are typically used in the main container + secondary containers configuration. We call these secondary containers "sidecar containers." 
+
+Of course, even though it's not usually recommended, there's nothing stopping you from combining two containers into one pod. If you have a very specific use case and you think it would make sense in your case, you can add more containers to your pod. You just need to be aware of the consequences of such an approach. The main one is that, in the case of the failure of the pod, both containers will die. 
+
+### Summary
+
+As you can see, pods are pretty straightforward resources. In most cases, you can treat them the same as containers, but they do offer extra sidecar functionality when necessary. 
+
+Learned all you need to for pod basics? Read on to our advanced pod concepts article [here](https://release.com/blog/kubernetes-pods-advanced-concepts-explained)!

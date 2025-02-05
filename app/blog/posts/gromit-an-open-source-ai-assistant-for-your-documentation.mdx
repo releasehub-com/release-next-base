@@ -1,0 +1,80 @@
+---
+title: 'Gromit: an Open Source AI Assistant for your Documentation'
+summary: ''
+publishDate: Tue May 23 2023 14:56:09 GMT+0000 (Coordinated Universal Time)
+author: david-giffin
+readingTime: 4
+categories: []
+mainImage: /blog-images/7e8d7d536d69a30e608bbb547c0f46f4.jpg
+imageAlt: 'A dog wearing a glass and the prashe: Gromit OSS project'
+showCTA: false
+ctaCopy: ''
+ctaLink: ''
+relatedPosts:
+  - training-chatgpt-with-custom-libraries-using-extensions
+---
+
+## Gromit: an Open Source AI Assistant for your Documentation
+
+Here at Release we have been working on tooling to integrate with OpenAI and ChatGPT using many open source tools. We have learned a lot from integrating these tools into our product and wanted to give back to the Open Source community with our AI Assistant Gromit project. 
+
+Imagine that you built an awesome app, wrote up the documentation and laid out all the relevant tidbits of information a new or tenured user would need to know. You keep on adding to your knowledge base to explain features, functionality and process in more detail, and somehow it raises more questions. Now users are pouring over even more information you generated to find answers to their questions. You could structure your documentation differently, add more tags, do more backlinks, etc., or you could have AI help you surface the right pieces, for the right user, depending on their question. This is how the idea for Gromit came about. 
+
+Using [embeddings and vector search databases](https://release.com/blog/training-chatgpt-with-custom-libraries-using-extensions) we can search all of your documentation based on a question given to the AI Assistant. The relevant documentation from the search results are used to generate a prompt for OpenAI. We have an internal project called Gromit that provides a simple way to index your documentation using OpenAI’s embeddings and stores these indices in a Redis vector search database. 
+
+We have broken out the underlying Ruby code into the [Gromit Ruby Gem](https://rubygems.org/gems/gromit) which allows developers to create their own API on top of the basic Gromit functionality. Gromit also provides a Rails engine which can be mounted in any Rails application which will give you the basic APIs out of the box within minutes. We are pleased to give back to the community and support open source projects by contributing this Gem to the open source community. 
+
+Here is a quick example of how you can start using it:
+
+To mount the Gromit Rails engine in your Rails project. First edit your <code inline>Gemfile</code> and add
+
+```ruby
+
+gem “gromit”
+
+```
+
+After executing the <code inline>bundle</code> command, edit your <code inline>config/routes.rb</code> and add the following:
+
+```ruby
+
+Rails.application.routes.draw do
+  mount Gromit::Engine => "/"
+end
+
+```
+
+You will need to add an environment variable with your OpenAI API access token. Edit your <code inline>.env</code> or <code inline>.env.local</code> and add the following:
+
+```ruby
+
+OPENAPI_ACCESS_TOKEN=your-openai-token
+
+```
+
+To install the redis-stack-server do the following. Note, that if you are already running Redis you will need to stop/disable the old version of redis. The redis-stack-server provides additional search indexing functionality not provided in the default Redis server.
+
+```bash
+
+brew tap redis-stack/redis-stack
+brew install redis-stack
+
+```
+
+At this point you can index all of your documentation that’s in markdown format like so:
+
+```bash
+
+bundle exec gromit-reindexer -s /path/to/your/docs
+
+```
+
+We have also created a [Gromit Example Rails Application](https://github.com/releasehub-com/gromit-example) which also includes a [Nextjs OpenAI Documentation Search](https://github.com/supabase-community/nextjs-openai-doc-search) user interface which is hooked into the Gromit Rails Application. 
+
+Here is an example of Gromit in action using the Next.js frontend [created by the folks at supabase](https://supabase.com/): 
+
+![](/blog-images/5b603ede3d06f8519a2365f300f7d4c0.png)
+
+At Release we are strong believers in the power of open source. In our drive to create a development platform that better serves modern development teams, our founding team has been using and contributing to the open source community for years. Founded in 2019 Release was and still is built entirely with open source software!
+
+Test our Gromit for yourself, tell us what you think and share it with others. We look forward to sharing more fun projects with the community in the future.

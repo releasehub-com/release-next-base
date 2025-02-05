@@ -1,0 +1,176 @@
+---
+title: How to Use Terraform's `for_each`, With Examples
+summary: >-
+  Creating multiple resources with Terraform? Use for_each. In this post, you'll
+  learn what is it as well as how and when 
+publishDate: Fri Apr 21 2023 20:04:43 GMT+0000 (Coordinated Universal Time)
+author: dawid-ziolkowski
+readingTime: 5
+categories: []
+mainImage: /blog-images/f6d54e0d3ec06d682bc6894ce90e2a79.jpg
+imageAlt: 'photo of computer code '
+showCTA: false
+ctaCopy: ''
+ctaLink: ''
+relatedPosts:
+  - ''
+---
+
+Terraform is one of the most popular [infrastructure as code](http://en.wikipedia.org/wiki/Infrastructure_as_code) (IaC) tools. With Terraform, you can write code that defines the infrastructure components you want and the configuration for them. You then execute that code, and Terraform will make sure that your infrastructure is set up the way you defined it. This means either creating new components or responding with "All of these are already created."
+
+Sounds easy, right?
+
+In reality, Terraform code can be quite complicated. That's especially likely when you want to do some advanced stuff, like iterating over a certain number of resources.
+
+For example, let's say you want to create multiple virtual machines with the same configuration. For cases like that, in Terraform you can use \`for\_each\`**.** In this post, you'll learn what that is as well as how and when to use it.
+
+### Infrastructure as Code With Terraform
+
+If you're new to [Terraform](https://www.terraform.io/), before we move on, you need to understand what it actually is.
+
+Modern environments are quite complex, and you have a few options when you want to add, change or destroy some components of your infrastructure. If you're on the cloud, you can go to your cloud provider web UI and execute any necessary action from there. You can also use CLI or even write some scripts yourself and call your cloud provider API.
+
+There are, however, some limitations to all these options. Clicking in the web UI doesn't scale. And you don't want to create dozens of different services every time you need a new environment.
+
+Using CLI or writing your own scripts is a step forward. But why not take two steps forward instead and use a dedicated infrastructure-as- code tool?
+
+![](/blog-images/b930959b2b5487279ba61c965cf667f0.png)
+
+Terraform is one such tool. You write Terraform-specific code defining how you want your infrastructure to look. Then you execute Terraform and everything is taken care of for you. It's a highly efficient and scalable way of creating infrastructure.
+
+Also, one of the biggest advantages of using Terraform is that it will  keep the state of your infrastructure saved. Therefore, it will always try to have your infrastructure in sync. So once you execute Terraform, it will only create, change or destroy resources that aren't in sync with the saved state.
+
+### Terraform Meta-Arguments
+
+Before we dive into explaining how \`for\_each\` works, let's briefly talk about what it actually is.
+
+In Terraform, we mainly talk about resource blocks and module blocks. For example, when you want to create a virtual machine, you need to define a resource block with configuration details of that machine. Within the resource and module block, you can also use one of the five so-called meta-arguments. These are special instructions that aren't part of the resource configuration per se, but they instruct Terraform to do some action in relation to that resource. And one of these instructions is \`for\_each\`.
+
+As I already mentioned, the main purpose of the \`for\_each\` meta-argument is to create multiple instances of a resource. So, as you can imagine, it's quite useful to know.
+
+It's also worth mentioning that \`for\_each\` has been added to Terraform in version 0.12. But I hope you've already upgraded to Terraform 1.x anyway.
+
+### Multiple Resources
+
+To understand better what purpose \`for\_each\` serves, let's see how you could achieve the same outcome in Terraform without using \`for\_each\`.
+
+The outcome we're talking about is deploying multiple copies of the same resource. So, let's take virtual machines, for example.
+
+Normally, to deploy more than one virtual machine, you'd have to specify multiple resource blocks, like this:
+
+```yaml
+
+resource "google_compute_instance" "vm1" {
+name         = "vm1"
+machine_type = "e2-small"
+zone         = "us-central1-a"
+(...)
+}
+
+resource "google_compute_instance" "vm2" {
+name         = "vm2"
+machine_type = "e2-medium"
+zone         = "us-central1-a"
+(...)
+}
+
+resource "google_compute_instance" "vm3" {
+name         = "vm3"
+machine_type = "f1-micro"
+zone         = "us-central1-a"
+(...)
+}
+
+```
+
+Seems like a lot of duplicated code, doesn't it? That's exactly where \`for\_each\` can help.
+
+Instead of duplicating all that code for each virtual machine, you can define your resource once and provide a map or a set of strings to iterate over.
+
+Take a look at the example. This is how achieving the same results as above would look with \`for\_each\`:
+
+```yaml
+
+resource "google_compute_instance" "vm" {
+for_each = {
+  "vm1" = "e2-small"
+  "vm2" = "e2-medium"
+  "vm3" = "f1-micro"
+}
+name = each.key
+machine_type = each.value
+zone = "us-central1-a"
+(...)
+}
+
+```
+
+As you can see, we defined the configuration parameters that differ per virtual machine as key-value pairs in the \`for\_each\` block and left the parameters that are the same for each VM in the resource block. Then, we accessed the key-value pair by special keywords \`each.key**\`** and \`each.value**\`**.
+
+What if you want to pass more than just two (key and value) parameters? For example, what if you want to also parameterize the zone in the above example? You can simply change the value to a map, as follows:
+
+```yaml
+
+resource "google_compute_instance" "vm" {
+for_each = {
+  "vm1" = { vm_size = "e2-small", zone = "us-central1-a" }
+  "vm2" = { vm_size = "e2-medium", zone = "us-central1-b" }
+  "vm3" = { vm_size = "f1-micro", zone = "us-central1-c" }
+}
+name = each.key
+machine_type = each.value.vm_size
+zone = each.value.zone
+(...)
+}
+
+```
+
+You can pass as many parameters in the value as you want. Then in the actual resource configuration, you can reference them with \`each.value.<parameter\_key>**\`**.
+
+To keep your code clean and have the ability to reuse values for different resources, you can even extract the actual parameters into a variable:
+
+```yaml
+
+locals {
+virtual_machines = {
+  "vm1" = { vm_size = "e2-small", zone = "us-central1-a" },
+  "vm2" = { vm_size = "e2-medium", zone = "us-central1-b" },
+  "vm3" = { vm_size = "f1-micro", zone = "us-central1-c" }
+ }
+}
+
+resource "google_compute_instance" "vm" {
+for_each = local.virtual_machines
+name = each.key
+machine_type = each.value.vm_size
+zone = each.value.zone
+(...)
+}
+
+```
+
+### \`for\_each\` Versus \`count\`
+
+If you're not new to Terraform, you may have used another meta-argument that seems like the same thing: \`count**\`.** And while \`count**\`** also lets you create multiple instances of the same resource, there's a difference between \`count**\`** and \`for\_each\`. The latter isn't sensitive to changes in the order of resources.
+
+A common issue with \`count**\`** is that once you delete any resource other than the last one, Terraform will try to force replace all resources that the index doesn't match.
+
+You don't have that problem with \`for\_each\` because it uses the key of a map as an index. You can't use both \`count**\`** and \`for\_each\` on the same resources, but why would you anyway?
+
+Are there any drawbacks to \`for\_each\`? Yes.
+
+### Limitations of \`for\_each\`
+
+While \`for\_each\` is pretty straightforward to use, there are some limitations you should be aware of. First of all, the keys in your \`for\_each\` map block must have a known value. Therefore, for example, they can't be generated on the fly by functions (like \`bcrypt**\`** or \`timestamp**\`**). They also can't refer to resource-specific attributes that are provided by a cloud provider, like a cloud resource ID. Another limitation is the fact that you can't use sensitive values as arguments for \`for\_each\`. Basically, when using \`for\_each\`, you need to directly specify the values.
+
+![](/blog-images/c666e716b8d4bffe24d4c1e59a0478ab.png)
+
+### Summing up and Learning More
+
+\`for\_each\` is probably one of the most commonly used Terraform meta-arguments. Modern environments usually consist of multiple instances of resources for high-availability and scalability reasons. Using \`for\_each\` is relatively easy, but you need a solid understanding of how it works to get the most benefits from it. It also has its own limitations.
+
+In this article, you learned how \`for\_each\` works and got some tips on how to use it efficiently. Now, you can try to play around with it yourself or look into [other meta-arguments](https://www.terraform.io/language/meta-arguments/depends_on).
+
+### Terraform at Scale
+
+[Release](https://hubs.li/Q011Rfby0)’s Environment-as-a-Service, is an easy to use, highly scalable service that leverages Terraform to create snapshots of even the most complex environments and automatically manages their creation and teardown as part of your development lifecycle.

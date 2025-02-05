@@ -1,0 +1,141 @@
+---
+title: Extend your IDP with Environments for Every Developer and Every Change
+summary: >-
+  Explore environments as a way to enhance your IDP and elevate the development
+  process.
+publishDate: Thu Jul 25 2024 16:27:39 GMT+0000 (Coordinated Universal Time)
+author: sylvia-fronczak
+readingTime: 10
+categories:
+  - platform-engineering
+mainImage: /blog-images/09075670f023d3719e9920f0dfb758ec.jpg
+imageAlt: ''
+showCTA: true
+ctaCopy: >-
+  <p id="">Ready to test-drive Release? </p><p id="">Try it free for 30 days
+  with code #IDP</p>
+ctaLink: https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=idp5
+relatedPosts:
+  - ''
+---
+
+In our [previous posts](https://release.com/blog/components-of-a-successful-idp-build-a-product-your-developers-actually-want-to-use), we talked about how the internal developer platform (IDP) is comprised of many components and tools working together to optimize your development team’s workflow. Some of these components, like code repositories, CI/CD, test environments, and development tools, are must-haves.
+
+For these must-have components, you have two choices. You can cover the basics and call it good, or you can look at your organization’s needs and enhance the components to provide your teams with extra leverage.
+
+In this post, we’ll talk about environments and how you can extend and enhance your IDP through flexible and automated environment management that mimics your production environment. This flexibility will enable your developers to isolate changes, reduce configuration-drift-related bugs, remove testing bottlenecks, and improve time-to-market in complex environments.
+
+With Release, you can provide on-demand [environments](https://release.com/get-started) for every change and every pull request (PR), providing multiple efficiencies for your development team.
+
+### Why Do We Need More Flexible Environment Management?
+
+To begin, let’s talk about common problems that developers experience with static environments and local environments.
+
+#### **#1 It Works on My Machine**
+
+Environment discrepancies have been a software development headache since we stopped coding live in production. You may not remember that, but on mainframes, it wasn’t unusual to hop into production and change code live. To be fair, even non-mainframe programmers occasionally would hop onto production servers to make small HTML or JavaScript tweaks. Yes, I know, scary. But in small orgs with few controls, it did happen. Thankfully, we’ve evolved our development practices, and we know we don’t want to go back to those days.
+
+However, environment differences continue to plague us with bugs and replication difficulties. Whether it’s differences in the operating system, container configuration, or dependencies like the database, caches, and queues, all of these can cause churning due to unexpected behaviors in each environment, leading to the dreaded problem “but it works on my machine”.
+
+#### **#2 The Overhead of Microservices**
+
+If you’ve ever been on a team that works in a microservices environment, you already know the pain of trying to run systems locally.
+
+Years ago, I frequently had to start up three, five, eight, or more microservices on my laptop to validate a change, test functionality, or debug a production problem. The fan noise coming off the laptop could be startling, and the heat emanating from the machine could warm a small room in the winter. It was slow, painful, and finicky to get everything running consistently.
+
+In addition to the local resource burden, testing was often done in static test or staging environments and required multiple validations and deploys to ensure the right versions of APIs and implementation were where you thought they should be.
+
+#### **#3 Load Testing Challenges**
+
+For operations like load testing or performance benchmarking, we turn to static load testing environments. In previous organizations, I’d see folks scheduling time in environments to conduct load tests, often having to wait weeks for the environment and tools to free up to complete testing.
+
+Not being able to quickly access environments that allow proper load testing delays critical tests and makes automation of these load tests difficult.
+
+![](/blog-images/b035f8ba3bb3806ba73ca14a239184b4.png)
+
+#### **#4 Slow Pivots to Changing Priorities**
+
+Picture this. A developer has been coding a new feature for several days. Though they’re committing and pushing frequently, they still have their local development set up specifically for this work. They’ve set up the data they’re testing with and ensured the environment is right for this particular change. Maybe they’ve even changed their local environment configuration to optimize it for their current task. But suddenly, a hot bug comes in, and they need to switch and focus on shipping a fix.
+
+Without fast ephemeral development environments, they not only have to check out a new branch and switch focus, but potentially, they’ll have to undo data schema changes they’re in the middle of and then recreate the data for the production scenario on their machine.
+
+It’s bad enough that your engineering teams have to context switch at times. But switching over local dev environments or test environments to hot priorities shouldn’t be a big ordeal.
+
+#### **#5 Data Degradation**
+
+With static environments, after a while the data or the whole environment becomes degraded. Sometimes, this is due to testing in that environment with different versions of the code and not as much backward compatibility as we need. Other times, it’s because we’ve had to contrive data into a particular state to test or investigate issues.
+
+Regardless of the reason, static environments experience data degradation and require periodic cleanup. For example, I worked in a group that would go through routine quarterly weeklong data refreshes to get non-production environments to a healthy and working state in order to support further rounds of testing, for the whole next quarter.
+
+If we treat environments as static, long-living beasts, we aren’t primed to wipe them out and start fresh frequently.
+
+#### **#6 Configuration Drift**
+
+Configuration drift occurs when our configuration between environments falls out of sync. This can include application configuration, infrastructure configurations or versions, and network differences between environments.
+
+This is especially true when working in environments where most configurations are managed manually.
+
+Configuration drift can cause pain when testing, reproducing bugs, or making assumptions about what an environment’s configuration looks like.
+
+#### **#7 Slow Feedback Loops**
+
+Shared environments can make testing and feedback loops slow and inefficient because of waiting for environments or debugging issues unrelated to your changes.
+
+#### **#8 Inconsistent Security Measures**
+
+Similar to configuration drift, security constraints in some environments are not replicated in local or test environments, causing unexpected bugs or security flaws in production.
+
+Though we can’t replicate everything between all environments, key differences can mean more bugs and incidents once the code is deployed to production.
+
+### How Can Development Environments Help?
+
+Before we dive into the benefits of ephemeral development environments, let’s review typical environment types:
+1.  The **developer’s local environment is** where we write code and tests. The audience is limited to the developer(s) on this machine.
+2.  **Static non-production environment**s like test, QA, UAT (user acceptance testing), or SIT (system integration testing), where additional testing is completed. These environments are used by development teams, QA/testing, and both internal and external partner teams for testing and validation. These can also be used for demos both within and outside the organization.
+3.  **Production**, where your product is live for your customers.
+
+When bottlenecks emerge with testing in static non-prod environments, organizations might expand the number of environments, hoping it relieves some of the pressure. This does temporarily provide folks with more test environments, but it also creates more of the problems we saw in the previous section.
+
+Instead of adding yet another static environment, consider investing in automated, fine-grained, flexible, and ephemeral environments. With these, spinning up environments as part of your development workflow and IDP takes little to no effort after the initial investment. Your team has purposeful environments for quick bug testing or feature deployment tied to a PR or branch of code.
+
+So how do these environments solve the problems we see with static environments? Let’s look at some of the answers.
+
+#### **Isolation and Consistency**
+
+When testing changes, your development team won’t struggle with isolating one change’s impact from others in static test environments. They’ll work in a production-like setup, and then the CI/CD pipeline will create an environment for further validation/testing after the pull request is made.
+
+#### **Reduced Configuration Drift**
+
+In long-lived environments, either on a developer’s machine or in a static testing environment, we can’t eliminate drift. However, if we’re frequently rebuilding environments for each change, we keep configurations in sync with production and provide a consistent experience across environments.
+
+![](/blog-images/832e584189dad339f0de0d28182a6e1c.png)
+
+#### **Dependency Management**
+
+With ephemeral and on-demand environments, you can provide easy dependency management. Developers won’t need to manage their own dependencies (the databases, caches, and queues mentioned above) while developing and testing their app. It can all be included in the release environment setup.
+
+Furthermore, if developers are specifically working on changes to dependencies, they’ll have a full environment to validate their changes.
+
+#### **Fast Feedback**
+
+First, automated tests are necessary, and you can’t go without them. But they’re not bulletproof. You can’t test what you don’t expect. With environments set up for each story or issue, you can get fast feedback by starting up an environment, testing your change, and exploring side effects. Then you can receive that feedback immediately instead of waiting to get the change into a test environment.
+
+#### **Production-Like Data**
+
+With on-demand environments, your development team will have the data and scenarios they need without excessive data setup. Features like [Instant Datasets](https://release.com/product/instant-datasets) preload a pool of production-like datasets (sanitized and truncated, if needed) and have even terabytes of data available in minutes.
+
+#### **Consistent Development Workflows**
+
+Finally, with ready-to-use and fully automated environments, development teams will have a consistent experience rolling out their changes to each environment in your CI/CD pipeline.
+
+### How Do Ephemeral Environments Tie In with Your IDP?
+
+Your IDP consists of multiple components and integrations. Once you have the essential components like CI/CD, where you’re automating basic workflows, then you’re ready to level up.
+
+If your organization is small and you don’t yet have environmental bottlenecks, adding ephemeral environments might not be your top priority on enhancing your IDP.
+
+On the other hand, if your teams experience pain or bottlenecks involved in using static development or non-production environments, then it’s time to experiment with [Release](https://release.com/signup). Incorporating automated on-demand ephemeral environments provides benefits like consistency, dependency management, and fast feedback. This helps your teams get new features into production faster and with fewer defects. You’ll manage, provision, and eventually destroy environments quickly and automatically, so that you get the most use out of them when your development team needs them.
+
+In short, IDPs integrate developer environments into the development workflow. They improve efficiency, collaboration, and quality.
+
+‍_This post was written by Sylvia Fronczak._ [_Sylvia_](https://sylviafronczak.com/) _is a software developer who has worked in various industries with various software methodologies. She’s currently focused on design practices that the whole team can own, understand, and evolve over time._

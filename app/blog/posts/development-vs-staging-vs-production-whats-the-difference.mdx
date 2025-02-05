@@ -1,0 +1,98 @@
+---
+title: 'Development vs Staging vs Production: What''s the Difference?'
+summary: >-
+  A closer look at the development, staging, and production environments of the
+  software development cycle.
+publishDate: Wed Oct 30 2024 19:53:58 GMT+0000 (Coordinated Universal Time)
+author: regis-wilson
+readingTime: 8
+categories:
+  - product
+mainImage: /blog-images/599175103f1e1df59989125faa773f6f.jpg
+imageAlt: ''
+showCTA: true
+ctaCopy: >-
+  <p>Streamline development, staging, and production environments effortlessly
+  with Release.</p>
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=staging-production
+relatedPosts:
+  - ''
+---
+
+The lines between development, staging, and production environments are often blurred. The distinctions may vary depending on many factors, including:
+*   the scale of the organization,
+*   the codebase, or
+*   whether you're viewing the environment from a product, unit testing, or security standpoint.
+
+In this post, I use interviews with fellow developers to understand each environment's purpose and how it's distinct from the others. It's particularly challenging to differentiate between the development and staging environments, and some organizations forgo the staging environment altogether. Let’s find out why, and when it makes sense.
+
+### **What Is a Development Environment?**
+
+Generally, the development environment is the first environment developers use to check if all code changes work well with each other. It's known as a “sandbox” for developers to work in. Examples of commonly used integrated development environments (IDEs) are [Visual Studio Code](https://code.visualstudio.com/), [Eclipse,](https://www.eclipse.org/ide/) [JetBrains tools](https://www.jetbrains.com/), and many others. Note that historically development environments were based on a developer's laptop—a local machine, but with the emergence of cloud, on-demand computing and [ephemeral environments](http://releasehub.com/ephemeral-environments), those environments are now being deployed in the cloud.
+
+IDE is where developers’ workflow with code takes place, reloading and debugging aids are enabled here. Also, this environment is where developers can make necessary code changes. In the IDE, approved code can merge with code from other developers working on the same project.
+
+Developers commonly use this space to experiment and receive feedback on what improvements they can make to their work. Consequently, this environment is the most unstable. It's also the most susceptible to bugs and potentially broken code. But, on the upside, in allowing mistakes to happen, this is the most conducive environment to learn collaboratively and create a standardized process.  
+
+Besides the most commonly known local machine, there are virtual and cloud-based development environments. Your team might use the virtual and cloud-based environments mainly depending on whether multiple platforms and machines are needed to effectively test and run the code they are writing.
+
+Development environments historically only include a small subset of the entire application and often would lack elements like security, 3rd party APIs and cloud native services. Those would typically be introduced later in the development process and tested in staging. The result, however, turns into frequent rollbacks and bottlenecks in staging. To enable better code quality in development and more frequent release cycles, companies like [Release](https://release.com/) came up with [ephemeral environments](http://release.com/ephemeral-environments), a production-like replica that allows developers to properly test their code (i.e shift-left) and isolate bugs to a single branch, while ensuring a smooth merge to staging and production.
+
+### What Is a Staging Environment?
+
+[Staging environment](https://release.com/staging-environments) is the environment where your code is 'staged' prior to being run in front of users so you can ensure it works as designed. The staging environment should mirror production as much as possible. It reflects a production environment not yet exposed to clients, customers, and the general public.
+
+![](/blog-images/7889fa49b5c1fd3e80dd96dda8886942.png)
+
+This environment is primarily used for system integration testing (SIT) and in-depth manual testing conducted before the client receives code changes. Developers also [perform](https://www.unitrends.com/blog/development-test-environments) quality assurance (QA), security testing, chaos testing, alpha testing, beta testing, and end-to-end (E2E) testing in this environment.
+
+Additionally, [User acceptance testing (UAT)](https://release.com/user-acceptance-testing-with-ephemeral-environments) often happens here. In UAT, users can test changes they requested before the new code goes to a production environment.
+
+How you carry out testing in the staging environment can depend on what programming language you're using. For example, Ruby on Rails doesn't have a mode for staging. Rails developers switch modes to a test environment that they use to run testing tools and debug failures. Technically, the [Rails Guide](https://guides.rubyonrails.org/configuring.html) delves into how to customize configurations and initialization on applications.
+
+### **Development vs. Staging Environments**
+
+So, now that you know what development and staging environments are, you're probably wondering if you need both. Ultimately, the answer depends on the size of your organization, appetite for risk and speed of change, and your position on making a tradeoff between slowing down the process for quality and testing versus launching new features quickly.
+
+Sometimes smaller companies start out with fewer environments. One developer shared, “You just end up with multiple environments as the organization scales up.”  
+
+In some cases organizations with fewer users don't have staging environments. As another developer elaborated: _“Instead, we can deploy in a way that 1% of the traffic will go to each one branch and main branch. Then, we can check the monitoring to see if there are differences between the two. When we are certain that at the most we will affect 1% of traffic and everything is fine, we will then proceed with merging the two branches. I think it would be ideal if the continuous integration (CI) and continuous deployment (CD) process were to set up that 1%, then we could verify the results. This is the same as I have seen for verifying front-end changes in continuous integration.”_
+
+### **Is a Staging Environment Necessary?**
+
+Deploying to staging is safe, because it will not affect users, but is not necessarily effective because you might not test all the features or combinations that end users will be using. The general solution to this problem is to deploy to production as quickly as you can but only enable or test subsets of new features with flags or canary testing. This way you are only risking challenges for a small subset of users, and are able to see the application perform with live traffic in the production environment.
+
+Developers say they like to see how real traffic works through the codebase and compare this technique to feature flagging. This may eliminate the need for a beta environment. This results in the concept of "staging" not being a distinct environment.
+
+However, developers agree that it's useful to have a separate beta domain to make significant changes. According to [Atlassian CI/CD](https://www.atlassian.com/continuous-delivery/principles/feature-flags), feature flagging allows developers to turn functionality on and off during runtime. That way, you don't need to deploy code at every update.
+
+### **What Is a Production Environment?**
+
+The production environment is the live site complete with performance optimizations. The codebase must be secure, performant, stable, and able to sustain heavy traffic as the client, customers, and public use it.  
+
+There is a common misconception that production is more important than development or staging. Actually, the reverse could be true: development environments could be so critical to the business that they cannot tolerate any downtime at all but production can tolerate some downtime.
+
+As an example at Truecar and in most other companies I worked at, the website could be broken for some amount of time as long as it came back up relatively quickly. However, if development was down for more than an hour, you could be looking at losing an entire day of developer features for the whole company!
+
+Regardless of your setup, you should treat production with care, and restrict who updates the production code. Ideally, you won't be building new versions of the codebase for the production environment; it's better to deploy the same builds to the staging environment.
+
+![](/blog-images/436b6ae884f81c86dc705a7163ab8dfa.png)
+
+At this point of the software development lifecycle, the code shouldn't have any bugs or require fixes. To avoid a poor user experience, you should consider it the final product.
+
+However, you can make urgent fixes in the production environment if needed. In doing so, you can consistently improve upon quality control for product releases, making it easier to keep tabs on new product updates.
+
+### **Conclusion**
+
+Although the development, staging, and production environments converge, they have their own significance in the larger software development lifecycle. The significance of each environment depends on the organization running the system.
+
+The way a company treats and leverages these environments today differs wildly depending on the organization and its DevOps practices and policies. Sometimes teams within the same organization use these environments in different ways and have different philosophies of what they mean, and how critical they are to the company’s mission.
+
+From my conversations with individuals who play different roles in the tech industry, I can say the overall development culture is shifting progressively toward promoting new code to all these environments as soon as possible. One developer expressed, "The idea is that even the smallest code change gets released to production in a matter of minutes, not months."
+
+With that in mind, the common goal is that the folks responsible for the software development life cycle want more efficient environments for producing the highest quality codebases. These people continuously strive to find new methods to make that process easier.
+
+For a better understanding of what environments are and to be inspired about optimizing them, read more about [staging environments](https://release.com/staging-environments), [ephemeral environments](https://release.com/ephemeral-environments), and [UAT](https://release.com/user-acceptance-testing-with-ephemeral-environments) with Release ephemeral environments.
+
+‍

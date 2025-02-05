@@ -1,0 +1,268 @@
+---
+title: 'Kubernetes Namespaces: The Ultimate Guide'
+summary: >-
+  In this post we talk about kubernetes namespaces. We discuss what are they,
+  how they work and what they're useful for
+publishDate: Fri Apr 21 2023 18:46:03 GMT+0000 (Coordinated Universal Time)
+author: ashley-penney
+readingTime: 7
+categories: []
+mainImage: /blog-images/2266b02b751a19c98eb0df977859ad01.jpg
+imageAlt: a laptop on a desk
+showCTA: false
+ctaCopy: ''
+ctaLink: ''
+relatedPosts:
+  - ''
+---
+
+The Kubernetes learning curve can be quite steep, but it's relatively easy to get started, especially today since many cloud providers offer easy-to-deploy, managed Kubernetes solutions. Therefore, you can run your application on a Kubernetes cluster in a few minutes. One of the things you'll probably discover after taking your first steps are Kubernetes namespaces. They're fundamental to Kubernetes, and you'll be using them extensively. But what are they actually, how do they work, and how are they useful? This post will give you the answers.
+
+![](/blog-images/32166a1642fb39bc4d1f7e023a0bd7d6.png)
+
+### What Are Kubernetes Namespaces?
+
+The official Kubernetes documentation says that namespaces "provide a mechanism for isolating groups of resources within a single cluster." The word "grouping" is key here. Namespaces are simple Kubernetes resources (just like deployments and pods) that can be used to create groups of resources. You can think of them as mini virtual clusters within your cluster. If you just started with Kubernetes and have been deploying things on it without specifying a namespace (we'll talk about how to do that later), you were still using a namespace. Every Kubernetes cluster comes with a few namespaces, one of which is called the "default". And that's where your deployment will end up if you don't specify otherwise.
+
+### How Are Kubernetes Namespaces Useful?
+
+Now that you know what Kubernetes namespaces are, let's talk about what they can be used for. The main purpose is isolation in multi-tenant environments. Imagine you have two separate teams using the same Kubernetes cluster. Both teams want to deploy, for example, an nginx server. Let's say both teams try to create a deployment as follows:
+
+Only one team will succeed. The other will get an error message saying that an nginx deployment already exists. A simple solution for that could be to make the names of the deployments unique by, for example, adding a number or the name of the team to the deployment name.
+
+```yaml
+
+kubectl run nginx-teamA --image=nginx
+kubectl run nginx-teamB --image=nginx
+
+```
+
+This would work, but it would be prone to errors, and it requires extra overhead. You won't be able to simply follow a tutorial on the internet about Kubernetes and copy and paste the commands from there because you'd have to adjust the names of resources every single time. Not great. That's exactly why namespaces exist. They isolate resources. This means you can have two nginx deployments running with the same name but in two separate namespaces. From each team's perspective, it would look like they have their own clusters. They won't have to worry about the other team's deployments.
+
+#### Keeping Your Cluster Tidy
+
+Another good thing about using namespaces is that it's easier to keep your Kubernetes cluster clean. For example, if you're doing a lot of tests on your cluster or creating a lot of proof-of-concept deployments, it may be complicated to clean up afterward. If, for example, you have a hundred deployments running on your cluster, making sure that you delete the old ones used only for some tests can be not only time-consuming but even dangerous. Imagine deleting the production application by mistake when you just wanted to delete its test version. Namespaces can solve that problem too. Simply create a new namespace for each test or POC you want to run, and once you're done, you only need to delete that namespace. All resources within the namespace will be deleted automatically with it.
+
+#### Environment Separation
+
+Some people even use namespaces for separating environments. For example, you could have your application's development and production instances running on the same Kubernetes cluster separated by namespaces. It's cheaper and easier than running two separate clusters. However, it comes with its own disadvantages, so make sure you understand all the implications of doing so.
+
+![](/blog-images/29a9cf0aa0b92de29a291842d4df4661.png)
+
+#### Logical, Not Physical, Separation
+
+There are many use cases for namespaces, and you can use them however you like as long as it makes sense for your organization. However, you should remember that namespaces provide only a logical and not a physical separation of resources. This means that isolation provided by namespaces is not the same as separation provided by separate clusters. In fact, you should think of namespaces more in terms of grouping capabilities than isolation.
+
+This is especially important when using namespaces, for example, to separate environments for your application. You should know that your development instance can break your entire cluster, for example, due to too aggressive performance testing or even simple misconfiguration. So, if you run development and production instances in separate namespaces but on the same cluster, breaking the development environment could also bring your production instance down.
+
+You also should be aware that there is no network isolation between namespaces by default. This means that pods in one namespace can freely talk to pods in any other namespace. This can be an advantage or disadvantage, depending on your needs. The good news is that it's relatively easy to implement namespace-based network isolation for your cluster. You just need to be aware that it doesn't happen automatically.
+
+### How Do Namespaces Work in Kubernetes?
+
+Enough of theory. Let's see namespaces in action. The basic usage of namespaces is the same as with any other objects in Kubernetes. It means you can execute commands like **kubectl create** or **kubectl get** for namespaces. Let's try that.
+
+#### kubectl get namespaces
+
+We mentioned before that Kubernetes comes with a namespace called "default". In fact, there may be more namespaces on your brand-new cluster, depending on how it was deployed and which version of Kubernetes you're using. Let's validate that. To see the list of namespaces on your cluster, you can execute **kubectl get namespaces:**
+
+```yaml
+
+$ kubectl get namespaces
+NAME              STATUS   AGE
+default           Active   69s
+kube-system       Active   69s
+kube-public       Active   69s
+kube-node-lease   Active   69s
+
+```
+
+As you can see, my cluster comes with four namespaces. Those named with prefix **kube-** are Kubernetes's own namespaces. **kube-system** holds Kubernetes components, so you definitely don't want to delete anything there. In fact, if you're a beginner, you should not touch any **kube-** prefixed namespaces. For you, there is the **default** namespace created. As mentioned before, this is the namespace where all your resources will be deployed if you don't specify otherwise. For example, if I execute **kubectl get pods** on an empty cluster, I'll see the following message:
+
+```yaml
+
+$ kubectl get pods
+No resources found in default namespace.
+
+```
+
+Following the same logic, if I create a pod without specifying a namespace, it will be created in a default namespace:
+
+```yaml
+
+$ kubectl run nginx --image=nginx --restart=Never
+pod/nginx created
+
+$ kubectl describe pod nginx
+Name:         nginx
+Namespace:    default
+(...)
+
+```
+
+As with many other Kubernetes objects, you can also use a shortcut, in this case **ns**, instead of typing **namespace** every time, so executing **kubectl get ns** will have the same effect as **kubectl get namespaces:**
+
+```yaml
+
+$ kubectl get ns
+NAME              STATUS        AGE
+default           Active        25m
+kube-system       Active        25m
+kube-public       Active        25m
+kube-node-lease   Active        25m
+
+```
+
+#### kubectl create namespace
+
+Now that you know how to see which namespaces you have in your cluster, let's add some more. For this, you can execute **kubectl create namespace** followed by the name of the desired namespace:
+
+```yaml
+
+$ kubectl create namespace frontend
+namespace/frontend created
+
+```
+
+If you execute **kubectl get namespaces** again, you should see your new namespace in the list now:
+
+```yaml
+
+$ kubectl get namespaces
+NAME              STATUS   AGE
+default           Active   14m
+kube-system       Active   14m
+kube-public       Active   14m
+kube-node-lease   Active   14m
+frontend          Active   8s
+
+```
+
+Now that you have a new namespace, you can append **\--namespace=frontend** to any other **kubectl** action to specify that you want to use that specific namespace. So, for example, to deploy your nginx deployment in that namespace, you can run the following:
+
+```yaml
+
+$ kubectl run nginx --image=nginx --restart=Never --namespace=frontend
+pod/nginx created
+
+```
+
+If you check the pods on your cluster now, you'll see no running pods.
+
+```yaml
+
+$ kubectl get pods
+No resources found in default namespace.
+
+```
+
+Wait, what? Well, read the message again. It says that there are no resources in the **default** namespace. This is expected since we just deployed nginx in the **frontend** namespace. Therefore, you need to append **\--namespace=frontend** to the **kubectl get pods** command:
+
+```yaml
+
+$ kubectl get pods --namespace=frontend
+NAME    READY   STATUS    RESTARTS   AGE
+nginx   1/1     Running   0          3m7s
+
+```
+
+If you get tired of adding the long **\--namespace=frontend** parameter every time, you can also force your **kubectl** to use a specific namespace by default instead of the default "default" namespace. You can do that by executing the following:
+
+```yaml
+
+kubectl config set-context --current --namespace=frontend
+
+```
+
+You just need to remember that all your commands will now be executed against the **frontend** namespace and not the **default** namespace.
+
+#### kubectl delete namespace
+
+Deleting a namespace is as straightforward as creating one. You can do it by executing the **kubectl delete namespace** followed by the name of the namespace you want to delete. Here's an example:
+
+```yaml
+
+$ kubectl get namespaces
+NAME STATUS AGE
+default Active 22m
+kube-system Active 22m
+kube-public Active 22m
+kube-node-lease Active 22m
+frontend Active 8m16s
+
+$ kubectl delete namespace frontend
+namespace "frontend" deleted
+
+$ kubectl get namespaces
+NAME STATUS AGE
+default Active 22m
+kube-system Active 22m
+kube-public Active 22m
+kube-node-lease Active 22m
+
+```
+
+Keep in mind that this will delete all resources within the namespace too. Your pods won't automatically move to another namespace. Also keep in mind that for the same reason, deleting the namespace can sometimes take a long time. If you have a lot of resources running in the namespace, Kubernetes will first try to delete all of them before deleting the namespace itself. For example, deleting pods can take some time, depending on their configuration.
+
+#### kubectl describe namespace
+
+Again, as with any other Kubernetes object, you can execute **kubectl describe** for namespaces, which should give you more detailed information about the namespace. Unlike most resources, however, namespaces are simple objects, therefore there isn't usually much information:
+
+```yaml
+
+$ kubectl describe namespace default
+Name:         default
+Labels:       kubernetes.io/metadata.name=default
+Annotations:  
+Status:       Active
+No resource quota.
+No resource limits.
+
+```
+
+### Namespaces in YAML
+
+It's great to know how to use namespaces with **kubectl,** but in the real world, you'll probably manage all your Kubernetes resources with YAML files. You'll then need to specify which namespace to use in that YAML file. How do you do that? It's straightforward. Just add **namespace: \[namespace\_name\]** in the **metadata** section of your Kubernetes definition file.
+
+```yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  namespace: frontend
+  labels:
+    name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+
+```
+
+You can also create a namespace from a YAML file. It follows the same structure as your other Kubernetes YAML files, so you need to specify **apiVersion**, which in the case of namespaces is **v1**, then **kind**, which—you guessed it—is **namespace**. Then just define its name in the metadata section.
+
+```yaml
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: backend
+
+```
+
+It's the simplest Kubernetes file you've ever seen, isn't it? You can apply it like any other Kubernetes file using **kubectl apply -f namespace.yaml**.
+
+```yaml
+
+$ kubectl apply -f namespace.yaml 
+namespace/backend created
+
+```
+
+![](/blog-images/e2cbeea2c29032aa4a90c0b6ff3d428a.png)
+
+### Summary
+
+Kubernetes namespaces are extremely useful. In this post, you learned what they are and how to use them. Now it's up to you and your company how to use them. Just remember that because namespaces can't be nested, it's also possible to overuse them. Namespaces should bring you grouping capabilities, making it easier for you to manage your resources. But if you create too many unnecessary namespaces, you won't make anything easier. But these are extreme cases, and namespaces are usually easy to get right.
+
+If you want to learn more about Kubernetes, check out other articles on [our blog](https://release.com/blog).

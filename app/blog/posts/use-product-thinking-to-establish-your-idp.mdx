@@ -1,0 +1,136 @@
+---
+title: Use Product Thinking to Establish Your IDP
+summary: >-
+  Learn how to build a success platform by combining IDP's goals, components and
+  problems to solve, with product thinking.
+publishDate: Thu Jul 25 2024 16:27:39 GMT+0000 (Coordinated Universal Time)
+author: sylvia-fronczak
+readingTime: 10
+categories:
+  - platform-engineering
+mainImage: /blog-images/c910c71d4c0e51fd3672ff01c8164ba1.jpg
+imageAlt: ''
+showCTA: true
+ctaCopy: '<p>Ready to try Release?<br>Use code #IDP to get 30 days free.</p>'
+ctaLink: https://release.com/signup
+relatedPosts:
+  - what-is-an-internal-developer-platform-and-why-should-i-have-one
+---
+
+In previous posts, we talked about the [benefits of Internal Developer Platforms](https://release.com/blog/what-is-an-internal-developer-platform-and-why-should-i-have-one) (IDPs) and the [components that form a great IDP](https://release.com/blog/components-of-a-successful-idp-build-a-product-your-developers-actually-want-to-use). But getting all the benefits out of an IDP isn’t just about gathering a bunch of tools together in one UI and assuming everyone will use it.
+
+Instead, we need to treat the entire platform, with all its components and integrations as a product—a product that solves problems and improves your developers’ workflows.
+
+Within each organization, an IDP might solve different problems in different ways. And in order for you to get the benefits out of the IDP for your organization, you’ll need to take a product-thinking approach and fulfill the needs of your customers—the developers.
+
+In this post, we’ll talk about how you can combine the goals of an IDP, the problems it solves through various components, and product-thinking principles to build a successful platform. If your organization is new to product thinking, or if you haven’t used those skills when developing tooling for your software developers, this will give you a starting point with frameworks as well as common elements and metrics that you can build on when kicking off your IDP journey.
+
+First, let’s look at product thinking and a few approaches and frameworks that provide your organization with the tools it needs to build a successful product.
+
+#### The Product-Thinking Approach
+
+If you’re not familiar with product thinking, it may seem like a nebulous idea that requires the most experienced product managers with fancy frameworks and high consulting fees. However, product thinking, at its core, involves identifying and understanding the problems your customers experience and then prioritizing solutions that provide the most value.
+
+Organizations use various frameworks to drive product thinking. These frameworks identify activities that support your discovery and understanding of the problems and prioritization of the work to be done.
+
+![](/blog-images/fdff2db86417969bb149d9deef764f3c.png)
+
+Let’s take a look at some frameworks that organizations use to drive product thinking. You can use one or combination of these approaches, as they complement each other well.
+
+##### 🚀 Lean Startup: Build, Measure, and Learn
+
+The [Lean Startup](https://theleanstartup.com/) methodology broke down the process of building products into three iterative steps: build, measure, and learn. This methodology combines UX, product, and engineering to build products by solving problems using minimum viable products (MVPs) and customer validation. The focus is on learning more about your customer and their needs from each iteration of the build-measure-learn cycle.
+
+What would that look like for an IDP?
+
+In the **build** phase, you can begin by integrating one component of an IDP or automating one part of a workflow that your developers must do. For example, your org may frequently build new microservices or stand-alone products. Each of your teams requires an easy way to set up new environments and CI/CD pipelines for these microservices. Your IDP could first automate a basic CI/CD pipeline so that teams don’t have to do that themselves.
+
+In the **measure** phase, you’ll see how your developers are using your IDP MVP through usage metrics and feedback. Looking at the MVP example that creates a pipeline, how often do teams use it? How often do they edit the pipelines later to fit their use cases? And what do they change?
+
+Next, we enter the **learn** phase. For our IDP example, we will assess our findings. Then perhaps we’ll learn that the pipeline is good enough for now and that provisioning infrastructure needs more automation or features. On the other hand, we could learn that the pipeline isn’t flexible enough or doesn’t provide easy rollback capabilities. Either way, we now know what we can build next and restart the cycle.
+
+##### 💎 Double Diamond Model: Discover, Define, Develop, and Deliver
+
+The [double diamond mode](https://www.designcouncil.org.uk/our-resources/archive/articles/double-diamond-universally-accepted-depiction-design-process) also takes an iterative approach to building a product. We repeatedly work through its four phases—discover, define, develop, and deliver—over the life of the product.
+
+During **discovery**, you’ll explore and understand the problem space. For IDPs, this could include interviewing engineers, watching them work, and gathering available metrics on where the most pain exists in the development workflow.
+
+Once we’ve pulled our research from discovery, you’ll move to the **define** phase. You’ll shift to framing the problem to a smaller scope and determining which problem you will solve first.
+
+In the **development** phase, the development team will build solutions. This may include building components, or more likely, it includes configuring prebuilt platform as a service (PaaS) solutions to work with your infrastructure and organization.
+
+![](/blog-images/bf21bc0b1c90dad589f0b58bf5217bc7.png)
+
+And finally, you’ll **deliver** the initial product to market: your development teams.
+
+Then you’ll start at the beginning again, refining and validating your choices from the previous phases.
+
+##### 🔁 Iterative Development Using Agile Methodologies
+
+Our next approach also iterates on the product but focuses on the engineering side. With Agile, we focus on people from cross-functional groups working together to build working software through customer collaboration. Although product thinking is still used in each iteration, it’s more about how the product is actually built.
+
+Our first iteration may be an MVP like the ones we see in Lean Startup, or it could be a more refined product spec that has already been proved out. Once our first iteration of the product is complete, we’ll release it to the developer community that uses the IDP and ensure that expectations have been met. We’ll work with the developers and other stakeholders to ensure that we build the right product and deliver value to the customers.
+
+At this point, you’ve been introduced or had a refresher on some common product thinking frameworks. So what’s next? We’ll want to consider how we can incorporate them into our product and what [components](https://release.com/blog/components-of-a-successful-idp-build-a-product-your-developers-actually-want-to-use) we’ll need to harness in order to build a successful IDP.
+
+#### Product Thinking Best Practices
+
+Regardless of the methodology or framework you use, you need to follow certain best practices to understand the problems your developers experience and prioritize the solutions that provide the most value:
+1.  Interdisciplinary team
+2.  User-centered approach
+3.  Focus on value
+4.  Iterative development
+5.  Measurable outcomes
+
+##### 1\. Interdisciplinary team
+
+Most product-driven approaches include an interdisciplinary or cross-functional team. To build the right IDP, you need the right people looking at the problem from different perspectives.
+
+Your cross-functional team should, at minimum, include these main roles:
+*   **Product:** to assess and prioritize the potential problems and solutions.
+*   **UX:** to work with the developers to understand workflows and pain points. UX uses their tools to improve efficiency, flow, and usability of the IDP.
+*   **Engineering:** to serve two purposes. First, as the customer of the IDP, their experience and feedback will provide you with insights into making their workflow better. Second, they’ll use their engineering experience to build out the IDP. This could mean building a component or integration or just configuring and automating various integrations.
+
+![](/blog-images/d271141535ba3cbc0089a01b4c48f3db.png)
+
+In addition, consider adding subject matter experts (SMEs) from data, security, and compliance. When aligned with the mission of improving developer workflows, they’ll advise on what automation can fulfill different regulatory or security requirements, removing manual processes from the developers’ workflow.
+
+##### **2\. User-Centered Approach**
+
+For IDPs, your development teams are your main users. Understanding their environment and how they work will provide critical data for solving the right problems in the right way.
+
+To understand the developers’ workflow, you’ll conduct interviews, get feedback, and collect data on their current processes. You also have to understand the developers’ experience with their current tools and how long different processes take. Where is their toil, and what steps take more time? What tools are better suited for a traditional UI, and what works best as a CLI, API, or other integration?
+
+One important note: Just because the developers offer feedback doesn’t mean that you must act on it. Product thinking isn’t about taking orders from customers; it's about understanding problems. When you understand problems, you’ll need to dig in and find where the problems come from and which are more important to solve.
+
+##### **3\. Focus on Value**
+
+To start your IDP, your interdisciplinary team creates clear objectives and goals that focus on the value. Consider what problems or types of problems you are trying to solve and how you’ll measure success.
+
+![](/blog-images/896c26befa04f11393b6e7562d498318.png)
+
+Again, you don’t have to solve all the use cases for a particular problem. Using the objectives for your product, focus on the features that will give you the biggest bang for your buck. Solve for 80% of the scenarios that your developers encounter and leave the other 20% for custom solutions that teams can work through on their own. And realize that the ideal solution may not be worth the cost when compared to the current or a slightly improved workflow.
+
+##### **4\. Iterative Development**
+
+Most product-driven frameworks and methodologies include iterative development. This is especially true of the IDP, as there are so many options and so much that can be integrated in different ways. Your main focus will be on starting small and shipping new bits of functionality frequently.
+
+##### **5\. Measurable Outcomes**
+
+Measuring the success of IDPs or any developer tooling can be difficult. Consider these metrics to ensure that you’re providing value, and automate their collection from the start.
+*   **Adoption rate:** For all features and integrations, measure how many developers are using the platform and how frequently they use it.
+*   **Time saved:** Track how much time developers save by using the features of your platform when compared to their previous workflow.
+*   **Feature usage:** Determine which features are used the most and which ones the least.
+*   **Satisfaction scores:** Periodically collect satisfaction scores from developers to gauge their experiences with the platform.
+
+You may be tempted to track metrics like release or feature velocity or the number of bugs a development team produces after onboarding to an IDP, but these have very little to do with the IDP. Focus on what’s directly affected by your IDP.
+
+#### To Sum Up
+
+When building an IDP, use product thinking to ensure you’re providing the right value and spending your resources well.
+
+Go back to our post on [build vs. buy](https://release.com/blog/build-vs-buy-where-to-focus-your-energy-with-idps) and consider what components can be brought in off the shelf with little development effort. That will provide you with fast feedback and the ability to understand the problem before sinking a lot of time into building it yourself.
+
+For optimal success, include an interdisciplinary team, focus on the user and the value you can provide, measure your success, and iterate, iterate, iterate.
+
+_This post was written by Sylvia Fronczak._ [_Sylvia_](https://sylviafronczak.com/) _is a software developer who has worked in various industries with various software methodologies. She’s currently focused on design practices that the whole team can own, understand, and evolve over time._

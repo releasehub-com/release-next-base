@@ -1,0 +1,72 @@
+---
+title: Full Fidelity Data for Ephemeral Environments
+summary: Why you should use production-like data in ephemeral environments
+publishDate: Wed Oct 30 2024 19:46:56 GMT+0000 (Coordinated Universal Time)
+author: regis-wilson
+readingTime: 8
+categories: []
+mainImage: /blog-images/6edc69cd127239703621a18ee2b28558.jpg
+imageAlt: Full Fidelity Data for Ephemeral Environments
+showCTA: true
+ctaCopy: <p>Ready to bring production-like data to your ephemeral environments?</p>
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=full-fidelity-data
+relatedPosts:
+  - ''
+---
+
+This blog post is a followup to the wildly successful webinar on the same topic. Refer to our webinar [“Full Fidelity Data for Ephemeral Environments”](https://www.youtube.com/watch?v=TAhz_UxPWG4) for more information. In the webinar and this post, we will explore why you should use production-like data in ephemeral environments, how you can (and should) do so, and how to reduce the cost, complexity, and avoid difficulties associated with using production-like data at scale.
+
+### Overview
+
+[Ephemeral environments](https://release.com/ephemeral-environments) are an indispensable tool in almost any software development workflow. By creating environments for testing and pre-production phases of the [workflow](https://docs.release.com/reference-documentation/workflows-in-release), advanced software development teams can shift testing and verification “left” (that is, earlier in the life cycle rather than later when features or bugs reach production).
+
+The reason that environments should be ephemeral is that they can be set up on-demand with specific features and/or branches deployed in them and then torn down when the task is completed. Each feature or branch of the development code base can be tested in an isolated environment as opposed to the legacy shared and fixed stages of QA, [Staging](https://release.com/staging-environments), [User Acceptance Testing (UAT)](https://release.com/user-acceptance-testing-with-ephemeral-environments), and so forth.
+
+Ephemeral environments are always used for a specific purpose so it is clear which feature and code base is deployed. The data is ideally based on a very close approximation to production so that the feature under development or test can be deployed into production with as much confidence as possible.
+
+### Why Use Production-Like Data in Ephemeral Environments?
+
+The best way to test new features or fix bugs that exist in production is to use the same code and data from the production environment. Version Control Systems (VCS) like git solved this problem  decades ago, at least for  code. But the data portion has long lagged behind due to complexity in access and cost, which  we will address toward the end of this post.
+
+Testing code against stale or seed data is fine for automated testing, but when developing new features or diagnosing problems in production, the data should mimic production as closely as possible. Otherwise, you are risking chasing the same fugs over and over again, or launching a faulty feature.  
+
+It is rare that data in production is static and unchanging; if it were, you could make the database read-only! While some amount of read-only or write-rarely data exists, it almost always needs to be updated and changed at some point, the only difference is a matter of frequency of updates.
+
+Because the data is a living and breathing thing that changes and evolves constantly  and possibly is updated based on customer live inputs or actions, the legacy strategy of fixed QA, staging, and test databases get out of date extremely quickly. In my experience, a fixed environment will stray from production data in as short a time as a few days or weeks. Many times the QA or staging databases are several years out of date from production, unless you specifically “backport” data from production.
+
+Lastly, production databases and datasets are often quite large (and grow larger every day) compared to fixed QA and staging databases. Thus, testing on limited data or fake seed data when developing new features or changing the code base can introduce unexpected regressions in performance or bugs when large results are pulled out of a table.
+
+### Should I Really Use Production-like Data in Ephemeral Environments?
+
+Short answer, yes. However, you need to be mindful of the possible moral, ethical, and legal implications in using actual production data subject to HIPPA or other regulatory controls. This is why it is crucial to generate a so-called Golden Copy of the data that is scrubbed of any private or confidential data, while still maintaining the same qualities as production in terms of size, statistical parameters, and so forth. This Golden Copy is the source of truth that is  updated frequently from your actual production data. We recommend daily updates, but depending on your particular use case it can be more or less often.
+
+With the  Golden Copy that is sufficiently production-like (each case varies in how much fidelity to production is required), it is possible to accurately portray behavior features as they would occur in production. Transactions, events, customer (faked) accounts, and so forth are all available and up-to-date with real (-ish) data. For example, if there is a bug that manifests in production, an engineer could easily reproduce the bug with a high degree of confidence, and either validate or develop fixes for the problem.
+
+Testing features with fake or fixed data is suitable for automated testing but for many use cases, especially when testing with non-technical users, real production-like data is valuable to ensure the feature not only works properly but also looks correct when it reaches production.
+
+### Isn’t that Terribly Difficult, Expensive, and Prohibitive? Or, “My Database is too Unique.”
+
+The most common objections to using a production-like dataset are around the difficulties in creating, managing and accessing the dataset, and around the overall cost. I can try to address these in two points: the first one (creation/maintenance/access) can be  pretty difficult depending on your use case, but it can be solved; the second one (cost) can readily be handled in this modern era of cloud computing and on-demand managed services offered by cloud providers.
+
+The first problem is that access to production data is usually kept in the hands of a small group of people, and those people are usually not the software engineers who are developing code and testing new features. Separation of concerns and responsibilities is vital for keeping production data clean and secure, but this causes problems when engineers need to test new features, verify bugs in production, or experiment with changes that need to be made.
+
+The best practice is to generate a Golden Copy of the data that you need as mentioned above. The Golden Copy should be a cleaned, stable, up-to-date version of the data that exist in production, but without any data that could compromise confidentiality or proprietary information if it were to accidentally be exposed, (or even internally exposed).
+
+What I tell most people who are involved with production datasets is to create a culture of welcoming access to the Golden Copy and distributing the data internally on a self-service model so that anyone who would like the latest snapshot can access it relatively easily and without a lot of hoops to jump through. Making the data available will ensure that your cleaning and scrubbing process is actually working properly and that your test data is going to have a high degree of similarity to the data in production. This will only make your production data and operations cleaner and more efficient, I promise you.
+
+The second problem is that allowing software engineers, QA people, testers, and even product people access to these datasets comes at a cost. Every database will typically cost a certain amount of money to run and store the data, but there are definitely some optimisations you can implement to keep costs down while still enjoying access to high quality datasets.
+
+The best way to keep costs down is to make sure that the requested access to the production-like dataset is limited in time. For example, a software engineer might only need to run the tests for a day or a week. At the end of that time, the data should automatically be expired and the instance removed because it is no longer needed. If the data is still needed after the initial period of time has expired, you can implement a way to extend the deadline as appropriate.
+
+Another way to reduce costs is to use Copy on Write (COW) technologies if they are available for your database engine and cloud provider. The way this works is that the Golden Copy holds most of the data in storage for use, while the clones that are handed out to engineers are sharing most of the data with the original. It is only when a change or update is made to a table or row that the data is  “copied” over for the clone to use. This is what a Copy on Write will do: it means that the only additional costs for storage on the clone are the incremental changes or writes that are executed during testing.
+
+Another good way to reduce costs is to pause or stop a database when it is not in use. Depending on your cloud provider, you may be able to execute a pause or stop on the database instance so that you can save money during the evenings or weekends when the database is not likely to be in use. This can save 30-60% off your costs versus running the database 24/7.
+
+The good news is that [Release](https://docs.release.com/) offers all of the features, including cloning snapshots from the Golden Copy, pausing and restarting databases on a schedule and expiring them as well, and using COW to save time, money, and storage. We support all of the above (using [AWS](https://docs.release.com/frequently-asked-questions/aws-support-faqs), GCP and soon Azure) and we can easily build a dataset pipeline that is checked out to each [ephemeral](https://www.merriam-webster.com/dictionary/ephemeral) environment where your code is deployed.
+
+You can refresh the dataset to get new changes from the Golden Copy (which is a cleaned version of production, or directly from production as you wish), and you can also update the data in your ephemeral environment to start over from scratch with a new database. You can also set an expiration for each ephemeral environment that will last as long as the branch or feature pull request is open, and engineers can extend the environment duration as needed. Lastly, you can set a schedule for pausing the databases in the dataset so that you save additional costs when the environments are unlikely to be used.
+
+Ready to learn more? Watch the on-demand webinar [“Full Fidelity Data for Ephemeral Environments.”](https://www.youtube.com/watch?v=TAhz_UxPWG4)
+
+‍
