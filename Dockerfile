@@ -56,6 +56,7 @@ COPY package.json pnpm-lock.yaml .npmrc ./
 COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/.next /app/.next
 COPY --from=builder /app/public /app/public
+COPY --from=builder /app/app/blog/posts /app/app/blog/posts
 
 EXPOSE 4001
 ENV PORT 4001
