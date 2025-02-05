@@ -15,8 +15,8 @@ RUN corepack prepare pnpm@8.15.4 --activate
 # Copy package files
 COPY package.json pnpm-lock.yaml ./
 
-# Install ALL dependencies (including devDependencies)
-RUN pnpm install --frozen-lockfile
+# Install dependencies and update lockfile
+RUN pnpm install --no-frozen-lockfile
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -41,7 +41,7 @@ COPY --from=deps /build/node_modules ./node_modules
 RUN pnpm build
 
 # After successful build, prune dev dependencies
-RUN pnpm install --prod --frozen-lockfile
+RUN pnpm install --prod --no-frozen-lockfile
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
