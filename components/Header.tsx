@@ -78,10 +78,10 @@ export default function Header() {
               How it Works
             </Link>
             <Link
-              href="https://release.com/use-cases"
+              href="/case-studies"
               className="text-sm font-medium hover:text-gray-300 py-2 md:py-0"
             >
-              Use Cases
+              Case Studies
             </Link>
             <Link
               href="/blog"
