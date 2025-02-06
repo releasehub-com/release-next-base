@@ -70,7 +70,7 @@ export default function CloudHeroComponent() {
           <div className="flex flex-col justify-center space-y-6">
             <div className="relative rounded-lg overflow-hidden shadow-xl bg-gray-800">
               <Image
-                src="/hero.svg"
+                src="/blog-images/hero.svg"
                 alt="Release platform interface"
                 width={800}
                 height={500}

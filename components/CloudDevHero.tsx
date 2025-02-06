@@ -46,7 +46,7 @@ export default function CloudDevHeroComponent() {
           </div>
           <div className="flex items-center justify-center">
             <Image
-              src="/hero.svg"
+              src="/blog-images/hero.svg"
               width={600}
               height={400}
               alt="Cloud Development Environment"
