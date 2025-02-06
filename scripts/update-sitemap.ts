@@ -1,4 +1,10 @@
-import { MetadataRoute } from "next";
+import fs from "fs";
+import path from "path";
+
+const SITEMAP_PATH = path.join(process.cwd(), "app/sitemap.ts");
+
+function generateSitemapContent() {
+  const template = `import { MetadataRoute } from "next";
 import { parseStringPromise } from "xml2js";
 import fs from "fs";
 import path from "path";
@@ -58,7 +64,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const entries: MetadataRoute.Sitemap = [
       // Webflow routes
       ...webflowUrls.map(route => ({
-        url: `${baseUrl}/${route}`,
+        url: \`\${baseUrl}/\${route}\`,
         lastModified: new Date(),
         changeFrequency: "daily" as const,
         priority: 0.8,
@@ -66,7 +72,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
       // App routes
       ...appRoutes.map(route => ({
-        url: `${baseUrl}/${route}`,
+        url: \`\${baseUrl}/\${route}\`,
         lastModified: new Date(),
         changeFrequency: "daily" as const,
         priority: route === "" ? 1 : 0.8,
@@ -74,7 +80,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
       // Blog index
       {
-        url: `${baseUrl}/blog`,
+        url: \`\${baseUrl}/blog\`,
         lastModified: new Date(),
         changeFrequency: "daily" as const,
         priority: 0.9,
@@ -82,7 +88,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
       // Blog posts
       ...blogPosts.map(post => ({
-        url: `${baseUrl}/blog/${post.slug}`,
+        url: \`\${baseUrl}/blog/\${post.slug}\`,
         lastModified: new Date(post.publishDate),
         changeFrequency: "weekly" as const,
         priority: 0.7,
@@ -96,23 +102,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // If fetching fails, return app routes and blog posts
     return [
       ...appRoutes.map(route => ({
-        url: `${baseUrl}/${route}`,
+        url: \`\${baseUrl}/\${route}\`,
         lastModified: new Date(),
         changeFrequency: "daily" as const,
         priority: route === "" ? 1 : 0.8,
       })),
       {
-        url: `${baseUrl}/blog`,
+        url: \`\${baseUrl}/blog\`,
         lastModified: new Date(),
         changeFrequency: "daily" as const,
         priority: 0.9,
       },
       ...blogPosts.map(post => ({
-        url: `${baseUrl}/blog/${post.slug}`,
+        url: \`\${baseUrl}/blog/\${post.slug}\`,
         lastModified: new Date(post.publishDate),
         changeFrequency: "weekly" as const,
         priority: 0.7,
       })),
     ];
   }
+}`;
+
+  return template;
 }
+
+function updateSitemap() {
+  const content = generateSitemapContent();
+  fs.writeFileSync(SITEMAP_PATH, content, 'utf8');
+  console.log('Sitemap updated successfully!');
+}
+
+updateSitemap(); 

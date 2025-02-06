@@ -22,7 +22,8 @@
     "update-blog-dates": "ts-node scripts/update-blog-dates.ts",
     "update-blog-dates:dry-run": "ts-node scripts/update-blog-dates.ts --dry-run",
     "convert-inline": "ts-node scripts/convert-inline-code.ts",
-    "convert-inline:dry": "ts-node scripts/convert-inline-code.ts --dry-run"
+    "convert-inline:dry": "ts-node scripts/convert-inline-code.ts --dry-run",
+    "update-sitemap": "ts-node scripts/update-sitemap.ts"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.1",
