@@ -1,384 +1,235 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Search } from "lucide-react";
-import { blogConfig } from "../config";
 import { BlogPost } from "../types";
+import { getAuthorInfo } from "../lib/authors";
+import { blogConfig } from "../config";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { getAuthorInfo } from "@/app/blog/lib/authors";
-
-const POSTS_PER_PAGE = 15;
 
 interface BlogIndexProps {
-  searchParams: {
-    category?: string;
-    page?: string;
-    search?: string;
-  };
   posts: BlogPost[];
   categories: string[];
+  searchParams: { category?: string };
 }
 
 export default function BlogIndex({
-  searchParams,
   posts,
   categories,
+  searchParams,
 }: BlogIndexProps) {
-  const router = useRouter();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState(searchParams.search || "");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(
+    searchParams.category || "",
+  );
 
-  // Update the selectedCategory logic to handle both AI%2FML and ai
-  const getSelectedCategory = (category?: string) => {
-    if (!category) return "All";
-    // Decode the URL parameter and handle both cases
-    const decodedCategory = decodeURIComponent(category.toLowerCase());
-    if (decodedCategory === "ai/ml" || decodedCategory === "ai") {
-      return "ai";
-    }
-    return category;
-  };
-
-  const selectedCategory = getSelectedCategory(searchParams.category);
-
-  // Local state for search input
-  const [searchInput, setSearchInput] = useState(searchQuery);
-
-  // Update search input when URL changes
-  useEffect(() => {
-    setSearchInput(searchQuery);
-  }, [searchQuery]);
-
+  // Get featured post
   const featuredPost = posts.find(
     (post) => post.slug === blogConfig.featuredPost,
   );
 
-  // Filter posts by search query and category
-  const filteredPosts = posts.filter((post) => {
-    const matchesSearch = searchQuery
-      ? post.frontmatter.title
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        post.frontmatter.summary
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase())
-      : true;
+  // Filter posts excluding the featured post
+  const filteredPosts = useMemo(() => {
+    return posts
+      .filter((post) => post.slug !== blogConfig.featuredPost)
+      .filter((post) => {
+        const matchesSearch =
+          post.frontmatter.title
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          post.frontmatter.summary
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase());
 
-    // Only filter by category if not "All"
-    const matchesCategory =
-      selectedCategory === "All"
-        ? true
-        : post.frontmatter.categories?.some(
-            (cat) => cat.toLowerCase() === selectedCategory.toLowerCase(),
-          );
+        const matchesCategory =
+          !selectedCategory ||
+          (post.frontmatter.categories &&
+            post.frontmatter.categories.includes(selectedCategory));
 
-    return matchesSearch && matchesCategory;
-  });
-
-  // Get regular posts (excluding featured post)
-  const allRegularPosts = filteredPosts.filter(
-    (post) => post.slug !== blogConfig.featuredPost,
-  );
-
-  // Calculate pagination
-  const totalPosts = allRegularPosts.length;
-  const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
-  const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
-  const endIndex = startIndex + POSTS_PER_PAGE;
-  const regularPosts = allRegularPosts.slice(startIndex, endIndex);
-
-  const handleSearch = (query: string) => {
-    setSearchInput(query);
-    const params = new URLSearchParams(searchParams);
-    if (query) {
-      params.set("search", query);
-      params.delete("page"); // Reset to first page on new search
-    } else {
-      params.delete("search");
-    }
-    router.push(`/blog?${params.toString()}`, { scroll: false });
-  };
-
-  // Update handleCategoryChange to properly encode AI category
-  const handleCategoryChange = (category: string) => {
-    if (category === "All") {
-      router.push("/blog", { scroll: false });
-    } else {
-      // Special handling for AI category
-      const encodedCategory =
-        category.toLowerCase() === "ai" ? "AI%2FML" : category.toLowerCase();
-      router.push(`/blog?category=${encodedCategory}`, { scroll: false });
-    }
-  };
-
-  const handlePageChange = (page: number) => {
-    const params = new URLSearchParams(searchParams);
-    params.set("page", page.toString());
-    router.push(`/blog?${params.toString()}`, { scroll: false });
-  };
+        return matchesSearch && matchesCategory;
+      });
+  }, [posts, searchTerm, selectedCategory]);
 
   return (
     <>
       <Header />
       <main className="min-h-screen bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-          {/* Selected Category Pill - only show if not "All" */}
-          {selectedCategory !== "All" && (
-            <div className="mb-4">
-              <span className="px-4 py-2 text-sm bg-purple-600 text-white rounded-full">
-                {selectedCategory}
-              </span>
-            </div>
-          )}
-
-          <h1 className="text-3xl font-bold text-white mb-8">
+          <h1 className="text-4xl font-bold text-white mb-12">
             Latest Articles
           </h1>
 
-          {/* Featured Post - always show */}
+          {/* Featured Post - Always visible */}
           {featuredPost && (
-            <Link
-              href={`/blog/${featuredPost.slug}`}
-              className="group block mb-16"
-            >
-              <article className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-750 transition-colors">
-                <div className="grid md:grid-cols-2 gap-6">
-                  {featuredPost.frontmatter.mainImage && (
-                    <div className="relative h-72 md:h-full min-h-[300px] overflow-hidden">
+            <div className="mb-12">
+              <Link href={`/blog/${featuredPost.slug}`}>
+                <div className="group relative rounded-2xl overflow-hidden bg-gray-800 flex flex-col md:flex-row">
+                  {/* Left side - Image */}
+                  <div className="relative w-full md:w-1/2 aspect-[16/9] md:aspect-auto">
+                    {featuredPost.frontmatter.mainImage && (
                       <Image
                         src={featuredPost.frontmatter.mainImage}
-                        alt={featuredPost.frontmatter.title}
+                        alt={
+                          featuredPost.frontmatter.imageAlt ||
+                          featuredPost.frontmatter.title
+                        }
+                        fill
+                        className="object-cover"
+                      />
+                    )}
+                  </div>
+
+                  {/* Right side - Content */}
+                  <div className="relative w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-between">
+                    {/* Categories */}
+                    <div className="flex gap-2 mb-4">
+                      {featuredPost.frontmatter.categories?.map((category) => (
+                        <span
+                          key={category}
+                          className="text-purple-400 text-sm font-medium"
+                        >
+                          {category}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Title and Summary */}
+                    <div>
+                      <h2 className="text-2xl sm:text-3xl font-bold text-white group-hover:text-purple-400 transition-colors mb-4">
+                        {featuredPost.frontmatter.title}
+                      </h2>
+                      <p className="text-gray-300 line-clamp-2 mb-6">
+                        {featuredPost.frontmatter.summary}
+                      </p>
+                    </div>
+
+                    {/* Author and Meta */}
+                    <div className="flex items-center gap-3">
+                      <div className="relative w-10 h-10">
+                        <Image
+                          src={
+                            getAuthorInfo(featuredPost.frontmatter.author).image
+                          }
+                          alt={
+                            getAuthorInfo(featuredPost.frontmatter.author).name
+                          }
+                          fill
+                          className="rounded-full object-cover"
+                        />
+                      </div>
+                      <div>
+                        <div className="text-sm leading-6 text-gray-300">
+                          {getAuthorInfo(featuredPost.frontmatter.author).name}
+                        </div>
+                        <div className="text-sm leading-6 text-gray-400">
+                          {new Date(
+                            featuredPost.frontmatter.publishDate,
+                          ).toLocaleDateString()}
+                          {" · "}
+                          {featuredPost.frontmatter.readingTime} min read
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          )}
+
+          {/* Search Bar */}
+          <div className="mb-8">
+            <input
+              type="text"
+              placeholder="Search posts..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full p-4 rounded-full border border-gray-700 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
+            />
+          </div>
+
+          {/* Category Filters as Pills */}
+          <div className="mb-8 flex flex-wrap gap-2">
+            <button
+              onClick={() => setSelectedCategory("")}
+              className={`px-6 py-2 rounded-full transition-colors ${
+                !selectedCategory
+                  ? "bg-purple-600 text-white"
+                  : "bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700"
+              }`}
+            >
+              All
+            </button>
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-6 py-2 rounded-full transition-colors ${
+                  selectedCategory === category
+                    ? "bg-purple-600 text-white"
+                    : "bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700"
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+
+          {/* Blog Posts Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredPosts.map((post) => (
+              <Link
+                key={post.slug}
+                href={`/blog/${post.slug}`}
+                className="group"
+              >
+                <article className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-750 transition-colors h-full">
+                  {post.frontmatter.mainImage && (
+                    <div className="relative h-48">
+                      <Image
+                        src={post.frontmatter.mainImage}
+                        alt={
+                          post.frontmatter.imageAlt || post.frontmatter.title
+                        }
                         fill
                         className="object-cover"
                       />
                     </div>
                   )}
-                  <div className="p-8 flex flex-col justify-center">
-                    {featuredPost.frontmatter.categories?.length > 0 && (
-                      <div className="flex gap-2 mb-4">
-                        {featuredPost.frontmatter.categories.map((category) => (
-                          <span
-                            key={category}
-                            className="text-xs text-purple-400 font-medium"
-                          >
-                            {category}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                    <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white group-hover:text-purple-400 transition-colors">
-                      {featuredPost.frontmatter.title}
+                  <div className="p-6">
+                    <h2 className="text-xl font-bold text-white group-hover:text-purple-400 transition-colors mb-2">
+                      {post.frontmatter.title}
                     </h2>
-                    <p className="text-gray-400 text-base mb-6">
-                      {featuredPost.frontmatter.summary}
+                    <p className="text-gray-400 mb-4 line-clamp-2">
+                      {post.frontmatter.summary}
                     </p>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center">
                       <Image
-                        src={
-                          getAuthorInfo(featuredPost.frontmatter.author).image
-                        }
-                        alt={
-                          getAuthorInfo(featuredPost.frontmatter.author).name
-                        }
-                        width={24}
-                        height={24}
+                        src={getAuthorInfo(post.frontmatter.author).image}
+                        alt={getAuthorInfo(post.frontmatter.author).name}
+                        width={32}
+                        height={32}
                         className="rounded-full"
                       />
-                      <div className="flex items-center text-sm text-gray-400">
-                        <span className="capitalize">
-                          {getAuthorInfo(featuredPost.frontmatter.author).name}
-                        </span>
-                        <span className="mx-2">•</span>
-                        <span>
-                          {new Date(
-                            featuredPost.frontmatter.publishDate,
-                          ).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          })}
-                        </span>
-                        <span className="mx-2">•</span>
-                        <span>{featuredPost.frontmatter.readingTime} min</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </article>
-            </Link>
-          )}
-
-          <div className="mb-12 space-y-8">
-            {/* Search Bar */}
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
-              </div>
-              <input
-                type="text"
-                value={searchInput}
-                onChange={(e) => handleSearch(e.target.value)}
-                placeholder="Search articles..."
-                className="block w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg 
-                         text-white placeholder-gray-400 focus:outline-none focus:ring-2 
-                         focus:ring-purple-500 focus:border-transparent"
-              />
-            </div>
-
-            {/* Category Pills - with All Articles */}
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => handleCategoryChange("All")}
-                className={`px-4 py-2 rounded-full text-sm ${
-                  selectedCategory === "All"
-                    ? "bg-purple-600 text-white"
-                    : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                }`}
-              >
-                All Articles
-              </button>
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => handleCategoryChange(category)}
-                  className={`px-4 py-2 rounded-full text-sm ${
-                    selectedCategory === category
-                      ? "bg-purple-600 text-white"
-                      : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-
-            {/* Search Results Count */}
-            {searchQuery && (
-              <div className="text-gray-400">
-                Found {totalPosts} {totalPosts === 1 ? "result" : "results"}
-                for "{searchQuery}"
-                {selectedCategory && ` in ${selectedCategory}`}
-              </div>
-            )}
-          </div>
-
-          {/* Regular Posts Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {regularPosts.map((post) => {
-              const authorInfo = getAuthorInfo(post.frontmatter.author);
-
-              return (
-                <Link
-                  key={post.slug}
-                  href={`/blog/${post.slug}`}
-                  className="group"
-                >
-                  <article className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-750 transition-colors">
-                    {post.frontmatter.mainImage && (
-                      <div className="relative h-48 overflow-hidden">
-                        <Image
-                          src={post.frontmatter.mainImage}
-                          alt={post.frontmatter.title}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    )}
-                    <div className="p-6">
-                      {post.frontmatter.categories?.length > 0 && (
-                        <div className="flex gap-2 mb-4">
-                          {post.frontmatter.categories.map((category) => (
-                            <span
-                              key={category}
-                              className="text-xs text-purple-400 font-medium"
-                            >
-                              {category}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                      <h2 className="text-xl font-bold mb-3 text-white group-hover:text-purple-400 transition-colors">
-                        {post.frontmatter.title}
-                      </h2>
-                      <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-                        {post.frontmatter.summary}
-                      </p>
-                      <div className="flex items-center gap-2 mt-4 text-sm text-gray-400">
-                        <Image
-                          src={authorInfo.image}
-                          alt={authorInfo.name}
-                          width={24}
-                          height={24}
-                          className="rounded-full"
-                        />
-                        <span>{authorInfo.name}</span>
-                        <span>•</span>
-                        <time dateTime={post.frontmatter.publishDate}>
+                      <div className="ml-3">
+                        <p className="text-white text-sm">
+                          {getAuthorInfo(post.frontmatter.author).name}
+                        </p>
+                        <p className="text-gray-500 text-sm">
                           {new Date(
                             post.frontmatter.publishDate,
                           ).toLocaleDateString()}
-                        </time>
+                          {" · "}
+                          {post.frontmatter.readingTime} min read
+                        </p>
                       </div>
                     </div>
-                  </article>
-                </Link>
-              );
-            })}
+                  </div>
+                </article>
+              </Link>
+            ))}
           </div>
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="mt-12 flex justify-center gap-2">
-              {currentPage > 1 && (
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"
-                >
-                  Previous
-                </button>
-              )}
-
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (page) => (
-                  <button
-                    key={page}
-                    onClick={() => handlePageChange(page)}
-                    className={`px-4 py-2 rounded-lg transition-colors ${
-                      currentPage === page
-                        ? "bg-purple-600 text-white"
-                        : "bg-gray-800 text-white hover:bg-gray-700"
-                    }`}
-                  >
-                    {page}
-                  </button>
-                ),
-              )}
-
-              {currentPage < totalPages && (
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"
-                >
-                  Next
-                </button>
-              )}
-            </div>
-          )}
-
-          {/* No posts message */}
-          {regularPosts.length === 0 && (
-            <div className="text-center text-gray-400 py-12">
-              <p>
-                No articles found
-                {searchQuery && ` matching "${searchQuery}"`}
-                {selectedCategory && ` in ${selectedCategory}`}
-              </p>
-            </div>
-          )}
         </div>
       </main>
       <Footer />
