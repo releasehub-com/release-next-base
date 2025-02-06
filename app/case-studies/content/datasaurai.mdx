@@ -1,0 +1,81 @@
+---
+title: "How Release was able to easily replicate the complex environments of Datasaur.ai"
+description: "Datasaur is making data labeling simple."
+publishDate: "2024-03-01T16:29:50.000Z"
+logo: "/case-study-images/1f668a1eca8e16461fe596b61ece5158.svg"
+thumbnail: "/case-study-images/8a406138434670fb4294918ed6cc6af7.png"
+---
+
+#### About the client
+
+Datasaur is making data labeling simple. They set the standard for best practices in both data labeling and extracting valuable insights from raw data. By labeling data with Datasaur, companies are able to create great machine learning solutions.
+
+#### Problem
+
+When Datasaur came to Release, they were running their application on multiple EC2 nodes in AWS. The engineering team was small but growing, and the VP of Engineering was responsible for their Architecture, implementation, DevOps and SRE functions. They were a seed-round funded startup at the time but didn’t have a budget to grow headcount, especially in the area of DevOps, so the VP of Engineering spent many late nights and weekends keeping the systems running. Like many startups they were making it work, but as their team grew they knew they needed to improve their deployment and environment ecosystem.
+
+Initially, they needed help building out their pre-production staging ecosystem. They first needed the traditional environments for staging and QA that were automatically deployed when code changed. They also liked the idea of having environments for every Pull Request to enable better code reviews and higher quality deploys.
+
+After adopting Release for pre-production and staging environments, Datasaur experienced 4x growth in their business and their production ecosystem became a challenge. Scaling to meet the demand of their users was an issue. There were production outages and the existing production environment didn’t afford them the ability to scale up and down with the demands of their users.
+
+#### How was this solved before
+
+In the past, the typical solution to building out a pre-product environment ecosystem for a startup like Datasaur would be to just simply try and re-create the production environment manually. You’d end up with a single shared environment that all the developers used but soon you’d quickly realize that it, being a shared resource, became a bottleneck.
+
+Because creating the second or third staging environment was time consuming, most startups at the stage of Datasaur wouldn’t invest in automatically created environments with each PR.
+
+You’d also need to begin building out automation around CI/CD which would require more resources to create an automated workflow.
+
+Solving spikes in production usage would require manual intervention and constant monitoring to ensure you were keeping up with the demand. You may have used ECR with auto-scaling, but ensuring your application was architected to take advantage of auto-scaling is a time and resource heavy project.
+
+Typically all of these projects would require hiring more engineers, or more late nights from the most senior engineer or person responsible.
+
+A typical solution to migrate to a better production system might involve bringing in a DevOps person (or team) to create and manage the workflows that you’d need in order to utilize Kubernetes, but this is an expensive and very time consuming solution. This also won’t solve the issue of urgency for companies that need a solution now without a DevOps team, and without extensive Kubernetes knowledge.  
+
+Another approach may have been to move to something like Heroku, but because Datasaur had a complex application, Heroku was not an option.
+
+#### A new solution
+
+Datasaur needed a new solution that could solve their pre-production environment problems in a fast, cost effective, and streamlined manner. Their application was multi service and complex, which is typically difficult to work with in other platforms such as Heroku. Because Release supports complex, multi-service applications we were able to easily replicate their complex environments.
+
+As Datasaur grew, their lack of ample environments was causing them issues. They needed a consistent set of environments they wouldn’t need to worry about so they could focus on delivering value to their customers.
+
+Here at Release we were able to provide Datasaur with an Environments as a Service solution. They used Release to create permanent staging environments that tracked their mainline branch. Whenever a push to their mainline branch occured, the main staging environment was automatically updated. Datasaur created automated tests around this process to increase the quality of code deployed to production.
+
+Because deployment automation from source control to environment is part of the Release platform, Datasaur didn’t have to spend time building out automation for CI/CD.
+
+Ephemeral Environments come standard with Release, so they also started utilizing environments with every Pull Request that track feature branches to allow developers and stakeholders to preview changes before they were merged into the mainline branch.
+
+Lastly, as Datasaur started experiencing rapid growth, we began speaking with them about running production environments in Kubernetes as a way to manage their growth. Because the deployment process and pre-production environment templates were already being run through Release and deployed into Kubernetes, they began seeing how Release could solve their production scaling issues.
+
+We created a production EKS cluster for Datasaur in preparation for the move to Release powered production when Datasaur had scaling issues over one weekend. The VP of Engineering flipped the switch on DNS and Release began powering production in the middle of an outage to get them the capacity they needed to handle their growth. The lights came back on and they’ve been powered by Release ever since.
+
+#### Retrospective
+
+Datasaur came to us to get reproducible pre-production environments, but quickly saw the path to Kubernetes production as being the right choice. Release migrated Datasaur to Kubernetes seamlessly and without the typical company resources required to make that happen. Instead of hiring a complete DevOps team, and taking up to a year to be fully migrated to Kubernetes, we had them up and running in days, all with a DevOps team of one. They are now an enterprise customer using all of Release’s features.
+
+#### What’s next
+
+As Datasaur continues to grow, they can more fully lean into the features of Release in production so they can scale their operation without having to bring on a full-time DevOps Team. As new engineers join the team, they will gain the benefits of an automated developer experience with environments on-demand. Datasaur won’t have to invest heavily in operational resources for their platform and, instead, will focus those hires on core product work to drive value for their business. They came to us for staging, but grew with us when they realized we could provide an easy, cost-effective, and time-saving way to use Kubernetes in all their environments.
+
+#### Liked most about Release
+
+In addition to relying on Release as their Kubernetes-in-a-box solution, Datasaur also relies on us as their solutions architects. For example, when a random issue arises, we can help them decipher the problem and create a solution to fix it. We fuel their rocketship and have a hand in their mission to make sure they reach their end goal.
+
+Having an extra set of eyes on their operation lets them know we’ve got their back. We monitor their system and catch things they need to know. When you’ve got a small DevOps team, it’s nice to know you’ve got an extra DevOps team paying attention without the cost typically associated with it.
+
+#### A word from the client
+
+> Release has enabled us to move quickly as a startup and deliver higher quality and better solutions to our customers. _We have an environment platform that would have taken us years to build, but instead we’ve been able to focus on our application. We’ve been able to stay lean with our budget, but we haven’t had to sacrifice capabilities. We can add new services and test them immediately. They’ve been a fantastic partner and we couldn’t have scaled to meet our rapid growth without them._
+
+###### Ivan Lee
+
+###### CEO • Datasaur
+
+![Photo of Ivan Lee, CEO of Datasaur](https://assets-global.website-files.com/603dd147c5b0a480611bd348/65e1e2903abc6243ce8efa37_Ivan%20Lee.png)
+
+Ivan Lee
+
+CEO • Datasaur
+
+<CaseStudyCTA />
