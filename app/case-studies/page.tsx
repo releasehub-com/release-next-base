@@ -20,7 +20,9 @@ function getCaseStudies(): CaseStudy[] {
 
     // Check if directory exists
     if (!fs.existsSync(caseStudiesDirectory)) {
-      console.error(`Case studies directory not found: ${caseStudiesDirectory}`);
+      console.error(
+        `Case studies directory not found: ${caseStudiesDirectory}`,
+      );
       return [];
     }
 
