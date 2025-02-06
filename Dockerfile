@@ -32,6 +32,10 @@ COPY package.json pnpm-lock.yaml .npmrc ./
 COPY . .
 COPY --from=deps /build/node_modules ./node_modules
 
+# Ensure case studies directory exists and has correct permissions
+RUN mkdir -p app/case-studies/content public/case-study-images && \
+    chmod -R 755 app/case-studies/content public/case-study-images
+
 # Build the application
 RUN pnpm build
 
@@ -57,6 +61,7 @@ COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/.next /app/.next
 COPY --from=builder /app/public /app/public
 COPY --from=builder /app/app/blog/posts /app/app/blog/posts
+COPY --from=builder /app/app/case-studies/content /app/app/case-studies/content
 
 EXPOSE 4001
 ENV PORT 4001

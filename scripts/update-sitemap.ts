@@ -128,8 +128,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
 function updateSitemap() {
   const content = generateSitemapContent();
-  fs.writeFileSync(SITEMAP_PATH, content, 'utf8');
-  console.log('Sitemap updated successfully!');
+  fs.writeFileSync(SITEMAP_PATH, content, "utf8");
+  console.log("Sitemap updated successfully!");
 }
 
-updateSitemap(); 
+updateSitemap();

@@ -6,3 +6,6 @@ README.md
 .next
 .git
 package-lock.json
+# Don't exclude case studies content
+# app/case-studies/content
+# public/case-study-images

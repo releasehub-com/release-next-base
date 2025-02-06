@@ -1,0 +1,62 @@
+---
+title: "B2B SaaS On-premise/VPC environments made easy - Monad case study"
+description: "Monad is a security company that collects and aggregates data from the information security tools used by an enterprise and generates insights for a more holistic view of their security posture. "
+publishDate: "2024-02-29T22:08:15.000Z"
+logo: "/case-study-images/a4e636f0dabe5d84067ba1ad49581fbb.svg"
+thumbnail: "/case-study-images/a8772fde334097dc407dd694c3165473.png"
+---
+
+#### About the client
+
+Monad is a security company that collects and aggregates data from the information security tools used by an enterprise and generates insights for a more holistic view of their security posture. They deliver their software as an “on-cloud” solution into their customers’ VPCs. 
+
+#### Release Technologies used:**‍**
+
+- Preview Environments with every Pull Request for User Acceptance Testing
+- Permanent Staging Environments
+- On-Demand Sales Demo Environments for reproducible and consistent sales demos across industry verticals.
+- Instant Datasets for instantly loading appropriate data into sales and preview environments.
+- On-cloud distribution for delivering Monad “on-cloud” into their customer VPCs.
+- Production Environments for delivery of the Monad hosted SaaS solution
+
+#### Problem
+
+Monad came to Release early in their evolution as a startup before they had invested in building out a DevOps team. They initially approached Release for help getting their software distributed into one of their early customer’s cloud accounts running in AWS. They had a looming deadline and had yet to begin the work to design and implement a way to deliver their software into their customer’s cloud/VPC.
+
+With this looming deadline and a need to move quickly, Monad needed a solution that could easily define their application so it could be reproduced and delivered within a few weeks. Their application was a combination of open-source software, connections to datasets like Snowflake, and custom in-house software. The complexity of the application required more than just containerizing their solution and offering it as a docker image. There were many interdependent services and the architecture resembled a micro-services ecosystem. 
+
+The challenge they faced was ‘How are we going to take this architecture and deliver it into our customer’s cloud, while also having the ability to upgrade and monitor the software over time?’
+
+With only a few weeks to implement and a team that was overworked without deep DevOps skills, they approached Release as they knew we had a system that could easily reproduce environments and deploy into AWS.
+
+#### How this would have been solved before
+
+In some cases, when the application is just one service, a company could build a container and allow their customers to deploy the container on their own. In other situations where the application was more complex with many services, a company would have no other option than to build out a custom solution built internally. Usually this would involve a DevOps engineer (or many) to write custom scripts that would essentially define a rigid definition of their application, a mechanism to connect to their customer’s AWS account with appropriate permissions and some sort of ability to upgrade the software in a controlled way when new releases were available. 
+
+The upgrade mechanism is especially difficult as it needs to allow for the customer to test the upgrade and deploy when they are comfortable doing so. Monitoring is also a tricky problem to solve as the solution would need some way to send alerts and events out of the customer’s VPC for monitoring and analysis.
+
+In the end, all of this is custom and difficult to implement and could easily take a team of highly skilled DevOps engineers many months or years to implement. This is also not a core product value offering and conflicts with resources that could be devoted to security product features.
+
+#### A new solution
+
+Because Release uses a standard application definition, Monad was able to define their multi-service application in a Release Application Template. Additionally, since Release is designed to deploy into a Kubernetes cluster running within a customer’s AWS account, Monad was able to leverage this capability to easily deploy their solution into their customer’s AWS account and gain the benefits of Kubernetes for their application. Release provided Monad with a custom landing page which allowed their customers to connect their AWS account with Monad for a seamless installation process. 
+
+The ability to add monitoring within the Kubernetes cluster with sidecar containers is built into the Release solution. Release provided core infrastructure monitoring while Monad was able to install their own agent to monitor application level logs and events.
+
+Lastly, because Release easily allows for creation of new environments, when a new version of Monad was available to their customers, a preview version of the upgrade could be distributed into a “staging” environment within their customers AWS account for testing and preview. When the customer was ready to upgrade, they simply approved the upgrade and the new environment became primary and the old version was automatically deprecated.
+
+One of the other benefits of Release that Monad is leveraging is using Release for their own internal development. Because their development/pre-production ecosystem and their customer deployment solution is on the same platform, Monad is able to quickly iterate, test, and deploy ephemeral environments. This gives them the ability to deliver quickly without worrying about managing their pre-production environment and infrastructure. Monad uses the same tool to deliver seamlessly all the way from development to testing to user acceptance testing to production.
+
+#### What’s next
+
+Monad will be using Release to deploy and manage their own production environment for hosted customers. This will bring their entire pre-production, production, and SaaS on-cloud environment ecosystem completely under one roof. This greatly simplifies their entire product development lifecycle as all environments from dev to prod to on-cloud delivery is identical. 
+
+#### A word from the client
+
+> Building out a team to manage infrastructure is a huge expense and would have taken us many months to build an on-premise/on-cloud delivery platform. We would have been on the hook to maintain it and improve it and that would have been at the expense of building our core product. Release has enabled us to focus on building our product without worrying about how we’re going to develop, deploy, and deliver it to our customers. It’s fantastic.
+
+###### Jacolon Walker
+
+###### CTO • Monad
+
+<CaseStudyCTA />
