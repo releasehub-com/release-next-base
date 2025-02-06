@@ -62,7 +62,7 @@ export default function EphemeralHeroComponent() {
           <div className="flex flex-col justify-center space-y-6">
             <div className="relative rounded-lg overflow-hidden shadow-xl bg-gray-800">
               <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/updated_graphics_bg-iG5hgnqrLgKeUxaGxIhgLzhkbgVEwt.svg"
+                src="/hero.svg"
                 alt="Release platform interface"
                 width={800}
                 height={500}
