@@ -1,135 +1,206 @@
 import fs from "fs";
 import path from "path";
-
-const SITEMAP_PATH = path.join(process.cwd(), "app/sitemap.ts");
-
-function generateSitemapContent() {
-  const template = `import { MetadataRoute } from "next";
+import { Builder } from "xml2js";
 import { parseStringPromise } from "xml2js";
-import fs from "fs";
-import path from "path";
-import matter from "gray-matter";
 
-interface SitemapEntry {
+interface SitemapURL {
+  loc: string;
+  lastmod: string;
+  changefreq: string;
+  priority: string;
+}
+
+interface Sitemap {
+  urlset: {
+    $: { xmlns: string };
+    url: SitemapURL[];
+  };
+}
+
+interface WebflowSitemapEntry {
   loc: string[];
 }
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://release.com";
+const APP_ROUTES = [
+  "ephemeral-environments-platform",
+  "gitlab-competitor",
+  "kubernetes-management",
+  "replicated-competitor",
+  "cloud-development-environments",
+  "heroku-competitor",
+  "platform-as-a-service",
+  "comparison",
+  "comparison/gitlab",
+  "comparison/signadot",
+  "comparison/bunnyshell",
+  "comparison/qovery",
+  "comparison/shipyard",
+];
 
-  // Core application routes that we manage
-  const appRoutes = [
-    "",
-    "gitlab",
-    "gitlab-competitor",
-    "kubernetes-management", 
-    "replicated-competitor",
-    "cloud-development-environments",
-    "platform-as-a-service",
-    "ephemeral-environments-platform",
-  ];
+const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL || "https://release.com";
 
-  // Get blog posts from MDX files
-  const postsDirectory = path.join(process.cwd(), "app/blog/posts");
-  const blogPosts = fs.readdirSync(postsDirectory)
-    .filter(filename => filename.endsWith('.mdx'))
-    .map(filename => {
-      const filePath = path.join(postsDirectory, filename);
-      const fileContent = fs.readFileSync(filePath, 'utf8');
-      const { data } = matter(fileContent);
-      
-      return {
-        slug: filename.replace('.mdx', ''),
-        publishDate: data.publishDate,
-      };
-    });
+async function generateSitemap(): Promise<void> {
+  // Get blog posts
+  const blogDirectory = path.join(process.cwd(), "app/blog/posts");
+  const blogFiles = fs.readdirSync(blogDirectory);
+  const blogSlugs = blogFiles
+    .filter((file) => file.endsWith(".mdx"))
+    .map((file) => file.replace(/\.mdx$/, ""));
+
+  // Get case studies
+  const caseStudiesDirectory = path.join(
+    process.cwd(),
+    "app/case-studies/content",
+  );
+  const caseStudyFiles = fs.existsSync(caseStudiesDirectory)
+    ? fs.readdirSync(caseStudiesDirectory)
+    : [];
+  const caseStudySlugs = caseStudyFiles
+    .filter((file) => file.endsWith(".mdx"))
+    .map((file) => file.replace(/\.mdx$/, ""));
+
+  const today = new Date().toISOString().split("T")[0];
 
   try {
     // Fetch Webflow sitemap
-    const webflowSitemap = await fetch("https://prod.releasehub.com/sitemap.xml");
-    const webflowXml = await webflowSitemap.text();
+    const webflowResponse = await fetch(
+      "https://prod.releasehub.com/sitemap.xml",
+    );
+    const webflowXml = await webflowResponse.text();
     const webflowData = await parseStringPromise(webflowXml);
 
-    // Extract URLs from Webflow sitemap, excluding blog posts
+    // Extract URLs from Webflow sitemap, excluding blog, case studies, and app routes
     const webflowUrls = webflowData.urlset.url
-      .map((entry: SitemapEntry) => entry.loc[0])
+      .map((entry: WebflowSitemapEntry) => entry.loc[0])
       .map((url: string) => url.replace("https://release.com/", ""))
-      .filter((path: string) => 
-        path !== "" && 
-        !path.startsWith("blog/") && // Exclude blog posts
-        path !== "blog" // Exclude blog index
+      .filter(
+        (path: string) =>
+          path !== "" &&
+          !path.startsWith("blog/") &&
+          !path.startsWith("case-studies/") &&
+          path !== "blog" &&
+          path !== "case-studies" &&
+          !APP_ROUTES.includes(path),
       );
 
-    // Generate sitemap entries
-    const entries: MetadataRoute.Sitemap = [
-      // Webflow routes
-      ...webflowUrls.map(route => ({
-        url: \`\${baseUrl}/\${route}\`,
-        lastModified: new Date(),
-        changeFrequency: "daily" as const,
-        priority: 0.8,
-      })),
-
-      // App routes
-      ...appRoutes.map(route => ({
-        url: \`\${baseUrl}/\${route}\`,
-        lastModified: new Date(),
-        changeFrequency: "daily" as const,
-        priority: route === "" ? 1 : 0.8,
-      })),
-
-      // Blog index
-      {
-        url: \`\${baseUrl}/blog\`,
-        lastModified: new Date(),
-        changeFrequency: "daily" as const,
-        priority: 0.9,
+    const sitemap: Sitemap = {
+      urlset: {
+        $: {
+          xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9",
+        },
+        url: [
+          {
+            loc: baseUrl,
+            lastmod: today,
+            changefreq: "daily",
+            priority: "1.0",
+          },
+          {
+            loc: `${baseUrl}/blog`,
+            lastmod: today,
+            changefreq: "daily",
+            priority: "0.8",
+          },
+          {
+            loc: `${baseUrl}/case-studies`,
+            lastmod: today,
+            changefreq: "daily",
+            priority: "0.8",
+          },
+          // Add app routes
+          ...APP_ROUTES.map((route) => ({
+            loc: `${baseUrl}/${route}`,
+            lastmod: today,
+            changefreq: "daily",
+            priority: "0.8",
+          })),
+          // Add blog posts
+          ...blogSlugs.map((slug) => ({
+            loc: `${baseUrl}/blog/${slug}`,
+            lastmod: today,
+            changefreq: "weekly",
+            priority: "0.7",
+          })),
+          // Add case studies
+          ...caseStudySlugs.map((slug) => ({
+            loc: `${baseUrl}/case-studies/${slug}`,
+            lastmod: today,
+            changefreq: "weekly",
+            priority: "0.7",
+          })),
+          // Add Webflow URLs
+          ...webflowUrls.map((path) => ({
+            loc: `${baseUrl}/${path}`,
+            lastmod: today,
+            changefreq: "daily",
+            priority: "0.8",
+          })),
+        ],
       },
+    };
 
-      // Blog posts
-      ...blogPosts.map(post => ({
-        url: \`\${baseUrl}/blog/\${post.slug}\`,
-        lastModified: new Date(post.publishDate),
-        changeFrequency: "weekly" as const,
-        priority: 0.7,
-      })),
-    ];
+    const builder = new Builder();
+    const xml = builder.buildObject(sitemap);
 
-    return entries;
+    fs.writeFileSync("public/sitemap.xml", xml);
+    console.log("Sitemap generated successfully!");
   } catch (error) {
     console.error("Failed to fetch Webflow sitemap:", error);
-
-    // If fetching fails, return app routes and blog posts
-    return [
-      ...appRoutes.map(route => ({
-        url: \`\${baseUrl}/\${route}\`,
-        lastModified: new Date(),
-        changeFrequency: "daily" as const,
-        priority: route === "" ? 1 : 0.8,
-      })),
-      {
-        url: \`\${baseUrl}/blog\`,
-        lastModified: new Date(),
-        changeFrequency: "daily" as const,
-        priority: 0.9,
+    // If Webflow fetch fails, generate sitemap with just our routes
+    const sitemap: Sitemap = {
+      urlset: {
+        $: {
+          xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9",
+        },
+        url: [
+          {
+            loc: baseUrl,
+            lastmod: today,
+            changefreq: "daily",
+            priority: "1.0",
+          },
+          {
+            loc: `${baseUrl}/blog`,
+            lastmod: today,
+            changefreq: "daily",
+            priority: "0.8",
+          },
+          {
+            loc: `${baseUrl}/case-studies`,
+            lastmod: today,
+            changefreq: "daily",
+            priority: "0.8",
+          },
+          ...APP_ROUTES.map((route) => ({
+            loc: `${baseUrl}/${route}`,
+            lastmod: today,
+            changefreq: "daily",
+            priority: "0.8",
+          })),
+          ...blogSlugs.map((slug) => ({
+            loc: `${baseUrl}/blog/${slug}`,
+            lastmod: today,
+            changefreq: "weekly",
+            priority: "0.7",
+          })),
+          ...caseStudySlugs.map((slug) => ({
+            loc: `${baseUrl}/case-studies/${slug}`,
+            lastmod: today,
+            changefreq: "weekly",
+            priority: "0.7",
+          })),
+        ],
       },
-      ...blogPosts.map(post => ({
-        url: \`\${baseUrl}/blog/\${post.slug}\`,
-        lastModified: new Date(post.publishDate),
-        changeFrequency: "weekly" as const,
-        priority: 0.7,
-      })),
-    ];
+    };
+
+    const builder = new Builder();
+    const xml = builder.buildObject(sitemap);
+
+    fs.writeFileSync("public/sitemap.xml", xml);
+    console.log(
+      "Sitemap generated with app routes only (Webflow fetch failed)",
+    );
   }
-}`;
-
-  return template;
 }
 
-function updateSitemap() {
-  const content = generateSitemapContent();
-  fs.writeFileSync(SITEMAP_PATH, content, "utf8");
-  console.log("Sitemap updated successfully!");
-}
-
-updateSitemap();
+generateSitemap().catch(console.error);

@@ -8,114 +8,132 @@ interface SitemapEntry {
   loc: string[];
 }
 
+interface WebflowSitemapEntry {
+  loc: string[];
+}
+
+// Define all static routes in this app
+const APP_ROUTES = [
+  "ephemeral-environments-platform",
+  "gitlab-competitor",
+  "kubernetes-management",
+  "replicated-competitor",
+  "cloud-development-environments",
+  "heroku-competitor",
+  "platform-as-a-service",
+  "comparison",
+  "comparison/gitlab",
+  "comparison/signadot",
+  "comparison/bunnyshell",
+  "comparison/qovery",
+  "comparison/shipyard",
+];
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://release.com";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL || "https://release.com";
 
-  // Core application routes that we manage
-  const appRoutes = [
-    "",
-    "gitlab",
-    "gitlab-competitor",
-    "kubernetes-management",
-    "replicated-competitor",
-    "cloud-development-environments",
-    "platform-as-a-service",
-    "ephemeral-environments-platform",
-  ];
+  // Get blog posts
+  const blogDirectory = path.join(process.cwd(), "app/blog/posts");
+  const blogFiles = fs.readdirSync(blogDirectory);
+  const blogSlugs = blogFiles
+    .filter((file) => file.endsWith(".mdx"))
+    .map((file) => file.replace(/\.mdx$/, ""));
 
-  // Get blog posts from MDX files
-  const postsDirectory = path.join(process.cwd(), "app/blog/posts");
-  const blogPosts = fs
-    .readdirSync(postsDirectory)
-    .filter((filename) => filename.endsWith(".mdx"))
-    .map((filename) => {
-      const filePath = path.join(postsDirectory, filename);
-      const fileContent = fs.readFileSync(filePath, "utf8");
-      const { data } = matter(fileContent);
+  // Get case studies
+  const caseStudiesDirectory = path.join(
+    process.cwd(),
+    "app/case-studies/content",
+  );
+  const caseStudyFiles = fs.existsSync(caseStudiesDirectory)
+    ? fs.readdirSync(caseStudiesDirectory)
+    : [];
+  const caseStudySlugs = caseStudyFiles
+    .filter((file) => file.endsWith(".mdx"))
+    .map((file) => file.replace(/\.mdx$/, ""));
 
-      return {
-        slug: filename.replace(".mdx", ""),
-        publishDate: data.publishDate,
-      };
-    });
+  // Convert app routes to sitemap format
+  const appRoutes = APP_ROUTES.map((route) => ({
+    url: `${baseUrl}/${route}`,
+    lastModified: new Date(),
+  }));
 
   try {
     // Fetch Webflow sitemap
-    const webflowSitemap = await fetch(
+    const webflowResponse = await fetch(
       "https://prod.releasehub.com/sitemap.xml",
+      {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      },
     );
-    const webflowXml = await webflowSitemap.text();
+    const webflowXml = await webflowResponse.text();
     const webflowData = await parseStringPromise(webflowXml);
 
-    // Extract URLs from Webflow sitemap, excluding blog posts
+    // Extract URLs from Webflow sitemap, excluding blog, case studies, and app routes
     const webflowUrls = webflowData.urlset.url
-      .map((entry: SitemapEntry) => entry.loc[0])
+      .map((entry: WebflowSitemapEntry) => entry.loc[0])
       .map((url: string) => url.replace("https://release.com/", ""))
       .filter(
         (path: string) =>
           path !== "" &&
-          !path.startsWith("blog/") && // Exclude blog posts
-          path !== "blog", // Exclude blog index
-      );
-
-    // Generate sitemap entries
-    const entries: MetadataRoute.Sitemap = [
-      // Webflow routes
-      ...webflowUrls.map((route) => ({
-        url: `${baseUrl}/${route}`,
+          !path.startsWith("blog/") &&
+          !path.startsWith("case-studies/") &&
+          path !== "blog" &&
+          path !== "case-studies" &&
+          !APP_ROUTES.includes(path),
+      )
+      .map((path) => ({
+        url: `${baseUrl}/${path}`,
         lastModified: new Date(),
-        changeFrequency: "daily" as const,
-        priority: 0.8,
-      })),
+      }));
 
-      // App routes
-      ...appRoutes.map((route) => ({
-        url: `${baseUrl}/${route}`,
+    return [
+      {
+        url: baseUrl,
         lastModified: new Date(),
-        changeFrequency: "daily" as const,
-        priority: route === "" ? 1 : 0.8,
-      })),
-
-      // Blog index
+      },
       {
         url: `${baseUrl}/blog`,
         lastModified: new Date(),
-        changeFrequency: "daily" as const,
-        priority: 0.9,
       },
-
-      // Blog posts
-      ...blogPosts.map((post) => ({
-        url: `${baseUrl}/blog/${post.slug}`,
-        lastModified: new Date(post.publishDate),
-        changeFrequency: "weekly" as const,
-        priority: 0.7,
+      {
+        url: `${baseUrl}/case-studies`,
+        lastModified: new Date(),
+      },
+      ...appRoutes,
+      ...blogSlugs.map((slug) => ({
+        url: `${baseUrl}/blog/${slug}`,
+        lastModified: new Date(),
       })),
+      ...caseStudySlugs.map((slug) => ({
+        url: `${baseUrl}/case-studies/${slug}`,
+        lastModified: new Date(),
+      })),
+      ...webflowUrls,
     ];
-
-    return entries;
   } catch (error) {
     console.error("Failed to fetch Webflow sitemap:", error);
-
-    // If fetching fails, return app routes and blog posts
+    // If Webflow fetch fails, return just our app routes
     return [
-      ...appRoutes.map((route) => ({
-        url: `${baseUrl}/${route}`,
+      {
+        url: baseUrl,
         lastModified: new Date(),
-        changeFrequency: "daily" as const,
-        priority: route === "" ? 1 : 0.8,
-      })),
+      },
       {
         url: `${baseUrl}/blog`,
         lastModified: new Date(),
-        changeFrequency: "daily" as const,
-        priority: 0.9,
       },
-      ...blogPosts.map((post) => ({
-        url: `${baseUrl}/blog/${post.slug}`,
-        lastModified: new Date(post.publishDate),
-        changeFrequency: "weekly" as const,
-        priority: 0.7,
+      {
+        url: `${baseUrl}/case-studies`,
+        lastModified: new Date(),
+      },
+      ...appRoutes,
+      ...blogSlugs.map((slug) => ({
+        url: `${baseUrl}/blog/${slug}`,
+        lastModified: new Date(),
+      })),
+      ...caseStudySlugs.map((slug) => ({
+        url: `${baseUrl}/case-studies/${slug}`,
+        lastModified: new Date(),
       })),
     ];
   }

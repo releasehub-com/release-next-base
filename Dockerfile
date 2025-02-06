@@ -39,6 +39,9 @@ RUN mkdir -p app/case-studies/content public/case-study-images && \
 # Build the application
 RUN pnpm build
 
+# Generate sitemap
+RUN pnpm update-sitemap
+
 # After successful build, prune dev dependencies
 RUN pnpm install --prod --no-frozen-lockfile
 
