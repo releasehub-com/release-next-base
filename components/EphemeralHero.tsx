@@ -77,7 +77,7 @@ export default function EphemeralHeroComponent() {
               </blockquote>
               <div className="mt-4 flex items-center">
                 <Image
-                  src="/DB-Logo_Blue-MD-AX8qss5c3JystqyyNzAiKzp0jO26bG.webp"
+                  src="/blog-images/DB-Logo_Blue-MD-AX8qss5c3JystqyyNzAiKzp0jO26bG.webp"
                   alt="DebtBook Logo"
                   width={60}
                   height={20}
