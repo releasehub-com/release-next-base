@@ -27,6 +27,7 @@ const APP_ROUTES = [
   "comparison/bunnyshell",
   "comparison/qovery",
   "comparison/shipyard",
+  "partners",
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -48,6 +49,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ? fs.readdirSync(caseStudiesDirectory)
     : [];
   const caseStudySlugs = caseStudyFiles
+    .filter((file) => file.endsWith(".mdx"))
+    .map((file) => file.replace(/\.mdx$/, ""));
+
+  // Get partners
+  const partnersDirectory = path.join(process.cwd(), "app/partners/content");
+  const partnerFiles = fs.existsSync(partnersDirectory)
+    ? fs.readdirSync(partnersDirectory)
+    : [];
+  const partnerSlugs = partnerFiles
     .filter((file) => file.endsWith(".mdx"))
     .map((file) => file.replace(/\.mdx$/, ""));
 
@@ -108,6 +118,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: `${baseUrl}/case-studies/${slug}`,
         lastModified: new Date(),
       })),
+      ...partnerSlugs.map((slug) => ({
+        url: `${baseUrl}/partners/${slug}`,
+        lastModified: new Date(),
+      })),
       ...webflowUrls,
     ];
   } catch (error) {
@@ -133,6 +147,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })),
       ...caseStudySlugs.map((slug) => ({
         url: `${baseUrl}/case-studies/${slug}`,
+        lastModified: new Date(),
+      })),
+      ...partnerSlugs.map((slug) => ({
+        url: `${baseUrl}/partners/${slug}`,
         lastModified: new Date(),
       })),
     ];
