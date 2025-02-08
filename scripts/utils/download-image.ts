@@ -12,8 +12,12 @@ export async function downloadImage(
   const filename = `${hash}${extension}`;
   const outputPath = path.join(outputDir, filename);
 
+  console.log(`Downloading ${url}`);
+  console.log(`Output path: ${outputPath}`);
+
   // Skip if file already exists
   if (fs.existsSync(outputPath)) {
+    console.log(`File already exists: ${outputPath}`);
     return filename;
   }
 
@@ -32,9 +36,13 @@ export async function downloadImage(
 
         fileStream.on("finish", () => {
           fileStream.close();
+          console.log(`Successfully downloaded ${url} to ${outputPath}`);
           resolve(filename);
         });
       })
-      .on("error", reject);
+      .on("error", (error) => {
+        console.error(`Error downloading ${url}:`, error);
+        reject(error);
+      });
   });
 }
