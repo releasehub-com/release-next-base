@@ -35,6 +35,7 @@ const APP_ROUTES = [
   "comparison/bunnyshell",
   "comparison/qovery",
   "comparison/shipyard",
+  "partners",
 ];
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL || "https://release.com";
@@ -56,6 +57,15 @@ async function generateSitemap(): Promise<void> {
     ? fs.readdirSync(caseStudiesDirectory)
     : [];
   const caseStudySlugs = caseStudyFiles
+    .filter((file) => file.endsWith(".mdx"))
+    .map((file) => file.replace(/\.mdx$/, ""));
+
+  // Get partners
+  const partnersDirectory = path.join(process.cwd(), "app/partners/content");
+  const partnerFiles = fs.existsSync(partnersDirectory)
+    ? fs.readdirSync(partnersDirectory)
+    : [];
+  const partnerSlugs = partnerFiles
     .filter((file) => file.endsWith(".mdx"))
     .map((file) => file.replace(/\.mdx$/, ""));
 
@@ -128,6 +138,13 @@ async function generateSitemap(): Promise<void> {
             changefreq: "weekly",
             priority: "0.7",
           })),
+          // Add partners
+          ...partnerSlugs.map((slug) => ({
+            loc: `${baseUrl}/partners/${slug}`,
+            lastmod: today,
+            changefreq: "weekly",
+            priority: "0.7",
+          })),
           // Add Webflow URLs
           ...webflowUrls.map((path) => ({
             loc: `${baseUrl}/${path}`,
@@ -185,6 +202,12 @@ async function generateSitemap(): Promise<void> {
           })),
           ...caseStudySlugs.map((slug) => ({
             loc: `${baseUrl}/case-studies/${slug}`,
+            lastmod: today,
+            changefreq: "weekly",
+            priority: "0.7",
+          })),
+          ...partnerSlugs.map((slug) => ({
+            loc: `${baseUrl}/partners/${slug}`,
             lastmod: today,
             changefreq: "weekly",
             priority: "0.7",
