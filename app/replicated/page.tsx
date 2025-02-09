@@ -3,15 +3,15 @@
 import dynamic from "next/dynamic";
 import LandingPageWrapper from "@/components/LandingPageWrapper";
 
-const KubernetesLandingPage = dynamic(
-  () => import("@/components/KubernetesLandingPage").then((mod) => mod.default),
+const ReplicatedLandingPage = dynamic(
+  () => import("@/components/ReplicatedLandingPage").then((mod) => mod.default),
   { ssr: false },
 );
 
-export default function KubernetesManagementPage() {
+export default function ReplicatedPage() {
   return (
     <LandingPageWrapper>
-      <KubernetesLandingPage />
+      <ReplicatedLandingPage />
     </LandingPageWrapper>
   );
-}
+} 

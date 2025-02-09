@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import LandingPageWrapper from "@/components/LandingPageWrapper";
 
 const CloudDevLanding = dynamic(
   () => import("@/components/CloudDevLanding").then((mod) => mod.default),
@@ -8,5 +9,9 @@ const CloudDevLanding = dynamic(
 );
 
 export default function CloudDevelopmentEnvironmentsPage() {
-  return <CloudDevLanding />;
+  return (
+    <LandingPageWrapper>
+      <CloudDevLanding />
+    </LandingPageWrapper>
+  );
 }

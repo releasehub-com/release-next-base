@@ -3,9 +3,14 @@
 import { useEffect, useState, ComponentType } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { 
+  type VersionId,
+  STORAGE_KEY,
+  DEFAULT_VERSION
+} from '@/lib/landingVersions';
 
 type LandingWrapperProps = {
-  initialVersion: string | undefined;
+  initialVersion: VersionId;
   LandingPage: ComponentType;
   GitLabLandingPage: ComponentType;
   KubernetesLandingPage: ComponentType;
@@ -25,77 +30,60 @@ export default function LandingWrapper({
   CloudDevLanding,
   CloudLanding,
 }: LandingWrapperProps) {
-  const [CurrentComponent, setCurrentComponent] =
-    useState<ComponentType | null>(() => {
-      if (initialVersion === "gitlab" && GitLabLandingPage)
+  console.log('LandingWrapper - Mounting with version:', initialVersion);
+  
+  const [CurrentComponent, setCurrentComponent] = useState<ComponentType | null>(() => {
+    console.log('LandingWrapper - Initial component selection for:', initialVersion);
+    switch (initialVersion) {
+      case 'gitlab':
         return GitLabLandingPage;
-      if (initialVersion === "k8s" && KubernetesLandingPage)
+      case 'k8s':
         return KubernetesLandingPage;
-      if (initialVersion === "replicated" && ReplicatedLandingPage)
+      case 'replicated':
         return ReplicatedLandingPage;
-      if (initialVersion === "ephemeral" && EphemeralLanding)
-        return EphemeralLanding;
-      if (initialVersion === "cloud-dev" && CloudDevLanding)
+      case 'cloud-dev':
         return CloudDevLanding;
-      if (
-        (initialVersion === "heroku" || initialVersion === "paas") &&
-        CloudLanding
-      ) {
+      case 'cloud':
         return CloudLanding;
-      }
-      return EphemeralLanding || null;
-    });
+      case 'ephemeral':
+      default:
+        return EphemeralLanding;
+    }
+  });
 
   useEffect(() => {
-    const getStoredVersion = () => {
-      if (typeof window !== "undefined") {
-        return localStorage.getItem("landing_version");
-      }
-      return null;
-    };
-
-    const storedVersion = getStoredVersion();
-    const version = initialVersion || storedVersion || "ephemeral";
-
+    console.log('LandingWrapper - Version change effect:', initialVersion);
     let newComponent: ComponentType | null = null;
 
-    switch (version) {
-      case "gitlab":
-        newComponent = GitLabLandingPage || null;
+    switch (initialVersion) {
+      case 'gitlab':
+        newComponent = GitLabLandingPage;
         break;
-      case "k8s":
-        newComponent = KubernetesLandingPage || null;
+      case 'k8s':
+        newComponent = KubernetesLandingPage;
         break;
-      case "replicated":
-        newComponent = ReplicatedLandingPage || null;
+      case 'replicated':
+        newComponent = ReplicatedLandingPage;
         break;
-      case "cloud-dev":
-        newComponent = CloudDevLanding || null;
+      case 'cloud-dev':
+        newComponent = CloudDevLanding;
         break;
-      case "heroku":
-      case "paas":
-        newComponent = CloudLanding || null;
+      case 'cloud':
+        newComponent = CloudLanding;
         break;
-      case "ephemeral":
+      case 'ephemeral':
       default:
-        newComponent = EphemeralLanding || null;
+        newComponent = EphemeralLanding;
         break;
     }
 
     if (newComponent && newComponent !== CurrentComponent) {
+      console.log('LandingWrapper - Updating component for version:', initialVersion);
       setCurrentComponent(newComponent);
     }
 
-    if (typeof window !== "undefined") {
-      if (version === "ephemeral") {
-        localStorage.removeItem("landing_version");
-      } else {
-        localStorage.setItem("landing_version", version);
-      }
-    }
   }, [
     initialVersion,
-    LandingPage,
     GitLabLandingPage,
     KubernetesLandingPage,
     ReplicatedLandingPage,
@@ -106,7 +94,7 @@ export default function LandingWrapper({
   ]);
 
   if (!CurrentComponent) {
-    return <div>Loading...</div>;
+    return <div className="min-h-screen bg-gray-900">Loading...</div>;
   }
 
   return <CurrentComponent />;
