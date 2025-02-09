@@ -22,7 +22,7 @@ import {
 async function setVersion(version: VersionId) {
   // Set in localStorage
   setVersionInStorage(version);
-  
+
   // Set in cookie via API
   try {
     await fetch("/api/version", {

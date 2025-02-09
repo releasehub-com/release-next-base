@@ -6,14 +6,11 @@ export async function POST(request: Request) {
     const { version } = await request.json();
 
     if (!version || !isValidVersion(version)) {
-      return NextResponse.json(
-        { error: "Invalid version" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid version" }, { status: 400 });
     }
 
     const response = NextResponse.json({ success: true });
-    
+
     // Set the cookie
     response.cookies.set("landing_version", version, {
       path: "/",
@@ -26,7 +23,7 @@ export async function POST(request: Request) {
     console.error("Version API error:", err);
     return NextResponse.json(
       { error: "Failed to set version" },
-      { status: 500 }
+      { status: 500 },
     );
   }
-} 
+}

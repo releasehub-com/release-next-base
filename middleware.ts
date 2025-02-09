@@ -41,7 +41,7 @@ export function middleware(request: NextRequest) {
     if (storedVersion && isValidVersion(storedVersion)) {
       const canonicalVersion = getCanonicalVersion(storedVersion);
       const redirectPath = getVersionPath(canonicalVersion);
-      
+
       const url = request.nextUrl.clone();
       url.pathname = redirectPath;
       return NextResponse.redirect(url);
