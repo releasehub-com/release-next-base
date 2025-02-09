@@ -16,6 +16,7 @@ import {
   type VersionId,
   STORAGE_KEY,
   DEFAULT_VERSION,
+  VERSIONS,
 } from "@/config/versions";
 
 // Helper function to set version in both localStorage and cookie
@@ -41,9 +42,9 @@ function SignupForm() {
   const [error, setError] = useState<string[]>([]);
   const [version, setVersionState] = useState<VersionId | null>(null);
   const searchParams = useSearchParams();
+  const versionParam = searchParams.get("version");
 
   useEffect(() => {
-    const versionParam = searchParams.get("version");
     const storedVersion = getVersionFromStorage();
 
     console.log("SignupPage - Version Resolution:", {
@@ -54,8 +55,12 @@ function SignupForm() {
     });
 
     // Handle version resolution and aliases
-    let resolvedVersion: VersionId;
-    if (versionParam && isValidVersion(versionParam)) {
+    let resolvedVersion: VersionId = "ephemeral";
+    if (versionParam === "ai") {
+      // Store ephemeral version but don't update state yet
+      setVersion("ephemeral");
+      console.log("SignupPage - Storing ephemeral version for ai param");
+    } else if (versionParam && isValidVersion(versionParam)) {
       resolvedVersion = getCanonicalVersion(versionParam);
       setVersion(resolvedVersion);
       console.log("SignupPage - Using param version:", resolvedVersion);
@@ -69,20 +74,23 @@ function SignupForm() {
       console.log("SignupPage - Using default version:", resolvedVersion);
     }
 
-    console.log("SignupPage - Setting version to:", resolvedVersion);
+    console.log("SignupPage - Setting version state to:", versionParam === "ai" ? "ai" : resolvedVersion);
     setVersionState(resolvedVersion);
-  }, [searchParams, version]);
+  }, [searchParams, version, versionParam]);
 
   // Don't render anything until we have resolved the version
   if (!version) {
     return null;
   }
 
-  // Get content based on canonical version
-  const content = getVersionContent(version);
+  // Get content based on version
+  const content = versionParam === "ai" 
+    ? VERSIONS.ephemeral.signupContent 
+    : getVersionContent(version);
+
   console.log(
     "SignupPage - Rendering with version:",
-    version,
+    versionParam === "ai" ? "ai" : version,
     "content:",
     content.title,
   );

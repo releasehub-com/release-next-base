@@ -45,6 +45,34 @@ export const VERSIONS = {
         "Spin up your environments in seconds",
       ],
     },
+    signupContent: {
+      title: "Deploy High-Performance AI Models with Ease",
+      benefits: [
+        {
+          icon: "performance",
+          title: "High-Performance Inference",
+          description:
+            "Deploy models with sub-100ms latency. Our optimized infrastructure ensures rapid response times for your AI applications.",
+        },
+        {
+          icon: "scale",
+          title: "Seamless Scalability",
+          description:
+            "Automatically scale from zero to thousands of concurrent requests. Our platform grows with your needs, ensuring consistent performance.",
+        },
+        {
+          icon: "security",
+          title: "Enterprise-Grade Security",
+          description:
+            "Benefit from SOC 2 Type II compliance, private networking, and end-to-end encryption. Your models and data remain secure and compliant.",
+        },
+      ],
+      steps: [
+        "Start with 5 free GPU hours",
+        "Deploy your first AI model",
+        "Scale with confidence",
+      ],
+    },
   },
   replicated: {
     id: "replicated",
