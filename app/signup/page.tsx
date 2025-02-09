@@ -127,7 +127,9 @@ function SignupForm() {
   const handleGoogleSignup = async (e: React.MouseEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch("/api/auth?provider=google&registration=true");
+      const response = await fetch(
+        "/api/auth?provider=google&registration=true",
+      );
       const data = await response.json();
       if (response.ok) {
         window.location.href = data.redirectUrl;
@@ -136,7 +138,9 @@ function SignupForm() {
       }
     } catch (err) {
       console.error("Google signup error:", err);
-      setError([err instanceof Error ? err.message : "Failed to initiate Google signup"]);
+      setError([
+        err instanceof Error ? err.message : "Failed to initiate Google signup",
+      ]);
     }
   };
 
@@ -152,7 +156,11 @@ function SignupForm() {
       }
     } catch (err) {
       console.error("Enterprise SSO error:", err);
-      setError([err instanceof Error ? err.message : "Failed to initiate Enterprise SSO"]);
+      setError([
+        err instanceof Error
+          ? err.message
+          : "Failed to initiate Enterprise SSO",
+      ]);
     }
   };
 

@@ -6,16 +6,16 @@ export async function GET(request: Request) {
   const isRegistration = searchParams.get("registration") === "true";
 
   if (provider === "google") {
-    return NextResponse.json({ 
-      redirectUrl: `${process.env.API_URL}/auth/google.com?registration=${isRegistration}` 
+    return NextResponse.json({
+      redirectUrl: `${process.env.API_URL}/auth/google.com?registration=${isRegistration}`,
     });
   }
 
   if (provider === "enterprise") {
-    return NextResponse.json({ 
-      redirectUrl: `${process.env.WEB_URL}/login/enterprise` 
+    return NextResponse.json({
+      redirectUrl: `${process.env.WEB_URL}/login/enterprise`,
     });
   }
 
   return NextResponse.json({ error: "Invalid auth provider" }, { status: 400 });
-} 
+}

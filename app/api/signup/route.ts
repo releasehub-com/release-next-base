@@ -17,20 +17,24 @@ export async function POST(request: Request) {
 
     if (!response.ok) {
       return NextResponse.json(
-        { error: Array.isArray(responseData) ? responseData : [responseData?.toString() || "Signup failed"] },
-        { status: response.status }
+        {
+          error: Array.isArray(responseData)
+            ? responseData
+            : [responseData?.toString() || "Signup failed"],
+        },
+        { status: response.status },
       );
     }
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       success: true,
-      redirectUrl: `${process.env.WEB_URL}/register/verify?email=${data.user.email}` 
+      redirectUrl: `${process.env.WEB_URL}/register/verify?email=${data.user.email}`,
     });
   } catch (err) {
     console.error("Signup error:", err);
     return NextResponse.json(
       { error: [err instanceof Error ? err.message : "Failed to sign up"] },
-      { status: 500 }
+      { status: 500 },
     );
   }
-} 
+}
