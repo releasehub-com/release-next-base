@@ -15,7 +15,7 @@ import { CheckIcon, XIcon, StarIcon } from "lucide-react";
 import Header from "./Header";
 import Footer from "./Footer";
 
-export function ReleaseVsReplicated() {
+export default function ReplicatedLandingPage() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-gray-100">
       <Header />
@@ -349,5 +349,3 @@ export function ReleaseVsReplicated() {
     </div>
   );
 }
-
-export default ReleaseVsReplicated;
