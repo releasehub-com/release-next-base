@@ -93,7 +93,7 @@ function SignupForm() {
     }
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
+      const response = await fetch("/api/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -109,33 +109,51 @@ function SignupForm() {
         }),
       });
 
-      // Check if response has content before trying to parse JSON
-      const text = await response.text();
-      const data = text ? JSON.parse(text) : null;
+      const data = await response.json();
 
       if (!response.ok) {
-        setError(
-          Array.isArray(data) ? data : [data?.toString() || "Signup failed"],
-        );
+        setError(data.error || ["Signup failed"]);
         return;
       }
 
-      // Use environment variable for redirect
-      window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/register/verify?email=${email}`;
+      // Redirect to verification page
+      window.location.href = data.redirectUrl;
     } catch (err) {
       console.error("Signup error:", err);
       setError([err instanceof Error ? err.message : "Failed to sign up"]);
     }
   };
 
-  const handleGoogleSignup = (e: React.MouseEvent) => {
+  const handleGoogleSignup = async (e: React.MouseEvent) => {
     e.preventDefault();
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google.com?registration=true`;
+    try {
+      const response = await fetch("/api/auth?provider=google&registration=true");
+      const data = await response.json();
+      if (response.ok) {
+        window.location.href = data.redirectUrl;
+      } else {
+        setError([data.error || "Failed to initiate Google signup"]);
+      }
+    } catch (err) {
+      console.error("Google signup error:", err);
+      setError([err instanceof Error ? err.message : "Failed to initiate Google signup"]);
+    }
   };
 
-  const handleEnterpriseSSO = (e: React.MouseEvent) => {
+  const handleEnterpriseSSO = async (e: React.MouseEvent) => {
     e.preventDefault();
-    window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/login/enterprise`;
+    try {
+      const response = await fetch("/api/auth?provider=enterprise");
+      const data = await response.json();
+      if (response.ok) {
+        window.location.href = data.redirectUrl;
+      } else {
+        setError([data.error || "Failed to initiate Enterprise SSO"]);
+      }
+    } catch (err) {
+      console.error("Enterprise SSO error:", err);
+      setError([err instanceof Error ? err.message : "Failed to initiate Enterprise SSO"]);
+    }
   };
 
   return (
@@ -154,7 +172,6 @@ function SignupForm() {
                 className="space-y-6"
                 name="wf-form-user"
                 data-name="user"
-                action={`${process.env.NEXT_PUBLIC_API_URL}/users`}
                 id="wf-form-user"
                 data-wf-page-id="64a307baf7e3b58f53defa95"
                 data-wf-element-id="63ecc012-cbb9-5697-5950-19b506eaeccd"
