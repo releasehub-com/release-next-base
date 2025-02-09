@@ -74,7 +74,10 @@ function SignupForm() {
       console.log("SignupPage - Using default version:", resolvedVersion);
     }
 
-    console.log("SignupPage - Setting version state to:", versionParam === "ai" ? "ai" : resolvedVersion);
+    console.log(
+      "SignupPage - Setting version state to:",
+      versionParam === "ai" ? "ai" : resolvedVersion,
+    );
     setVersionState(resolvedVersion);
   }, [searchParams, version, versionParam]);
 
@@ -84,9 +87,10 @@ function SignupForm() {
   }
 
   // Get content based on version
-  const content = versionParam === "ai" 
-    ? VERSIONS.ephemeral.signupContent 
-    : getVersionContent(version);
+  const content =
+    versionParam === "ai"
+      ? VERSIONS.ephemeral.signupContent
+      : getVersionContent(version);
 
   console.log(
     "SignupPage - Rendering with version:",
