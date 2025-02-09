@@ -115,7 +115,7 @@ export default function Header() {
               >
                 Login
               </Link>
-              <Link href="https://release.com/signup" className="block mt-2">
+              <Link href="/signup" className="block mt-2">
                 <Button className="w-full bg-[#00bb93] text-white hover:bg-[#00bb93]/90">
                   Get Started
                 </Button>
@@ -129,7 +129,7 @@ export default function Header() {
             >
               Login
             </Link>
-            <Link href="https://release.com/signup">
+            <Link href="/signup">
               <Button className="bg-[#00bb93] text-white hover:bg-[#00bb93]/90">
                 Get Started
               </Button>

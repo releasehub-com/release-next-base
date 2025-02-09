@@ -54,7 +54,7 @@ export default function LandingPage() {
                   </li>
                 </ul>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                  <Link href="https://release.com/signup">
+                  <Link href="/signup">
                     <Button
                       size="lg"
                       className="bg-[#00bb93] text-white hover:bg-[#00bb93]/90"
@@ -212,7 +212,7 @@ export default function LandingPage() {
               ))}
             </div>
             <div className="mt-12 text-center">
-              <Link href="https://release.com/signup">
+              <Link href="/signup">
                 <Button
                   size="lg"
                   className="bg-[#00bb93] text-white hover:bg-[#00bb93]/90"
@@ -437,7 +437,7 @@ export default function LandingPage() {
                 reduced costs with Release. Experience the power of Ephemeral
                 environments today.
               </p>
-              <Link href="https://calendly.com/release-tommy/release-discussion">
+              <Link href="/signup">
                 <Button
                   size="lg"
                   className="bg-[#00bb93] text-white hover:bg-[#00bb93]/90"

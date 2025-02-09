@@ -6,6 +6,7 @@ import {
   isValidVersion,
   getVersionPath,
   getCanonicalVersion,
+  DEFAULT_VERSION,
 } from "@/config/versions";
 
 // Get all landing paths from the versions config
@@ -22,15 +23,37 @@ export function middleware(request: NextRequest) {
   // Handle version parameter redirects first
   const version = request.nextUrl.searchParams.get("version");
 
-  // Only redirect version params on the root path
-  if (version && isValidVersion(version) && request.nextUrl.pathname === "/") {
-    const canonicalVersion = getCanonicalVersion(version);
-    const redirectPath = getVersionPath(canonicalVersion);
+  // Handle root path with version resolution
+  if (request.nextUrl.pathname === "/") {
+    // If there's a version parameter, redirect to its landing page
+    if (version && isValidVersion(version)) {
+      const canonicalVersion = getCanonicalVersion(version);
+      const redirectPath = getVersionPath(canonicalVersion);
 
-    const url = request.nextUrl.clone();
-    url.pathname = redirectPath;
-    url.searchParams.delete("version");
-    return NextResponse.redirect(url);
+      const url = request.nextUrl.clone();
+      url.pathname = redirectPath;
+      url.searchParams.delete("version");
+      return NextResponse.redirect(url);
+    }
+
+    // Otherwise, check for stored version in cookie
+    const storedVersion = request.cookies.get("landing_version")?.value;
+    if (storedVersion && isValidVersion(storedVersion)) {
+      const canonicalVersion = getCanonicalVersion(storedVersion);
+      const redirectPath = getVersionPath(canonicalVersion);
+      
+      const url = request.nextUrl.clone();
+      url.pathname = redirectPath;
+      return NextResponse.redirect(url);
+    }
+
+    // If no stored version, redirect to default version's landing page
+    const defaultPath = getVersionPath(DEFAULT_VERSION);
+    if (defaultPath !== "/") {
+      const url = request.nextUrl.clone();
+      url.pathname = defaultPath;
+      return NextResponse.redirect(url);
+    }
   }
 
   // Handle landing pages

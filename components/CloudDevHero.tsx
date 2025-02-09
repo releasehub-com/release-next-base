@@ -24,7 +24,7 @@ export default function CloudDevHeroComponent() {
               </p>
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
-              <Link href="https://release.com/signup">
+              <Link href="/signup">
                 <Button
                   size="lg"
                   className="bg-[#00bb93] text-white hover:bg-[#00bb93]/90"

@@ -18,9 +18,28 @@ import {
   DEFAULT_VERSION,
 } from "@/config/versions";
 
+// Helper function to set version in both localStorage and cookie
+async function setVersion(version: VersionId) {
+  // Set in localStorage
+  setVersionInStorage(version);
+  
+  // Set in cookie via API
+  try {
+    await fetch("/api/version", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ version }),
+    });
+  } catch (err) {
+    console.error("Failed to set version cookie:", err);
+  }
+}
+
 function SignupForm() {
   const [error, setError] = useState<string[]>([]);
-  const [version, setVersion] = useState<VersionId | null>(null);
+  const [version, setVersionState] = useState<VersionId | null>(null);
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -38,19 +57,20 @@ function SignupForm() {
     let resolvedVersion: VersionId;
     if (versionParam && isValidVersion(versionParam)) {
       resolvedVersion = getCanonicalVersion(versionParam);
-      setVersionInStorage(resolvedVersion);
+      setVersion(resolvedVersion);
       console.log("SignupPage - Using param version:", resolvedVersion);
     } else if (storedVersion) {
       resolvedVersion = storedVersion;
+      setVersion(resolvedVersion);
       console.log("SignupPage - Using stored version:", resolvedVersion);
     } else {
       resolvedVersion = DEFAULT_VERSION;
-      setVersionInStorage(DEFAULT_VERSION);
+      setVersion(DEFAULT_VERSION);
       console.log("SignupPage - Using default version:", resolvedVersion);
     }
 
     console.log("SignupPage - Setting version to:", resolvedVersion);
-    setVersion(resolvedVersion);
+    setVersionState(resolvedVersion);
   }, [searchParams, version]);
 
   // Don't render anything until we have resolved the version
