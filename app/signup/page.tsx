@@ -1,57 +1,57 @@
-"use client"
+"use client";
 
-import Link from 'next/link'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
-import { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
-import { SignupMessage } from './components/SignupMessage'
-import { 
-  getVersionFromStorage, 
-  isValidVersion, 
+import Link from "next/link";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { SignupMessage } from "./components/SignupMessage";
+import {
+  getVersionFromStorage,
+  isValidVersion,
   setVersionInStorage,
   getCanonicalVersion,
   getVersionContent,
   type ValidVersion,
   type VersionId,
   STORAGE_KEY,
-  DEFAULT_VERSION
-} from '@/config/versions'
+  DEFAULT_VERSION,
+} from "@/config/versions";
 
-export default function SignupPage() {
-  const [error, setError] = useState<string[]>([])
-  const [version, setVersion] = useState<VersionId | null>(null)
-  const searchParams = useSearchParams()
-  
+function SignupForm() {
+  const [error, setError] = useState<string[]>([]);
+  const [version, setVersion] = useState<VersionId | null>(null);
+  const searchParams = useSearchParams();
+
   useEffect(() => {
-    const versionParam = searchParams.get('version')
-    const storedVersion = getVersionFromStorage()
-    
-    console.log('SignupPage - Version Resolution:', {
+    const versionParam = searchParams.get("version");
+    const storedVersion = getVersionFromStorage();
+
+    console.log("SignupPage - Version Resolution:", {
       versionParam,
       storedVersion,
       currentVersion: version,
-      localStorage: localStorage.getItem(STORAGE_KEY)
-    })
-    
+      localStorage: localStorage.getItem(STORAGE_KEY),
+    });
+
     // Handle version resolution and aliases
-    let resolvedVersion: VersionId
+    let resolvedVersion: VersionId;
     if (versionParam && isValidVersion(versionParam)) {
-      resolvedVersion = getCanonicalVersion(versionParam)
-      setVersionInStorage(resolvedVersion)
-      console.log('SignupPage - Using param version:', resolvedVersion)
+      resolvedVersion = getCanonicalVersion(versionParam);
+      setVersionInStorage(resolvedVersion);
+      console.log("SignupPage - Using param version:", resolvedVersion);
     } else if (storedVersion) {
-      resolvedVersion = storedVersion
-      console.log('SignupPage - Using stored version:', resolvedVersion)
+      resolvedVersion = storedVersion;
+      console.log("SignupPage - Using stored version:", resolvedVersion);
     } else {
-      resolvedVersion = DEFAULT_VERSION
-      setVersionInStorage(DEFAULT_VERSION)
-      console.log('SignupPage - Using default version:', resolvedVersion)
+      resolvedVersion = DEFAULT_VERSION;
+      setVersionInStorage(DEFAULT_VERSION);
+      console.log("SignupPage - Using default version:", resolvedVersion);
     }
 
-    console.log('SignupPage - Setting version to:', resolvedVersion)
-    setVersion(resolvedVersion)
-  }, [searchParams])
+    console.log("SignupPage - Setting version to:", resolvedVersion);
+    setVersion(resolvedVersion);
+  }, [searchParams, version]);
 
   // Don't render anything until we have resolved the version
   if (!version) {
@@ -59,77 +59,84 @@ export default function SignupPage() {
   }
 
   // Get content based on canonical version
-  const content = getVersionContent(version)
-  console.log('SignupPage - Rendering with version:', version, 'content:', content.title)
+  const content = getVersionContent(version);
+  console.log(
+    "SignupPage - Rendering with version:",
+    version,
+    "content:",
+    content.title,
+  );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setError([])
+    e.preventDefault();
+    setError([]);
 
-    const form = e.currentTarget
-    const formData = new FormData(form)
-    
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
     // Get form values
-    const email = formData.get('user[email]') as string
-    const password = formData.get('user[password]') as string
-    const confirmPassword = formData.get('user[confirm_password]') as string
+    const email = formData.get("user[email]") as string;
+    const password = formData.get("user[password]") as string;
+    const confirmPassword = formData.get("user[confirm_password]") as string;
 
     // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError(['Please enter a valid email address'])
-      return
+      setError(["Please enter a valid email address"]);
+      return;
     }
 
     // Validate passwords match
     if (password !== confirmPassword) {
-      setError(['Passwords do not match'])
-      return
+      setError(["Passwords do not match"]);
+      return;
     }
-    
+
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           user: {
-            first_name: formData.get('user[first_name]'),
-            last_name: formData.get('user[last_name]'),
+            first_name: formData.get("user[first_name]"),
+            last_name: formData.get("user[last_name]"),
             email: email,
             password: password,
-            confirm_password: confirmPassword
-          }
-        })
-      })
+            confirm_password: confirmPassword,
+          },
+        }),
+      });
 
       // Check if response has content before trying to parse JSON
-      const text = await response.text()
-      const data = text ? JSON.parse(text) : null
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : null;
 
       if (!response.ok) {
-        setError(Array.isArray(data) ? data : [data?.toString() || 'Signup failed'])
-        return
+        setError(
+          Array.isArray(data) ? data : [data?.toString() || "Signup failed"],
+        );
+        return;
       }
 
       // Use environment variable for redirect
-      window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/register/verify?email=${email}`
+      window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/register/verify?email=${email}`;
     } catch (err) {
-      console.error('Signup error:', err)
-      setError([err instanceof Error ? err.message : 'Failed to sign up'])
+      console.error("Signup error:", err);
+      setError([err instanceof Error ? err.message : "Failed to sign up"]);
     }
-  }
+  };
 
   const handleGoogleSignup = (e: React.MouseEvent) => {
-    e.preventDefault()
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google.com?registration=true`
-  }
+    e.preventDefault();
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google.com?registration=true`;
+  };
 
   const handleEnterpriseSSO = (e: React.MouseEvent) => {
-    e.preventDefault()
-    window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/login/enterprise`
-  }
+    e.preventDefault();
+    window.location.href = `${process.env.NEXT_PUBLIC_WEB_URL}/login/enterprise`;
+  };
 
   return (
     <>
@@ -138,9 +145,11 @@ export default function SignupPage() {
         <div className="flex flex-col lg:flex-row min-h-screen">
           <div className="w-full lg:w-1/2 p-6 lg:p-16">
             <div className="max-w-md mx-auto">
-              <h1 className="text-2xl font-bold text-gray-100 mb-8">Create a Release account</h1>
+              <h1 className="text-2xl font-bold text-gray-100 mb-8">
+                Create a Release account
+              </h1>
 
-              <form 
+              <form
                 method="post"
                 className="space-y-6"
                 name="wf-form-user"
@@ -155,7 +164,12 @@ export default function SignupPage() {
               >
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="user[first_name]" className="block text-sm font-medium mb-2">First Name</label>
+                    <label
+                      htmlFor="user[first_name]"
+                      className="block text-sm font-medium mb-2"
+                    >
+                      First Name
+                    </label>
                     <input
                       className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       maxLength={256}
@@ -167,7 +181,12 @@ export default function SignupPage() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="user[last_name]" className="block text-sm font-medium mb-2">Last Name</label>
+                    <label
+                      htmlFor="user[last_name]"
+                      className="block text-sm font-medium mb-2"
+                    >
+                      Last Name
+                    </label>
                     <input
                       className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       maxLength={256}
@@ -182,7 +201,12 @@ export default function SignupPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="user[email]" className="block text-sm font-medium mb-2">Email Address</label>
+                  <label
+                    htmlFor="user[email]"
+                    className="block text-sm font-medium mb-2"
+                  >
+                    Email Address
+                  </label>
                   <input
                     className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     maxLength={256}
@@ -196,7 +220,12 @@ export default function SignupPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="user[password]" className="block text-sm font-medium mb-2">Password</label>
+                  <label
+                    htmlFor="user[password]"
+                    className="block text-sm font-medium mb-2"
+                  >
+                    Password
+                  </label>
                   <input
                     className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     maxLength={256}
@@ -210,7 +239,12 @@ export default function SignupPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="user[confirm_password]" className="block text-sm font-medium mb-2">Confirm Password</label>
+                  <label
+                    htmlFor="user[confirm_password]"
+                    className="block text-sm font-medium mb-2"
+                  >
+                    Confirm Password
+                  </label>
                   <input
                     className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     maxLength={256}
@@ -231,7 +265,10 @@ export default function SignupPage() {
                   </div>
                 )}
 
-                <button type="submit" className="w-full bg-violet-600 hover:bg-violet-700 text-white font-medium py-2 px-4 rounded-lg transition duration-150 cursor-pointer">
+                <button
+                  type="submit"
+                  className="w-full bg-violet-600 hover:bg-violet-700 text-white font-medium py-2 px-4 rounded-lg transition duration-150 cursor-pointer"
+                >
                   Sign Up
                 </button>
               </form>
@@ -242,7 +279,9 @@ export default function SignupPage() {
                   <div className="w-full border-t border-gray-700"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-gray-900 text-gray-400">Or continue with</span>
+                  <span className="px-2 bg-gray-900 text-gray-400">
+                    Or continue with
+                  </span>
                 </div>
               </div>
 
@@ -282,12 +321,18 @@ export default function SignupPage() {
 
               {/* Terms and Privacy */}
               <p className="mt-6 text-sm text-gray-400 text-center">
-                By signing up, you agree to our{' '}
-                <Link href="/terms-of-service" className="text-blue-400 hover:text-blue-300">
+                By signing up, you agree to our{" "}
+                <Link
+                  href="/terms-of-service"
+                  className="text-blue-400 hover:text-blue-300"
+                >
                   Terms of Service
-                </Link>{' '}
-                and{' '}
-                <Link href="/privacy-policy" className="text-blue-400 hover:text-blue-300">
+                </Link>{" "}
+                and{" "}
+                <Link
+                  href="/privacy-policy"
+                  className="text-blue-400 hover:text-blue-300"
+                >
                   Privacy Policy
                 </Link>
               </p>
@@ -319,5 +364,21 @@ export default function SignupPage() {
       </main>
       <Footer />
     </>
-  )
-} 
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gray-900">
+          <div className="flex justify-center items-center h-screen">
+            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-violet-600"></div>
+          </div>
+        </div>
+      }
+    >
+      <SignupForm />
+    </Suspense>
+  );
+}

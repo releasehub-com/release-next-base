@@ -2,1477 +2,1483 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://release.com</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://release.com/blog</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/case-studies</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/ephemeral-environments-platform</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/gitlab-competitor</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/kubernetes-management</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/replicated-competitor</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/cloud-development-environments</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/heroku-competitor</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/platform-as-a-service</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/comparison</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/comparison/gitlab</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/comparison/signadot</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/comparison/bunnyshell</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/comparison/qovery</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/comparison/shipyard</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/partners</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://release.com/signup</loc>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/blog/10-best-practices-when-using-feature-flags</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/10-kubernetes-namespace-best-practices-to-start-following</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/11-continuous-deployment-tools-and-how-to-choose-one</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/12-things-you-didnt-know-you-could-do-with-release-part-1</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/12-things-you-didnt-know-you-could-do-with-release-part-2</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/5-best-practices-in-a-staging-environment</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/6-best-eaas-product-alternatives-to-gitpod</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/6-docker-compose-best-practices-for-dev-and-prod</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/6-software-development-environment-best-practices</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/a-guide-to-configuring-and-deploying-hpa-on-kubernetes</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/a-managers-guide-to-release-cycles</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/a-simple-guide-to-software-environments</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/agile-release-plan</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/automating-your-day-to-day-workflows-with-the-release-cli</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/awesome-release-docker-compose-examples-working-in-release-and-kubernetes</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/aws-re-invent-2023-what-to-expect</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/beyond-k8s-introduction-to-ephemeral-environments</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/boost-developer-happiness-with-ephemeral-environments</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/build-vs-buy-where-to-focus-your-energy-with-idps</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/cache-bundle-install-with-buildkit</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/code-to-cloud-simplified-how-release-uses-ai-to-make-deployment-easier</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/components-of-a-successful-idp-build-a-product-your-developers-actually-want-to-use</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/continuous-deployment-webinar-recap</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/contributing-to-open-source</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/creating-private-ai-environments-with-release-ai-keep-your-data-and-intelligence-under-your-control</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/creating-your-first-application-in-release-with-docker-compose</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/crv-release-aligned-with-20mil-new-fuel</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/cutting-build-time-in-half-docker-buildx-kubernetes</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/development-environments-and-how-to-manage-them</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/development-vs-staging-vs-production-whats-the-difference-na</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/development-vs-staging-vs-production-whats-the-difference</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/devops-metrics-that-actually-matter</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/docker-genai-stack-now-available-as-release-ai-template</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/dockercon-2023-takeaways-ai-security-and-devex-are-top-of-mind</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/environment-as-a-service-eaas-a-comprehensive-guide</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/environments-as-a-service-eaas-top-3-benefits</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/ephemeral-environments-9-tips-for-seamless-deployment</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/extend-your-idp-with-environments-for-every-developer-and-every-change</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/extending-releasehub-environments-with-terraform</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/feature-flags-and-ephemeral-environments</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/free-minecraft-server-running-on-releaseapp-io</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/full-fidelity-data-for-ephemeral-environments</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/gitlab-self-managed-now-available-on-release</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/gitops-vs-devops-understanding-the-difference</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/great-saas-sales-demos</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/gromit-an-open-source-ai-assistant-for-your-documentation</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/hosting-mastodon-on-release-and-aws</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/how-debtbook-ships-6x-faster-with-release</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/how-do-you-prepare-for-user-acceptance-testing</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/how-does-terraform-enable-infrastructure-as-code</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/how-release-uses-action-cable-redux-toolkit</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/how-to-create-and-configure-your-kubernetes-service-account</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/how-to-delete-hundreds-or-thousands-of-route53-dns-entries</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/how-to-edit-a-file-in-a-docker-container</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/how-to-evolve-your-development-and-deployment-workflow</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/how-to-get-started-with-infrastructure-as-code-on-aws</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/how-to-make-kubernetes-config-files-not-suck</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/how-to-manage-gitops-secrets-a-detailed-guide</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/how-to-self-host-posthog-using-release-part-one</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/how-to-set-docker-compose-environment-variables</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/how-to-solve-aws-efs-operation-not-permitted-errors-in-eks</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/how-to-use-github-actions-with-environment-variables</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/how-to-use-the-kubernetes-rbac-api-for-more-secure-apps</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/how-to-write-route53-stubbed-responses-for-rspec-tests</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/idp-trends-where-do-we-go-from-here</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/improve-developer-velocity-with-ephemeral-environments</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/improving-developer-productivity-with-ephemeral-environments</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/increase-developer-velocity-by-removing-environment-bottlenecks</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/introducing-release-share-a-docker-desktop-extension</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/introducing-standalone-instant-datasets-build-and-test-with-realistic-production-like-data-with-ease</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/join-the-release-ai-technical-preview</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/kelsey-degeorge-why-i-joined-release</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/kubernetes-crds</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/kubernetes-daemonset-tutorial</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/kubernetes-environment-variables</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/kubernetes-health-checks-2-ways-to-improve-stability</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/kubernetes-how-to-debug-crashloopbackoff-in-a-container</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/kubernetes-jobs-how-to-create-schedule-run-and-more-2</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/kubernetes-jobs-how-to-create-schedule-run-and-more</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/kubernetes-namespaces-the-ultimate-guide</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/kubernetes-pod-a-beginners-guide-to-an-essential-resource</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/kubernetes-pods-advanced-concepts-explained</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/kubernetes-probes-sre-anywhere-lightning-talk</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/kubernetes-secrets-management-a-practical-guide</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/kubernetes-statefulset-when-and-how-to-use-it</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/kubernetes-volumes-what-they-are-and-how-to-use-them</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/launch-press-release</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/lessons-learned-from-maintaining-the-soc-2-type-2-certification-over-the-years</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/looking-back-a-big-2023-for-release</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/mat-werber-why-i-joined-release</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/meet-the-new-release</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/moderncto-podcast-recap</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/new-and-improved-instant-datasets</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/on-demand-environments-defined-and-explained</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/on-demand-testing-spaces-turbocharge-developer-velocity</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/overcome-devops-talent-gap-with-environments-as-a-service</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/platform-engineering-whats-hype-and-whats-not</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/podcast-guest-on-screaming-in-the-cloud</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/rails-and-kubernetes-a-guide-to-using-them-together</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/rainbow-deployment-why-and-how-to-do-it</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/release-ai-now-supports-nvidia-nim-accelerating-ai-development-and-deployment</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/release-delivery-helps-saas-companies-meet-the-needs-of-their-enterprise-customers</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/release-is-going-to-aws-summit-in-new-york-city-on-july-26th-2023</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/release-is-going-to-aws-summit-in-washington-dc-on-june-7-8-2023</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/release-is-going-to-dockercon-2023</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/release-is-going-to-kubecon-2023</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/release-is-going-to-oss-north-america</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/release-is-going-to-platformcon-2023</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/release-is-going-to-railsconf-2023</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/release-joins-nvidia-inception-partner-program-brings-ai-environments-to-nvidia-gpus-and-stack</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/release-now-available-through-the-aws-marketplace</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/release-offers-support-for-ecs</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/releasehub-20-million-series-a-led-by-crv</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/releasehub-adds-enterprise-class-capabilities-with-remote-development-environments-datadog-integration-and-instant-data-sets</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/releasehub-appoints-kelsey-degeorge-as-chief-revenue-officer</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/releasehub-sequoia-funded</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/remote-development-environments</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/rules-for-putting-together-the-article</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/secure-secrets-management-with-doppler-in-release-a-step-by-step-guide</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/see-you-at-google-cloud-next-24</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/setup-test-environment</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/solving-for-dynamic-oauth-2-0-callbacks-with-environment-handles</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/summer-reading-list-docker-edition</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/summer-reading-list-kubernetes-edition</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/syncing-databases-how-to-do-it-and-best-practices</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/table-test</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/talk-to-your-infrastructure-in-plain-english-introducing-release-ai</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/terraform-kubernetes-deployment-a-detailed-walkthrough</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/terraform-vs-kubernetes-whats-the-difference-and-why-it-matters</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/terraforms-for-each-examples</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/test-blog</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/test-environment-a-definition-and-how-to-guide</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/test-guild-webinar-the-secret-to-continuous-testing</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/testing-environment-types-and-what-theyre-used-for</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/the-release-mission</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/the-value-of-data-obfuscation-for-instant-datasets-tonic-meets-release</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/three-ways-youre-doing-modern-web-development-wrong</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/training-chatgpt-with-custom-libraries-using-extensions</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/tripactions-selects-releasehub-to-give-full-stack-environments-to-every-developer</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/use-product-thinking-to-establish-your-idp</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/user-acceptance-testing-best-practices</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/user-acceptance-testing-checklist</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/using-docker-environment-variables-in-compose</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/using-environment-variables-in-angular-a-guide</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/webhook-authentication-learnings</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/what-are-the-challenges-faced-during-uat-testing</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/what-is-a-production-environment-and-why-is-it-unique</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/what-is-a-qa-environment-and-how-do-you-manage-it</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/what-is-an-internal-developer-platform-and-why-should-i-have-one</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/what-is-gitops</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/why-i-joined-release-bryce-fehmel</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/why-i-joined-release-matt-carter</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/why-i-joined-release-matt-riley</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/why-i-joined-release</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/why-im-excited-about-environment-as-a-service-and-release</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/why-kubernetes-is-so-hard</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/you-need-agile-devops-methodology</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/blog/youre-invited-join-the-release-ai-technical-preview-program</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/case-studies/chipper-cash</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/case-studies/datasaurai</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/case-studies/debtbook</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/case-studies/monad</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/case-studies/mosaic</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/case-studies/noteable</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/case-studies/simon</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/partners/aws</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/partners/codingscape</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/partners/docker</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/partners/google</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/partners/nvidia</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/partners/tonic</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://release.com/build-vs-buy</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/company</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/dzone-report</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/ephemeral-environments</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/privacy-policy</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/private-apps-landing</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/staging-environments</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/terms-of-service</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/thank-you</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/use-cases</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/user-acceptance-testing-with-ephemeral-environments</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/whitepaper-pdf</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/whitepapers</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/ebooks</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/kubecon</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/book-a-demo</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/webinar-on-demand</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/press-releases</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/releaselog</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/releaselog/2</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/whyrelease</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/pricing</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/security</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/start</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/a-b</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/webinar/improving-app-delivery-team-outcomes-webinar</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/webinar/full-fidelity-data-for-ephemeral-environments</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/dzone/demo</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/dzone/download</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/releaselogs/changelog</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/releaselogs/changelog-2</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/releaselogs/changelog-3</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/releaselogs/changelog-4</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/releaselogs/changelog-oct-23-nov-6-2022</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/releaselogs/changelog-nov-7-nov-20-2022</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/releaselogs/changelog-nov-21-dec-18-2022</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/casestudy/monad</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/usecase/on-demand-ephemeral-staging-environments</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/usecase/sales-demo-environments</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/press-releases/releasehub-appoints-kelsey-degeorge-as-chief-revenue-officer</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/press-releases/releasehub-announces-20-million-series-a-round-led-by-crv</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/press-releases/sequoia-leads-2-7m-seed-round-to-launch-releasehub-environments-as-a-service</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/usecase/migration-test-environments</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/usecase/unlimited-qa-validation-environments</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/usecase/deploy-automated-preview-environments</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/usecase/performance-test-environments</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/usecase/dev-sandbox-r-d-playground</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/usecase/running-your-production-environments</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/casestudy/simon</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/whitepaper/easy-environments-management</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/whitepaper/aws-releasehub-for-you</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/casestudy/mosaic</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/casestudy/datasaurai</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/casestudy/noteable</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/press-releases/tripactions-selects-releasehub-to-give-full-stack-environments-to-every-developer</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/ebook/the-complete-guide-to-automated-software-environments</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/press-releases/releasehub-hires-new-cmo-and-adds-enterprise-class-capabilities</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://release.com/casestudy/chipper-cash</loc>
-    <lastmod>2025-02-08</lastmod>
+    <lastmod>2025-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>

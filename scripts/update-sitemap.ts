@@ -36,6 +36,7 @@ const APP_ROUTES = [
   "comparison/qovery",
   "comparison/shipyard",
   "partners",
+  "signup",
 ];
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL || "https://release.com";

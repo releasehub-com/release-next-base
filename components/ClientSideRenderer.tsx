@@ -1,18 +1,19 @@
 "use client";
 
-console.log('ClientSideRenderer - File loaded');
+console.log("ClientSideRenderer - File loaded");
 
 import React, { useState, useEffect } from "react";
 import { useSearchParams, usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
-import { 
-  getVersionFromStorage, 
-  isValidVersion, 
+import {
+  getVersionFromStorage,
+  isValidVersion,
   setVersionInStorage,
   getVersionFromPath,
+  getCanonicalVersion,
   type VersionId,
-  STORAGE_KEY 
-} from '@/lib/landingVersions';
+  STORAGE_KEY,
+} from "@/config/versions";
 import LandingWrapper from "@/components/LandingWrapper";
 
 const LandingPage = dynamic(() => import("@/components/LandingPage"), {
@@ -47,43 +48,44 @@ const CloudLanding = dynamic(
 );
 
 export default function ClientSideRenderer() {
-  console.log('ClientSideRenderer - Component mounting');
-  
+  console.log("ClientSideRenderer - Component mounting");
+
   const [isLoading, setIsLoading] = useState(true);
   const [version, setVersion] = useState<VersionId | null>(null);
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  
+
   useEffect(() => {
-    console.log('ClientSideRenderer - Initial mount effect');
-    const versionParam = searchParams.get('version');
+    console.log("ClientSideRenderer - Initial mount effect");
+    const versionParam = searchParams.get("version");
     const pathVersion = getVersionFromPath(pathname);
     const storedVersion = getVersionFromStorage();
-    
-    console.log('ClientSideRenderer - Version Resolution:', {
+
+    console.log("ClientSideRenderer - Version Resolution:", {
       versionParam,
       pathVersion,
       storedVersion,
       pathname,
-      localStorage: localStorage.getItem(STORAGE_KEY)
+      localStorage: localStorage.getItem(STORAGE_KEY),
     });
 
     // Priority: URL param > path > localStorage > default
-    const resolvedVersion = (versionParam && isValidVersion(versionParam))
-      ? versionParam
-      : (pathVersion && isValidVersion(pathVersion))
-        ? pathVersion
-        : storedVersion;
-    
-    console.log('ClientSideRenderer - Setting version to:', resolvedVersion);
-    
+    const resolvedVersion =
+      versionParam && isValidVersion(versionParam)
+        ? getCanonicalVersion(versionParam)
+        : pathVersion && isValidVersion(pathVersion)
+          ? getCanonicalVersion(pathVersion)
+          : storedVersion;
+
+    console.log("ClientSideRenderer - Setting version to:", resolvedVersion);
+
     setVersion(resolvedVersion);
     setVersionInStorage(resolvedVersion);
   }, [searchParams, pathname]);
 
   // Component loading effect
   useEffect(() => {
-    console.log('ClientSideRenderer - Loading components...');
+    console.log("ClientSideRenderer - Loading components...");
     Promise.all([
       import("@/components/LandingPage"),
       import("@/components/GitLabLandingPage"),
@@ -93,17 +95,20 @@ export default function ClientSideRenderer() {
       import("@/components/CloudDevLanding"),
       import("@/components/CloudLanding"),
     ]).then(() => {
-      console.log('ClientSideRenderer - Components loaded');
+      console.log("ClientSideRenderer - Components loaded");
       setIsLoading(false);
     });
   }, []);
 
   if (isLoading || !version) {
-    console.log('ClientSideRenderer - In loading state:', { isLoading, version });
+    console.log("ClientSideRenderer - In loading state:", {
+      isLoading,
+      version,
+    });
     return <div className="min-h-screen bg-gray-900" />;
   }
 
-  console.log('ClientSideRenderer - Rendering with version:', version);
+  console.log("ClientSideRenderer - Rendering with version:", version);
   return (
     <LandingWrapper
       initialVersion={version}

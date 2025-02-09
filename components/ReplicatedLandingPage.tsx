@@ -349,3 +349,5 @@ export function ReleaseVsReplicated() {
     </div>
   );
 }
+
+export default ReleaseVsReplicated;

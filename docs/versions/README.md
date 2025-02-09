@@ -5,6 +5,7 @@ This document explains how to add or modify landing pages and their correspondin
 ## Overview
 
 All version configuration is centralized in `config/versions.ts`. Each version defines:
+
 - Its landing page path
 - Any version aliases
 - The content shown on the signup page
@@ -64,14 +65,16 @@ Create a new file at `app/your-landing-page/page.tsx`:
 Each version must include:
 
 ### Required Fields
+
 - `id`: Unique identifier for the version
 - `path`: URL path for the landing page
-- `content`: 
+- `content`:
   - `title`: Main heading
   - `benefits`: Exactly 3 benefits
   - `steps`: Exactly 3 steps
 
 ### Optional Fields
+
 - `aliases`: Alternative version names
 
 ## URL Patterns
@@ -83,10 +86,12 @@ Each version must include:
 ## Testing Your Version
 
 1. Direct Access:
+
    - Visit landing page: `/your-landing-page`
    - Check signup page: `/signup?version=your-version`
 
 2. Version Parameters:
+
    - Root with version: `/?version=your-version`
    - Root with alias: `/?version=alias1`
 
@@ -97,11 +102,13 @@ Each version must include:
 ## Common Tasks
 
 ### Adding Icons
+
 1. Open `app/signup/components/BenefitIcons.tsx`
 2. Add your icon to the `icons` object
 3. Use the icon name in your version's benefits
 
 ### Updating Content
+
 1. Find your version in `config/versions.ts`
 2. Update the `content` object
 3. Changes will reflect immediately on the signup page
@@ -109,11 +116,13 @@ Each version must include:
 ## Troubleshooting
 
 ### Version Not Showing
+
 - Check version ID matches exactly
 - Verify path is correct
 - Check localStorage for persisted version
 
 ### Content Not Updating
+
 - Clear localStorage
 - Verify content structure matches interface
 - Check for console errors
@@ -141,16 +150,19 @@ Run version-related tests using:
 Tests are located in `__tests__/config/versions.test.ts` and cover:
 
 1. Version Validation
+
    - Tests canonical versions
    - Tests version aliases
    - Handles invalid versions
 
 2. Path Mapping
+
    - Tests URL to version mapping
    - Tests version to URL mapping
    - Handles root path ('/')
 
 3. Content Structure
+
    - Validates required fields
    - Checks benefit structure
    - Verifies step content
@@ -165,11 +177,13 @@ Tests are located in `__tests__/config/versions.test.ts` and cover:
 When adding a new version, add tests for:
 
 1. Version Validation:
+
    - Test your version ID
    - Test any aliases
    - Test invalid cases
 
 2. Path Resolution:
+
    - Test path → version
    - Test version → path
    - Test fallbacks
@@ -199,6 +213,7 @@ When adding a new version, add tests for:
 ### Test Cleanup
 
 Tests automatically:
+
 - Clear localStorage
 - Reset cookies
 - Reset document state
@@ -216,11 +231,13 @@ This is handled in the beforeEach hook:
 ### Common Test Issues
 
 1. Storage Problems
+
    - Clear storage before tests
    - Reset cookies properly
    - Check for state leaks
 
 2. Path Resolution
+
    - Test root path specially
    - Handle unknown paths
    - Check defaults
@@ -266,7 +283,7 @@ Here's a real example:
     3. Aliases: none
     4. Target Audience: Development teams needing cloud-based development environments
     5. Key Value Proposition: Instant, powerful cloud development environments
-    6. Unique Differentiators: 
+    6. Unique Differentiators:
        - No local setup required
        - Full cloud resources
        - Team collaboration features
@@ -286,12 +303,14 @@ Here's a real example:
 Verify the AI's response includes:
 
 1. Version Configuration:
+
    - Correct type structure
    - All required fields
    - Appropriate icons
    - Clear benefits and steps
 
 2. Landing Page:
+
    - Proper imports
    - LandingPageWrapper usage
    - Dynamic imports

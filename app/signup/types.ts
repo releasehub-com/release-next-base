@@ -6,6 +6,6 @@ export interface BenefitType {
 
 export interface ContentType {
   title: string;
-  benefits: BenefitType[];
-  steps: string[];
-} 
+  benefits: readonly BenefitType[];
+  steps: readonly string[];
+}
