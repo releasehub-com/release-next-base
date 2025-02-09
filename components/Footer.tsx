@@ -228,19 +228,19 @@ export default function Footer() {
         <div className="mt-8 pt-8 border-t border-gray-800 text-center">
           <nav className="flex items-center justify-center gap-4 sm:gap-6">
             <Link
-              href="https://release.com/terms-of-service"
+              href="/legal/terms-of-service"
               className="text-xs hover:underline underline-offset-4"
             >
               Terms
             </Link>
             <Link
-              href="https://release.com/privacy-policy"
+              href="/legal/privacy-policy"
               className="text-xs hover:underline underline-offset-4"
             >
               Privacy
             </Link>
             <Link
-              href="https://release.com/security"
+              href="/legal/security"
               className="text-xs hover:underline underline-offset-4"
             >
               Security

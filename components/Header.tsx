@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import { getVersionFromStorage, getVersionPath } from "@/config/versions";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -26,13 +27,19 @@ export default function Header() {
     // ... other navigation items ...
   ];
 
+  // Get the stored version for the logo link
+  const getHomeUrl = () => {
+    const version = getVersionFromStorage();
+    return getVersionPath(version);
+  };
+
   return (
     <header
       className={`sticky top-0 z-50 w-full border-b border-gray-800 bg-gray-900 text-gray-100 transition-all duration-300 ${isScrolled ? "py-2" : "py-4"}`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href={getHomeUrl()} className="flex items-center space-x-2">
             <Image
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/releaselogo-5kSBfSjirGYalBpjEwxUJEKBdrcG02.svg"
               alt="Release Logo"
@@ -108,7 +115,7 @@ export default function Header() {
               >
                 Login
               </Link>
-              <Link href="https://release.com/signup" className="block mt-2">
+              <Link href="/signup" className="block mt-2">
                 <Button className="w-full bg-[#00bb93] text-white hover:bg-[#00bb93]/90">
                   Get Started
                 </Button>
@@ -122,7 +129,7 @@ export default function Header() {
             >
               Login
             </Link>
-            <Link href="https://release.com/signup">
+            <Link href="/signup">
               <Button className="bg-[#00bb93] text-white hover:bg-[#00bb93]/90">
                 Get Started
               </Button>

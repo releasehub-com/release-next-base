@@ -13,6 +13,26 @@ const nextConfig = {
     ],
     unoptimized: true,
   },
+  pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
+  async redirects() {
+    return [
+      {
+        source: "/terms-of-service",
+        destination: "/legal/terms-of-service",
+        permanent: true,
+      },
+      {
+        source: "/privacy-policy",
+        destination: "/legal/privacy-policy",
+        permanent: true,
+      },
+      {
+        source: "/security",
+        destination: "/legal/security",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

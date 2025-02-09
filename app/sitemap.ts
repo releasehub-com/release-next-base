@@ -28,6 +28,7 @@ const APP_ROUTES = [
   "comparison/qovery",
   "comparison/shipyard",
   "partners",
+  "signup",
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
