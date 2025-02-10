@@ -24,6 +24,7 @@ const nextConfig = {
     contentDispositionType: "attachment",
     contentSecurityPolicy:
       "default-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline'; font-src 'self' data:;",
+    unoptimized: process.env.NODE_ENV === 'development'
   },
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   async redirects() {
