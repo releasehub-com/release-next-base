@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  output: "standalone",
   images: {
     remotePatterns: [
       {
@@ -11,14 +11,19 @@ const nextConfig = {
         protocol: "https",
         hostname: "uploads-ssl.webflow.com",
       },
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
     ],
-    unoptimized: false,
     deviceSizes: [375, 640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    formats: ['image/webp'],
+    formats: ["image/webp"],
     minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    contentDispositionType: "attachment",
+    contentSecurityPolicy:
+      "default-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline'; font-src 'self' data:;",
   },
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   async redirects() {

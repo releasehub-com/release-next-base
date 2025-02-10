@@ -15,6 +15,8 @@ interface BlogIndexProps {
   searchParams: { category?: string };
 }
 
+const POSTS_PER_PAGE = 9;
+
 export default function BlogIndex({
   posts,
   categories,
@@ -24,6 +26,7 @@ export default function BlogIndex({
   const [selectedCategory, setSelectedCategory] = useState(
     searchParams.category || "",
   );
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Get featured post
   const featuredPost = posts.find(
@@ -51,6 +54,18 @@ export default function BlogIndex({
         return matchesSearch && matchesCategory;
       });
   }, [posts, searchTerm, selectedCategory]);
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
+  const paginatedPosts = filteredPosts.slice(
+    (currentPage - 1) * POSTS_PER_PAGE,
+    currentPage * POSTS_PER_PAGE,
+  );
+
+  // Reset to first page when filters change
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedCategory]);
 
   return (
     <>
@@ -178,7 +193,7 @@ export default function BlogIndex({
 
           {/* Blog Posts Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredPosts.map((post) => (
+            {paginatedPosts.map((post) => (
               <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
@@ -230,6 +245,51 @@ export default function BlogIndex({
               </Link>
             ))}
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-12 flex justify-center gap-2">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className={`px-4 py-2 rounded-lg ${
+                  currentPage === 1
+                    ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                    : "bg-gray-800 text-white hover:bg-gray-700"
+                }`}
+              >
+                Previous
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`px-4 py-2 rounded-lg ${
+                      currentPage === page
+                        ? "bg-purple-600 text-white"
+                        : "bg-gray-800 text-white hover:bg-gray-700"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ),
+              )}
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+                className={`px-4 py-2 rounded-lg ${
+                  currentPage === totalPages
+                    ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                    : "bg-gray-800 text-white hover:bg-gray-700"
+                }`}
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
       </main>
       <Footer />

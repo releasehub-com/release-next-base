@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install curl -y
 FROM base AS deps
 WORKDIR /build
 COPY package.json pnpm-lock.yaml .npmrc ./
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 # Rebuild the source code only when needed and upload the sourcemaps
 FROM base AS builder
@@ -67,6 +67,7 @@ COPY package.json pnpm-lock.yaml .npmrc ./
 COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/.next /app/.next
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/app /app/app
 
 #USER nextjs
 
