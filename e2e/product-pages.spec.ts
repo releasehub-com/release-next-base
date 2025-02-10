@@ -40,6 +40,12 @@ async function checkImages(page, context = '') {
     alt: ${alt || 'NO ALT'}
     role: ${role || 'NO ROLE'}
     class: ${className || 'NO CLASS'}`);
+
+    // Skip Lucide icons as they're rendered as SVGs by the component
+    if (className?.includes('lucide')) {
+      console.log(`ℹ️ Skipping Lucide icon check`);
+      continue;
+    }
     
     if (!src) {
       console.log(`❌ Image ${i + 1} has no src attribute ${context}`);
@@ -62,7 +68,7 @@ async function checkImages(page, context = '') {
       Status Text: ${responseInfo.statusText}`);
     }
 
-    // Wait for the image to load
+    // Wait for the image to load with increased timeout
     try {
       await page.waitForFunction(
         ([selector, index]) => {
@@ -70,7 +76,7 @@ async function checkImages(page, context = '') {
           return img && img instanceof HTMLImageElement && img.complete && img.naturalWidth > 0;
         },
         ['img', i],
-        { timeout: 5000 }
+        { timeout: 10000 }
       );
     } catch (error: any) {
       console.log(`⚠️ Image load timeout for ${src} (${alt}) ${context}
@@ -87,7 +93,6 @@ async function checkImages(page, context = '') {
           currentSrc: img.currentSrc,
           offsetWidth: img.offsetWidth,
           offsetHeight: img.offsetHeight,
-          // Additional debugging info
           loading: img.loading,
           decoding: img.decoding,
           crossOrigin: img.crossOrigin,

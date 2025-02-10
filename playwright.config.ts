@@ -10,7 +10,7 @@ export default defineConfig({
     ['html', { open: 'always' }]
   ],
   use: {
-    baseURL: process.env.TEST_BASE_URL || 'http://localhost:3000',
+    baseURL: process.env.TEST_BASE_URL || 'https://release.com',
     trace: 'on-first-retry',
   },
 

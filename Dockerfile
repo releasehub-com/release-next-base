@@ -28,9 +28,8 @@ ENV NEXT_PUBLIC_APP_BASE_URL=$NEXT_PUBLIC_APP_BASE_URL \
     DD_API_KEY=$DD_API_KEY \
     NEXT_TELEMETRY_DISABLED=1
 
-COPY package.json pnpm-lock.yaml .npmrc ./
-COPY . .
 COPY --from=deps /build/node_modules ./node_modules
+COPY . .
 
 # Ensure case studies directory exists and has correct permissions
 RUN mkdir -p app/case-studies/content public/case-study-images && \
@@ -42,9 +41,6 @@ RUN pnpm build
 # Generate sitemap
 RUN pnpm update-sitemap
 
-# After successful build, prune dev dependencies
-RUN pnpm install --prod --no-frozen-lockfile
-
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
@@ -55,19 +51,21 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
+# Copy necessary files and set permissions
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/server ./.next/server
 
-COPY package.json pnpm-lock.yaml .npmrc ./
-COPY --from=builder /app/node_modules /app/node_modules
-COPY --from=builder /app/.next /app/.next
-COPY --from=builder /app/public /app/public
-COPY --from=builder /app/app/blog/posts /app/app/blog/posts
-COPY --from=builder /app/app/case-studies/content /app/app/case-studies/content
+# Ensure proper permissions
+RUN chown -R nextjs:nodejs .
+
+USER nextjs
 
 EXPOSE 4001
 ENV PORT 4001
+ENV HOSTNAME "0.0.0.0"
 
-WORKDIR /app
-CMD ["pnpm", "start"]
+CMD ["node", "server.js"]

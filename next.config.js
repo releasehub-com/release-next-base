@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   images: {
     remotePatterns: [
       {
@@ -11,7 +12,7 @@ const nextConfig = {
         hostname: "uploads-ssl.webflow.com",
       },
     ],
-    unoptimized: true,
+    unoptimized: false,
   },
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   async redirects() {
