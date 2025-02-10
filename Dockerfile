@@ -61,6 +61,9 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/.next/server ./.next/server
+COPY --from=builder /app/.next/types ./types
+COPY --from=builder /app/.next/cache ./.next/cache
 
 # Ensure proper permissions
 RUN chown -R nextjs:nodejs .
@@ -70,5 +73,9 @@ USER nextjs
 EXPOSE 4001
 ENV PORT 4001
 ENV HOSTNAME "0.0.0.0"
+
+# Add health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:4001/ || exit 1
 
 CMD ["node", "server.js"]
