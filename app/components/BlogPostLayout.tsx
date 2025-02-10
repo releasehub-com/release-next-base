@@ -26,12 +26,20 @@ export default function BlogPostLayout({
       <header className="mb-8">
         {frontmatter.mainImage && (
           <div className="relative w-full h-96 mb-8">
-            <Image
-              src={frontmatter.mainImage}
-              alt={frontmatter.imageAlt || frontmatter.title}
-              fill
-              className="object-cover rounded-lg"
-            />
+            {frontmatter.mainImage.endsWith('.svg') ? (
+              <img
+                src={frontmatter.mainImage}
+                alt={frontmatter.imageAlt || frontmatter.title}
+                className="w-full h-full object-cover rounded-lg"
+              />
+            ) : (
+              <Image
+                src={frontmatter.mainImage}
+                alt={frontmatter.imageAlt || frontmatter.title}
+                fill
+                className="object-cover rounded-lg"
+              />
+            )}
           </div>
         )}
         <div className="space-y-4">
