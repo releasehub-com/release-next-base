@@ -45,14 +45,15 @@ RUN pnpm update-sitemap
 RUN pnpm install --prod --frozen-lockfile
 
 # Production image, copy all the files and run next
-FROM base AS runner
+FROM node:18-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs && \
+    apk add --no-cache curl
 
 # Copy necessary files and set permissions
 COPY --from=builder /app/public ./public
