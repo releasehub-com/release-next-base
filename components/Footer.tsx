@@ -36,10 +36,18 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="https://release.com/product/instant-datasets"
+                  href="/product/instant-datasets"
                   className="hover:text-[#00bb93] transition-colors"
                 >
                   Instant Datasets
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/product/docker-extension"
+                  className="hover:text-[#00bb93] transition-colors"
+                >
+                  Docker Extension
                 </Link>
               </li>
               <li>

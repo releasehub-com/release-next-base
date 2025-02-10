@@ -1,0 +1,667 @@
+<!DOCTYPE html><!-- Last Published: Thu Oct 31 2024 22:04:04 GMT+0000 (Coordinated Universal Time) --><html data-wf-domain="%%PUBLISH_URL_REPLACEMENT%%" data-wf-page="62aa5a70cd5ba238f80d71bf" data-wf-site="603dd147c5b0a480611bd348" lang="en"><head><meta charset="utf-8"/><title>Page Not Found - Release</title><meta content="Page Not Found - Release" property="og:title"/><meta content="Page Not Found - Release" property="twitter:title"/><meta content="width=device-width, initial-scale=1" name="viewport"/><meta content="google-site-verification=M5pyJb51RNH--atgNgtztwgoHSYXSp9ln_FTgl130ho" name="google-site-verification"/><link href="https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/css/releasehub.2040dd838.min.css" rel="stylesheet" type="text/css"/><script type="text/javascript">!function(o,c){var n=c.documentElement,t=" w-mod-";n.className+=t+"js",("ontouchstart"in o||o.DocumentTouch&&c instanceof DocumentTouch)&&(n.className+=t+"touch")}(window,document);</script><link href="https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/603ea38a94a369d8264a390f_Favico.png" rel="shortcut icon" type="image/x-icon"/><link href="https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/603eac97a95ca0d6f4c3b556_Webclip.png" rel="apple-touch-icon"/><link href="https://release.com/404" rel="canonical"/><script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-167305979-2"></script><script type="text/javascript">window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-167305979-2', {'anonymize_ip': false});</script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-FW7RSEVW26"></script><script type="text/javascript">window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('set', 'developer_id.dZGVlNj', true);gtag('config', 'G-FW7RSEVW26');</script><script src="https://www.google.com/recaptcha/api.js" type="text/javascript"></script><link rel="preconnect" href="https://global-uploads.webflow.com">
+
+<!----------------------------->
+<!-- Freshpaint snippet code -->
+<!----------------------------->
+<script type="text/javascript">
+(function(c,a){if(!a.__SV){var b=window;try{var d,m,j,k=b.location,f=k.hash;d=function(a,b){return(m=a.match(RegExp(b+"=([^&]*)")))?m[1]:null};f&&d(f,"fpState")&&(j=JSON.parse(decodeURIComponent(d(f,"fpState"))),"fpeditor"===j.action&&(b.sessionStorage.setItem("_fpcehash",f),history.replaceState(j.desiredHash||"",c.title,k.pathname+k.search)))}catch(n){}var l,h;window.freshpaint=a;a._i=[];a.init=function(b,d,g){function c(b,i){var a=i.split(".");2==a.length&&(b=b[a[0]],i=a[1]);b[i]=function(){b.push([i].concat(Array.prototype.slice.call(arguments,
+0)))}}var e=a;"undefined"!==typeof g?e=a[g]=[]:g="freshpaint";e.people=e.people||[];e.toString=function(b){var a="freshpaint";"freshpaint"!==g&&(a+="."+g);b||(a+=" (stub)");return a};e.people.toString=function(){return e.toString(1)+".people (stub)"};l="disable time_event track track_pageview track_links track_forms track_with_groups add_group set_group remove_group register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user people.remove people group page alias ready addEventProperties addInitialEventProperties removeEventProperty addPageviewProperties".split(" ");
+for(h=0;h<l.length;h++)c(e,l[h]);var f="set set_once union unset remove delete".split(" ");e.get_group=function(){function a(c){b[c]=function(){call2_args=arguments;call2=[c].concat(Array.prototype.slice.call(call2_args,0));e.push([d,call2])}}for(var b={},d=["get_group"].concat(Array.prototype.slice.call(arguments,0)),c=0;c<f.length;c++)a(f[c]);return b};a._i.push([b,d,g])};a.__SV=1.4;b=c.createElement("script");b.type="text/javascript";b.async=!0;b.src="undefined"!==typeof FRESHPAINT_CUSTOM_LIB_URL?
+FRESHPAINT_CUSTOM_LIB_URL:"//perfalytics.com/static/js/freshpaint.js";(d=c.getElementsByTagName("script")[0])?d.parentNode.insertBefore(b,d):c.head.appendChild(b)}})(document,window.freshpaint||[]);
+freshpaint.init("7674977f-1e4f-47f0-ab3e-d8a39241c4ef");
+freshpaint.page();
+</script>
+
+<!--------------------------->
+<!-- Intercom snipper code -->
+<!--------------------------->
+<script>
+  window.intercomSettings = {
+    app_id: "w8dooigv"
+  };
+</script>
+
+<script>
+// We pre-filled your app ID in the widget URL: 'https://widget.intercom.io/widget/w8dooigv'
+(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',w.intercomSettings);}else{var d=document;var i=function(){i.c(arguments);};i.q=[];i.c=function(args){i.q.push(args);};w.Intercom=i;var l=function(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/w8dooigv';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};if(document.readyState==='complete'){l();}else if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})();
+</script>
+
+<!------------------------>
+<!-- HubSpot Embed Code -->
+<!------------------------>
+<script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/8047877.js"></script>
+<script async defer charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/shell.js"></script>
+
+<!----------------->
+<!-- INTLTEL CSS -->
+<!----------------->
+<link
+  href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp"
+  rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/css/intlTelInput.min.css" rel="stylesheet" />
+
+<style>
+  * {
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    color: #fff;
+    background: #00DEAE;
+  }
+
+  :focus {
+    outline: 0;
+  }
+
+  .w-nav-overlay {
+    top: 0;
+  }
+
+  .form,
+  .request-access-form {
+    display: block !important;
+  }
+
+  .w-tab-link {
+    background-color: transparent;
+  }
+
+  .w-tab-link.w--current {
+    background-color: transparent;
+  }
+
+  .w-slider-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: .4rem;
+    background-color: #DFDAE2 !important;
+  }
+
+  .w-slider-dot.w-active {
+    width: 10px;
+    height: 10px;
+    background-color: #9A2F8F !important;
+  }
+
+.w-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+  
+  
+  textarea,
+  input:matches([type="email"],
+    [type="number"],
+    [type="password"],
+    [type="search"],
+    [type="tel"],
+    [type="text"],
+    [type="url"]) {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  /* Material Icons */
+  .material-icons,
+  .material-icons-outlined,
+  .material-icons-two-tone,
+  .material-icons-round,
+  .material-icons-sharp {
+    font-weight: normal;
+    font-style: normal;
+    font-size: 20px;
+    line-height: 24px;
+    text-align: center;
+    display: inline-block;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'liga';
+  }
+
+  .material-icons-two-tone {
+    color: red !important;
+  }
+
+  .material-icons-s {
+    font-size: 16px;
+    line-height: 16px;
+  }
+
+  /* Use case */
+  .use-case-header .circle-icon {
+    transition: all .25s;
+  }
+
+  .use-case-header:hover .circle-icon {
+    background-color: #9A2F8F !important;
+  }
+
+  .use-case-header:hover .material-icons {
+    color: #FFF !important;
+  }
+  .use-case-body-text p {
+	font-size: 16px;
+	line-height: 24px;
+  }
+
+  /* Intl-tel-input */
+  .intl-tel-input {
+    display: block;
+  }
+
+  .iti--allow-dropdown .iti__flag-container:hover .iti__selected-flag {
+    border-radius: .4rem 0 0 .4rem !important;
+  }
+
+  .iti__country-list {
+    border-radius: .4rem !important;
+    border: 1px solid #DFDAE2 !important;
+  }
+
+  .iti__divider {
+    border-bottom: 1px solid #DFDAE2 !important;
+  }
+</style>
+
+<!-- Google Tag Manager -->
+<script>
+(function(w, d, s, l, i) {
+  w[l] = w[l] || [];
+  var pageContainsCustomCode = false; // Flag to check if the page contains the custom code
+
+  // Check if the current page contains the custom code
+  if (d.querySelector('script[src="/platform"]')) {
+    pageContainsCustomCode = true;
+  }
+
+  // Load GTM script only if the page doesn't contain the custom code and the URL is not the homepage
+  if (!pageContainsCustomCode && window.location.pathname !== '/') {
+    w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+    var f = d.getElementsByTagName(s)[0],
+      j = d.createElement(s),
+      dl = l != 'dataLayer' ? '&l=' + l : '';
+    j.async = true;
+    j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+    f.parentNode.insertBefore(j, f);
+  }
+})(window, document, 'script', 'dataLayer', 'GTM-NW5GSPN');
+</script>
+<!-- End Google Tag Manager -->
+
+<!-- Start VWO Async SmartCode -->
+<link rel="preconnect" href="https://dev.visualwebsiteoptimizer.com" />
+<script type='text/javascript' id='vwoCode'>
+window._vwo_code || (function() {
+var account_id=751052,
+version=2.0,
+settings_tolerance=2000,
+hide_element='body',
+hide_element_style = 'opacity:0 !important;filter:alpha(opacity=0) !important;background:none !important',
+/* DO NOT EDIT BELOW THIS LINE */
+f=false,w=window,d=document,v=d.querySelector('#vwoCode'),cK='_vwo_'+account_id+'_settings',cc={};try{var c=JSON.parse(localStorage.getItem('_vwo_'+account_id+'_config'));cc=c&&typeof c==='object'?c:{}}catch(e){}var stT=cc.stT==='session'?w.sessionStorage:w.localStorage;code={use_existing_jquery:function(){return typeof use_existing_jquery!=='undefined'?use_existing_jquery:undefined},library_tolerance:function(){return typeof library_tolerance!=='undefined'?library_tolerance:undefined},settings_tolerance:function(){return cc.sT||settings_tolerance},hide_element_style:function(){return'{'+(cc.hES||hide_element_style)+'}'},hide_element:function(){return typeof cc.hE==='string'?cc.hE:hide_element},getVersion:function(){return version},finish:function(){if(!f){f=true;var e=d.getElementById('_vis_opt_path_hides');if(e)e.parentNode.removeChild(e)}},finished:function(){return f},load:function(e){var t=this.getSettings(),n=d.createElement('script'),i=this;if(t){n.textContent=t;d.getElementsByTagName('head')[0].appendChild(n);if(!w.VWO||VWO.caE){stT.removeItem(cK);i.load(e)}}else{n.fetchPriority='high';n.src=e;n.type='text/javascript';n.onerror=function(){_vwo_code.finish()};d.getElementsByTagName('head')[0].appendChild(n)}},getSettings:function(){try{var e=stT.getItem(cK);if(!e){return}e=JSON.parse(e);if(Date.now()>e.e){stT.removeItem(cK);return}return e.s}catch(e){return}},init:function(){if(d.URL.indexOf('__vwo_disable__')>-1)return;var e=this.settings_tolerance();w._vwo_settings_timer=setTimeout(function(){_vwo_code.finish();stT.removeItem(cK)},e);var t=d.currentScript,n=d.createElement('style'),i=this.hide_element(),r=t&&!t.async&&i?i+this.hide_element_style():'',c=d.getElementsByTagName('head')[0];n.setAttribute('id','_vis_opt_path_hides');v&&n.setAttribute('nonce',v.nonce);n.setAttribute('type','text/css');if(n.styleSheet)n.styleSheet.cssText=r;else n.appendChild(d.createTextNode(r));c.appendChild(n);this.load('https://dev.visualwebsiteoptimizer.com/j.php?a='+account_id+'&u='+encodeURIComponent(d.URL)+'&vn='+version)}};w._vwo_code=code;code.init();})();
+</script>
+<!-- End VWO Async SmartCode -->
+
+<!-- [Attributes by Finsweet] Disable scrolling -->
+<script defer src="https://cdn.jsdelivr.net/npm/@finsweet/attributes-scrolldisable@1/scrolldisable.js"></script>
+
+<!-- Finsweet Cookie Consent -->
+<script async src="https://cdn.jsdelivr.net/npm/@finsweet/cookie-consent@1/fs-cc.js" fs-cc-mode="informational" fs-cc-endpoint="https://release-cookies.rod-826.workers.dev/"></script></head><body><div class="navbar_component"><div class="navbar_spacing-compensation"></div><div data-collapse="none" data-animation="default" data-duration="250" data-no-scroll="1" data-easing="ease-in-out" data-easing2="ease-in-out" role="banner" class="navbar w-nav"><div class="navbar-css-style w-embed"><style>
+	.navbar_dropdown-link-wrapper:hover>.navbar_dropdown-link-block>.heading-style-h5.text-color-dark {
+  	color:#9A2F8F;
+  }
+  
+  .navbar_dropdown-link-wrapper>.navbar_dropdown-link-block>.heading-style-h5.text-color-dark {
+  	transition: all 0.3s ease;
+  }
+  
+  @media only screen and (min-width: 992px) {
+    .navbar_dropdown:hover>.navbar_dropdown-toggle>.nav-menu-icon {
+      transform: rotate(180deg);
+    }
+  }
+</style></div><div class="announcement-bar"><div class="padding-global"><div class="container-medium"><div class="annoucement-wrapper"><a gtm-conversion="banner" data-w-id="3813a56b-9246-bdbd-575b-7dd901da4922" href="https://release.ai" target="_blank" class="annoucement-link w-inline-block"><img src="https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/603dd147c5b0a462e01bd39a_kubernetes.svg" loading="lazy" width="32" height="32" alt="" class="announcement-emoji hide"/><div class="announcement-text">🚀Environments for AI now available. Try the Release.ai sandbox 🎉</div></a></div></div></div></div><div class="padding-global"><div class="container-medium"><div class="navbar-menu-wrapper is-new w-clearfix"><a href="#" fs-scrolldisable-element="toggle" class="menu-button new w-inline-block"><div class="menu-hamburguer first"></div><div class="menu-hamburguer second"></div><div class="menu-hamburguer third"></div></a><a href="/" class="logo hide-m new w-nav-brand"><div class="logo w-embed"><svg width="100%" height="100%" viewBox="0 0 151 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M61.494 18.4073L66.0251 26.7094H62.0569L58.0325 18.8857H54.6272V26.7094H50.9688V6.95361H58.2011C62.6758 6.95361 65.5747 9.20514 65.5747 12.9197C65.5747 15.6496 64.055 17.563 61.494 18.4073ZM58.2579 10.0492H54.6272V15.8466H58.2576C60.6213 15.8466 61.9157 14.7489 61.9157 12.948C61.916 11.1749 60.5935 10.0492 58.2579 10.0492Z" fill="currentcolor"/>
+<path d="M70.5847 20.7149C70.8097 22.7972 72.4142 24.1199 74.4404 24.1199C76.101 24.1199 77.367 23.3884 77.9018 22.2627H81.5606C80.8004 25.1332 77.9302 27.0472 74.4684 27.0472C70.0501 27.0472 67.0391 23.7824 67.0391 19.758C67.0391 15.7621 70.1062 12.4692 74.384 12.4692C78.6897 12.4692 81.7572 15.7621 81.7572 19.758C81.7572 20.0959 81.7572 20.4618 81.7289 20.7149H70.5847ZM78.0985 18.4072C77.8174 16.6625 76.3257 15.4242 74.384 15.4242C72.5267 15.4242 71.035 16.5777 70.6972 18.4072H78.0985Z" fill="currentcolor"/>
+<path d="M83.8672 6.95361H87.3851V21.5029C87.3851 22.9945 88.0885 23.698 89.4112 23.698C89.6927 23.698 90.0863 23.698 90.3961 23.6696V26.6813C89.9458 26.7094 89.2423 26.7094 88.6794 26.7094C85.3589 26.7094 83.8672 25.0491 83.8672 21.5596V6.95361Z" fill="currentcolor"/>
+<path d="M94.6481 20.7149C94.8731 22.7972 96.4773 24.1199 98.5032 24.1199C100.164 24.1199 101.43 23.3884 101.965 22.2627H105.623C104.863 25.1332 101.993 27.0472 98.5312 27.0472C94.113 27.0472 91.1016 23.7824 91.1016 19.758C91.1016 15.7621 94.1691 12.4692 98.4468 12.4692C102.753 12.4692 105.82 15.7621 105.82 19.758C105.82 20.0959 105.82 20.4618 105.792 20.7149H94.6481ZM102.162 18.4072C101.88 16.6625 100.389 15.4242 98.4471 15.4242C96.5898 15.4242 95.0982 16.5777 94.7606 18.4072H102.162Z" fill="currentcolor"/>
+<path d="M116.619 24.9923C116.001 26.2586 114.368 27.0468 112.483 27.0468C109.472 27.0468 107.586 25.4143 107.586 22.9381C107.586 20.4051 109.247 19.0265 112.257 18.717L114.649 18.4637C116.113 18.2947 116.591 17.9572 116.591 17.1409C116.591 15.959 115.888 15.3117 114.115 15.3117C112.258 15.3117 111.526 15.9871 111.413 17.169H107.867C108.036 14.2423 109.978 12.4692 114.059 12.4692C118.026 12.4692 120.137 14.1579 120.137 17.1973V26.709H116.619V24.9923ZM113.017 21.0524C111.751 21.1649 111.104 21.7562 111.104 22.6847C111.104 23.5854 111.892 24.2047 113.271 24.2047C115.241 24.2047 116.591 22.9664 116.591 21.3903V20.18C116.366 20.5463 115.719 20.7997 114.79 20.8838L113.017 21.0524Z" fill="currentcolor"/>
+<path d="M128.798 27.0465C125.055 27.0465 122.888 25.2454 122.438 22.3749H126.012C126.265 23.557 127.222 24.2605 128.713 24.2605C130.12 24.2605 130.965 23.5006 130.965 22.7127C130.965 21.7839 130.402 21.3339 128.235 21.1088C124.267 20.7426 122.578 19.3357 122.578 16.7186C122.578 14.4954 124.605 12.4692 128.094 12.4692C131.809 12.4692 133.864 14.411 134.117 17.1126H130.599C130.486 16.0429 129.67 15.283 128.15 15.283C126.715 15.283 126.096 15.9584 126.096 16.6899C126.096 17.619 126.715 18.1252 128.882 18.3222C132.879 18.7164 134.482 20.0111 134.482 22.6563C134.482 25.1329 132.175 27.0465 128.798 27.0465Z" fill="currentcolor"/>
+<path d="M139.429 20.7149C139.654 22.7972 141.259 24.1199 143.284 24.1199C144.945 24.1199 146.211 23.3884 146.746 22.2627H150.404C149.644 25.1332 146.774 27.0472 143.312 27.0472C138.894 27.0472 135.883 23.7824 135.883 19.758C135.883 15.7621 138.95 12.4692 143.228 12.4692C147.533 12.4692 150.601 15.7621 150.601 19.758C150.601 20.0959 150.601 20.4618 150.573 20.7149H139.429ZM146.943 18.4072C146.661 16.6625 145.17 15.4242 143.228 15.4242C141.371 15.4242 139.879 16.5777 139.542 18.4072H146.943Z" fill="currentcolor"/>
+<path d="M22.841 32.104L38.1565 5.683C39.6203 3.15738 37.7905 0 34.8621 0H4.23158C1.30318 0 -0.526983 3.15738 0.937217 5.683L3.63211 10.3319L4.65275 12.0928C6.19743 14.7575 9.61234 15.6706 12.2849 14.1337L16.8778 11.4924C17.2235 11.2936 17.3419 10.8524 17.1423 10.5077L15.747 8.10056C15.192 7.14319 15.8842 5.94521 16.9925 5.94521H28.613C29.7228 5.94521 30.4161 7.14499 29.8603 8.1038L24.054 18.1209C23.4982 19.0797 22.1109 19.0797 21.5551 18.1209L20.1588 15.7116C19.9595 15.3676 19.5185 15.2499 19.1735 15.448L14.5784 18.0903C11.9084 19.6257 10.9939 23.032 12.5368 25.6941L13.5574 27.4551L16.2523 32.104C17.7183 34.6321 21.3757 34.6321 22.841 32.104Z" fill="currentcolor"/>
+</svg></div></a><div role="navigation" class="nav-menu is-new w-nav-menu"><div fs-scrolldisable-element="preserve" class="nav-menu-wrapper new-navbar"><a href="/" class="logo is-new w-nav-brand"><div class="logo w-embed"><svg width="100%" height="105%" viewBox="0 0 151 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M61.494 18.4073L66.0251 26.7094H62.0569L58.0325 18.8857H54.6272V26.7094H50.9688V6.95361H58.2011C62.6758 6.95361 65.5747 9.20514 65.5747 12.9197C65.5747 15.6496 64.055 17.563 61.494 18.4073ZM58.2579 10.0492H54.6272V15.8466H58.2576C60.6213 15.8466 61.9157 14.7489 61.9157 12.948C61.916 11.1749 60.5935 10.0492 58.2579 10.0492Z" fill="currentcolor"/>
+<path d="M70.5847 20.7149C70.8097 22.7972 72.4142 24.1199 74.4404 24.1199C76.101 24.1199 77.367 23.3884 77.9018 22.2627H81.5606C80.8004 25.1332 77.9302 27.0472 74.4684 27.0472C70.0501 27.0472 67.0391 23.7824 67.0391 19.758C67.0391 15.7621 70.1062 12.4692 74.384 12.4692C78.6897 12.4692 81.7572 15.7621 81.7572 19.758C81.7572 20.0959 81.7572 20.4618 81.7289 20.7149H70.5847ZM78.0985 18.4072C77.8174 16.6625 76.3257 15.4242 74.384 15.4242C72.5267 15.4242 71.035 16.5777 70.6972 18.4072H78.0985Z" fill="currentcolor"/>
+<path d="M83.8672 6.95361H87.3851V21.5029C87.3851 22.9945 88.0885 23.698 89.4112 23.698C89.6927 23.698 90.0863 23.698 90.3961 23.6696V26.6813C89.9458 26.7094 89.2423 26.7094 88.6794 26.7094C85.3589 26.7094 83.8672 25.0491 83.8672 21.5596V6.95361Z" fill="currentcolor"/>
+<path d="M94.6481 20.7149C94.8731 22.7972 96.4773 24.1199 98.5032 24.1199C100.164 24.1199 101.43 23.3884 101.965 22.2627H105.623C104.863 25.1332 101.993 27.0472 98.5312 27.0472C94.113 27.0472 91.1016 23.7824 91.1016 19.758C91.1016 15.7621 94.1691 12.4692 98.4468 12.4692C102.753 12.4692 105.82 15.7621 105.82 19.758C105.82 20.0959 105.82 20.4618 105.792 20.7149H94.6481ZM102.162 18.4072C101.88 16.6625 100.389 15.4242 98.4471 15.4242C96.5898 15.4242 95.0982 16.5777 94.7606 18.4072H102.162Z" fill="currentcolor"/>
+<path d="M116.619 24.9923C116.001 26.2586 114.368 27.0468 112.483 27.0468C109.472 27.0468 107.586 25.4143 107.586 22.9381C107.586 20.4051 109.247 19.0265 112.257 18.717L114.649 18.4637C116.113 18.2947 116.591 17.9572 116.591 17.1409C116.591 15.959 115.888 15.3117 114.115 15.3117C112.258 15.3117 111.526 15.9871 111.413 17.169H107.867C108.036 14.2423 109.978 12.4692 114.059 12.4692C118.026 12.4692 120.137 14.1579 120.137 17.1973V26.709H116.619V24.9923ZM113.017 21.0524C111.751 21.1649 111.104 21.7562 111.104 22.6847C111.104 23.5854 111.892 24.2047 113.271 24.2047C115.241 24.2047 116.591 22.9664 116.591 21.3903V20.18C116.366 20.5463 115.719 20.7997 114.79 20.8838L113.017 21.0524Z" fill="currentcolor"/>
+<path d="M128.798 27.0465C125.055 27.0465 122.888 25.2454 122.438 22.3749H126.012C126.265 23.557 127.222 24.2605 128.713 24.2605C130.12 24.2605 130.965 23.5006 130.965 22.7127C130.965 21.7839 130.402 21.3339 128.235 21.1088C124.267 20.7426 122.578 19.3357 122.578 16.7186C122.578 14.4954 124.605 12.4692 128.094 12.4692C131.809 12.4692 133.864 14.411 134.117 17.1126H130.599C130.486 16.0429 129.67 15.283 128.15 15.283C126.715 15.283 126.096 15.9584 126.096 16.6899C126.096 17.619 126.715 18.1252 128.882 18.3222C132.879 18.7164 134.482 20.0111 134.482 22.6563C134.482 25.1329 132.175 27.0465 128.798 27.0465Z" fill="currentcolor"/>
+<path d="M139.429 20.7149C139.654 22.7972 141.259 24.1199 143.284 24.1199C144.945 24.1199 146.211 23.3884 146.746 22.2627H150.404C149.644 25.1332 146.774 27.0472 143.312 27.0472C138.894 27.0472 135.883 23.7824 135.883 19.758C135.883 15.7621 138.95 12.4692 143.228 12.4692C147.533 12.4692 150.601 15.7621 150.601 19.758C150.601 20.0959 150.601 20.4618 150.573 20.7149H139.429ZM146.943 18.4072C146.661 16.6625 145.17 15.4242 143.228 15.4242C141.371 15.4242 139.879 16.5777 139.542 18.4072H146.943Z" fill="currentcolor"/>
+<path d="M22.841 32.104L38.1565 5.683C39.6203 3.15738 37.7905 0 34.8621 0H4.23158C1.30318 0 -0.526983 3.15738 0.937217 5.683L3.63211 10.3319L4.65275 12.0928C6.19743 14.7575 9.61234 15.6706 12.2849 14.1337L16.8778 11.4924C17.2235 11.2936 17.3419 10.8524 17.1423 10.5077L15.747 8.10056C15.192 7.14319 15.8842 5.94521 16.9925 5.94521H28.613C29.7228 5.94521 30.4161 7.14499 29.8603 8.1038L24.054 18.1209C23.4982 19.0797 22.1109 19.0797 21.5551 18.1209L20.1588 15.7116C19.9595 15.3676 19.5185 15.2499 19.1735 15.448L14.5784 18.0903C11.9084 19.6257 10.9939 23.032 12.5368 25.6941L13.5574 27.4551L16.2523 32.104C17.7183 34.6321 21.3757 34.6321 22.841 32.104Z" fill="currentcolor"/>
+</svg></div></a><div class="nav-menu-left new"><div class="navbar-divider"></div><div class="navbar_dropdown"><div class="navbar_dropdown-toggle"><div class="nav-menu-text is-new">Products</div><div class="nav-menu-icon w-embed"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 4L0 -3.49691e-07L8 0L4 4Z" fill="CurrentColor"/>
+</svg></div><div class="navbar_dropdown-trigger"></div></div><div class="navbar_dropdown-list"><div class="navbar_dropdown-line"></div><div class="padding-global is-tablet-0"><div class="container-medium"><div class="navbar_dropdown-component"><div class="navbar_dropdown-left-block"><div class="text-color-purple"><div class="heading-style-h4">Products</div></div><div class="spacing-block-xsmall"></div><div class="text-size-large">Code to production with Release platform.</div></div><div class="navbar_dropdown-right-block"><a href="/get-started" class="navbar_dropdown-link-wrapper w-inline-block"><div class="navbar_dropdown-link-logo w-embed"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M33.75 7.5H6.25C5.55964 7.5 5 8.05964 5 8.75V31.25C5 31.9404 5.55964 32.5 6.25 32.5H33.75C34.4404 32.5 35 31.9404 35 31.25V8.75C35 8.05964 34.4404 7.5 33.75 7.5Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13 15H34" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18 21H30" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18 25H26" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13 8L13 32" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></div><div class="navbar_dropdown-link-block"><div class="heading-style-h5 text-color-dark">Environments as a Service</div><div class="navbar_dropdown-link-text-wrapper"><div class="text-size-medium">Isolated, full stack environments for development, testing and production in minutes, on-demand.</div></div></div></a><a gtm-conversion="navbar-product" href="http://release.ai/" target="_blank" class="navbar_dropdown-link-wrapper w-inline-block"><div class="navbar_dropdown-link-logo w-embed"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M15 12C15 8.68629 17.6863 6 21 6H31C34.3137 6 37 8.68629 37 12V12C37 15.3137 34.3137 18 31 18H15V12Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="7" cy="14" r="4" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M25 28C25 24.6863 22.3137 22 19 22H9C5.68629 22 3 24.6863 3 28V28C3 31.3137 5.68629 34 9 34H25V28Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="33" cy="30" r="4" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></div><div class="navbar_dropdown-link-block"><div class="heading-style-h5 text-color-dark">Release.ai</div><div class="navbar_dropdown-link-text-wrapper"><div class="text-size-medium">Build AI, Automate the infrastructure</div></div></div></a><a href="/product/remote-development-environments" class="navbar_dropdown-link-wrapper w-inline-block"><div class="navbar_dropdown-link-logo w-embed"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_13926_2979)">
+<path d="M22.9141 33.333H33.3307" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6.66406 33.333H17.0807" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20.0026 30.417C21.6126 30.417 22.9193 31.722 22.9193 33.3337C22.9193 34.9437 21.6143 36.2503 20.0026 36.2503C18.3926 36.2503 17.0859 34.9453 17.0859 33.3337C17.0859 31.7237 18.3926 30.417 20.0026 30.417Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20.0043 5C15.3076 5 11.5026 8.805 11.5026 13.5017C8.3726 13.5017 5.83594 16.0383 5.83594 19.1683C5.83594 22.2983 8.3726 24.835 11.5026 24.835H27.0843C30.9959 24.835 34.1676 21.6633 34.1676 17.7517C34.1676 14.1683 31.4959 11.2367 28.0409 10.765C26.9026 7.41333 23.7359 5 20.0043 5Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20 24.835V30.4166" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_13926_2979">
+<rect width="40" height="40" fill="white"/>
+</clipPath>
+</defs>
+</svg></div><div class="navbar_dropdown-link-block"><div class="heading-style-h5 text-color-dark">Remote Development Environments</div><div class="navbar_dropdown-link-text-wrapper"><div class="text-size-medium">Code locally in any IDE, save and collaborate instantly in the cloud.</div></div></div></a><a href="/product/instant-datasets" class="navbar_dropdown-link-wrapper w-inline-block"><div class="navbar_dropdown-link-logo w-embed"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20 20C27.5939 20 33.75 16.6421 33.75 12.5C33.75 8.35786 27.5939 5 20 5C12.4061 5 6.25 8.35786 6.25 12.5C6.25 16.6421 12.4061 20 20 20Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6.25 12.5V20C6.25 24.1422 12.4063 27.5 20 27.5C27.5937 27.5 33.75 24.1422 33.75 20V12.5" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6.25 20V27.5C6.25 31.6422 12.4063 35 20 35C27.5937 35 33.75 31.6422 33.75 27.5V20" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></div><div class="navbar_dropdown-link-block"><div class="heading-style-h5 text-color-dark">Instant Datasets</div><div class="navbar_dropdown-link-text-wrapper"><div class="text-size-medium">Get instant access to production-like data in <span class="display-inline-block">any environment.</span></div></div></div></a><a href="/product/release-delivery" class="navbar_dropdown-link-wrapper w-inline-block"><div class="navbar_dropdown-link-logo w-embed"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="7" cy="14" r="4" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="20" cy="8" r="4" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="33" cy="14" r="4" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="20" cy="32" r="4" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20 13V27" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20 26.5V25C20 23.3431 21.3431 22 23 22H30C31.6569 22 33 20.6569 33 19V18" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20 26.5V25C20 23.3431 18.6569 22 17 22H10C8.34315 22 7 20.6569 7 19V18" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></div><div class="navbar_dropdown-link-block"><div class="heading-style-h5 text-color-dark">Release Delivery</div><div class="navbar_dropdown-link-text-wrapper"><div class="text-size-medium">Deliver SaaS products directly into customer’s <span class="display-inline-block">on-prem environment.</span></div></div></div></a><a href="/product/docker-extension" class="navbar_dropdown-link-wrapper w-inline-block"><div class="navbar_dropdown-link-logo w-embed"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_13926_3008)">
+<path d="M11.4961 34.9978C11.1646 34.9978 10.8467 34.8661 10.6122 34.6317C10.3778 34.3972 10.2461 34.0793 10.2461 33.7478V27.0775C9.57929 27.393 8.8435 27.5347 8.10719 27.4896C7.37087 27.4444 6.65793 27.2138 6.03465 26.8192C5.41137 26.4245 4.898 25.8787 4.54227 25.2325C4.18654 24.5862 4 23.8605 4 23.1228C4 22.3851 4.18654 21.6593 4.54227 21.0131C4.898 20.3668 5.41137 19.821 6.03465 19.4264C6.65793 19.0317 7.37087 18.8011 8.10719 18.756C8.8435 18.7108 9.57929 18.8526 10.2461 19.1681V12.4978C10.2461 12.1662 10.3778 11.8483 10.6122 11.6139C10.8467 11.3795 11.1646 11.2478 11.4961 11.2478H18.7914C18.4756 10.5809 18.3335 9.84504 18.3785 9.10855C18.4234 8.37207 18.6539 7.65891 19.0484 7.03542C19.443 6.41193 19.9889 5.89836 20.6352 5.54249C21.2816 5.18662 22.0075 5 22.7453 5C23.4832 5 24.2091 5.18662 24.8554 5.54249C25.5018 5.89836 26.0476 6.41193 26.4422 7.03542C26.8368 7.65891 27.0673 8.37207 27.1122 9.10855C27.1571 9.84504 27.0151 10.5809 26.6992 11.2478H33.9961C34.3276 11.2478 34.6456 11.3795 34.88 11.6139C35.1144 11.8483 35.2461 12.1662 35.2461 12.4978V19.1681C34.5793 18.8526 33.8435 18.7108 33.1072 18.756C32.3709 18.8011 31.6579 19.0317 31.0346 19.4264C30.4114 19.821 29.898 20.3668 29.5423 21.0131C29.1865 21.6593 29 22.3851 29 23.1228C29 23.8605 29.1865 24.5862 29.5423 25.2325C29.898 25.8787 30.4114 26.4245 31.0346 26.8192C31.6579 27.2138 32.3709 27.4444 33.1072 27.4896C33.8435 27.5347 34.5793 27.393 35.2461 27.0775V33.7478C35.2461 34.0793 35.1144 34.3972 34.88 34.6317C34.6456 34.8661 34.3276 34.9978 33.9961 34.9978H11.4961Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_13926_3008">
+<rect width="40" height="40" fill="white"/>
+</clipPath>
+</defs>
+</svg></div><div class="navbar_dropdown-link-block"><div class="heading-style-h5 text-color-dark">Release Share Docker Extension</div><div class="navbar_dropdown-link-text-wrapper"><div class="text-size-medium">Instantly share work-in-progress with <span class="display-inline-block">customizable URLs.</span></div></div></div></a></div></div></div></div></div></div><div class="navbar-divider"></div><div class="navbar_dropdown"><div class="navbar_dropdown-toggle"><div class="nav-menu-text is-new">Use Cases</div><div class="nav-menu-icon w-embed"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 4L0 -3.49691e-07L8 0L4 4Z" fill="CurrentColor"/>
+</svg></div><div class="navbar_dropdown-trigger"></div></div><div class="navbar_dropdown-list"><div class="navbar_dropdown-line"></div><div class="padding-global is-tablet-0"><div class="container-medium"><div class="navbar_dropdown-component"><div class="navbar_dropdown-left-block"><div class="text-color-purple"><div class="heading-style-h4">Use Cases</div></div><div class="spacing-block-xsmall"></div><div class="text-size-large">From short-lived production-like environments for building and testing features, to running complex applications in production. See how Release streamlines software delivery across the whole application lifecycle.</div></div><div class="navbar_dropdown-right-block"><a href="/use-cases" class="navbar_dropdown-link-wrapper w-inline-block"><div class="navbar_dropdown-link-logo w-embed"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_13984_46719)">
+<path d="M16.25 7.5H8.75C8.05964 7.5 7.5 8.05964 7.5 8.75V16.25C7.5 16.9404 8.05964 17.5 8.75 17.5H16.25C16.9404 17.5 17.5 16.9404 17.5 16.25V8.75C17.5 8.05964 16.9404 7.5 16.25 7.5Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M31.25 7.5H23.75C23.0596 7.5 22.5 8.05964 22.5 8.75V16.25C22.5 16.9404 23.0596 17.5 23.75 17.5H31.25C31.9404 17.5 32.5 16.9404 32.5 16.25V8.75C32.5 8.05964 31.9404 7.5 31.25 7.5Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16.25 22.5H8.75C8.05964 22.5 7.5 23.0596 7.5 23.75V31.25C7.5 31.9404 8.05964 32.5 8.75 32.5H16.25C16.9404 32.5 17.5 31.9404 17.5 31.25V23.75C17.5 23.0596 16.9404 22.5 16.25 22.5Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M31.25 22.5H23.75C23.0596 22.5 22.5 23.0596 22.5 23.75V31.25C22.5 31.9404 23.0596 32.5 23.75 32.5H31.25C31.9404 32.5 32.5 31.9404 32.5 31.25V23.75C32.5 23.0596 31.9404 22.5 31.25 22.5Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_13984_46719">
+<rect width="40" height="40" fill="white"/>
+</clipPath>
+</defs>
+</svg></div><div class="navbar_dropdown-link-block"><div class="heading-style-h5 text-color-dark">Overview</div><div class="navbar_dropdown-link-text-wrapper"><div class="text-size-medium">Discover the possibilities</div></div></div></a><div id="w-node-c920fa32-1cce-28bc-d228-f75b236543fc-254d58dd" class="navbar_dropdown-divider-block"><div class="text-color-purple"><div class="label-1-roboto">Key Use Cases</div></div></div><a href="/usecase/on-demand-ephemeral-staging-environments" class="navbar_dropdown-link-wrapper w-inline-block"><div class="navbar_dropdown-link-logo w-embed"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_14018_51894)">
+<path d="M18.75 11.25C20.8211 11.25 22.5 9.57107 22.5 7.5C22.5 5.42893 20.8211 3.75 18.75 3.75C16.6789 3.75 15 5.42893 15 7.5C15 9.57107 16.6789 11.25 18.75 11.25Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6.25 22.5C8.32107 22.5 10 20.8211 10 18.75C10 16.6789 8.32107 15 6.25 15C4.17893 15 2.5 16.6789 2.5 18.75C2.5 20.8211 4.17893 22.5 6.25 22.5Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M25 36.25C27.0711 36.25 28.75 34.5711 28.75 32.5C28.75 30.4289 27.0711 28.75 25 28.75C22.9289 28.75 21.25 30.4289 21.25 32.5C21.25 34.5711 22.9289 36.25 25 36.25Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M32.5 15C34.5711 15 36.25 13.3211 36.25 11.25C36.25 9.17893 34.5711 7.5 32.5 7.5C30.4289 7.5 28.75 9.17893 28.75 11.25C28.75 13.3211 30.4289 15 32.5 15Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M28.8828 10.2645L22.3672 8.48633" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15.9641 10.0098L9.03906 16.241" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9.27344 20.9668L21.9734 30.2824" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M26.25 28.9621L31.2531 14.7871" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_14018_51894">
+<rect width="40" height="40" fill="white"/>
+</clipPath>
+</defs>
+</svg></div><div class="navbar_dropdown-link-block"><div class="heading-style-h5 text-color-dark">Ephemeral Environments</div><div class="navbar_dropdown-link-text-wrapper"><div class="text-size-medium">Reduce rework with production-like environments for every pull request and feature change.</div></div></div></a><a href="/platform" class="navbar_dropdown-link-wrapper w-inline-block"><div class="navbar_dropdown-link-logo w-embed"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_14018_54069)">
+<path d="M5 27.5L20 36.25L35 27.5" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5 20L20 28.75L35 20" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5 12.5L20 21.25L35 12.5L20 3.75L5 12.5Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_14018_54069">
+<rect width="40" height="40" fill="white"/>
+</clipPath>
+</defs>
+</svg></div><div class="navbar_dropdown-link-block"><div class="heading-style-h5 text-color-dark">Platform Engineering</div><div class="navbar_dropdown-link-text-wrapper"><div class="text-size-medium">Self-service environments for Internal Developer Platforms.</div></div></div></a><a href="/usecase/running-your-production-environments" class="navbar_dropdown-link-wrapper w-inline-block"><div class="navbar_dropdown-link-logo w-embed"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_14018_46388)">
+<path d="M32.5 6.25H27.5C26.8096 6.25 26.25 6.80964 26.25 7.5V12.5C26.25 13.1904 26.8096 13.75 27.5 13.75H32.5C33.1904 13.75 33.75 13.1904 33.75 12.5V7.5C33.75 6.80964 33.1904 6.25 32.5 6.25Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12.5 6.25H7.5C6.80964 6.25 6.25 6.80964 6.25 7.5V12.5C6.25 13.1904 6.80964 13.75 7.5 13.75H12.5C13.1904 13.75 13.75 13.1904 13.75 12.5V7.5C13.75 6.80964 13.1904 6.25 12.5 6.25Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M32.5 26.25H27.5C26.8096 26.25 26.25 26.8096 26.25 27.5V32.5C26.25 33.1904 26.8096 33.75 27.5 33.75H32.5C33.1904 33.75 33.75 33.1904 33.75 32.5V27.5C33.75 26.8096 33.1904 26.25 32.5 26.25Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12.5 26.25H7.5C6.80964 26.25 6.25 26.8096 6.25 27.5V32.5C6.25 33.1904 6.80964 33.75 7.5 33.75H12.5C13.1904 33.75 13.75 33.1904 13.75 32.5V27.5C13.75 26.8096 13.1904 26.25 12.5 26.25Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 26.25V13.75" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M26.25 30H13.75" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30 13.75V26.25" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.75 10H26.25" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_14018_46388">
+<rect width="40" height="40" fill="white"/>
+</clipPath>
+</defs>
+</svg></div><div class="navbar_dropdown-link-block"><div class="heading-style-h5 text-color-dark">Production Environments</div><div class="navbar_dropdown-link-text-wrapper"><div class="text-size-medium">Run production workloads using aligned data in a unified ecosystem.</div></div></div></a><a href="/usecase/deploy-automated-preview-environments" class="navbar_dropdown-link-wrapper w-inline-block"><div class="navbar_dropdown-link-logo w-embed"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_14018_44678)">
+<path d="M20 8.75C7.5 8.75 2.5 20 2.5 20C2.5 20 7.5 31.25 20 31.25C32.5 31.25 37.5 20 37.5 20C37.5 20 32.5 8.75 20 8.75Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20 26.25C23.4518 26.25 26.25 23.4518 26.25 20C26.25 16.5482 23.4518 13.75 20 13.75C16.5482 13.75 13.75 16.5482 13.75 20C13.75 23.4518 16.5482 26.25 20 26.25Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_14018_44678">
+<rect width="40" height="40" fill="white"/>
+</clipPath>
+</defs>
+</svg></div><div class="navbar_dropdown-link-block"><div class="heading-style-h5 text-color-dark">Preview Environments</div><div class="navbar_dropdown-link-text-wrapper"><div class="text-size-medium">Keep stakeholders in the loop with automated preview environments.</div></div></div></a></div></div></div></div></div></div><div class="navbar-divider"></div><a href="https://docs.release.com/" class="nav-menu-link is-new w-nav-link">Docs</a><div class="navbar-divider"></div><a href="/pricing" class="nav-menu-link is-new w-nav-link">Pricing</a><div class="navbar-divider"></div><div class="navbar_dropdown"><div class="navbar_dropdown-toggle"><div class="nav-menu-text is-new">Resources</div><div class="nav-menu-icon w-embed"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 4L0 -3.49691e-07L8 0L4 4Z" fill="CurrentColor"/>
+</svg></div><div class="navbar_dropdown-trigger"></div></div><div class="navbar_dropdown-list"><div class="navbar_dropdown-line"></div><div class="padding-global is-tablet-0"><div class="container-medium"><div class="navbar_dropdown-component"><div class="navbar_dropdown-left-block"><div class="text-color-purple"><div class="heading-style-h4">Resources</div></div><div class="spacing-block-xsmall"></div><div class="text-size-large">Learn more about Release platform and <br/>explore our library of resources.</div></div><div class="navbar_dropdown-right-block"><a href="/blog" class="navbar_dropdown-link-wrapper w-inline-block"><div class="navbar_dropdown-link-logo w-embed"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_13984_1006)">
+<path d="M20 25H15V20L30 5L35 10L20 25Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M26.25 8.75L31.25 13.75" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M33.75 18.75V32.5C33.75 32.8315 33.6183 33.1495 33.3839 33.3839C33.1495 33.6183 32.8315 33.75 32.5 33.75H7.5C7.16848 33.75 6.85054 33.6183 6.61612 33.3839C6.3817 33.1495 6.25 32.8315 6.25 32.5V7.5C6.25 7.16848 6.3817 6.85054 6.61612 6.61612C6.85054 6.3817 7.16848 6.25 7.5 6.25H21.25" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_13984_1006">
+<rect width="40" height="40" fill="white"/>
+</clipPath>
+</defs>
+</svg></div><div class="navbar_dropdown-link-block"><div class="heading-style-h5 text-color-dark">Blog</div><div class="navbar_dropdown-link-text-wrapper"><div class="text-size-medium">Latest news, updates and thought pieces.</div></div></div></a><a href="/case-studies" class="navbar_dropdown-link-wrapper w-inline-block"><div class="navbar_dropdown-link-logo w-embed"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_13984_49084)">
+<path d="M6.25 10H33.75" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6.25 20H17.5" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6.25 30H20" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M28.75 27.5C31.5114 27.5 33.75 25.2614 33.75 22.5C33.75 19.7386 31.5114 17.5 28.75 17.5C25.9886 17.5 23.75 19.7386 23.75 22.5C23.75 25.2614 25.9886 27.5 28.75 27.5Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M32.2891 26.0361L36.2531 30.0002" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_13984_49084">
+<rect width="40" height="40" fill="white"/>
+</clipPath>
+</defs>
+</svg></div><div class="navbar_dropdown-link-block"><div class="heading-style-h5 text-color-dark">Case Studies</div><div class="navbar_dropdown-link-text-wrapper"><div class="text-size-medium">See how customers are gaining velocity and solving SDLC challenges with Release.</div></div></div></a><a href="/events" class="navbar_dropdown-link-wrapper w-inline-block"><div class="navbar_dropdown-link-logo w-embed"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_13984_54151)">
+<path d="M32.5 6.25H7.5C6.80964 6.25 6.25 6.80964 6.25 7.5V32.5C6.25 33.1904 6.80964 33.75 7.5 33.75H32.5C33.1904 33.75 33.75 33.1904 33.75 32.5V7.5C33.75 6.80964 33.1904 6.25 32.5 6.25Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M27.5 3.75V8.75" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12.5 3.75V8.75" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6.25 13.75H33.75" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M23.75 23.75H16.25" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20 20V27.5" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_13984_54151">
+<rect width="40" height="40" fill="white"/>
+</clipPath>
+</defs>
+</svg></div><div class="navbar_dropdown-link-block"><div class="heading-style-h5 text-color-dark">Events</div><div class="navbar_dropdown-link-text-wrapper"><div class="text-size-medium">Live events, webinars, and engagements.</div></div></div></a><a href="/resource-hub" class="navbar_dropdown-link-wrapper w-inline-block"><div class="navbar_dropdown-link-logo w-embed"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_13984_43987)">
+<path d="M17.5 30C24.4036 30 30 24.4036 30 17.5C30 10.5964 24.4036 5 17.5 5C10.5964 5 5 10.5964 5 17.5C5 24.4036 10.5964 30 17.5 30Z" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M26.3359 26.3389L34.9969 34.9998" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_13984_43987">
+<rect width="40" height="40" fill="white"/>
+</clipPath>
+</defs>
+</svg></div><div class="navbar_dropdown-link-block"><div class="heading-style-h5 text-color-dark">Resource Hub</div><div class="navbar_dropdown-link-text-wrapper"><div class="text-size-medium">All resources in one convenient location.</div></div></div></a><a href="/partners" class="navbar_dropdown-link-wrapper w-inline-block"><div class="navbar_dropdown-link-logo w-embed"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_14706_9886)">
+<path d="M13.3323 20.0005C16.5447 20.0005 19.149 17.3963 19.149 14.1839C19.149 10.9714 16.5447 8.36719 13.3323 8.36719C10.1198 8.36719 7.51562 10.9714 7.51562 14.1839C7.51562 17.3963 10.1198 20.0005 13.3323 20.0005Z" stroke="currentcolor" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M28.3385 20.0003C30.6397 20.0003 32.5052 18.1348 32.5052 15.8337C32.5052 13.5325 30.6397 11.667 28.3385 11.667C26.0374 11.667 24.1719 13.5325 24.1719 15.8337C24.1719 18.1348 26.0374 20.0003 28.3385 20.0003Z" stroke="currentcolor" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3.33594 33.3333V31.6383C3.33594 27.9717 6.3076 25 9.97427 25H16.6976C20.3643 25 23.3359 27.9717 23.3359 31.6383V33.3333" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M28.3359 25H30.1726C33.8393 25 36.8109 27.9717 36.8109 31.6383V33.3333" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_14706_9886">
+<rect width="40" height="40" fill="white"/>
+</clipPath>
+</defs>
+</svg></div><div class="navbar_dropdown-link-block"><div class="heading-style-h5 text-color-dark">Partners</div><div class="navbar_dropdown-link-text-wrapper"><div class="text-size-medium">Partnerships and ways to get involved.</div></div></div></a></div></div></div></div></div></div><div class="navbar-divider"></div></div><div class="nav-menu-right new"><a href="https://web.release.com/login" class="nav-menu-link log-in new w-nav-link">Log In</a><div class="navbar-button-wrapper"><a data-content="Request a demo from Release" data-w-id="4a7c2327-ad40-4b02-f1ab-3b78e2bbe3b3" href="#" class="button s primary stroke form-trigger w-inline-block"><div>Request Demo</div></a><a id="A_BookDemo_Button" href="/book-a-demo" class="button is-navbar w-inline-block"><div>Book Demo</div></a></div></div></div></div></div><div class="nav-menu-background"></div><div class="navbar-menu-background"></div></div></div></div></div><div class="fourohfour-wrapper"><div class="container"><div class="hero-grid"><div id="w-node-a7572067-fbf2-87f4-ba59-630ae0f4b1e0-f80d71bf" class="hero-title"><div class="sign heading hide-mobile"></div><h1 class="heading-xl">Unfortunately, <br/>we couldn’t find the page you were looking for</h1><p class="paragraph m">It might have been renamed, removed or it didn’t exist in the first place.</p></div><div id="w-node-_373f8086-68a4-457e-67e0-92f4f12da0b4-f80d71bf"><a href="/" class="button m button-2 vertical-padding-15 w-button">Go back home</a></div></div></div></div><div class="get-started-form-block"><div class="modal-container"><div class="modal-form w-form"><div class="modal-header"><a href="https://app.releasehub.com/auth/login-page?connect=true" class="button s secondary w-button">SKIP</a></div><form id="get-started-form" name="wf-form-Get-Started-Form" data-name="Get Started Form" redirect="/book-an-appointment" data-redirect="/book-an-appointment" method="get" hubspot="form" class="get-started-form" data-wf-page-id="62aa5a70cd5ba238f80d71bf" data-wf-element-id="2b509fd2-9085-0f14-7bc2-319754dfc4b6"><h3 class="heading-m">Get started with Release, absolutely free</h3><div class="form-grid"><div id="w-node-_2b509fd2-9085-0f14-7bc2-319754dfc4ba-54dfc4b0" class="input-block"><label for="Firstname" class="field-label">First name</label><input class="text-field w-input" maxlength="256" name="Firstname" data-name="Firstname" placeholder="First name" type="text" id="firstname" required=""/></div><div id="w-node-_2b509fd2-9085-0f14-7bc2-319754dfc4be-54dfc4b0" class="input-block"><label for="Lastname" class="field-label">Name</label><input class="text-field w-input" maxlength="256" name="Lastname" data-name="Lastname" placeholder="Last name" type="text" id="lastname" required=""/></div><div id="w-node-_2b509fd2-9085-0f14-7bc2-319754dfc4c2-54dfc4b0" class="input-block"><label for="Email-3" class="field-label">Email Address</label><input class="text-field w-input" maxlength="256" name="Email" data-name="Email" placeholder="Email address" type="email" id="email" required=""/></div><div id="w-node-_2b509fd2-9085-0f14-7bc2-319754dfc4c6-54dfc4b0" class="input-block"><label for="Phone" class="field-label">Phone number  (optional)</label><div class="w-embed"><input type="hidden" name="dialCode" id="dialCode" class="dialCode" value=""/></div><input class="text-field phone w-input" maxlength="256" name="Phone" data-name="Phone" placeholder="" type="tel" id="phone"/></div><div id="w-node-_2b509fd2-9085-0f14-7bc2-319754dfc4ca-54dfc4b0" class="input-block"><label for="Company" class="field-label">Company name (optional)</label><input class="text-field w-input" maxlength="256" name="Company" data-name="Company" placeholder="" type="text" id="company"/></div><div id="w-node-_2b509fd2-9085-0f14-7bc2-319754dfc4ce-54dfc4b0" class="input-block"><label for="Jobtitle" class="field-label">Job title (optional)</label><input class="text-field w-input" maxlength="256" name="Jobtitle" data-name="Jobtitle" placeholder="" type="text" id="jobtitle"/></div><input type="submit" data-wait="Please wait..." id="w-node-_2b509fd2-9085-0f14-7bc2-319754dfc4d2-54dfc4b0" class="button s primary w-button" value="Get started"/></div></form><div class="modal-success-message w-form-done"><h3 class="heading-m">Thank you!</h3><div class="paragraph m">Thank you! Your submission has been received!</div></div><div class="w-form-fail"><div>Oops! Something went wrong while submitting the form.</div></div></div><div class="modal-background"></div></div></div><script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=603dd147c5b0a480611bd348" type="text/javascript" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script><script src="https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/js/releasehub.b083a97d9.js" type="text/javascript"></script><!-------------------->
+<!-- INTTEL SCRIPT -->
+<!-------------------->
+<script rel="preconnect" src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput.min.js"></script>
+<script rel="preconnect" src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/utils.min.js"></script>
+<script>
+    const inputPhone1 = document.querySelector("#phone");
+    const dialCode1 = document.querySelector("#dialCode");
+
+    const iti = intlTelInput(inputPhone1, {
+        initialCountry: "us",
+        placeholderNumberType: 'FIXED_LINE',
+    });
+
+	inputPhone1.addEventListener("input", function () {
+        dialCode1.value = "+" + iti.getSelectedCountryData().dialCode;
+    });
+  
+	inputPhone1.addEventListener("countrychange", function () {
+        dialCode1.value = "+" + iti.getSelectedCountryData().dialCode;
+    });
+</script>
+
+
+
+
+<!---------------------->
+<!-- Request demo from-->
+<!---------------------->
+<script>
+const inputPhone2 = document.querySelector("#phone2");
+const dialCode2 = document.querySelector("#dialCode2");
+const iti2 = intlTelInput(inputPhone2, {
+  initialCountry: "us",
+  placeholderNumberType: 'FIXED_LINE'
+});
+inputPhone2.addEventListener("input", function () {
+    dialCode2.value = "+" + iti2.getSelectedCountryData().dialCode;
+    console.log("+" + iti2.getSelectedCountryData().dialCode);
+});
+inputPhone2.addEventListener("countrychange", function() {
+  dialCode2.value = "+"+ iti2.getSelectedCountryData().dialCode;
+  console.log("+" + iti2.getSelectedCountryData().dialCode);
+});
+</script>
+
+
+
+
+<!------------------>
+<!-- Post Summary -->
+<!------------------>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const maxCharacters = 120,
+            targets = document.getElementsByClassName("read-more");
+
+        Array.from(targets).forEach((target) => {
+            const text = target.textContent,
+                truncate = text.substring(0, maxCharacters);
+            target.innerHTML = `${truncate}...` + "<strong>Read more</strong>";
+        });
+    });
+</script>
+
+
+
+
+<!---------------------------->
+<!-- Dynamic Copyright Year -->
+<!---------------------------->
+<script>
+    const year = new Date().getFullYear();
+    $('.year').text(year);
+</script>
+
+
+
+
+<!--------------------------------->
+<!-- Inject more data into forms -->
+<!--------------------------------->
+<script rel="preconnect">
+  function getQueryVariable(variable) {
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  for (var i = 0; i < vars.length; i++) {
+    var pair = vars[i].split("=");
+    if (decodeURIComponent(pair[0]) == variable) {
+      return decodeURIComponent(pair[1]);
+    }
+  }
+  return "";
+}
+
+function createSecretInput(name, value, node) {
+  const el = document.createElement("input");
+  el.setAttribute("type", "text");
+  el.setAttribute("name", name);
+  el.setAttribute("data-name", name);
+  el.setAttribute("value", value);
+  el.style.display = "none";
+  node.insertBefore(el, node.firstChild);
+}
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2)
+    return parts
+      .pop()
+      .split(";")
+      .shift();
+  return '';
+}
+
+const hubspotutk = getCookie("hubspotutk");
+$("[hubspot='form']").each(function() {
+  ["utm_source", "utm_medium", "utm_content", "utm_campaign"].forEach(item =>
+    createSecretInput(item, getQueryVariable(item), this)
+  );
+
+  createSecretInput("hubspotutk", hubspotutk, this);
+});
+
+</script>
+
+
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NW5GSPN"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+
+<script>
+//////////////////////////////////
+// ESC BUTTON PRESS CLOSE MODAL //
+//////////////////////////////////
+$(document).ready(function() {
+	const closeModalWrapper = '.home-video_background'
+  
+  $(document).on('keydown', function(event) {
+       if (event.key == "Escape") {
+           $(closeModalWrapper).click()
+       }
+   });
+})
+</script>
+
+<script>
+//////////////////////////////////
+// ESC BUTTON PRESS CLOSE MODAL //
+//////////////////////////////////
+$(document).ready(function() {
+	const closeModalWrapperWebinar = '.demand-webinar-background'
+  
+  $(document).on('keydown', function(event) {
+       if (event.key == "Escape") {
+           $(closeModalWrapperWebinar).click()
+       }
+   });
+})
+</script>
+
+<style>
+@media screen and (max-width: 350px) {
+.recaptcha_test-wrapper {
+    transform-origin: 0 0;
+    flex-direction: column;
+    transform: scale(.6) !important;
+}
+}
+</style>
+
+
+<!------------------------------------------------------->
+<!-- Adjust page top padding to the size of the banner -->
+<!------------------------------------------------------->
+<script>
+  // Wait for the document to be ready
+  $(document).ready(function() {
+    // Get the height of the .announcement-bar element
+    var announcementBarHeight = $('.announcement-bar').outerHeight();
+
+    // Apply the height value as top padding to .navbar_spacing-compensation
+    $('.navbar_spacing-compensation').css('padding-top', announcementBarHeight + 'px');
+  });
+</script>
+
+<script>
+window.addEventListener("scroll", function() {
+  // Get the scroll position
+  var scrollPosition = window.scrollY;
+
+  // Check if the scroll position is greater than or equal to 32px
+  if (scrollPosition >= 32) {
+    // If scrolled down to 32px or more, set opacity to 1
+    document.querySelector(".nav-menu-background").style.opacity = "1";
+  } else {
+    // If not, set opacity back to 0
+    document.querySelector(".nav-menu-background").style.opacity = "0";
+  }
+});
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    if (window.innerWidth <= 992) {
+      // Get the height of the navbar
+      var navbar = document.querySelector('.navbar');
+      var navbarHeight = navbar.offsetHeight;
+
+      // Apply the navbar height to the top of .nav-menu.is-new
+      var navMenu = document.querySelector('.nav-menu.is-new');
+      navMenu.style.top = navbarHeight + 'px';
+    }
+  });
+</script>
+
+<script>
+function sendGAEvent(eventCategory, eventAction, eventLabel) {
+  gtag('event', eventAction, {
+    'event_category': eventCategory,
+    'event_label': eventLabel
+  });
+}
+
+function handleClick(event) {
+  var target = event.target;
+
+  while (target && target !== document) {
+    var conversionType = target.getAttribute('gtm-conversion');
+    if (conversionType) {
+      sendGAEvent('Element Click', 'click', conversionType);
+      break;
+    }
+    target = target.parentElement;
+  }
+}
+
+document.addEventListener('click', handleClick);
+</script></body></html>
