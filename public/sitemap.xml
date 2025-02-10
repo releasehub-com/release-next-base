@@ -211,6 +211,18 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://release.com/product/docker-extension</loc>
+    <lastmod>2025-02-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://release.com/product/instant-datasets</loc>
+    <lastmod>2025-02-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://release.com/blog/10-best-practices-when-using-feature-flags</loc>
     <lastmod>2025-02-10</lastmod>
     <changefreq>weekly</changefreq>

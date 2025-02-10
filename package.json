@@ -28,7 +28,8 @@
     "move-case-study-images": "ts-node scripts/move-case-study-images.ts",
     "convert-partners": "ts-node scripts/convert-partners.ts",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "download-images": "ts-node scripts/download-images.ts"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.1",

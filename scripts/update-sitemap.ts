@@ -52,6 +52,8 @@ const APP_ROUTES = [
   "terms-of-service",
   "privacy-policy",
   "security",
+  "product/docker-extension",
+  "product/instant-datasets",
 ];
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL || "https://release.com";
