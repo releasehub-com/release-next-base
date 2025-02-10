@@ -26,7 +26,7 @@ export default function BlogPostLayout({
       <header className="mb-8">
         {frontmatter.mainImage && (
           <div className="relative w-full h-96 mb-8">
-            {frontmatter.mainImage.endsWith('.svg') ? (
+            {frontmatter.mainImage.endsWith(".svg") ? (
               <img
                 src={frontmatter.mainImage}
                 alt={frontmatter.imageAlt || frontmatter.title}

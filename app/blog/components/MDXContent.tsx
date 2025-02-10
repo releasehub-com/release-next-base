@@ -2,7 +2,11 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import Image from "next/image";
 import CallToAction from "@/components/blog/CallToAction";
 import React, { ReactElement } from "react";
-import type { ComponentProps, DetailedHTMLProps, ImgHTMLAttributes } from "react";
+import type {
+  ComponentProps,
+  DetailedHTMLProps,
+  ImgHTMLAttributes,
+} from "react";
 import {
   MDXImageProps,
   MDXHeadingProps,
@@ -21,7 +25,12 @@ type CodeProps = ComponentProps<"code"> & {
 };
 
 type MDXComponents = {
-  img: (props: DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>) => JSX.Element;
+  img: (
+    props: DetailedHTMLProps<
+      ImgHTMLAttributes<HTMLImageElement>,
+      HTMLImageElement
+    >,
+  ) => JSX.Element;
   h2: (props: ComponentProps<"h2">) => JSX.Element;
   h3: (props: ComponentProps<"h3">) => JSX.Element;
   h4: (props: ComponentProps<"h4">) => JSX.Element;
@@ -54,13 +63,18 @@ const InlineCode = React.forwardRef<HTMLElement, ComponentProps<"code">>(
 InlineCode.displayName = "InlineCode";
 
 const components: MDXComponents = {
-  img: (props: DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>) => {
+  img: (
+    props: DetailedHTMLProps<
+      ImgHTMLAttributes<HTMLImageElement>,
+      HTMLImageElement
+    >,
+  ) => {
     const { src, alt, ...rest } = props;
     if (!src) {
       return <div>Missing image source</div>;
     }
-    
-    if (src.endsWith('.svg')) {
+
+    if (src.endsWith(".svg")) {
       return (
         <img
           src={src}
@@ -70,7 +84,7 @@ const components: MDXComponents = {
         />
       );
     }
-    
+
     return (
       <div className="relative w-full h-[400px] my-8">
         <Image
