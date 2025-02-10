@@ -26,45 +26,52 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
-  const post = getPostBySlug(params.slug);
-  const ogImage =
-    post.frontmatter.ogImage ||
-    post.frontmatter.mainImage ||
-    "/blog/default-og-image.png";
+  try {
+    const post = getPostBySlug(params.slug);
+    const ogImage =
+      post.frontmatter.ogImage ||
+      post.frontmatter.mainImage ||
+      "/blog/default-og-image.png";
 
-  return {
-    title: `${post.frontmatter.title} | Release Blog`,
-    description: post.frontmatter.excerpt || post.frontmatter.summary,
-    openGraph: {
-      title: post.frontmatter.title,
+    return {
+      title: `${post.frontmatter.title} | Release Blog`,
       description: post.frontmatter.excerpt || post.frontmatter.summary,
-      type: "article",
-      url: `https://release.com/blog/${params.slug}`,
-      images: [
-        {
-          url: ogImage,
-          width: 1200,
-          height: 630,
-          alt: post.frontmatter.title,
-        },
-      ],
-      siteName: "Release",
-      publishedTime: post.frontmatter.publishDate,
-      authors: [post.frontmatter.author],
-      modifiedTime: post.frontmatter.updatedDate,
-      section: post.frontmatter.categories?.[0],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: post.frontmatter.title,
-      description: post.frontmatter.excerpt || post.frontmatter.summary,
-      images: [ogImage],
-      creator: "@releasehub",
-    },
-    authors: [{ name: post.frontmatter.author }],
-    category: post.frontmatter.categories?.[0] || "",
-    keywords: post.frontmatter.tags,
-  };
+      openGraph: {
+        title: post.frontmatter.title,
+        description: post.frontmatter.excerpt || post.frontmatter.summary,
+        type: "article",
+        url: `https://release.com/blog/${params.slug}`,
+        images: [
+          {
+            url: ogImage,
+            width: 1200,
+            height: 630,
+            alt: post.frontmatter.title,
+          },
+        ],
+        siteName: "Release",
+        publishedTime: post.frontmatter.publishDate,
+        authors: [post.frontmatter.author],
+        modifiedTime: post.frontmatter.updatedDate,
+        section: post.frontmatter.categories?.[0],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: post.frontmatter.title,
+        description: post.frontmatter.excerpt || post.frontmatter.summary,
+        images: [ogImage],
+        creator: "@releasehub",
+      },
+      authors: [{ name: post.frontmatter.author }],
+      category: post.frontmatter.categories?.[0] || "",
+      keywords: post.frontmatter.tags,
+    };
+  } catch (error) {
+    return {
+      title: "Page Not Found | Release Blog",
+      description: "The requested blog post could not be found.",
+    };
+  }
 }
 
 export default async function BlogPostPage({
@@ -72,47 +79,51 @@ export default async function BlogPostPage({
 }: {
   params: { slug: string };
 }) {
-  const posts = await getBlogPosts();
-  const post = posts.find((p) => p.slug === params.slug);
+  try {
+    const posts = await getBlogPosts();
+    const post = posts.find((p) => p.slug === params.slug);
 
-  if (!post) {
+    if (!post) {
+      notFound();
+    }
+
+    // Find related posts
+    const relatedPosts = post.frontmatter.relatedPosts
+      ? posts.filter((p) => post.frontmatter.relatedPosts.includes(p.slug))
+      : [];
+
+    return (
+      <>
+        <Header />
+        <main className="min-h-screen bg-gray-900">
+          <article className="max-w-4xl mx-auto px-4 py-12">
+            <BlogPostLayout frontmatter={post.frontmatter}>
+              {post.frontmatter.showCTA && (
+                <div className="mb-12">
+                  <CallToAction
+                    copy={post.frontmatter.ctaCopy}
+                    link={post.frontmatter.ctaLink}
+                  />
+                </div>
+              )}
+              <MDXContent source={post.content} />
+              {post.frontmatter.showCTA && (
+                <div className="mt-12">
+                  <CallToAction
+                    copy={post.frontmatter.ctaCopy}
+                    link={post.frontmatter.ctaLink}
+                  />
+                </div>
+              )}
+            </BlogPostLayout>
+
+            {relatedPosts.length > 0 && <RelatedPosts posts={relatedPosts} />}
+          </article>
+        </main>
+        <Footer />
+      </>
+    );
+  } catch (error) {
     notFound();
   }
-
-  // Find related posts
-  const relatedPosts = post.frontmatter.relatedPosts
-    ? posts.filter((p) => post.frontmatter.relatedPosts.includes(p.slug))
-    : [];
-
-  return (
-    <>
-      <Header />
-      <main className="min-h-screen bg-gray-900">
-        <article className="max-w-4xl mx-auto px-4 py-12">
-          <BlogPostLayout frontmatter={post.frontmatter}>
-            {post.frontmatter.showCTA && (
-              <div className="mb-12">
-                <CallToAction
-                  copy={post.frontmatter.ctaCopy}
-                  link={post.frontmatter.ctaLink}
-                />
-              </div>
-            )}
-            <MDXContent source={post.content} />
-            {post.frontmatter.showCTA && (
-              <div className="mt-12">
-                <CallToAction
-                  copy={post.frontmatter.ctaCopy}
-                  link={post.frontmatter.ctaLink}
-                />
-              </div>
-            )}
-          </BlogPostLayout>
-
-          {relatedPosts.length > 0 && <RelatedPosts posts={relatedPosts} />}
-        </article>
-      </main>
-      <Footer />
-    </>
-  );
 }
