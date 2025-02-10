@@ -37,9 +37,25 @@ const APP_ROUTES = [
   "comparison/shipyard",
   "partners",
   "signup",
+  "company",
+  "whyrelease",
+  "build-vs-buy",
+  "staging-environments",
+  "ephemeral-environments",
+  "user-acceptance-testing-with-ephemeral-environments",
+  "blog",
+  "case-studies",
+  "book-a-demo",
+  "legal/terms-of-service",
+  "legal/privacy-policy",
+  "legal/security",
+  "terms-of-service",
+  "privacy-policy",
+  "security"
 ];
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL || "https://release.com";
+const webBaseUrl = "https://web.release.com";
 
 async function generateSitemap(): Promise<void> {
   // Get blog posts
@@ -105,6 +121,18 @@ async function generateSitemap(): Promise<void> {
             lastmod: today,
             changefreq: "daily",
             priority: "1.0",
+          },
+          {
+            loc: `${baseUrl}/pricing`,
+            lastmod: today,
+            changefreq: "daily",
+            priority: "0.8",
+          },
+          {
+            loc: `${webBaseUrl}/pricing`,
+            lastmod: today,
+            changefreq: "daily",
+            priority: "0.8",
           },
           {
             loc: `${baseUrl}/blog`,
@@ -176,6 +204,18 @@ async function generateSitemap(): Promise<void> {
             lastmod: today,
             changefreq: "daily",
             priority: "1.0",
+          },
+          {
+            loc: `${baseUrl}/pricing`,
+            lastmod: today,
+            changefreq: "daily",
+            priority: "0.8",
+          },
+          {
+            loc: `${webBaseUrl}/pricing`,
+            lastmod: today,
+            changefreq: "daily",
+            priority: "0.8",
           },
           {
             loc: `${baseUrl}/blog`,

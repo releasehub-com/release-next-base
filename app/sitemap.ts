@@ -29,10 +29,26 @@ const APP_ROUTES = [
   "comparison/shipyard",
   "partners",
   "signup",
+  "company",
+  "whyrelease",
+  "build-vs-buy",
+  "staging-environments",
+  "ephemeral-environments",
+  "user-acceptance-testing-with-ephemeral-environments",
+  "blog",
+  "case-studies",
+  "book-a-demo",
+  "legal/terms-of-service",
+  "legal/privacy-policy",
+  "legal/security",
+  "terms-of-service",
+  "privacy-policy",
+  "security"
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL || "https://release.com";
+  const webBaseUrl = "https://web.release.com";
 
   // Get blog posts
   const blogDirectory = path.join(process.cwd(), "app/blog/posts");
@@ -103,6 +119,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(),
       },
       {
+        url: `${baseUrl}/pricing`,
+        lastModified: new Date(),
+      },
+      {
+        url: `${webBaseUrl}/pricing`,
+        lastModified: new Date(),
+      },
+      {
         url: `${baseUrl}/blog`,
         lastModified: new Date(),
       },
@@ -131,6 +155,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return [
       {
         url: baseUrl,
+        lastModified: new Date(),
+      },
+      {
+        url: `${webBaseUrl}/pricing`,
         lastModified: new Date(),
       },
       {
