@@ -44,7 +44,7 @@ export function EnhancedComparisonPage({
                   Start Free Trial
                 </Button>
               </Link>
-              <Link href="https://calendly.com/release-tommy/release-founder-chat-comparison">
+              <Link href="/book-a-demo">
                 <Button
                   size="lg"
                   className="w-full sm:w-auto bg-white text-[#00bb93] hover:bg-gray-100 font-bold"
@@ -117,7 +117,7 @@ export function EnhancedComparisonPage({
                   <ArrowRightIcon className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Link href="https://calendly.com/release-tommy/release-founder-chat-comparison">
+              <Link href="/book-a-demo">
                 <Button
                   size="lg"
                   variant="outline"

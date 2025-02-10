@@ -55,7 +55,7 @@ export default function ComparisonPage() {
                   Start Free Trial
                 </Button>
               </Link>
-              <Link href="https://calendly.com/release-tommy/release-founder-chat-comparison">
+              <Link href="/book-a-demo">
                 <Button
                   size="lg"
                   className="w-full sm:w-auto bg-white text-[#00bb93] hover:bg-gray-100 font-bold"
@@ -139,7 +139,7 @@ export default function ComparisonPage() {
                   Start Your Free Trial
                 </Button>
               </Link>
-              <Link href="https://calendly.com/release-tommy/release-founder-chat-comparison">
+              <Link href="/book-a-demo">
                 <Button
                   size="lg"
                   variant="outline"

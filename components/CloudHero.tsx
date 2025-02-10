@@ -56,7 +56,7 @@ export default function CloudHeroComponent() {
                   Start Free on Release Cloud
                 </Button>
               </Link>
-              <Link href="https://calendly.com/release-tommy/release-discussion-release-cloud">
+              <Link href="/book-a-demo">
                 <Button
                   size="lg"
                   variant="outline"

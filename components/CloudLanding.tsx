@@ -25,7 +25,7 @@ export default function CloudLanding() {
             <p className="text-lg text-gray-300">
               Migrating from Heroku? We'll help make the migration simple.
             </p>
-            <Link href="https://calendly.com/release-tommy/release-discussion-release-cloud">
+            <Link href="/book-a-demo">
               <Button className="bg-[#00bb93] text-white hover:bg-[#00bb93]/90">
                 Schedule a Meeting
                 <ArrowRight className="ml-2 h-4 w-4" />

@@ -51,7 +51,7 @@ const APP_ROUTES = [
   "legal/security",
   "terms-of-service",
   "privacy-policy",
-  "security"
+  "security",
 ];
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL || "https://release.com";

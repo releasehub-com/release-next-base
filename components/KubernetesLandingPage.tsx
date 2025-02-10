@@ -42,7 +42,7 @@ export default function KubernetesLandingPage() {
                       Start Free Trial
                     </Button>
                   </Link>
-                  <Link href="https://calendly.com/release-tommy/release-discussion">
+                  <Link href="/book-a-demo">
                     <Button
                       size="lg"
                       variant="outline"
@@ -257,7 +257,7 @@ export default function KubernetesLandingPage() {
                     Start Free Trial
                   </Button>
                 </Link>
-                <Link href="https://calendly.com/release-tommy/release-discussion">
+                <Link href="/book-a-demo">
                   <Button
                     size="lg"
                     variant="outline"
