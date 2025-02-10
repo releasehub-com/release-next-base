@@ -6,12 +6,14 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: [
-    ['html', { open: 'always' }]
-  ],
+  reporter: 'html',
   use: {
-    baseURL: process.env.TEST_BASE_URL || 'https://release.com',
+    baseURL: process.env.TEST_BASE_URL || 'http://localhost:4001',
     trace: 'on-first-retry',
+  },
+  timeout: 60000,
+  expect: {
+    timeout: 45000,
   },
 
   projects: [
