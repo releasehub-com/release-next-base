@@ -13,7 +13,7 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="https://release.com/company"
+                  href="/company"
                   className="hover:text-[#00bb93] transition-colors"
                 >
                   Our Company
@@ -60,7 +60,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="https://release.com/pricing"
+                  href="/pricing"
                   className="hover:text-[#00bb93] transition-colors"
                 >
                   Pricing
@@ -75,7 +75,7 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="https://release.com/whyrelease"
+                  href="/whyrelease"
                   className="hover:text-[#00bb93] transition-colors"
                 >
                   Why Release
@@ -83,7 +83,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="https://release.com/build-vs-buy"
+                  href="/build-vs-buy"
                   className="hover:text-[#00bb93] transition-colors"
                 >
                   Build vs. Buy
@@ -122,7 +122,7 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="https://release.com/blog"
+                  href="/blog"
                   className="hover:text-[#00bb93] transition-colors"
                 >
                   Blog
@@ -138,7 +138,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="https://release.com/case-studies"
+                  href="/case-studies"
                   className="hover:text-[#00bb93] transition-colors"
                 >
                   Case Studies
