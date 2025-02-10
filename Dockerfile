@@ -41,6 +41,9 @@ RUN pnpm build
 # Generate sitemap
 RUN pnpm update-sitemap
 
+# Install only production dependencies
+RUN pnpm install --prod --frozen-lockfile
+
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
@@ -53,8 +56,7 @@ RUN adduser --system --uid 1001 nextjs
 
 # Copy necessary files and set permissions
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/server ./.next/server
