@@ -81,7 +81,7 @@ const components: MDXComponents = {
           alt={alt || ""}
           fill
           className="object-cover rounded-lg"
-          unoptimized={src.endsWith(".svg")}
+          unoptimized={src.endsWith('.svg')}
         />
       </div>
     );

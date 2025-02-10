@@ -134,6 +134,7 @@ export default function BlogIndex({
                           fill
                           className="rounded-full object-cover"
                           unoptimized={getAuthorInfo(featuredPost.frontmatter.author).image.endsWith('.svg')}
+                          priority
                         />
                       </div>
                       <div>
