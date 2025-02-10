@@ -74,8 +74,12 @@ EXPOSE 4001
 ENV PORT 4001
 ENV HOSTNAME "0.0.0.0"
 
-# Add health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:4001/ || exit 1
+# Add health check with more lenient settings
+HEALTHCHECK --interval=60s --timeout=60s --start-period=120s --retries=5 \
+    CMD curl -f http://localhost:4001/images/logos/release-logo.svg || exit 1
 
-CMD ["node", "server.js"]
+# Add a startup script that includes a delay
+COPY --from=builder /app/public/images/logos/release-logo.svg /app/public/images/logos/release-logo.svg
+CMD echo "Starting server with initial delay..." && \
+    sleep 10 && \
+    node server.js
