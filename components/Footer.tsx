@@ -91,7 +91,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="https://release.com/staging-environments"
+                  href="/staging-environments"
                   className="hover:text-[#00bb93] transition-colors"
                 >
                   Staging Environments
@@ -99,10 +99,18 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="https://release.com/ephemeral-environments"
+                  href="/ephemeral-environments"
                   className="hover:text-[#00bb93] transition-colors"
                 >
                   Ephemeral Environments
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/user-acceptance-testing-with-ephemeral-environments"
+                  className="hover:text-[#00bb93] transition-colors"
+                >
+                  User Acceptance Testing
                 </Link>
               </li>
             </ul>

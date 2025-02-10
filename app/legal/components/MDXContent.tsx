@@ -2,7 +2,25 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import type { ComponentProps } from "react";
 import Image from "next/image";
 
-const components = {
+interface MDXContentProps {
+  source: string;
+  components?: {
+    h1?: (props: ComponentProps<"h1">) => JSX.Element;
+    h2?: (props: ComponentProps<"h2">) => JSX.Element;
+    h3?: (props: ComponentProps<"h3">) => JSX.Element;
+    p?: (props: ComponentProps<"p">) => JSX.Element;
+    a?: (props: ComponentProps<"a">) => JSX.Element;
+    ul?: (props: ComponentProps<"ul">) => JSX.Element;
+    ol?: (props: ComponentProps<"ol">) => JSX.Element;
+    li?: (props: ComponentProps<"li">) => JSX.Element;
+    strong?: (props: ComponentProps<"strong">) => JSX.Element;
+    em?: (props: ComponentProps<"em">) => JSX.Element;
+    blockquote?: (props: ComponentProps<"blockquote">) => JSX.Element;
+  };
+}
+
+// Default components with our styling
+const defaultComponents = {
   h1: (props: ComponentProps<"h1">) => (
     <h1 className="text-5xl font-bold mb-12 text-white" {...props} />
   ),
@@ -76,11 +94,17 @@ const components = {
   ),
 };
 
-export default function MDXContent({ source }: { source: string }) {
+export default function MDXContent({
+  source,
+  components = {},
+}: MDXContentProps) {
+  // Merge default components with any custom components passed in
+  const mergedComponents = { ...defaultComponents, ...components };
+
   return (
     <div className="prose prose-invert max-w-none">
       <div className="max-w-4xl mx-auto">
-        <MDXRemote source={source} components={components} />
+        <MDXRemote source={source} components={mergedComponents} />
       </div>
     </div>
   );
