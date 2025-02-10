@@ -26,7 +26,7 @@ export default function CloudCTA() {
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
-          <Link href="https://calendly.com/release-tommy/release-discussion">
+          <Link href="/book-a-demo">
             <Button
               size="lg"
               variant="outline"

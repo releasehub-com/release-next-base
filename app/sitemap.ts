@@ -43,7 +43,7 @@ const APP_ROUTES = [
   "legal/security",
   "terms-of-service",
   "privacy-policy",
-  "security"
+  "security",
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
