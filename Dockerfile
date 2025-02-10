@@ -32,6 +32,10 @@ COPY package.json pnpm-lock.yaml .npmrc ./
 COPY . .
 COPY --from=deps /build/node_modules ./node_modules
 
+# Extract hostname from base URL
+COPY extract-hostname.js .
+RUN node extract-hostname.js
+
 RUN pnpm build
 
 # Next.js collects completely anonymous telemetry data about general usage.
@@ -47,6 +51,10 @@ FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
+# Pass through the build-time environment variables
+ARG NEXT_PUBLIC_APP_BASE_URL
+ENV NEXT_PUBLIC_APP_BASE_URL=$NEXT_PUBLIC_APP_BASE_URL
+ENV NEXT_PUBLIC_APP_HOSTNAME=$NEXT_PUBLIC_APP_HOSTNAME
 
 # Uncomment the following line in case you want to disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED 1

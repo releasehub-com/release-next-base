@@ -3,6 +3,7 @@ const nextConfig = {
   output: "standalone",
   images: {
     loader: "default",
+    domains: process.env.NEXT_PUBLIC_APP_HOSTNAME ? [process.env.NEXT_PUBLIC_APP_HOSTNAME] : [],
     remotePatterns: [
       {
         protocol: "https",
