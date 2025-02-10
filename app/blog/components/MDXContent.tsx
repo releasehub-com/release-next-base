@@ -74,17 +74,6 @@ const components: MDXComponents = {
       return <div>Missing image source</div>;
     }
 
-    if (src.endsWith(".svg")) {
-      return (
-        <img
-          src={src}
-          alt={alt || ""}
-          className="w-full rounded-lg my-8"
-          {...rest}
-        />
-      );
-    }
-
     return (
       <div className="relative w-full h-[400px] my-8">
         <Image
@@ -92,6 +81,7 @@ const components: MDXComponents = {
           alt={alt || ""}
           fill
           className="object-cover rounded-lg"
+          unoptimized={src.endsWith(".svg")}
         />
       </div>
     );

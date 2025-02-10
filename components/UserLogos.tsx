@@ -108,22 +108,15 @@ const UserLogos = ({ title, subtitle, layout = "grid" }: UserLogosProps) => {
               key={logo.name}
               className={`${layout === "grid" ? "w-full h-20" : "w-[200px] h-20 flex-shrink-0"} relative`}
             >
-              {process.env.NODE_ENV === "production" ? (
-                <img
-                  src={logo.logo}
-                  alt={`${logo.name} logo`}
-                  className="w-full h-full object-contain filter brightness-0 invert"
-                />
-              ) : (
-                <Image
-                  src={logo.logo}
-                  alt={`${logo.name} logo`}
-                  width={320}
-                  height={80}
-                  style={{ objectFit: "contain" }}
-                  className="filter brightness-0 invert"
-                />
-              )}
+              <Image
+                src={logo.logo}
+                alt={`${logo.name} logo`}
+                width={320}
+                height={80}
+                style={{ objectFit: "contain" }}
+                className="filter brightness-0 invert"
+                unoptimized={true}
+              />
             </div>
           ))}
         </div>

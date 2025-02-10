@@ -40,10 +40,13 @@ export default function Header() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           <Link href={getHomeUrl()} className="flex items-center space-x-2">
-            <img
+            <Image
               alt="Release Logo"
               src="/images/logos/release-logo.svg"
+              width={120}
+              height={32}
               className="h-8 w-auto"
+              unoptimized
             />
           </Link>
           <div className="md:hidden">
