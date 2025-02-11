@@ -41,7 +41,7 @@ export default function CalendlyButton({
     if (window.Calendly) {
       window.Calendly.initPopupWidget({ url });
     } else {
-      console.warn('Calendly not loaded yet');
+      console.warn("Calendly not loaded yet");
     }
   };
 
@@ -51,11 +51,7 @@ export default function CalendlyButton({
         src="https://assets.calendly.com/assets/external/widget.js"
         strategy="beforeInteractive"
       />
-      <button 
-        onClick={openCalendly} 
-        className={className}
-        type="button"
-      >
+      <button onClick={openCalendly} className={className} type="button">
         {children}
       </button>
     </>

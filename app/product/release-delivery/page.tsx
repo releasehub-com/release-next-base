@@ -46,7 +46,7 @@ export default function ReleaseDeliveryPage() {
                   features and functionality as your SaaS offering.
                 </p>
                 <div>
-                  <CalendlyButton 
+                  <CalendlyButton
                     className="inline-block bg-[#00bb93] hover:bg-[#00bb93]/90 text-white px-8 py-4 rounded-lg font-medium transition-colors cursor-pointer"
                     url="https://calendly.com/release-tommy/release-delivery"
                   >
