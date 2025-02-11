@@ -1,7 +1,7 @@
 "use client";
 
 import Script from "next/script";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect } from "react";
 
 interface CalendlyButtonProps {
   className?: string;
@@ -9,12 +9,8 @@ interface CalendlyButtonProps {
   url?: string;
 }
 
-type CalendlyWidgetOptions = {
-  url: string;
-};
-
 interface CalendlyInterface {
-  initPopupWidget: (options: CalendlyWidgetOptions) => void;
+  initPopupWidget: (options: { url: string }) => void;
 }
 
 declare global {
@@ -29,7 +25,7 @@ export default function CalendlyButton({
   url = "https://calendly.com/release-tommy/release-delivery",
 }: CalendlyButtonProps): JSX.Element {
   useEffect(() => {
-    const link: HTMLLinkElement = document.createElement("link");
+    const link = document.createElement("link");
     link.href = "https://assets.calendly.com/assets/external/widget.css";
     link.rel = "stylesheet";
     document.head.appendChild(link);
@@ -41,14 +37,13 @@ export default function CalendlyButton({
     };
   }, []);
 
-  const openCalendly = useCallback((): void => {
-    console.log('Opening Calendly:', { hasCalendly: !!window.Calendly, url });
+  const openCalendly = () => {
     if (window.Calendly) {
-      window.Calendly.initPopupWidget({
-        url,
-      });
+      window.Calendly.initPopupWidget({ url });
+    } else {
+      console.warn('Calendly not loaded yet');
     }
-  }, [url]);
+  };
 
   return (
     <>
@@ -58,7 +53,7 @@ export default function CalendlyButton({
       />
       <button 
         onClick={openCalendly} 
-        className={className} 
+        className={className}
         type="button"
       >
         {children}
