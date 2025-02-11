@@ -77,6 +77,7 @@ export default function DockerExtensionPage() {
                     height={1500}
                     className="w-full h-auto"
                     priority
+                    unoptimized
                   />
                 </div>
               </div>

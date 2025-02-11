@@ -323,13 +323,69 @@ test.describe("Product Pages", () => {
       page.getByRole("heading", { name: /Install Release Share/i }),
     ).toBeVisible();
     await expect(page.getByText(/Share containers/i)).toBeVisible();
+  });
+
+  test("should load Docker Extension page images correctly", async ({ page }) => {
+    await page.goto("/product/docker-extension");
+    
+    // Wait for initial page load
+    await page.waitForLoadState("domcontentloaded");
+
+    // Check hero image specifically
+    const heroImage = page.locator('img[alt="Release Share Docker Extension Interface"]');
+    await expect(heroImage).toBeVisible();
+    
+    // Verify hero image attributes
+    const heroSrc = await heroImage.getAttribute('src');
+    expect(heroSrc).toBe('/images/product/docker-extension/header.svg');
+    
+    // Verify unoptimized prop is present (check for direct SVG loading)
+    const isUnoptimized = await heroImage.evaluate((img: HTMLImageElement) => {
+      return !img.src.includes('/_next/image');
+    });
+    expect(isUnoptimized).toBe(true);
+
+    // Check feature images
+    const featureImages = [
+      { src: '/images/product/docker-extension/feature-1.webp', alt: 'Instant Sharing' },
+      { src: '/images/product/docker-extension/feature-2.webp', alt: 'Instant Collaboration' },
+      { src: '/images/product/docker-extension/feature-3.webp', alt: 'Right in your workflow' }
+    ];
+
+    for (const feature of featureImages) {
+      const image = page.locator(`img[alt="${feature.alt}"]`);
+      await expect(image).toBeVisible();
+      const src = await image.getAttribute('src');
+      expect(src).toContain(feature.src);
+    }
+
+    // Check resource section images
+    const resourceImages = [
+      { src: '/images/product/docker-extension/resource-1.svg', alt: 'Introducing Release Share' },
+      { src: '/images/product/docker-extension/resource-2.webp', alt: 'Docker Compose Environment Variables' },
+      { src: '/images/product/docker-extension/resource-3.webp', alt: 'Build, Run, Share with Docker and Release' }
+    ];
+
+    for (const resource of resourceImages) {
+      const image = page.locator(`img[alt="${resource.alt}"]`);
+      await expect(image).toBeVisible();
+      const src = await image.getAttribute('src');
+      expect(src).toContain(resource.src);
+
+      // For SVG resources, verify unoptimized loading
+      if (resource.src.endsWith('.svg')) {
+        const isUnoptimized = await image.evaluate((img: HTMLImageElement) => {
+          return !img.src.includes('/_next/image');
+        });
+        expect(isUnoptimized).toBe(true);
+      }
+    }
 
     // Check all images with improved error handling
     try {
       await waitForAllImages(page);
     } catch (error) {
       console.error("Image loading failed:", error);
-      // Take a screenshot for debugging
       await page.screenshot({
         path: "docker-extension-image-error.png",
         fullPage: true,
