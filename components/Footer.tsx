@@ -19,14 +19,6 @@ export default function Footer() {
                   Our Company
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="https://release.com/press-releases"
-                  className="hover:text-[#00bb93] transition-colors"
-                >
-                  Press Releases
-                </Link>
-              </li>
             </ul>
           </div>
           <div>
@@ -52,18 +44,10 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="https://release.com/product/release-delivery"
+                  href="/product/release-delivery"
                   className="hover:text-[#00bb93] transition-colors"
                 >
                   Release Delivery
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="https://release.com/get-started"
-                  className="hover:text-[#00bb93] transition-colors"
-                >
-                  Environments as a Service
                 </Link>
               </li>
               <li>
@@ -138,7 +122,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="https://release.com/use-cases"
+                  href="https://prod.releasehub.com/use-cases"
                   className="hover:text-[#00bb93] transition-colors"
                 >
                   Use Cases
@@ -150,22 +134,6 @@ export default function Footer() {
                   className="hover:text-[#00bb93] transition-colors"
                 >
                   Case Studies
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="https://release.com/events"
-                  className="hover:text-[#00bb93] transition-colors"
-                >
-                  Events
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="https://release.com/resource-hub"
-                  className="hover:text-[#00bb93] transition-colors"
-                >
-                  Resource Hub
                 </Link>
               </li>
             </ul>
@@ -262,9 +230,8 @@ export default function Footer() {
               Security
             </Link>
           </nav>
-          <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} Release Technologies, Inc. All
-            rights reserved.
+          <p className="mt-4 text-xs text-gray-500">
+            © {new Date().getFullYear()} Release. All rights reserved.
           </p>
         </div>
       </div>
