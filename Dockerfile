@@ -19,9 +19,11 @@ WORKDIR /app
 
 # Set all the Environment Variables, they need to be present before the build command happens
 ARG NEXT_PUBLIC_APP_BASE_URL
+ARG NEXT_PUBLIC_APP_HOSTNAME
 ARG DD_API_KEY
 
 ENV NEXT_PUBLIC_APP_BASE_URL=$NEXT_PUBLIC_APP_BASE_URL \
+    NEXT_PUBLIC_APP_HOSTNAME=$NEXT_PUBLIC_APP_HOSTNAME \
     DD_API_KEY=$DD_API_KEY
 
 # Install sharp for image optimization
@@ -31,10 +33,6 @@ RUN npm install sharp
 COPY package.json pnpm-lock.yaml .npmrc ./
 COPY . .
 COPY --from=deps /build/node_modules ./node_modules
-
-# Extract hostname from base URL
-COPY extract-hostname.js .
-RUN node extract-hostname.js
 
 RUN pnpm build
 
@@ -51,10 +49,12 @@ FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
-# Pass through the build-time environment variables
+
+# Pass through the environment variables
 ARG NEXT_PUBLIC_APP_BASE_URL
-ENV NEXT_PUBLIC_APP_BASE_URL=$NEXT_PUBLIC_APP_BASE_URL
-ENV NEXT_PUBLIC_APP_HOSTNAME=$NEXT_PUBLIC_APP_HOSTNAME
+ARG NEXT_PUBLIC_APP_HOSTNAME
+ENV NEXT_PUBLIC_APP_BASE_URL=$NEXT_PUBLIC_APP_BASE_URL \
+    NEXT_PUBLIC_APP_HOSTNAME=$NEXT_PUBLIC_APP_HOSTNAME
 
 # Uncomment the following line in case you want to disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED 1
