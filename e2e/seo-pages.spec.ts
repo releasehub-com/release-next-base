@@ -44,7 +44,7 @@ test.describe("SEO Pages", () => {
 
       // Verify dimensions
       const style = await image.getAttribute('style');
-      expect(style).toContain('object-fit: contain');
+      expect(style?.replace(/\s+/g, '')).toContain('object-fit:contain');
       
       // Verify inversion class for YC and CRV logos
       if (expected.inverted) {
