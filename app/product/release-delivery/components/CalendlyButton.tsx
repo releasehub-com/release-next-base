@@ -6,6 +6,7 @@ import { useEffect, useState, useCallback } from "react";
 interface CalendlyButtonProps {
   className?: string;
   children: React.ReactNode;
+  url?: string;
 }
 
 type CalendlyWidgetOptions = {
@@ -25,9 +26,8 @@ declare global {
 export default function CalendlyButton({
   className,
   children,
+  url = "https://calendly.com/release-tommy/release-delivery",
 }: CalendlyButtonProps): JSX.Element {
-  const [isScriptLoaded, setIsScriptLoaded] = useState<boolean>(false);
-
   useEffect(() => {
     const link: HTMLLinkElement = document.createElement("link");
     link.href = "https://assets.calendly.com/assets/external/widget.css";
@@ -42,19 +42,19 @@ export default function CalendlyButton({
   }, []);
 
   const openCalendly = useCallback((): void => {
-    if (isScriptLoaded && window.Calendly) {
+    console.log('Opening Calendly:', { hasCalendly: !!window.Calendly, url });
+    if (window.Calendly) {
       window.Calendly.initPopupWidget({
-        url: "https://calendly.com/release-tommy/release-delivery",
+        url,
       });
     }
-  }, [isScriptLoaded]);
+  }, [url]);
 
   return (
     <>
       <Script
         src="https://assets.calendly.com/assets/external/widget.js"
-        onLoad={(): void => setIsScriptLoaded(true)}
-        strategy="lazyOnload"
+        strategy="beforeInteractive"
       />
       <button 
         onClick={openCalendly} 
