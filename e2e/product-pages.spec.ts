@@ -1,4 +1,5 @@
 import { test, expect, Page } from "@playwright/test";
+import { checkImageLoadState, waitForAllImages } from "./utils";
 
 // Constants for image checking
 const IMAGE_CHECK_TIMEOUT = 45000;
@@ -285,41 +286,56 @@ function logRequestSummaries(
 }
 
 test.describe("Product Pages", () => {
-  test.describe("Docker Extension Page", () => {
-    test("should render correctly", async ({ page }) => {
-      await page.goto("/product/docker-extension");
+  // Add a hook to handle navigation timeouts
+  test.beforeEach(async ({ page }) => {
+    // Increase navigation timeout for slower connections
+    page.setDefaultNavigationTimeout(60000);
+    page.setDefaultTimeout(60000);
+  });
 
-      // Check main heading
-      await expect(
-        page.getByRole("heading", { name: /Release Share Docker Extension/i }),
-      ).toBeVisible();
+  test("should render Docker Extension page correctly", async ({ page }) => {
+    await page.goto("/product/docker-extension");
 
-      // Check CTA button
-      const ctaButton = page.getByRole("link", { name: /Try Release Share/i });
-      await expect(ctaButton).toBeVisible();
-      await expect(ctaButton).toHaveAttribute(
-        "href",
-        "https://hub.docker.com/extensions/releasecom/docker-extension",
-      );
+    // Check main heading
+    await expect(
+      page.getByRole("heading", { name: /Release Share Docker Extension/i }),
+    ).toBeVisible();
 
-      // Check feature sections
-      await expect(page.getByText(/Instant Sharing/i)).toBeVisible();
-      await expect(page.getByText(/Instant Collaboration/i)).toBeVisible();
-      await expect(page.getByText(/Right in your workflow/i)).toBeVisible();
+    // Check CTA button
+    const ctaButton = page.getByRole("link", { name: /Try Release Share/i });
+    await expect(ctaButton).toBeVisible();
+    await expect(ctaButton).toHaveAttribute(
+      "href",
+      "https://hub.docker.com/extensions/releasecom/docker-extension",
+    );
 
-      // Check 'How to get started' section
-      await expect(
-        page.getByRole("heading", { name: /How to get started/i }),
-      ).toBeVisible();
-      await expect(page.getByText(/Start your Docker Desktop/i)).toBeVisible();
-      await expect(
-        page.getByRole("heading", { name: /Install Release Share/i }),
-      ).toBeVisible();
-      await expect(page.getByText(/Share containers/i)).toBeVisible();
+    // Check feature sections
+    await expect(page.getByText(/Instant Sharing/i)).toBeVisible();
+    await expect(page.getByText(/Instant Collaboration/i)).toBeVisible();
+    await expect(page.getByText(/Right in your workflow/i)).toBeVisible();
 
-      // Check all images
-      await checkImages(page, "on Docker Extension page");
-    });
+    // Check 'How to get started' section
+    await expect(
+      page.getByRole("heading", { name: /How to get started/i }),
+    ).toBeVisible();
+    await expect(page.getByText(/Start your Docker Desktop/i)).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /Install Release Share/i }),
+    ).toBeVisible();
+    await expect(page.getByText(/Share containers/i)).toBeVisible();
+
+    // Check all images with improved error handling
+    try {
+      await waitForAllImages(page);
+    } catch (error) {
+      console.error("Image loading failed:", error);
+      // Take a screenshot for debugging
+      await page.screenshot({
+        path: "docker-extension-image-error.png",
+        fullPage: true,
+      });
+      throw error;
+    }
   });
 
   test.describe("Instant Datasets Page", () => {
@@ -371,8 +387,18 @@ test.describe("Product Pages", () => {
         }),
       ).toBeVisible();
 
-      // Check all images
-      await checkImages(page, "on Instant Datasets page");
+      // Check all images with improved error handling
+      try {
+        await waitForAllImages(page);
+      } catch (error) {
+        console.error("Image loading failed:", error);
+        // Take a screenshot for debugging
+        await page.screenshot({
+          path: "instant-datasets-image-error.png",
+          fullPage: true,
+        });
+        throw error;
+      }
     });
 
     test("should be responsive", async ({ page }) => {
@@ -386,7 +412,24 @@ test.describe("Product Pages", () => {
 
       for (const viewport of viewports) {
         await page.setViewportSize(viewport);
-        await checkImages(page, `on ${viewport.name} viewport`);
+
+        // Wait for layout to stabilize after resize
+        await page.waitForTimeout(500);
+
+        try {
+          await waitForAllImages(page);
+        } catch (error) {
+          console.error(
+            `Image loading failed on ${viewport.name} viewport:`,
+            error,
+          );
+          // Take a screenshot for debugging
+          await page.screenshot({
+            path: `instant-datasets-image-error-${viewport.name}.png`,
+            fullPage: true,
+          });
+          throw error;
+        }
       }
     });
   });

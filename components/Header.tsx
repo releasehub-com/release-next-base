@@ -47,6 +47,7 @@ export default function Header() {
               height={32}
               className="h-8 w-auto"
               unoptimized={true}
+              priority
             />
           </Link>
           <div className="md:hidden">

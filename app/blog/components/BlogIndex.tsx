@@ -92,7 +92,7 @@ export default function BlogIndex({
                         }
                         fill
                         className="object-cover"
-                        unoptimized={featuredPost.frontmatter.mainImage.endsWith('.svg')}
+                        unoptimized={true}
                       />
                     )}
                   </div>
@@ -133,7 +133,7 @@ export default function BlogIndex({
                           }
                           fill
                           className="rounded-full object-cover"
-                          unoptimized={getAuthorInfo(featuredPost.frontmatter.author).image.endsWith('.svg')}
+                          unoptimized={true}
                           priority
                         />
                       </div>
@@ -212,7 +212,7 @@ export default function BlogIndex({
                         }
                         fill
                         className="object-cover"
-                        unoptimized={post.frontmatter.mainImage.endsWith('.svg')}
+                        unoptimized={true}
                       />
                     </div>
                   )}
@@ -230,7 +230,7 @@ export default function BlogIndex({
                         width={32}
                         height={32}
                         className="rounded-full"
-                        unoptimized={getAuthorInfo(post.frontmatter.author).image.endsWith('.svg')}
+                        unoptimized={true}
                       />
                       <div className="ml-3">
                         <p className="text-white text-sm">
