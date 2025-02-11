@@ -55,6 +55,8 @@ const APP_ROUTES = [
   "product/docker-extension",
   "product/instant-datasets",
   "product/release-delivery",
+  "use-cases",
+  "ai-ready-infrastructure-pipeline",
 ];
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL || "https://release.com";

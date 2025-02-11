@@ -71,21 +71,24 @@ const logos = [
 ];
 
 interface UserLogosProps {
+  headline?: string;
   title?: string;
   subtitle?: string;
   layout?: "grid" | "horizontal";
 }
 
-const UserLogos = ({ title, subtitle, layout = "grid" }: UserLogosProps) => {
+const UserLogos = ({
+  headline = "Trusted By",
+  title,
+  subtitle,
+  layout = "grid",
+}: UserLogosProps) => {
   return (
-    <section
-      className={`w-full ${layout === "grid" ? "py-12 md:py-24 lg:py-32" : ""} bg-gray-900`}
-    >
-      <div
-        className={
-          layout === "grid" ? "container mx-auto px-4 sm:px-6 lg:px-8" : ""
-        }
-      >
+    <section className="py-20">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-12">
+          {headline}
+        </h2>
         {title && (
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-6 text-white">
             {title}

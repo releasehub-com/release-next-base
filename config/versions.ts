@@ -74,6 +74,39 @@ export const VERSIONS = {
       ],
     },
   },
+  "ai-pipeline": {
+    id: "ai-pipeline",
+    aliases: [],
+    path: "/ai-ready-infrastructure-pipeline",
+    content: {
+      title: "Infrastructure That Keeps Pace with AI Development",
+      benefits: [
+        {
+          icon: "automation",
+          title: "Eliminate Deployment Bottlenecks",
+          description:
+            "Keep your infrastructure and deployment pipelines moving as fast as your AI-accelerated development teams.",
+        },
+        {
+          icon: "performance",
+          title: "Zero Wait Time Environments",
+          description:
+            "Instantly provision environments for testing, staging, and production without slowing down your AI-powered development workflow.",
+        },
+        {
+          icon: "scale",
+          title: "Scale with AI Velocity",
+          description:
+            "Automatically scale your infrastructure to match the increased velocity of AI-assisted development and testing.",
+        },
+      ],
+      steps: [
+        "Connect your repositories",
+        "Configure your pipeline settings",
+        "Let Release handle the infrastructure",
+      ],
+    },
+  },
   replicated: {
     id: "replicated",
     aliases: [],

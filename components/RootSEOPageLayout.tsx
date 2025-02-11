@@ -81,7 +81,7 @@ export default function RootSEOPageLayout({
   calendlyUrl,
 }: RootSEOPageLayoutProps) {
   return (
-    <div className="flex flex-col min-h-screen bg-gray-900">
+    <div className="flex flex-col min-h-screen bg-gray-900 overflow-x-hidden">
       <Header />
       <section className="bg-gray-800 border-y border-gray-800">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
