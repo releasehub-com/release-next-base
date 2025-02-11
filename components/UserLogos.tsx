@@ -115,6 +115,7 @@ const UserLogos = ({ title, subtitle, layout = "grid" }: UserLogosProps) => {
                 height={80}
                 style={{ objectFit: "contain" }}
                 className="filter brightness-0 invert"
+                unoptimized={true}
               />
             </div>
           ))}

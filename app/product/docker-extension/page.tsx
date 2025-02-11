@@ -213,8 +213,10 @@ export default function DockerExtensionPage() {
                   <Image
                     src="/images/product/docker-extension/resource-1.svg"
                     alt="Introducing Release Share"
-                    fill
-                    className="object-cover"
+                    width={600}
+                    height={400}
+                    className="w-full h-auto"
+                    unoptimized
                   />
                 </div>
                 <div className="p-6 flex flex-col flex-1">

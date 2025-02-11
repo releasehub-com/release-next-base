@@ -31,6 +31,8 @@ export default function BlogPostLayout({
               alt={frontmatter.imageAlt || frontmatter.title}
               fill
               className="object-cover rounded-lg"
+              unoptimized={frontmatter.mainImage.endsWith(".svg")}
+              priority
             />
           </div>
         )}
@@ -59,6 +61,7 @@ export default function BlogPostLayout({
                 width={48}
                 height={48}
                 className="rounded-full"
+                unoptimized={authorInfo.image.endsWith(".svg")}
               />
               <span className="ml-2">{authorInfo.name}</span>
             </div>

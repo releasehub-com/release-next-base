@@ -65,9 +65,9 @@ export default function EphemeralHeroComponent() {
                 src="/blog-images/hero.svg"
                 alt="Release platform interface"
                 width={800}
-                height={500}
+                height={600}
                 className="w-full h-auto"
-                priority
+                unoptimized
               />
             </div>
             <div className="bg-gray-800 p-6 rounded-lg">

@@ -122,6 +122,7 @@ export default function InstantDatasetsPage() {
                       width={96}
                       height={96}
                       className="w-24 h-24"
+                      unoptimized
                     />
                   </div>
                 </div>
@@ -223,6 +224,7 @@ export default function InstantDatasetsPage() {
                 height={600}
                 className="w-full h-auto"
                 priority
+                unoptimized
               />
             </div>
           </div>
@@ -314,10 +316,11 @@ export default function InstantDatasetsPage() {
                 <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50 flex items-center justify-center">
                   <Image
                     src="/images/product/instant-datasets/logos/aws.svg"
-                    alt="AWS logo"
+                    alt="AWS Logo"
                     width={160}
-                    height={160}
-                    className="w-full h-auto brightness-0 invert"
+                    height={48}
+                    className="w-40 h-12"
+                    unoptimized
                   />
                 </div>
               </div>
@@ -325,10 +328,11 @@ export default function InstantDatasetsPage() {
                 <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50 flex items-center justify-center">
                   <Image
                     src="/images/product/instant-datasets/logos/mysql.svg"
-                    alt="MySQL logo"
+                    alt="MySQL Logo"
                     width={160}
-                    height={160}
-                    className="w-full h-auto brightness-0 invert"
+                    height={48}
+                    className="w-40 h-12"
+                    unoptimized
                   />
                 </div>
               </div>
@@ -336,10 +340,11 @@ export default function InstantDatasetsPage() {
                 <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50 flex items-center justify-center">
                   <Image
                     src="/images/product/instant-datasets/logos/postgresql.svg"
-                    alt="PostgreSQL logo"
+                    alt="PostgreSQL Logo"
                     width={160}
-                    height={160}
-                    className="w-full h-auto brightness-0 invert"
+                    height={48}
+                    className="w-40 h-12"
+                    unoptimized
                   />
                 </div>
               </div>
@@ -347,10 +352,11 @@ export default function InstantDatasetsPage() {
                 <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50 flex items-center justify-center">
                   <Image
                     src="/images/product/instant-datasets/logos/gcp.svg"
-                    alt="GCP logo"
+                    alt="GCP Logo"
                     width={160}
-                    height={160}
-                    className="w-full h-auto brightness-0 invert"
+                    height={48}
+                    className="w-40 h-12"
+                    unoptimized
                   />
                 </div>
               </div>
@@ -358,10 +364,11 @@ export default function InstantDatasetsPage() {
                 <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50 flex items-center justify-center relative">
                   <Image
                     src="/images/product/instant-datasets/logos/azure.svg"
-                    alt="Azure logo"
+                    alt="Azure Logo"
                     width={160}
-                    height={160}
-                    className="w-full h-auto brightness-0 invert"
+                    height={48}
+                    className="w-40 h-12"
+                    unoptimized
                   />
                   <div className="absolute -top-2 -right-2 bg-gray-700 text-xs text-white px-2 py-1 rounded">
                     Coming soon
@@ -372,10 +379,11 @@ export default function InstantDatasetsPage() {
                 <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50 flex items-center justify-center">
                   <Image
                     src="/images/product/instant-datasets/logos/mariadb.svg"
-                    alt="MariaDB logo"
+                    alt="MariaDB Logo"
                     width={160}
-                    height={160}
-                    className="w-full h-auto brightness-0 invert"
+                    height={48}
+                    className="w-40 h-12"
+                    unoptimized
                   />
                 </div>
               </div>
@@ -486,10 +494,11 @@ export default function InstantDatasetsPage() {
                 <div className="aspect-video relative">
                   <Image
                     src="/images/product/instant-datasets/resources/ephemeral.svg"
-                    alt="Ephemeral Environments Cover"
-                    width={400}
-                    height={225}
-                    className="w-full h-full object-contain"
+                    alt="Ephemeral Resources"
+                    width={160}
+                    height={48}
+                    className="w-40 h-12"
+                    unoptimized
                   />
                 </div>
               </a>

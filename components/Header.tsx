@@ -41,12 +41,13 @@ export default function Header() {
         <div className="flex items-center justify-between">
           <Link href={getHomeUrl()} className="flex items-center space-x-2">
             <Image
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/releaselogo-5kSBfSjirGYalBpjEwxUJEKBdrcG02.svg"
               alt="Release Logo"
-              width={110}
-              height={25}
+              src="/images/logos/release-logo.svg"
+              width={120}
+              height={32}
+              className="h-8 w-auto"
+              unoptimized={true}
               priority
-              className="brightness-0 invert"
             />
           </Link>
           <div className="md:hidden">
