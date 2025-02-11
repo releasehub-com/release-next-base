@@ -1,5 +1,9 @@
 import { test, expect, Page } from "@playwright/test";
-import { checkImageLoadState, waitForAllImages } from "./utils";
+import {
+  checkImageLoadState,
+  waitForAllImages,
+  saveErrorScreenshot,
+} from "./utils";
 
 // Constants for image checking
 const IMAGE_CHECK_TIMEOUT = 45000;
@@ -325,59 +329,85 @@ test.describe("Product Pages", () => {
     await expect(page.getByText(/Share containers/i)).toBeVisible();
   });
 
-  test("should load Docker Extension page images correctly", async ({ page }) => {
+  test("should load Docker Extension page images correctly", async ({
+    page,
+  }) => {
     await page.goto("/product/docker-extension");
-    
+
     // Wait for initial page load
     await page.waitForLoadState("domcontentloaded");
 
     // Check hero image specifically
-    const heroImage = page.locator('img[alt="Release Share Docker Extension Interface"]');
+    const heroImage = page.locator(
+      'img[alt="Release Share Docker Extension Interface"]',
+    );
     await expect(heroImage).toBeVisible();
-    
+
     // Verify hero image attributes
-    const heroSrc = await heroImage.getAttribute('src');
-    expect(heroSrc).toBe('/images/product/docker-extension/header.svg');
-    
+    const heroSrc = await heroImage.getAttribute("src");
+    expect(heroSrc).toBe("/images/product/docker-extension/header.svg");
+
     // Verify unoptimized prop is present (check for direct SVG loading)
     const isUnoptimized = await heroImage.evaluate((img: HTMLImageElement) => {
-      return !img.src.includes('/_next/image');
+      return !img.src.includes("/_next/image");
     });
     expect(isUnoptimized).toBe(true);
 
     // Check feature images
     const featureImages = [
-      { src: '/images/product/docker-extension/feature-1.webp', alt: 'Instant Sharing' },
-      { src: '/images/product/docker-extension/feature-2.webp', alt: 'Instant Collaboration' },
-      { src: '/images/product/docker-extension/feature-3.webp', alt: 'Right in your workflow' }
+      {
+        src: "/images/product/docker-extension/feature-1.webp",
+        alt: "Instant Sharing",
+      },
+      {
+        src: "/images/product/docker-extension/feature-2.webp",
+        alt: "Instant Collaboration",
+      },
+      {
+        src: "/images/product/docker-extension/feature-3.webp",
+        alt: "Right in your workflow",
+      },
     ];
 
     for (const feature of featureImages) {
       const image = page.locator(`img[alt="${feature.alt}"]`);
       await expect(image).toBeVisible();
-      const src = await image.getAttribute('src');
-      expect(src).toContain(feature.src);
+      const src = await image.getAttribute("src");
+      // Handle Next.js image optimization URL format
+      expect(src).toContain(encodeURIComponent(feature.src));
     }
 
     // Check resource section images
     const resourceImages = [
-      { src: '/images/product/docker-extension/resource-1.svg', alt: 'Introducing Release Share' },
-      { src: '/images/product/docker-extension/resource-2.webp', alt: 'Docker Compose Environment Variables' },
-      { src: '/images/product/docker-extension/resource-3.webp', alt: 'Build, Run, Share with Docker and Release' }
+      {
+        src: "/images/product/docker-extension/resource-1.svg",
+        alt: "Introducing Release Share",
+      },
+      {
+        src: "/images/product/docker-extension/resource-2.webp",
+        alt: "Docker Compose Environment Variables",
+      },
+      {
+        src: "/images/product/docker-extension/resource-3.webp",
+        alt: "Build, Run, Share with Docker and Release",
+      },
     ];
 
     for (const resource of resourceImages) {
       const image = page.locator(`img[alt="${resource.alt}"]`);
       await expect(image).toBeVisible();
-      const src = await image.getAttribute('src');
-      expect(src).toContain(resource.src);
+      const src = await image.getAttribute("src");
 
       // For SVG resources, verify unoptimized loading
-      if (resource.src.endsWith('.svg')) {
+      if (resource.src.endsWith(".svg")) {
         const isUnoptimized = await image.evaluate((img: HTMLImageElement) => {
-          return !img.src.includes('/_next/image');
+          return !img.src.includes("/_next/image");
         });
         expect(isUnoptimized).toBe(true);
+        expect(src).toBe(resource.src);
+      } else {
+        // Handle Next.js image optimization URL format for non-SVG images
+        expect(src).toContain(encodeURIComponent(resource.src));
       }
     }
 
@@ -386,12 +416,56 @@ test.describe("Product Pages", () => {
       await waitForAllImages(page);
     } catch (error) {
       console.error("Image loading failed:", error);
-      await page.screenshot({
-        path: "docker-extension-image-error.png",
-        fullPage: true,
-      });
       throw error;
     }
+  });
+
+  test("should render Release Delivery page correctly", async ({ page }) => {
+    await page.goto("/product/release-delivery");
+
+    // Check main headings
+    await expect(
+      page.getByRole("heading", { name: "Release Delivery" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", {
+        name: "The Modern Way to Deliver and Manage Cloud Software to Customers",
+      }),
+    ).toBeVisible();
+
+    // Check key sections
+    await expect(
+      page.getByRole("heading", { name: "With Release Delivery, you can" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Trusted by" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Learn more" }),
+    ).toBeVisible();
+
+    // Check feature cards
+    await expect(
+      page.getByRole("heading", { name: "Make your apps enterprise ready" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Orchestrate across environments" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Delight your customers" }),
+    ).toBeVisible();
+
+    // Check CTA button
+    await expect(
+      page.getByRole("button", { name: "Book Demo of Release Delivery" }),
+    ).toBeVisible();
+  });
+
+  test("should load Release Delivery page images correctly", async ({
+    page,
+  }) => {
+    await page.goto("/product/release-delivery");
+    await checkImages(page, "on Release Delivery page");
   });
 
   test.describe("Instant Datasets Page", () => {
@@ -448,11 +522,6 @@ test.describe("Product Pages", () => {
         await waitForAllImages(page);
       } catch (error) {
         console.error("Image loading failed:", error);
-        // Take a screenshot for debugging
-        await page.screenshot({
-          path: "instant-datasets-image-error.png",
-          fullPage: true,
-        });
         throw error;
       }
     });
@@ -468,8 +537,6 @@ test.describe("Product Pages", () => {
 
       for (const viewport of viewports) {
         await page.setViewportSize(viewport);
-
-        // Wait for layout to stabilize after resize
         await page.waitForTimeout(500);
 
         try {
@@ -479,11 +546,6 @@ test.describe("Product Pages", () => {
             `Image loading failed on ${viewport.name} viewport:`,
             error,
           );
-          // Take a screenshot for debugging
-          await page.screenshot({
-            path: `instant-datasets-image-error-${viewport.name}.png`,
-            fullPage: true,
-          });
           throw error;
         }
       }

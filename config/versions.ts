@@ -325,34 +325,25 @@ export function setVersionInStorage(version: VersionId): void {
 export function getVersionFromStorage(): VersionId {
   if (typeof window === "undefined") return DEFAULT_VERSION;
 
-  console.log("getVersionFromStorage - Starting version check");
-
   // Check localStorage first
   const stored = localStorage.getItem(STORAGE_KEY);
-  console.log("getVersionFromStorage - localStorage value:", stored);
-
   if (stored && isValidVersion(stored)) {
-    const version = VERSION_MAP.get(stored) as VersionId;
-    console.log("getVersionFromStorage - Using localStorage version:", version);
+    const version = getCanonicalVersion(stored);
     return version;
   }
 
   // Check cookie as fallback
   const cookie = document.cookie
     .split("; ")
-    .find((row) => row.startsWith("landing_version="))
+    .find((row) => row.startsWith(`${STORAGE_KEY}=`))
     ?.split("=")[1];
 
-  console.log("getVersionFromStorage - Cookie value:", cookie);
-
   if (cookie && isValidVersion(cookie)) {
-    // Persist to localStorage for future use
-    const version = VERSION_MAP.get(cookie) as VersionId;
-    console.log("getVersionFromStorage - Using cookie version:", version);
-    setVersionInStorage(version);
+    const version = getCanonicalVersion(cookie);
+    localStorage.setItem(STORAGE_KEY, version);
     return version;
   }
 
-  console.log("getVersionFromStorage - Using default version");
+  // Default fallback
   return DEFAULT_VERSION;
 }
