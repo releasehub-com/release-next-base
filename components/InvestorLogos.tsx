@@ -27,6 +27,7 @@ export default function InvestorLogos({
               maxHeight: "100%",
             }}
             className=""
+            unoptimized={true}
           />
         </div>
         <div className="w-[180px] h-[80px] relative flex items-center justify-center">
@@ -41,6 +42,7 @@ export default function InvestorLogos({
               maxHeight: "100%",
             }}
             className="filter brightness-0 invert"
+            unoptimized={true}
           />
         </div>
         <div className="w-[180px] h-[80px] relative flex items-center justify-center">
@@ -55,6 +57,7 @@ export default function InvestorLogos({
               maxHeight: "100%",
             }}
             className="filter brightness-0 invert"
+            unoptimized={true}
           />
         </div>
       </div>
