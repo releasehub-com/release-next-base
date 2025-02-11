@@ -75,7 +75,12 @@ export default function WhyReleasePage() {
         <div className="max-w-4xl mx-auto">
           <div className="bg-gray-800/50 rounded-lg p-8 border border-gray-700/50">
             <p className="text-2xl text-gray-300 leading-relaxed text-center">
-              With Release, you can build, test, and deploy applications at scale. With our offering, Environments as a Service, we automate the process to allow your developer teams to focus on innovation and revenue rather than building and maintaining test environments. Made by developers, for developers, you can ship faster with confidence.
+              With Release, you can build, test, and deploy applications at
+              scale. With our offering, Environments as a Service, we automate
+              the process to allow your developer teams to focus on innovation
+              and revenue rather than building and maintaining test
+              environments. Made by developers, for developers, you can ship
+              faster with confidence.
             </p>
           </div>
         </div>
@@ -110,7 +115,10 @@ export default function WhyReleasePage() {
               controls
               poster="/images/why-release-poster.png"
             >
-              <source src="https://marketing.release.com/video/what_is_release_(1080p).mp4" type="video/mp4" />
+              <source
+                src="https://marketing.release.com/video/what_is_release_(1080p).mp4"
+                type="video/mp4"
+              />
               Your browser does not support the video tag.
             </video>
           </div>
@@ -120,7 +128,10 @@ export default function WhyReleasePage() {
         <div className="bg-gray-800/50 rounded-lg p-8 border border-gray-700/50">
           <blockquote className="space-y-4">
             <p className="text-xl text-gray-300 italic">
-              Release has helped cut our testing time from days to minutes and provided insight to how we can optimize internally. It has enabled us to involve more teams to review feature updates and increase synergy within our company.
+              Release has helped cut our testing time from days to minutes and
+              provided insight to how we can optimize internally. It has enabled
+              us to involve more teams to review feature updates and increase
+              synergy within our company.
             </p>
             <footer className="text-white">
               <p className="font-semibold">Wendi Whitsett</p>
@@ -187,4 +198,4 @@ export default function WhyReleasePage() {
       </div>
     </RootSEOPageLayout>
   );
-} 
+}

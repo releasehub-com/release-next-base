@@ -1,5 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
-import * as path from 'path';
+import * as path from "path";
 
 export default defineConfig({
   testDir: "./e2e",
@@ -17,9 +17,9 @@ export default defineConfig({
     launchOptions: {
       slowMo: 100,
     },
-    screenshot: 'only-on-failure',
+    screenshot: "only-on-failure",
   },
-  outputDir: path.join(process.cwd(), 'test-artifacts'),
+  outputDir: path.join(process.cwd(), "test-artifacts"),
   timeout: 90000,
   expect: {
     timeout: 60000,

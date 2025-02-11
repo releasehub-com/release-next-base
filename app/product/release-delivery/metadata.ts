@@ -29,4 +29,4 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://release.com/product/release-delivery",
   },
-}; 
+};

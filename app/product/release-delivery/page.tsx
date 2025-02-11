@@ -1,8 +1,18 @@
-'use client';
+"use client";
 
 import RootSEOPageLayout from "@/components/RootSEOPageLayout";
 import Image from "next/image";
-import { Cloud, Terminal, Settings, Layout, RefreshCw, Wrench, LineChart, FileCode, GitBranch } from "lucide-react";
+import {
+  Cloud,
+  Terminal,
+  Settings,
+  Layout,
+  RefreshCw,
+  Wrench,
+  LineChart,
+  FileCode,
+  GitBranch,
+} from "lucide-react";
 import CalendlyButton from "./components/CalendlyButton";
 
 export default function ReleaseDeliveryPage() {
@@ -23,11 +33,17 @@ export default function ReleaseDeliveryPage() {
                     Release Delivery
                   </h2>
                   <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
-                    The Modern Way to Deliver and Manage Cloud Software to Customers
+                    The Modern Way to Deliver and Manage Cloud Software to
+                    Customers
                   </h1>
                 </div>
                 <p className="text-lg text-gray-300 leading-relaxed">
-                  Release Delivery is a container-based Environments as a Service platform that gives software vendors a fast and easy way to ship their applications inside customers' environments. Whether it's on-premises, in a private cloud, or in a hybrid model, Release lets you deliver your software with the same features and functionality as your SaaS offering.
+                  Release Delivery is a container-based Environments as a
+                  Service platform that gives software vendors a fast and easy
+                  way to ship their applications inside customers' environments.
+                  Whether it's on-premises, in a private cloud, or in a hybrid
+                  model, Release lets you deliver your software with the same
+                  features and functionality as your SaaS offering.
                 </p>
                 <div>
                   <CalendlyButton className="inline-block bg-[#00bb93] hover:bg-[#00bb93]/90 text-white px-8 py-4 rounded-lg font-medium transition-colors cursor-pointer">
@@ -70,9 +86,13 @@ export default function ReleaseDeliveryPage() {
                   />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-white mb-4">Make your apps enterprise ready</h3>
+                  <h3 className="text-2xl font-bold text-white mb-4">
+                    Make your apps enterprise ready
+                  </h3>
                   <p className="text-gray-300">
-                    Sell your cloud-native applications to enterprise customers who need greater security and control over their data and infrastructure.
+                    Sell your cloud-native applications to enterprise customers
+                    who need greater security and control over their data and
+                    infrastructure.
                   </p>
                 </div>
               </div>
@@ -89,9 +109,13 @@ export default function ReleaseDeliveryPage() {
                   />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-white mb-4">Orchestrate across environments</h3>
+                  <h3 className="text-2xl font-bold text-white mb-4">
+                    Orchestrate across environments
+                  </h3>
                   <p className="text-gray-300">
-                    Avoid the hassle of building and maintaining your own tooling for deploying, updating, licensing, monitoring, and troubleshooting your software across different environments.
+                    Avoid the hassle of building and maintaining your own
+                    tooling for deploying, updating, licensing, monitoring, and
+                    troubleshooting your software across different environments.
                   </p>
                 </div>
               </div>
@@ -108,9 +132,13 @@ export default function ReleaseDeliveryPage() {
                   />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-white mb-4">Delight your customers</h3>
+                  <h3 className="text-2xl font-bold text-white mb-4">
+                    Delight your customers
+                  </h3>
                   <p className="text-gray-300">
-                    Focus on product innovation and a great customer experience instead of spending time and money on custom integrations and support requests.
+                    Focus on product innovation and a great customer experience
+                    instead of spending time and money on custom integrations
+                    and support requests.
                   </p>
                 </div>
               </div>
@@ -120,60 +148,91 @@ export default function ReleaseDeliveryPage() {
 
         {/* Capabilities Section */}
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-white mb-12">With Release Delivery, you can</h2>
+          <h2 className="text-4xl font-bold text-white mb-12">
+            With Release Delivery, you can
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50">
               <div className="flex flex-col items-start gap-4">
                 <Terminal className="w-8 h-8 text-white" />
-                <p className="text-gray-300">Troubleshoot issues remotely with secure access to logs, snapshots, backups, etc.</p>
+                <p className="text-gray-300">
+                  Troubleshoot issues remotely with secure access to logs,
+                  snapshots, backups, etc.
+                </p>
               </div>
             </div>
             <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50">
               <div className="flex flex-col items-start gap-4">
                 <Cloud className="w-8 h-8 text-white" />
-                <p className="text-gray-300">Leverage Kubernetes as the underlying orchestration layer for your application.</p>
+                <p className="text-gray-300">
+                  Leverage Kubernetes as the underlying orchestration layer for
+                  your application.
+                </p>
               </div>
             </div>
             <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50">
               <div className="flex flex-col items-start gap-4">
                 <Settings className="w-8 h-8 text-white" />
-                <p className="text-gray-300">Customize your application for different customer needs with dynamic configuration options.</p>
+                <p className="text-gray-300">
+                  Customize your application for different customer needs with
+                  dynamic configuration options.
+                </p>
               </div>
             </div>
             <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50">
               <div className="flex flex-col items-start gap-4">
                 <Layout className="w-8 h-8 text-white" />
-                <p className="text-gray-300">Provide a consistent installation experience for your customers with an intuitive web-based console.</p>
+                <p className="text-gray-300">
+                  Provide a consistent installation experience for your
+                  customers with an intuitive web-based console.
+                </p>
               </div>
             </div>
             <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50">
               <div className="flex flex-col items-start gap-4">
                 <RefreshCw className="w-8 h-8 text-white" />
-                <p className="text-gray-300">Automate updates and patches with built-in version management and rollback capabilities.</p>
+                <p className="text-gray-300">
+                  Automate updates and patches with built-in version management
+                  and rollback capabilities.
+                </p>
               </div>
             </div>
             <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50">
               <div className="flex flex-col items-start gap-4">
                 <Wrench className="w-8 h-8 text-white" />
-                <p className="text-gray-300">Use familiar tools like Helm, Kustomize, Terraform, Ansible, etc. for packaging and configuring your application.</p>
+                <p className="text-gray-300">
+                  Use familiar tools like Helm, Kustomize, Terraform, Ansible,
+                  etc. for packaging and configuring your application.
+                </p>
               </div>
             </div>
             <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50">
               <div className="flex flex-col items-start gap-4">
                 <LineChart className="w-8 h-8 text-white" />
-                <p className="text-gray-300">Monitor the health and performance of your application with integrated metrics and alerts.</p>
+                <p className="text-gray-300">
+                  Monitor the health and performance of your application with
+                  integrated metrics and alerts.
+                </p>
               </div>
             </div>
             <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50">
               <div className="flex flex-col items-start gap-4">
                 <FileCode className="w-8 h-8 text-white" />
-                <p className="text-gray-300">Automatically interrogate your app structure and build a delivery plan for your applications from existing Docker Compose or other markup documents.</p>
+                <p className="text-gray-300">
+                  Automatically interrogate your app structure and build a
+                  delivery plan for your applications from existing Docker
+                  Compose or other markup documents.
+                </p>
               </div>
             </div>
             <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50">
               <div className="flex flex-col items-start gap-4">
                 <GitBranch className="w-8 h-8 text-white" />
-                <p className="text-gray-300">Install multiple versions of your software into a customer environment for evaluation and testing without interrupting existing systems.</p>
+                <p className="text-gray-300">
+                  Install multiple versions of your software into a customer
+                  environment for evaluation and testing without interrupting
+                  existing systems.
+                </p>
               </div>
             </div>
           </div>
@@ -214,7 +273,10 @@ export default function ReleaseDeliveryPage() {
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-white mb-12">Learn more</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <a href="/blog/release-delivery-helps-saas-companies-meet-the-needs-of-their-enterprise-customers" className="block group no-underline">
+            <a
+              href="/blog/release-delivery-helps-saas-companies-meet-the-needs-of-their-enterprise-customers"
+              className="block group no-underline"
+            >
               <div className="bg-gray-800/50 rounded-lg overflow-hidden border border-gray-700/50 h-full transition-colors group-hover:border-[#00bb93]/50 flex flex-col">
                 <div className="aspect-[16/9] relative">
                   <Image
@@ -230,7 +292,8 @@ export default function ReleaseDeliveryPage() {
                     Blog
                   </h3>
                   <p className="text-gray-300 line-clamp-3">
-                    Release Delivery helps SaaS companies meet the needs of their enterprise customers
+                    Release Delivery helps SaaS companies meet the needs of
+                    their enterprise customers
                   </p>
                 </div>
               </div>
@@ -240,4 +303,4 @@ export default function ReleaseDeliveryPage() {
       </div>
     </RootSEOPageLayout>
   );
-} 
+}
