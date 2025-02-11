@@ -21,9 +21,9 @@ const nextConfig = {
     formats: ["image/webp"],
     minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,
-    contentDispositionType: "attachment",
+    contentDispositionType: "inline",
     contentSecurityPolicy:
-      "default-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline'; font-src 'self' data:;"
+      "default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:;"
   },
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   async redirects() {
