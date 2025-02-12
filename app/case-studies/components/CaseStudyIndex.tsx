@@ -34,6 +34,7 @@ export default function CaseStudyIndex({ caseStudies }: CaseStudyIndexProps) {
                         alt={study.frontmatter.title}
                         fill
                         className="object-cover"
+                        unoptimized={study.frontmatter.thumbnail.endsWith('.svg')}
                       />
                     </div>
                   )}
@@ -46,6 +47,7 @@ export default function CaseStudyIndex({ caseStudies }: CaseStudyIndexProps) {
                           width={120}
                           height={32}
                           className="object-contain brightness-0 invert"
+                          unoptimized={study.frontmatter.logo.endsWith('.svg')}
                         />
                       </div>
                     )}
