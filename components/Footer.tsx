@@ -122,7 +122,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="https://prod.releasehub.com/use-cases"
+                  href="/use-cases"
                   className="hover:text-[#00bb93] transition-colors"
                 >
                   Use Cases
