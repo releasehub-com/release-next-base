@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import csv from "csv-parse/sync";
+import { parse } from "csv-parse/sync";
 
 const POSTS_DIRECTORY = path.join(process.cwd(), "app/blog/posts");
 const CSV_PATH = path.join(process.cwd(), "release-blog-posts.csv");
@@ -20,7 +20,7 @@ interface BlogPost {
 function updatePublishDates() {
   // Read and parse CSV file
   const csvContent = fs.readFileSync(CSV_PATH, "utf-8");
-  const records = csv.parse(csvContent, {
+  const records = parse(csvContent, {
     columns: true,
     skip_empty_lines: true,
   }) as BlogPost[];

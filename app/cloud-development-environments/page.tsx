@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
 import dynamic from "next/dynamic";
+import { setVersionInStorage } from "@/config/versions";
 import LandingPageWrapper from "@/components/LandingPageWrapper";
 
 const CloudDevLanding = dynamic(
@@ -9,6 +11,10 @@ const CloudDevLanding = dynamic(
 );
 
 export default function CloudDevelopmentEnvironmentsPage() {
+  useEffect(() => {
+    setVersionInStorage("cloud-dev");
+  }, []);
+
   return (
     <LandingPageWrapper>
       <CloudDevLanding />

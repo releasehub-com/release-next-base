@@ -1,17 +1,23 @@
 "use client";
 
+import { useEffect } from "react";
 import dynamic from "next/dynamic";
+import { setVersionInStorage } from "@/config/versions";
 import LandingPageWrapper from "@/components/LandingPageWrapper";
 
-const ReleaseVsReplicated = dynamic(
-  () => import("@/components/ReplicatedLandingPage"),
+const ReplicatedLandingPage = dynamic(
+  () => import("@/components/ReplicatedLandingPage").then((mod) => mod.default),
   { ssr: false },
 );
 
 export default function ReplicatedPage() {
+  useEffect(() => {
+    setVersionInStorage("replicated");
+  }, []);
+
   return (
     <LandingPageWrapper>
-      <ReleaseVsReplicated />
+      <ReplicatedLandingPage />
     </LandingPageWrapper>
   );
 }
