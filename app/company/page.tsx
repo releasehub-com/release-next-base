@@ -88,10 +88,11 @@ function TeamMember({
           <Image
             src={imageUrl}
             alt={name}
-            width={120}
-            height={120}
-            className="max-w-[120px] max-h-[120px] object-contain rounded-2xl"
-            sizes="120px"
+            width={128}
+            height={128}
+            className="w-full h-full object-cover rounded-2xl"
+            sizes="(max-width: 768px) 128px, 128px"
+            priority
           />
         </div>
 
