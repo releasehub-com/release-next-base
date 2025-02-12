@@ -12,12 +12,12 @@ export default function AIPipelineHero() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           <div className="space-y-6">
             <div>
-              <h2 className="text-[#00bb93] text-xl sm:text-2xl font-medium mb-4">
+              <h2 className="text-[#00bb93] text-lg sm:text-xl font-medium mb-4">
                 Don't Let Traditional Environments Kill Your AI Gains
               </h2>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight">
                 AI Makes Your Devs 10x Faster.
-                <br />
+                <div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent my-3"></div>
                 Release Makes Your Infrastructure Keep Up.
               </h1>
             </div>
@@ -47,14 +47,14 @@ export default function AIPipelineHero() {
             </div>
           </div>
           <div className="relative">
-            <div className="relative rounded-2xl overflow-hidden bg-white/[0.15] backdrop-blur-[2px] border border-white/[0.2] p-4 sm:p-6">
-              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.2] to-transparent pointer-events-none"></div>
-              <div className="relative rounded-xl overflow-hidden">
+            <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-[#00bb93]/20 p-6 sm:p-8 border border-gray-800/50">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#00bb93]/10 via-transparent to-transparent"></div>
+              <div className="relative rounded-xl overflow-hidden max-w-[500px] mx-auto">
                 <Image
                   src="/images/ai-pipeline/hero.svg"
                   alt="AI-Ready Infrastructure Pipeline Interface"
-                  width={2000}
-                  height={1200}
+                  width={1000}
+                  height={800}
                   className="w-full h-auto"
                   priority
                   unoptimized

@@ -60,14 +60,18 @@ describe("Version Configuration", () => {
       expect(getVersionPath("kubernetes")).toBe("/kubernetes-management");
       expect(getVersionPath("release-ai")).toBe("/");
       expect(getVersionPath("cloud")).toBe("/platform-as-a-service");
-      expect(getVersionPath("ai-pipeline")).toBe("/ai-ready-infrastructure-pipeline");
+      expect(getVersionPath("ai-pipeline")).toBe(
+        "/ai-ready-infrastructure-pipeline",
+      );
     });
 
     it("should resolve paths to correct versions", () => {
       expect(getVersionFromPath("/kubernetes-management")).toBe("kubernetes");
       expect(getVersionFromPath("/")).toBe("ephemeral");
       expect(getVersionFromPath("/platform-as-a-service")).toBe("cloud");
-      expect(getVersionFromPath("/ai-ready-infrastructure-pipeline")).toBe("ai-pipeline");
+      expect(getVersionFromPath("/ai-ready-infrastructure-pipeline")).toBe(
+        "ai-pipeline",
+      );
     });
 
     it("should default to ephemeral for unknown paths", () => {
@@ -78,18 +82,26 @@ describe("Version Configuration", () => {
   describe("Content Management", () => {
     it("should provide correct content for each version", () => {
       const aiContent = getVersionContent("release-ai");
-      expect(aiContent.title).toBe("Deploy High-Performance AI Models with Ease");
+      expect(aiContent.title).toBe(
+        "Deploy High-Performance AI Models with Ease",
+      );
       expect(aiContent.benefits).toHaveLength(3);
       expect(aiContent.steps).toHaveLength(3);
 
       const pipelineContent = getVersionContent("ai-pipeline");
-      expect(pipelineContent.title).toBe("Infrastructure That Keeps Pace with AI Development");
+      expect(pipelineContent.title).toBe(
+        "Infrastructure That Keeps Pace with AI Development",
+      );
       expect(pipelineContent.benefits).toHaveLength(3);
       expect(pipelineContent.steps).toHaveLength(3);
-      
+
       // Verify specific AI pipeline benefits
-      expect(pipelineContent.benefits[0].title).toBe("Eliminate Deployment Bottlenecks");
-      expect(pipelineContent.benefits[1].title).toBe("Zero Wait Time Environments");
+      expect(pipelineContent.benefits[0].title).toBe(
+        "Eliminate Deployment Bottlenecks",
+      );
+      expect(pipelineContent.benefits[1].title).toBe(
+        "Zero Wait Time Environments",
+      );
       expect(pipelineContent.benefits[2].title).toBe("Scale with AI Velocity");
     });
 
