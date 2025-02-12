@@ -46,6 +46,7 @@ export default function CaseStudyPage({
                     width={160}
                     height={40}
                     className="mx-auto brightness-0 invert"
+                    unoptimized={frontmatter.logo.endsWith('.svg')}
                   />
                 </div>
               )}
