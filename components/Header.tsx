@@ -80,10 +80,10 @@ export default function Header() {
               Pricing
             </Link>
             <Link
-              href="/#how-it-works"
+              href="/use-cases"
               className="text-sm font-medium hover:text-gray-300 py-2 md:py-0"
             >
-              How it Works
+              Use Cases
             </Link>
             <Link
               href="/case-studies"

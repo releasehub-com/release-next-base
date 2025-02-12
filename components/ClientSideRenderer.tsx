@@ -41,6 +41,12 @@ const CloudDevLanding = dynamic(() => import("@/components/CloudDevLanding"), {
 const CloudLanding = dynamic(() => import("@/components/CloudLanding"), {
   ssr: false,
 });
+const AIPipelineLanding = dynamic(
+  () => import("@/components/AIPipelineLanding"),
+  {
+    ssr: false,
+  },
+);
 
 export default function ClientSideRenderer() {
   console.log("ClientSideRenderer - Component mounting");
@@ -88,6 +94,7 @@ export default function ClientSideRenderer() {
         import("@/components/EphemeralLanding"),
         import("@/components/CloudDevLanding"),
         import("@/components/CloudLanding"),
+        import("@/components/AIPipelineLanding"),
       ]);
 
       console.log("ClientSideRenderer - Components loaded");
@@ -118,6 +125,7 @@ export default function ClientSideRenderer() {
       EphemeralLanding={EphemeralLanding}
       CloudDevLanding={CloudDevLanding}
       CloudLanding={CloudLanding}
+      AIPipelineLanding={AIPipelineLanding}
     />
   );
 }

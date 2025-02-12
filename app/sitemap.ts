@@ -47,6 +47,8 @@ const APP_ROUTES = [
   "product/docker-extension",
   "product/instant-datasets",
   "product/release-delivery",
+  "use-cases",
+  "ai-ready-infrastructure-pipeline",
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

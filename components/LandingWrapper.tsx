@@ -13,7 +13,7 @@ import {
   DEFAULT_VERSION,
 } from "@/config/versions";
 
-type LandingWrapperProps = {
+interface LandingWrapperProps {
   initialVersion: VersionId;
   LandingPage: ComponentType;
   GitLabLandingPage: ComponentType;
@@ -22,7 +22,8 @@ type LandingWrapperProps = {
   EphemeralLanding: ComponentType;
   CloudDevLanding: ComponentType;
   CloudLanding: ComponentType;
-};
+  AIPipelineLanding: ComponentType;
+}
 
 export default function LandingWrapper({
   initialVersion,
@@ -33,6 +34,7 @@ export default function LandingWrapper({
   EphemeralLanding,
   CloudDevLanding,
   CloudLanding,
+  AIPipelineLanding,
 }: LandingWrapperProps) {
   console.log("LandingWrapper - Mounting with version:", initialVersion);
 
@@ -54,8 +56,9 @@ export default function LandingWrapper({
         case "cloud":
           return CloudLanding;
         case "ephemeral":
+        case "ai-pipeline":
         default:
-          return EphemeralLanding;
+          return LandingPage;
       }
     });
 
@@ -80,8 +83,9 @@ export default function LandingWrapper({
         newComponent = CloudLanding;
         break;
       case "ephemeral":
+      case "ai-pipeline":
       default:
-        newComponent = EphemeralLanding;
+        newComponent = LandingPage;
         break;
     }
 
@@ -100,6 +104,7 @@ export default function LandingWrapper({
     EphemeralLanding,
     CloudDevLanding,
     CloudLanding,
+    LandingPage,
     CurrentComponent,
   ]);
 
