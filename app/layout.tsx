@@ -55,11 +55,11 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
       "max-image-preview": "large",
       "max-snippet": -1,
-      notranslate: true,
+      "notranslate": true,
     },
   },
   other: {
-    "google-site-verification": "your-google-site-verification-code",
+    "google-site-verification": "your-google-verification-code",
     "yandex-verification": "your-yandex-verification-code",
   },
   alternates: {
@@ -73,6 +73,20 @@ export const metadata: Metadata = {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
+};
+
+export const headers = () => {
+  return [
+    {
+      source: '/:path*',
+      headers: [
+        {
+          key: 'Strict-Transport-Security',
+          value: 'max-age=31536000; includeSubDomains'
+        },
+      ],
+    },
+  ];
 };
 
 export default function RootLayout({

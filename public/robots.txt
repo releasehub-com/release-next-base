@@ -1,11 +1,19 @@
 User-agent: *
 Allow: /
 
+# Preferred host
+Host: https://release.com
+
 # Block all URL parameters
 Disallow: /*?*
 
 # Block duplicate paths with trailing slashes
 Disallow: /*//
 
+# Block non-canonical protocols and subdomains
+Disallow: http://*
+Disallow: //*www.release.com
+
 # Sitemap
-Sitemap: https://release.com/sitemap.xml 
+Sitemap: https://release.com/sitemap.xml
+Sitemap: https://docs.release.com/sitemap.xml 
