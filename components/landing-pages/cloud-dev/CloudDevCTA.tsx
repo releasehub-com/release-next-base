@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import React from 'react'
-import { Button } from "@/components/ui/button"
-import Link from 'next/link'
+import React from "react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function CloudDevCTA() {
   return (
@@ -13,15 +13,19 @@ export default function CloudDevCTA() {
             Ready to Elevate Your Development Workflow?
           </h2>
           <p className="mx-auto max-w-[700px] text-gray-100 md:text-xl">
-            Experience the power of cloud development environments with Release. Start coding in the cloud today.
+            Experience the power of cloud development environments with Release.
+            Start coding in the cloud today.
           </p>
           <Link href="https://release.com/signup">
-            <Button size="lg" className="bg-white text-[#00bb93] hover:bg-gray-100">
+            <Button
+              size="lg"
+              className="bg-white text-[#00bb93] hover:bg-gray-100"
+            >
               Deploy a Cloud Dev Environment
             </Button>
           </Link>
         </div>
       </div>
     </section>
-  )
+  );
 }

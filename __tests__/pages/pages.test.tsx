@@ -10,8 +10,8 @@ jest.mock("next/navigation", () => ({
     push: jest.fn(),
     replace: jest.fn(),
     back: jest.fn(),
-    forward: jest.fn()
-  }))
+    forward: jest.fn(),
+  })),
 }));
 
 // Mock next/image
@@ -68,13 +68,13 @@ jest.mock("@/app/partners/utils", () => ({
 }));
 
 // Mock fs/promises for privacy policy
-jest.mock('fs/promises', () => ({
-  readFile: jest.fn(() => Promise.resolve('# Privacy Policy Content'))
+jest.mock("fs/promises", () => ({
+  readFile: jest.fn(() => Promise.resolve("# Privacy Policy Content")),
 }));
 
 // Mock path for privacy policy
-jest.mock('path', () => ({
-  join: jest.fn((...args) => args.join('/'))
+jest.mock("path", () => ({
+  join: jest.fn((...args) => args.join("/")),
 }));
 
 // Mock version utilities
@@ -87,7 +87,7 @@ jest.mock("@/config/versions", () => ({
   getVersionContent: jest.fn((version) => ({
     title: "Test Title",
     benefits: [],
-    steps: []
+    steps: [],
   })),
   getCanonicalVersion: jest.fn((v) => v),
   DEFAULT_VERSION: "default",
@@ -98,15 +98,15 @@ jest.mock("@/config/versions", () => ({
       content: {
         title: "Test",
         benefits: [],
-        steps: []
+        steps: [],
       },
       signupContent: {
         title: "Test",
         benefits: [],
-        steps: []
-      }
-    }
-  }
+        steps: [],
+      },
+    },
+  },
 }));
 
 describe("Page Rendering Tests", () => {
@@ -120,9 +120,11 @@ describe("Page Rendering Tests", () => {
     { name: "GitLab Integration", component: GitLabIntegrationPage },
     { name: "Book a Demo", component: BookADemoPage },
     { name: "Partners", component: PartnersPage },
-    { 
-      name: "Legal", 
-      component: (props: any) => <LegalPage {...props} params={{ slug: 'privacy-policy' }} /> 
+    {
+      name: "Legal",
+      component: (props: any) => (
+        <LegalPage {...props} params={{ slug: "privacy-policy" }} />
+      ),
     },
     { name: "Build vs Buy", component: BuildVsBuyPage },
     { name: "Release Delivery", component: ReleaseDeliveryPage },
@@ -132,7 +134,7 @@ describe("Page Rendering Tests", () => {
     { name: "Kubernetes Management", component: KubernetesManagementPage },
     { name: "Ephemeral Environments", component: EphemeralEnvironmentsPage },
     { name: "Case Studies", component: CaseStudiesPage },
-    
+
     // Landing pages
     { name: "Default Landing", component: DefaultLandingPage },
     { name: "GitLab Landing", component: GitLabLandingPage },
@@ -149,23 +151,29 @@ describe("Page Rendering Tests", () => {
     jest.clearAllMocks();
   });
 
-  test.each(pages)("$name page renders without crashing", async ({ component: Component }) => {
-    const { container } = render(<Component />);
-    await new Promise(resolve => setTimeout(resolve, 0)); // Allow async rendering to complete
-    expect(container).toBeInTheDocument();
-  });
+  test.each(pages)(
+    "$name page renders without crashing",
+    async ({ component: Component }) => {
+      const { container } = render(<Component />);
+      await new Promise((resolve) => setTimeout(resolve, 0)); // Allow async rendering to complete
+      expect(container).toBeInTheDocument();
+    },
+  );
 
-  test.each(pages)("$name page has required metadata", async ({ component: Component }) => {
-    // Check if the component has metadata
-    const metadata = (Component as any).metadata as Metadata;
-    if (metadata) {
-      expect(metadata.title).toBeDefined();
-      expect(metadata.description).toBeDefined();
-      if (metadata.openGraph) {
-        expect(metadata.openGraph.title).toBeDefined();
-        expect(metadata.openGraph.description).toBeDefined();
-        expect(metadata.openGraph.images).toBeDefined();
+  test.each(pages)(
+    "$name page has required metadata",
+    async ({ component: Component }) => {
+      // Check if the component has metadata
+      const metadata = (Component as any).metadata as Metadata;
+      if (metadata) {
+        expect(metadata.title).toBeDefined();
+        expect(metadata.description).toBeDefined();
+        if (metadata.openGraph) {
+          expect(metadata.openGraph.title).toBeDefined();
+          expect(metadata.openGraph.description).toBeDefined();
+          expect(metadata.openGraph.images).toBeDefined();
+        }
       }
-    }
-  });
-}); 
+    },
+  );
+});

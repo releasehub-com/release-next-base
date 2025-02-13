@@ -2,10 +2,12 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Release Delivery - Enterprise Software Distribution | Release",
-  description: "Ship your cloud-native applications to enterprise customers with ease. Release Delivery provides a container-based platform for deploying your software on-premises, in private clouds, or hybrid environments.",
+  description:
+    "Ship your cloud-native applications to enterprise customers with ease. Release Delivery provides a container-based platform for deploying your software on-premises, in private clouds, or hybrid environments.",
   openGraph: {
     title: "Release Delivery - Enterprise Software Distribution | Release",
-    description: "Ship your cloud-native applications to enterprise customers with ease. Release Delivery provides a container-based platform for deploying your software on-premises, in private clouds, or hybrid environments.",
+    description:
+      "Ship your cloud-native applications to enterprise customers with ease. Release Delivery provides a container-based platform for deploying your software on-premises, in private clouds, or hybrid environments.",
     type: "article",
     url: "https://release.com/product/release-delivery",
     images: [
@@ -21,7 +23,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Release Delivery - Enterprise Software Distribution | Release",
-    description: "Ship your cloud-native applications to enterprise customers with ease. Release Delivery provides a container-based platform for deploying your software on-premises, in private clouds, or hybrid environments.",
+    description:
+      "Ship your cloud-native applications to enterprise customers with ease. Release Delivery provides a container-based platform for deploying your software on-premises, in private clouds, or hybrid environments.",
     images: ["/images/product/release-delivery/header.svg"],
     creator: "@release_hub",
   },

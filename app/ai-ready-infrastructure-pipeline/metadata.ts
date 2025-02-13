@@ -2,10 +2,12 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Release - AI-Ready Infrastructure Pipeline",
-  description: "Build and deploy AI/ML applications with confidence. Get the infrastructure you need for your AI workloads without the complexity.",
+  description:
+    "Build and deploy AI/ML applications with confidence. Get the infrastructure you need for your AI workloads without the complexity.",
   openGraph: {
     title: "Release - AI-Ready Infrastructure Pipeline",
-    description: "Build and deploy AI/ML applications with confidence. Get the infrastructure you need for your AI workloads without the complexity.",
+    description:
+      "Build and deploy AI/ML applications with confidence. Get the infrastructure you need for your AI workloads without the complexity.",
     type: "article",
     url: "https://release.com/ai-ready-infrastructure-pipeline",
     images: [
@@ -21,7 +23,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Release - AI-Ready Infrastructure Pipeline",
-    description: "Build and deploy AI/ML applications with confidence. Get the infrastructure you need for your AI workloads without the complexity.",
+    description:
+      "Build and deploy AI/ML applications with confidence. Get the infrastructure you need for your AI workloads without the complexity.",
     images: ["/images/ai-pipeline/hero.svg"],
     creator: "@release_hub",
   },

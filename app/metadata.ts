@@ -2,10 +2,12 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Release - The Ephemeral Environments Platform",
-  description: "Create and manage on-demand environments in minutes. Empower developers, reduce costs, and accelerate your development workflow with Release.",
+  description:
+    "Create and manage on-demand environments in minutes. Empower developers, reduce costs, and accelerate your development workflow with Release.",
   openGraph: {
     title: "Release - The Ephemeral Environments Platform",
-    description: "Create and manage on-demand environments in minutes. Empower developers, reduce costs, and accelerate your development workflow with Release.",
+    description:
+      "Create and manage on-demand environments in minutes. Empower developers, reduce costs, and accelerate your development workflow with Release.",
     type: "website",
     url: "https://release.com",
     images: [
@@ -21,11 +23,12 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Release - The Ephemeral Environments Platform",
-    description: "Create and manage on-demand environments in minutes. Empower developers, reduce costs, and accelerate your development workflow with Release.",
+    description:
+      "Create and manage on-demand environments in minutes. Empower developers, reduce costs, and accelerate your development workflow with Release.",
     images: ["https://release.com/og/og-image.png"],
     creator: "@release_hub",
   },
   alternates: {
     canonical: "https://release.com",
   },
-}; 
+};

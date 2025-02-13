@@ -16,9 +16,12 @@ import {
 } from "@/config/versions";
 import LandingWrapper from "@/components/shared/layout/LandingWrapper";
 
-const LandingPage = dynamic(() => import("@/components/landing-pages/default/LandingPage"), {
-  ssr: false,
-});
+const LandingPage = dynamic(
+  () => import("@/components/landing-pages/default/LandingPage"),
+  {
+    ssr: false,
+  },
+);
 const GitLabLandingPage = dynamic(
   () => import("@/components/landing-pages/gitlab/GitLabLandingPage"),
   { ssr: false },
@@ -35,12 +38,18 @@ const EphemeralLanding = dynamic(
   () => import("@/components/landing-pages/ephemeral/EphemeralLanding"),
   { ssr: false },
 );
-const CloudDevLanding = dynamic(() => import("@/components/landing-pages/cloud-dev/CloudDevLanding"), {
-  ssr: false,
-});
-const CloudLanding = dynamic(() => import("@/components/landing-pages/cloud/CloudLanding"), {
-  ssr: false,
-});
+const CloudDevLanding = dynamic(
+  () => import("@/components/landing-pages/cloud-dev/CloudDevLanding"),
+  {
+    ssr: false,
+  },
+);
+const CloudLanding = dynamic(
+  () => import("@/components/landing-pages/cloud/CloudLanding"),
+  {
+    ssr: false,
+  },
+);
 const AIPipelineLanding = dynamic(
   () => import("@/components/landing-pages/ai-pipeline/AIPipelineLanding"),
   {

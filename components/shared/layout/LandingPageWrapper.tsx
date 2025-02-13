@@ -26,10 +26,7 @@ export default function LandingPageWrapper({
   return (
     <>
       <Head>
-        <link 
-          rel="canonical" 
-          href={`https://release.com${pathname}`}
-        />
+        <link rel="canonical" href={`https://release.com${pathname}`} />
       </Head>
       {children}
     </>

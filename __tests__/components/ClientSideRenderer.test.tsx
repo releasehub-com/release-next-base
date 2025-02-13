@@ -27,7 +27,10 @@ jest.doMock("@/config/versions", () => ({
 }));
 
 // Mock both static and dynamic imports to use the same mock components
-jest.doMock("@/components/landing-pages/default/LandingPage", () => mockComponents.EphemeralLanding);
+jest.doMock(
+  "@/components/landing-pages/default/LandingPage",
+  () => mockComponents.EphemeralLanding,
+);
 jest.doMock(
   "@/components/landing-pages/gitlab/GitLabLandingPage",
   () => mockComponents.GitLabLandingPage,
@@ -44,7 +47,10 @@ jest.doMock(
   "@/components/landing-pages/cloud-dev/CloudDevLanding",
   () => mockComponents.CloudDevLanding,
 );
-jest.doMock("@/components/landing-pages/cloud/CloudLanding", () => mockComponents.CloudLanding);
+jest.doMock(
+  "@/components/landing-pages/cloud/CloudLanding",
+  () => mockComponents.CloudLanding,
+);
 
 jest.doMock("next/dynamic", () => mockDynamicImport);
 

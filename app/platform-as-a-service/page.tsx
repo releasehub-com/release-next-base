@@ -6,7 +6,10 @@ import { setVersionInStorage } from "@/config/versions";
 import LandingPageWrapper from "@/components/shared/layout/LandingPageWrapper";
 
 const CloudLanding = dynamic(
-  () => import("@/components/landing-pages/cloud/CloudLanding").then((mod) => mod.default),
+  () =>
+    import("@/components/landing-pages/cloud/CloudLanding").then(
+      (mod) => mod.default,
+    ),
   { ssr: false },
 );
 

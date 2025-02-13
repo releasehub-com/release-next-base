@@ -2,10 +2,12 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Release vs GitLab | Release",
-  description: "Compare Release and GitLab for environment management and deployment automation. See why teams choose Release for a more streamlined development workflow.",
+  description:
+    "Compare Release and GitLab for environment management and deployment automation. See why teams choose Release for a more streamlined development workflow.",
   openGraph: {
     title: "Release vs GitLab | Release",
-    description: "Compare Release and GitLab for environment management and deployment automation. See why teams choose Release for a more streamlined development workflow.",
+    description:
+      "Compare Release and GitLab for environment management and deployment automation. See why teams choose Release for a more streamlined development workflow.",
     type: "article",
     url: "https://release.com/gitlab-competitor",
     images: [
@@ -21,11 +23,12 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Release vs GitLab | Release",
-    description: "Compare Release and GitLab for environment management and deployment automation. See why teams choose Release for a more streamlined development workflow.",
+    description:
+      "Compare Release and GitLab for environment management and deployment automation. See why teams choose Release for a more streamlined development workflow.",
     images: ["https://release.com/og/og-image.png"],
     creator: "@release_hub",
   },
   alternates: {
     canonical: "https://release.com/gitlab-competitor",
   },
-}; 
+};

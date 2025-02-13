@@ -2,10 +2,12 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Partner Program | Release",
-  description: "Join the Release Partner Program to help your clients accelerate their development workflows with ephemeral environments and modern cloud infrastructure.",
+  description:
+    "Join the Release Partner Program to help your clients accelerate their development workflows with ephemeral environments and modern cloud infrastructure.",
   openGraph: {
     title: "Partner Program | Release",
-    description: "Join the Release Partner Program to help your clients accelerate their development workflows with ephemeral environments and modern cloud infrastructure.",
+    description:
+      "Join the Release Partner Program to help your clients accelerate their development workflows with ephemeral environments and modern cloud infrastructure.",
     type: "article",
     url: "https://release.com/partners",
     images: [
@@ -21,11 +23,12 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Partner Program | Release",
-    description: "Join the Release Partner Program to help your clients accelerate their development workflows with ephemeral environments and modern cloud infrastructure.",
+    description:
+      "Join the Release Partner Program to help your clients accelerate their development workflows with ephemeral environments and modern cloud infrastructure.",
     images: ["https://release.com/og/og-image.png"],
     creator: "@release_hub",
   },
   alternates: {
     canonical: "https://release.com/partners",
   },
-}; 
+};

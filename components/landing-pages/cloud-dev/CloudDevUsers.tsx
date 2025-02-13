@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import React from 'react'
-import Image from 'next/image'
+import React from "react";
+import Image from "next/image";
 
 const logos = [
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/65e7478b28c49416c60a3e84_Brand-DebtBook-320x80.svg",
@@ -9,7 +9,7 @@ const logos = [
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/653c1c0620464b59da2d3fc6_Brand-Navan.svg",
   "https://cdn.prod.website-files.com/603dd147c5b0a480611bd348/653c1c069d028b16c1837425_Brand-Chipper.svg",
   // ... (add more logos as needed)
-]
+];
 
 export default function CloudDevUsersComponent() {
   return (
@@ -25,7 +25,7 @@ export default function CloudDevUsersComponent() {
                 src={logo || "/placeholder.svg"}
                 alt={`Company logo ${index + 1}`}
                 fill
-                style={{ objectFit: 'contain' }}
+                style={{ objectFit: "contain" }}
                 className="filter brightness-0 invert"
               />
             </div>
@@ -33,5 +33,5 @@ export default function CloudDevUsersComponent() {
         </div>
       </div>
     </section>
-  )
+  );
 }

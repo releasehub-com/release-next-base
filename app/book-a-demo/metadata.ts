@@ -2,10 +2,12 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Book a Demo | Release",
-  description: "Schedule a personalized demo to see how Release can help your team ship faster and more reliably. Our experts will show you how to get the most out of our platform.",
+  description:
+    "Schedule a personalized demo to see how Release can help your team ship faster and more reliably. Our experts will show you how to get the most out of our platform.",
   openGraph: {
     title: "Book a Demo | Release",
-    description: "Schedule a personalized demo to see how Release can help your team ship faster and more reliably. Our experts will show you how to get the most out of our platform.",
+    description:
+      "Schedule a personalized demo to see how Release can help your team ship faster and more reliably. Our experts will show you how to get the most out of our platform.",
     type: "article",
     url: "https://release.com/book-a-demo",
     images: [
@@ -21,7 +23,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Book a Demo | Release",
-    description: "Schedule a personalized demo to see how Release can help your team ship faster and more reliably. Our experts will show you how to get the most out of our platform.",
+    description:
+      "Schedule a personalized demo to see how Release can help your team ship faster and more reliably. Our experts will show you how to get the most out of our platform.",
     images: ["https://release.com/og/og-image.png"],
     creator: "@release_hub",
   },

@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import React from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import { Button } from "@/components/ui/button"
-import { ArrowRight } from 'lucide-react'
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 
 export default function CloudDevHeroComponent() {
   return (
@@ -17,18 +17,28 @@ export default function CloudDevHeroComponent() {
                 Cloud Development Environments
               </h1>
               <p className="max-w-[600px] text-gray-300 md:text-xl">
-                Harness the full power of cloud computing for your development needs. Build, test, and collaborate seamlessly with Release cloud development environments. Develop like it's running locally but get the full power of the cloud.
+                Harness the full power of cloud computing for your development
+                needs. Build, test, and collaborate seamlessly with Release
+                cloud development environments. Develop like it's running
+                locally but get the full power of the cloud.
               </p>
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
               <Link href="https://release.com/signup">
-                <Button size="lg" className="bg-[#00bb93] text-white hover:bg-[#00bb93]/90">
+                <Button
+                  size="lg"
+                  className="bg-[#00bb93] text-white hover:bg-[#00bb93]/90"
+                >
                   Deploy a Cloud Dev Environment
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
               <Link href="https://calendly.com/release-tommy/release-discussion">
-                <Button size="lg" variant="outline" className="border-gray-700 text-white hover:bg-gray-800">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-gray-700 text-white hover:bg-gray-800"
+                >
                   Schedule a Demo
                 </Button>
               </Link>
@@ -47,5 +57,5 @@ export default function CloudDevHeroComponent() {
         </div>
       </div>
     </section>
-  )
+  );
 }

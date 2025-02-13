@@ -2,10 +2,12 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Customer Case Studies | Release",
-  description: "Discover how leading companies use Release to streamline their development workflows, improve collaboration, and ship faster with confidence.",
+  description:
+    "Discover how leading companies use Release to streamline their development workflows, improve collaboration, and ship faster with confidence.",
   openGraph: {
     title: "Customer Case Studies | Release",
-    description: "Discover how leading companies use Release to streamline their development workflows, improve collaboration, and ship faster with confidence.",
+    description:
+      "Discover how leading companies use Release to streamline their development workflows, improve collaboration, and ship faster with confidence.",
     type: "article",
     url: "https://release.com/case-studies",
     images: [
@@ -21,11 +23,12 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Customer Case Studies | Release",
-    description: "Discover how leading companies use Release to streamline their development workflows, improve collaboration, and ship faster with confidence.",
+    description:
+      "Discover how leading companies use Release to streamline their development workflows, improve collaboration, and ship faster with confidence.",
     images: ["https://release.com/og/og-image.png"],
     creator: "@release_hub",
   },
   alternates: {
     canonical: "https://release.com/case-studies",
   },
-}; 
+};

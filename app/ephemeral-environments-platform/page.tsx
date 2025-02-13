@@ -5,7 +5,10 @@ import dynamic from "next/dynamic";
 import { setVersionInStorage } from "@/config/versions";
 
 const EphemeralLanding = dynamic(
-  () => import("@/components/landing-pages/ephemeral/EphemeralLanding").then((mod) => mod.default),
+  () =>
+    import("@/components/landing-pages/ephemeral/EphemeralLanding").then(
+      (mod) => mod.default,
+    ),
   { ssr: false },
 );
 

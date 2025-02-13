@@ -2,10 +2,12 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Replicated Integration | Release",
-  description: "Integrate Release with Replicated to streamline your enterprise software delivery. Deploy and manage your applications with confidence.",
+  description:
+    "Integrate Release with Replicated to streamline your enterprise software delivery. Deploy and manage your applications with confidence.",
   openGraph: {
     title: "Replicated Integration | Release",
-    description: "Integrate Release with Replicated to streamline your enterprise software delivery. Deploy and manage your applications with confidence.",
+    description:
+      "Integrate Release with Replicated to streamline your enterprise software delivery. Deploy and manage your applications with confidence.",
     type: "article",
     url: "https://release.com/replicated",
     images: [
@@ -21,11 +23,12 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Replicated Integration | Release",
-    description: "Integrate Release with Replicated to streamline your enterprise software delivery. Deploy and manage your applications with confidence.",
+    description:
+      "Integrate Release with Replicated to streamline your enterprise software delivery. Deploy and manage your applications with confidence.",
     images: ["https://release.com/og/og-image.png"],
     creator: "@release_hub",
   },
   alternates: {
     canonical: "https://release.com/replicated",
   },
-}; 
+};
