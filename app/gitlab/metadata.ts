@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "GitLab Integration | Release",
@@ -9,13 +9,13 @@ export const metadata: Metadata = {
     description:
       "Seamlessly integrate Release with GitLab. Get production-like environments for every merge request and streamline your development workflow.",
     type: "article",
-    url: "https://release.com/gitlab",
+    url: "/gitlab",
     images: [
       {
-        url: "https://release.com/og/og-image.png",
+        url: "/og/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Release GitLab Integration",
+        alt: "Release - The Ephemeral Environments Platform",
       },
     ],
     siteName: "Release",
@@ -25,10 +25,10 @@ export const metadata: Metadata = {
     title: "GitLab Integration | Release",
     description:
       "Seamlessly integrate Release with GitLab. Get production-like environments for every merge request and streamline your development workflow.",
-    images: ["https://release.com/og/og-image.png"],
+    images: ["/og/og-image.png"],
     creator: "@release_hub",
   },
   alternates: {
-    canonical: "https://release.com/gitlab",
+    canonical: "/gitlab",
   },
 };

@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Sign Up | Release",
@@ -9,13 +9,13 @@ export const metadata: Metadata = {
     description:
       "Get started with Release. Create your account and start building better development environments today.",
     type: "website",
-    url: "https://release.com/signup",
+    url: "/signup",
     images: [
       {
-        url: "https://release.com/og/og-image.png",
+        url: "/og/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Sign up for Release",
+        alt: "Release - The Ephemeral Environments Platform",
       },
     ],
     siteName: "Release",
@@ -25,10 +25,10 @@ export const metadata: Metadata = {
     title: "Sign Up | Release",
     description:
       "Get started with Release. Create your account and start building better development environments today.",
-    images: ["https://release.com/og/og-image.png"],
+    images: ["/og/og-image.png"],
     creator: "@release_hub",
   },
   alternates: {
-    canonical: "https://release.com/signup",
+    canonical: "/signup",
   },
 };

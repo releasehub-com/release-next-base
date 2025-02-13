@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Release - The Ephemeral Environments Platform",
@@ -12,10 +12,10 @@ export const metadata: Metadata = {
     url: "https://release.com",
     images: [
       {
-        url: "https://release.com/og/og-image.png",
+        url: "/og/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Release Ephemeral Environments Platform",
+        alt: "Release - The Ephemeral Environments Platform",
       },
     ],
     siteName: "Release",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     title: "Release - The Ephemeral Environments Platform",
     description:
       "Create and manage on-demand environments in minutes. Empower developers, reduce costs, and accelerate your development workflow with Release.",
-    images: ["https://release.com/og/og-image.png"],
+    images: ["/og/og-image.png"],
     creator: "@release_hub",
   },
   alternates: {

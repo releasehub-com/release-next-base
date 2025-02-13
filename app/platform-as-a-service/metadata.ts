@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Release - Platform as a Service",
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description:
       "A modern Platform as a Service (PaaS) that gives you complete control over your infrastructure while maintaining the developer experience you love.",
     type: "article",
-    url: "https://release.com/platform-as-a-service",
+    url: "/platform-as-a-service",
     images: [
       {
         url: "/blog-images/hero.svg",
@@ -29,6 +29,6 @@ export const metadata: Metadata = {
     creator: "@release_hub",
   },
   alternates: {
-    canonical: "https://release.com/platform-as-a-service",
+    canonical: "/platform-as-a-service",
   },
 };

@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Replicated Integration | Release",
@@ -9,13 +9,13 @@ export const metadata: Metadata = {
     description:
       "Integrate Release with Replicated to streamline your enterprise software delivery. Deploy and manage your applications with confidence.",
     type: "article",
-    url: "https://release.com/replicated",
+    url: "/replicated",
     images: [
       {
-        url: "https://release.com/og/og-image.png",
+        url: "/og/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Release Replicated Integration",
+        alt: "Release - The Ephemeral Environments Platform",
       },
     ],
     siteName: "Release",
@@ -25,10 +25,10 @@ export const metadata: Metadata = {
     title: "Replicated Integration | Release",
     description:
       "Integrate Release with Replicated to streamline your enterprise software delivery. Deploy and manage your applications with confidence.",
-    images: ["https://release.com/og/og-image.png"],
+    images: ["/og/og-image.png"],
     creator: "@release_hub",
   },
   alternates: {
-    canonical: "https://release.com/replicated",
+    canonical: "/replicated",
   },
 };

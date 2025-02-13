@@ -26,7 +26,7 @@ export function middleware(request: NextRequest) {
   // Add security headers to all responses
   response.headers.set(
     "Strict-Transport-Security",
-    "max-age=31536000; includeSubDomains"
+    "max-age=31536000; includeSubDomains",
   );
   response.headers.set("X-Content-Type-Options", "nosniff");
   // Allow framing only from same origin
@@ -83,7 +83,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };

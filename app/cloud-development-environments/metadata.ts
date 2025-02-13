@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Release - Cloud Development Environments",
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description:
       "Spin up cloud development environments in seconds. Give your developers the tools they need to be productive without managing infrastructure.",
     type: "article",
-    url: "https://release.com/cloud-development-environments",
+    url: "/cloud-development-environments",
     images: [
       {
         url: "/blog-images/hero.svg",
@@ -29,6 +29,6 @@ export const metadata: Metadata = {
     creator: "@release_hub",
   },
   alternates: {
-    canonical: "https://release.com/cloud-development-environments",
+    canonical: "/cloud-development-environments",
   },
 };

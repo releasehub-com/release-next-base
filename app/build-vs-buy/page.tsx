@@ -1,36 +1,5 @@
-import type { Metadata } from "next";
 import RootSEOPageLayout from "@/components/shared/layout/RootSEOPageLayout";
-
-export const metadata: Metadata = {
-  title: "Build vs Buy: Environment Management | Release",
-  description:
-    "Explore the tradeoffs between building your own environment management solution versus buying a solution like Release. Learn about the costs, benefits, and considerations for each approach.",
-  openGraph: {
-    title: "Build vs Buy: Environment Management | Release",
-    description:
-      "Explore the tradeoffs between building your own environment management solution versus buying a solution like Release. Learn about the costs, benefits, and considerations for each approach.",
-    type: "article",
-    url: "https://release.com/build-vs-buy",
-    images: [
-      {
-        url: "https://release.com/og/build-vs-buy.png",
-        width: 1200,
-        height: 630,
-        alt: "Build vs Buy Decision",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Build vs Buy: Environment Management | Release",
-    description:
-      "Explore the tradeoffs between building your own environment management solution versus buying a solution like Release. Learn about the costs, benefits, and considerations for each approach.",
-    images: ["https://release.com/og/build-vs-buy.png"],
-  },
-  alternates: {
-    canonical: "https://release.com/build-vs-buy",
-  },
-};
+import { metadata } from "./metadata";
 
 export default function BuildVsBuyPage() {
   return (

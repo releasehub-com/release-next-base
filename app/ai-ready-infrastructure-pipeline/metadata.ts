@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Release - AI-Ready Infrastructure Pipeline",
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description:
       "Build and deploy AI/ML applications with confidence. Get the infrastructure you need for your AI workloads without the complexity.",
     type: "article",
-    url: "https://release.com/ai-ready-infrastructure-pipeline",
+    url: "/ai-ready-infrastructure-pipeline",
     images: [
       {
         url: "/images/ai-pipeline/hero.svg",
@@ -29,6 +29,6 @@ export const metadata: Metadata = {
     creator: "@release_hub",
   },
   alternates: {
-    canonical: "https://release.com/ai-ready-infrastructure-pipeline",
+    canonical: "/ai-ready-infrastructure-pipeline",
   },
 };

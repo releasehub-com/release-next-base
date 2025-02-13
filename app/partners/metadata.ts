@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Partner Program | Release",
@@ -9,13 +9,13 @@ export const metadata: Metadata = {
     description:
       "Join the Release Partner Program to help your clients accelerate their development workflows with ephemeral environments and modern cloud infrastructure.",
     type: "article",
-    url: "https://release.com/partners",
+    url: "/partners",
     images: [
       {
-        url: "https://release.com/og/og-image.png",
+        url: "/og/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Release Partner Program",
+        alt: "Release - The Ephemeral Environments Platform",
       },
     ],
     siteName: "Release",
@@ -25,10 +25,10 @@ export const metadata: Metadata = {
     title: "Partner Program | Release",
     description:
       "Join the Release Partner Program to help your clients accelerate their development workflows with ephemeral environments and modern cloud infrastructure.",
-    images: ["https://release.com/og/og-image.png"],
+    images: ["/og/og-image.png"],
     creator: "@release_hub",
   },
   alternates: {
-    canonical: "https://release.com/partners",
+    canonical: "/partners",
   },
 };

@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Book a Demo | Release",
@@ -9,13 +9,13 @@ export const metadata: Metadata = {
     description:
       "Schedule a personalized demo to see how Release can help your team ship faster and more reliably. Our experts will show you how to get the most out of our platform.",
     type: "article",
-    url: "https://release.com/book-a-demo",
+    url: "/book-a-demo",
     images: [
       {
-        url: "https://release.com/og/og-image.png",
+        url: "/og/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Book a Demo with Release",
+        alt: "Release - The Ephemeral Environments Platform",
       },
     ],
     siteName: "Release",
@@ -25,10 +25,10 @@ export const metadata: Metadata = {
     title: "Book a Demo | Release",
     description:
       "Schedule a personalized demo to see how Release can help your team ship faster and more reliably. Our experts will show you how to get the most out of our platform.",
-    images: ["https://release.com/og/og-image.png"],
+    images: ["/og/og-image.png"],
     creator: "@release_hub",
   },
   alternates: {
-    canonical: "https://release.com/book-a-demo",
+    canonical: "/book-a-demo",
   },
 };

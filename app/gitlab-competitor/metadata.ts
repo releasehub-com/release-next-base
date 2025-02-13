@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Release vs GitLab | Release",
@@ -9,13 +9,13 @@ export const metadata: Metadata = {
     description:
       "Compare Release and GitLab for environment management and deployment automation. See why teams choose Release for a more streamlined development workflow.",
     type: "article",
-    url: "https://release.com/gitlab-competitor",
+    url: "/gitlab-competitor",
     images: [
       {
-        url: "https://release.com/og/og-image.png",
+        url: "/og/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Release vs GitLab Comparison",
+        alt: "Release - The Ephemeral Environments Platform",
       },
     ],
     siteName: "Release",
@@ -25,10 +25,10 @@ export const metadata: Metadata = {
     title: "Release vs GitLab | Release",
     description:
       "Compare Release and GitLab for environment management and deployment automation. See why teams choose Release for a more streamlined development workflow.",
-    images: ["https://release.com/og/og-image.png"],
+    images: ["/og/og-image.png"],
     creator: "@release_hub",
   },
   alternates: {
-    canonical: "https://release.com/gitlab-competitor",
+    canonical: "/gitlab-competitor",
   },
 };

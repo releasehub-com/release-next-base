@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Release - Pricing",
@@ -9,13 +9,13 @@ export const metadata: Metadata = {
     description:
       "Simple, transparent pricing for teams of all sizes. Start for free and scale as you grow.",
     type: "article",
-    url: "https://release.com/pricing",
+    url: "/pricing",
     images: [
       {
-        url: "https://release.com/og/og-image.png",
+        url: "/og/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Release Pricing",
+        alt: "Release - The Ephemeral Environments Platform",
       },
     ],
     siteName: "Release",
@@ -25,10 +25,10 @@ export const metadata: Metadata = {
     title: "Release - Pricing",
     description:
       "Simple, transparent pricing for teams of all sizes. Start for free and scale as you grow.",
-    images: ["https://release.com/og/og-image.png"],
+    images: ["/og/og-image.png"],
     creator: "@release_hub",
   },
   alternates: {
-    canonical: "https://release.com/pricing",
+    canonical: "/pricing",
   },
 };

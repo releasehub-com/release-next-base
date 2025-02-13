@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
 import RootSEOPageLayout from "@/components/shared/layout/RootSEOPageLayout";
 import UserLogos from "@/components/shared/UserLogos";
 import InvestorLogos from "@/components/shared/InvestorLogos";
 import { Settings, Users, Rocket } from "lucide-react";
 import Image from "next/image";
+import { metadata } from "./metadata";
 
 function ValuePropCard({
   icon,
@@ -33,42 +33,11 @@ function ValuePropCard({
   );
 }
 
-export const metadata: Metadata = {
-  title: "Why Release | Release",
-  description:
-    "With Release, you can build, test, and deploy applications at scale. Our Environments as a Service platform automates the process to allow your developer teams to focus on innovation and revenue.",
-  openGraph: {
-    title: "Why Release | Release",
-    description:
-      "With Release, you can build, test, and deploy applications at scale. Our Environments as a Service platform automates the process to allow your developer teams to focus on innovation and revenue.",
-    type: "article",
-    url: "https://release.com/whyrelease",
-    images: [
-      {
-        url: "https://release.com/og/whyrelease.png",
-        width: 1200,
-        height: 630,
-        alt: "Why Release",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Why Release | Release",
-    description:
-      "With Release, you can build, test, and deploy applications at scale. Our Environments as a Service platform automates the process to allow your developer teams to focus on innovation and revenue.",
-    images: ["https://release.com/og/whyrelease.png"],
-  },
-  alternates: {
-    canonical: "https://release.com/whyrelease",
-  },
-};
-
 export default function WhyReleasePage() {
   return (
     <RootSEOPageLayout
       title="Release your ideas to the world faster"
-      description="With Release, you can build, test, and deploy applications at scale. With our offering, Environments as a Service, we automate the process to allow your developer teams to focus on innovation and revenue rather than building and maintaining test environments. Made by developers, for developers, you can ship faster with confidence."
+      description="With Release, you can build, test, and deploy applications at scale. Our Environments as a Service platform automates the process to allow your developer teams to focus on innovation and revenue."
     >
       <div className="text-lg text-gray-300 space-y-12">
         {/* Introduction Paragraph */}

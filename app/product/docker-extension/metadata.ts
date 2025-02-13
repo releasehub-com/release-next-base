@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Docker Extension | Release",
@@ -9,13 +9,13 @@ export const metadata: Metadata = {
     description:
       "Enhance your Docker development workflow with the Release Docker Extension. Manage environments and deployments directly from Docker Desktop.",
     type: "article",
-    url: "https://release.com/product/docker-extension",
+    url: "/product/docker-extension",
     images: [
       {
-        url: "https://release.com/og/og-image.png",
+        url: "/og/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Release Docker Extension",
+        alt: "Release - The Ephemeral Environments Platform",
       },
     ],
     siteName: "Release",
@@ -25,10 +25,10 @@ export const metadata: Metadata = {
     title: "Docker Extension | Release",
     description:
       "Enhance your Docker development workflow with the Release Docker Extension. Manage environments and deployments directly from Docker Desktop.",
-    images: ["https://release.com/og/og-image.png"],
+    images: ["/og/og-image.png"],
     creator: "@release_hub",
   },
   alternates: {
-    canonical: "https://release.com/product/docker-extension",
+    canonical: "/product/docker-extension",
   },
 };

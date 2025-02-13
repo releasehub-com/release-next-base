@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Release vs Replicated | Release",
@@ -9,13 +9,13 @@ export const metadata: Metadata = {
     description:
       "Compare Release and Replicated for enterprise software delivery. See why teams choose Release for a more flexible and developer-friendly approach to software distribution.",
     type: "article",
-    url: "https://release.com/replicated-competitor",
+    url: "/replicated-competitor",
     images: [
       {
-        url: "https://release.com/og/og-image.png",
+        url: "/og/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Release vs Replicated Comparison",
+        alt: "Release - The Ephemeral Environments Platform",
       },
     ],
     siteName: "Release",
@@ -25,10 +25,10 @@ export const metadata: Metadata = {
     title: "Release vs Replicated | Release",
     description:
       "Compare Release and Replicated for enterprise software delivery. See why teams choose Release for a more flexible and developer-friendly approach to software distribution.",
-    images: ["https://release.com/og/og-image.png"],
+    images: ["/og/og-image.png"],
     creator: "@release_hub",
   },
   alternates: {
-    canonical: "https://release.com/replicated-competitor",
+    canonical: "/replicated-competitor",
   },
 };
