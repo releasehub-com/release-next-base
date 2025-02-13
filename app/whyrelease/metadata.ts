@@ -9,7 +9,6 @@ export const metadata: Metadata = {
     description:
       "With Release, you can build, test, and deploy applications at scale. Our Environments as a Service platform automates the process to allow your developer teams to focus on innovation and revenue.",
     type: "article",
-    url: "/whyrelease",
     images: [
       {
         url: "/images/why-release-poster.png",
