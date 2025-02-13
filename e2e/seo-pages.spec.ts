@@ -82,6 +82,6 @@ test.describe("SEO Pages", () => {
     }
 
     // Take a screenshot of the investors section
-    await investorsSection.screenshot({ path: "investor-logos.png" });
+    await investorsSection.screenshot({ path: "test-artifacts/investor-logos.png" });
   });
 });

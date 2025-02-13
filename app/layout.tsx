@@ -7,8 +7,12 @@ import "highlight.js/styles/github-dark.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
+// Get the base URL from environment or default to release.com
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://release.com";
+const metadataBaseUrl = new URL(baseUrl.startsWith("http") ? baseUrl : `https://${baseUrl}`);
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://release.com"),
+  metadataBase: metadataBaseUrl,
   title: {
     default: "Release - The Ephemeral Environments Platform",
     template: "%s | Release",

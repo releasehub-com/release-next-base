@@ -9,7 +9,6 @@ export const metadata: Metadata = {
     description:
       "Get started with Release. Create your account and start building better development environments today.",
     type: "website",
-    url: "/signup",
     images: [
       {
         url: "/og/og-image.png",
