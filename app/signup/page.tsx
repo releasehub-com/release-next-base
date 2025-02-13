@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "@/components/shared/layout/Header";
+import Footer from "@/components/shared/layout/Footer";
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { SignupMessage } from "./components/SignupMessage";

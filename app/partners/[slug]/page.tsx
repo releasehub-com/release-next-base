@@ -2,8 +2,8 @@ import { notFound } from "next/navigation";
 import { getPartnerBySlug, getPartners } from "../utils";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import PartnerCTA from "../components/PartnerCTA";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "@/components/shared/layout/Header";
+import Footer from "@/components/shared/layout/Footer";
 import Image from "next/image";
 
 export async function generateStaticParams() {

@@ -5,8 +5,8 @@ import { getBlogPosts, getPostBySlug } from "../lib/blog";
 import MDXContent from "../components/MDXContent";
 import CallToAction from "@/components/blog/CallToAction";
 import RelatedPosts from "@/components/blog/RelatedPosts";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "@/components/shared/layout/Header";
+import Footer from "@/components/shared/layout/Footer";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 

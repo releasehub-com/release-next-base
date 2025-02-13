@@ -4,8 +4,8 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { CaseStudy } from "../types";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "@/components/shared/layout/Header";
+import Footer from "@/components/shared/layout/Footer";
 
 interface CaseStudyIndexProps {
   caseStudies: CaseStudy[];

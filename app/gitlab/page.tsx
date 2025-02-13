@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 
 const GitLabLandingPage = dynamic(
-  () => import("@/components/GitLabLandingPage"),
+  () => import("@/components/landing-pages/gitlab/GitLabLandingPage"),
   { ssr: false },
 );
 

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import RootSEOPageLayout from "@/components/RootSEOPageLayout";
-import UserLogos from "@/components/UserLogos";
-import InvestorLogos from "@/components/InvestorLogos";
+import RootSEOPageLayout from "@/components/shared/layout/RootSEOPageLayout";
+import UserLogos from "@/components/shared/UserLogos";
+import InvestorLogos from "@/components/shared/InvestorLogos";
 import { Settings, Users, Rocket } from "lucide-react";
 import Image from "next/image";
 

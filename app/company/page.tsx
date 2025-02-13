@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import RootSEOPageLayout from "@/components/RootSEOPageLayout";
-import InvestorLogos from "@/components/InvestorLogos";
+import RootSEOPageLayout from "@/components/shared/layout/RootSEOPageLayout";
+import InvestorLogos from "@/components/shared/InvestorLogos";
 import Image from "next/image";
 import { Github, Linkedin, X } from "lucide-react";
 
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     url: "https://release.com/company",
     images: [
       {
-        url: "https://release.com/og/company.png",
+        url: "https://release.com/og/og-image.png",
         width: 1200,
         height: 630,
         alt: "Release Company",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: "Our Company | Release",
     description:
       "Release is a team of entrepreneurs and systems engineers building efficient collaboration tools for developers. Learn more about our mission and team.",
-    images: ["https://release.com/og/company.png"],
+    images: ["https://release.com/og/og-image.png"],
   },
   alternates: {
     canonical: "https://release.com/company",

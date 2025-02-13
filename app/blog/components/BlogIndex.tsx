@@ -6,8 +6,8 @@ import Image from "next/image";
 import { BlogPost } from "../types";
 import { getAuthorInfo } from "../lib/authors";
 import { blogConfig } from "../config";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "@/components/shared/layout/Header";
+import Footer from "@/components/shared/layout/Footer";
 
 interface BlogIndexProps {
   posts: BlogPost[];

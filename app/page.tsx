@@ -1,10 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import LandingPageWrapper from "@/components/LandingPageWrapper";
+import LandingPageWrapper from "@/components/shared/layout/LandingPageWrapper";
 
 const LandingPage = dynamic(
-  () => import("@/components/LandingPage").then((mod) => mod.default),
+  () => import("@/components/landing-pages/default/LandingPage").then((mod) => mod.default),
   { ssr: false },
 );
 

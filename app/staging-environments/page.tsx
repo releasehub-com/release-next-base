@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import RootSEOPageLayout from "@/components/RootSEOPageLayout";
+import RootSEOPageLayout from "@/components/shared/layout/RootSEOPageLayout";
 
 export const metadata: Metadata = {
   title: "What is a Staging Environment? | Release",

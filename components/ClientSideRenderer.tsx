@@ -14,35 +14,35 @@ import {
   type VersionId,
   STORAGE_KEY,
 } from "@/config/versions";
-import LandingWrapper from "@/components/LandingWrapper";
+import LandingWrapper from "@/components/shared/layout/LandingWrapper";
 
-const LandingPage = dynamic(() => import("@/components/LandingPage"), {
+const LandingPage = dynamic(() => import("@/components/landing-pages/default/LandingPage"), {
   ssr: false,
 });
 const GitLabLandingPage = dynamic(
-  () => import("@/components/GitLabLandingPage"),
+  () => import("@/components/landing-pages/gitlab/GitLabLandingPage"),
   { ssr: false },
 );
 const KubernetesLandingPage = dynamic(
-  () => import("@/components/KubernetesLandingPage"),
+  () => import("@/components/landing-pages/kubernetes/KubernetesLandingPage"),
   { ssr: false },
 );
 const ReplicatedLandingPage = dynamic(
-  () => import("@/components/ReplicatedLandingPage"),
+  () => import("@/components/landing-pages/replicated/ReplicatedLandingPage"),
   { ssr: false },
 );
 const EphemeralLanding = dynamic(
-  () => import("@/components/EphemeralLanding"),
+  () => import("@/components/landing-pages/ephemeral/EphemeralLanding"),
   { ssr: false },
 );
-const CloudDevLanding = dynamic(() => import("@/components/CloudDevLanding"), {
+const CloudDevLanding = dynamic(() => import("@/components/landing-pages/cloud-dev/CloudDevLanding"), {
   ssr: false,
 });
-const CloudLanding = dynamic(() => import("@/components/CloudLanding"), {
+const CloudLanding = dynamic(() => import("@/components/landing-pages/cloud/CloudLanding"), {
   ssr: false,
 });
 const AIPipelineLanding = dynamic(
-  () => import("@/components/AIPipelineLanding"),
+  () => import("@/components/landing-pages/ai-pipeline/AIPipelineLanding"),
   {
     ssr: false,
   },
@@ -87,14 +87,14 @@ export default function ClientSideRenderer() {
       // Load components after version is resolved
       console.log("ClientSideRenderer - Loading components...");
       await Promise.all([
-        import("@/components/LandingPage"),
-        import("@/components/GitLabLandingPage"),
-        import("@/components/KubernetesLandingPage"),
-        import("@/components/ReplicatedLandingPage"),
-        import("@/components/EphemeralLanding"),
-        import("@/components/CloudDevLanding"),
-        import("@/components/CloudLanding"),
-        import("@/components/AIPipelineLanding"),
+        import("@/components/landing-pages/default/LandingPage"),
+        import("@/components/landing-pages/gitlab/GitLabLandingPage"),
+        import("@/components/landing-pages/kubernetes/KubernetesLandingPage"),
+        import("@/components/landing-pages/replicated/ReplicatedLandingPage"),
+        import("@/components/landing-pages/ephemeral/EphemeralLanding"),
+        import("@/components/landing-pages/cloud-dev/CloudDevLanding"),
+        import("@/components/landing-pages/cloud/CloudLanding"),
+        import("@/components/landing-pages/ai-pipeline/AIPipelineLanding"),
       ]);
 
       console.log("ClientSideRenderer - Components loaded");

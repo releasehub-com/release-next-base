@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 
 const ReplicatedLandingPage = dynamic(
-  () => import("@/components/ReplicatedLandingPage"),
+  () => import("@/components/landing-pages/replicated/ReplicatedLandingPage"),
   { ssr: false },
 );
 

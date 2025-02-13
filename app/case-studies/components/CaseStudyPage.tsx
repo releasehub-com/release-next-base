@@ -3,8 +3,8 @@
 import React from "react";
 import Image from "next/image";
 import { CaseStudyFrontmatter } from "../types";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "@/components/shared/layout/Header";
+import Footer from "@/components/shared/layout/Footer";
 
 interface CaseStudyPageProps {
   content: React.ReactNode;

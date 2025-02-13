@@ -122,20 +122,20 @@ describe("Version Configuration", () => {
 
   describe("Storage Management", () => {
     it("should store and retrieve version from localStorage", () => {
-      setVersionInStorage("kubernetes");
-      expect(getVersionFromStorage()).toBe("kubernetes");
-      expect(localStorage.getItem(STORAGE_KEY)).toBe("kubernetes");
+      setVersionInStorage("ephemeral");
+      expect(getVersionFromStorage()).toBe("ephemeral");
+      expect(localStorage.getItem(STORAGE_KEY)).toBe("ephemeral");
     });
 
     it("should fall back to cookie when localStorage is empty", () => {
-      document.cookie = `${STORAGE_KEY}=release-ai`;
-      expect(getVersionFromStorage()).toBe("release-ai");
+      document.cookie = `${STORAGE_KEY}=ephemeral`;
+      expect(getVersionFromStorage()).toBe("ephemeral");
     });
 
     it("should persist cookie value to localStorage", () => {
-      document.cookie = `${STORAGE_KEY}=cloud`;
+      document.cookie = `${STORAGE_KEY}=ephemeral`;
       getVersionFromStorage();
-      expect(localStorage.getItem(STORAGE_KEY)).toBe("cloud");
+      expect(localStorage.getItem(STORAGE_KEY)).toBe("ephemeral");
     });
 
     it("should return default version when no storage exists", () => {

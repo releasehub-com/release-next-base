@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import LegalLayout from "@/components/LegalLayout";
+import LegalLayout from "@/components/shared/layout/LegalLayout";
 import MDXContent from "@/app/legal/components/MDXContent";
 import { getLegalContent, getAllLegalSlugs } from "@/app/legal/lib/content";
 import { Metadata } from "next";

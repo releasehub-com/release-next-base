@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import RootSEOPageLayout from "@/components/RootSEOPageLayout";
+import RootSEOPageLayout from "@/components/shared/layout/RootSEOPageLayout";
 import Link from "next/link";
 
 export const metadata: Metadata = {

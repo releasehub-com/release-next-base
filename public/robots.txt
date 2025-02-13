@@ -13,6 +13,13 @@ Disallow: /*//
 # Block non-canonical protocols and subdomains
 Disallow: http://*
 Disallow: //*www.release.com
+Disallow: //*web.release.com
+Disallow: //*api.release.com
+
+# Block old/redirect paths
+Disallow: /heroku
+Disallow: /paas
+Disallow: /heroku-competitor
 
 # Sitemap
 Sitemap: https://release.com/sitemap.xml

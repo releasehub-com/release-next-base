@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import RootSEOPageLayout from "@/components/RootSEOPageLayout";
+import RootSEOPageLayout from "@/components/shared/layout/RootSEOPageLayout";
 import Image from "next/image";
 import { Share2, Lock, Users } from "lucide-react";
 

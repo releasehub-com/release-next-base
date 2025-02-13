@@ -1,6 +1,6 @@
 "use client";
 
-import RootSEOPageLayout from "@/components/RootSEOPageLayout";
+import RootSEOPageLayout from "@/components/shared/layout/RootSEOPageLayout";
 import Link from "next/link";
 import {
   Layers,
