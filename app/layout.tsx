@@ -45,17 +45,17 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
     nocache: true,
-    'max-image-preview': 'large',
-    'max-video-preview': -1,
-    'max-snippet': -1,
+    "max-image-preview": "large",
+    "max-video-preview": -1,
+    "max-snippet": -1,
     googleBot: {
       index: true,
       follow: true,
       noimageindex: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-      'notranslate': true
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      notranslate: true,
     },
   },
   other: {
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
   },
   verification: {
     google: "your-google-verification-code",
-  }
+  },
 };
 
 export const viewport = {
