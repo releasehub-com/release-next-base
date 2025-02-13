@@ -1,0 +1,25 @@
+User-agent: *
+Allow: /
+
+# Block tracking parameters
+Disallow: /*?__hstc=
+Disallow: /*?__hssc=
+Disallow: /*?__hsfp=
+Disallow: /*?utm_*
+Disallow: /*?ref=
+Disallow: /*?via=
+Disallow: /*?source=
+Disallow: /*?preset_template_hash_id=
+Disallow: /*?trk=
+Disallow: /*?next=
+
+# Block duplicate paths with trailing slashes
+Disallow: /*//
+
+# Allow specific paths
+Allow: /$
+Allow: /blog/$
+Allow: /docs/$
+
+# Sitemap
+Sitemap: https://release.com/sitemap.xml 
