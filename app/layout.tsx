@@ -9,7 +9,9 @@ const inter = Inter({ subsets: ["latin"] });
 
 // Get the base URL from environment or default to release.com
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://release.com";
-const metadataBaseUrl = new URL(baseUrl.startsWith("http") ? baseUrl : `https://${baseUrl}`);
+const metadataBaseUrl = new URL(
+  baseUrl.startsWith("http") ? baseUrl : `https://${baseUrl}`,
+);
 
 export const metadata: Metadata = {
   metadataBase: metadataBaseUrl,
@@ -33,7 +35,6 @@ export const metadata: Metadata = {
         alt: "Release Ephemeral Environments Platform",
       },
     ],
-    url: "https://release.com",
     siteName: "Release",
     type: "website",
   },
