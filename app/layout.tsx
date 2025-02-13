@@ -68,7 +68,7 @@ export const metadata: Metadata = {
     "yandex-verification": "your-yandex-verification-code",
   },
   alternates: {
-    canonical: "https://release.com",
+    canonical: "/",
   },
   verification: {
     google: "your-google-verification-code",
