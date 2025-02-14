@@ -1,25 +1,72 @@
 import "@testing-library/jest-dom";
 import React from "react";
 
-// Mock Next.js router
+// Mock Next.js router and navigation
+const mockRouter = {
+  push: jest.fn(),
+  replace: jest.fn(),
+  prefetch: jest.fn(),
+  back: jest.fn(),
+  pathname: "/",
+  query: {},
+};
+
+const mockSearchParams = new URLSearchParams();
+
+// Create mock functions that can be accessed and modified in individual tests
+const mockUseRouter = jest.fn(() => mockRouter);
+const mockUseSearchParams = jest.fn(() => mockSearchParams);
+const mockUsePathname = jest.fn(() => "/");
+
 jest.mock("next/navigation", () => ({
-  useRouter: () => ({
-    push: jest.fn(),
-    replace: jest.fn(),
-    prefetch: jest.fn(),
-    back: jest.fn(),
-    pathname: "/",
-    query: {},
-  }),
-  useSearchParams: () => new URLSearchParams(),
-  usePathname: () => "/",
+  useRouter: () => mockUseRouter(),
+  useSearchParams: () => mockUseSearchParams(),
+  usePathname: () => mockUsePathname(),
 }));
+
+// Reset all mocks before each test
+beforeEach(() => {
+  // Reset Next.js navigation mocks to default values
+  mockUseRouter.mockImplementation(() => mockRouter);
+  mockUseSearchParams.mockImplementation(() => mockSearchParams);
+  mockUsePathname.mockImplementation(() => "/");
+
+  // Clear mock function calls
+  mockRouter.push.mockClear();
+  mockRouter.replace.mockClear();
+  mockRouter.prefetch.mockClear();
+  mockRouter.back.mockClear();
+
+  // Make mocks available globally for test files
+  global.__mocks__ = {
+    mockUseRouter,
+    mockUseSearchParams,
+    mockUsePathname,
+    mockRouter,
+    mockSearchParams,
+  };
+});
+
+// Mock fetch API
+global.fetch = jest.fn(() => Promise.resolve({ ok: true })) as jest.Mock;
 
 // Mock Next.js Image component
 jest.mock("next/image", () => {
   const React = require("react");
   return function MockImage({ src = "", alt = "", ...props }) {
-    return React.createElement("img", { src, alt, ...props });
+    // Convert boolean props to data attributes to avoid DOM warnings
+    const { unoptimized, priority, fill, ...otherProps } = props;
+    const dataProps: any = {
+      ...otherProps,
+      "data-testid": "next-image",
+    };
+
+    // Only add data attributes if the props are true
+    if (unoptimized) dataProps["data-unoptimized"] = "true";
+    if (priority) dataProps["data-priority"] = "true";
+    if (fill) dataProps["data-fill"] = "true";
+
+    return React.createElement("img", { src, alt, ...dataProps });
   };
 });
 

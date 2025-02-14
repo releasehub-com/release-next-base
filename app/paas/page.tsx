@@ -1,14 +1,5 @@
-"use client";
+import PaasContent from "../platform-as-a-service/components/PaasContent";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-
-export default function PaasRedirect() {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.replace("/heroku");
-  }, [router]);
-
-  return null;
+export default function PaasPage() {
+  return <PaasContent />;
 }

@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import { Suspense } from "react";
+import { notFound } from "next/navigation";
 import BlogPostLayout from "@/app/components/BlogPostLayout";
 import { getBlogPosts, getPostBySlug } from "../lib/blog";
 import MDXContent from "../components/MDXContent";
@@ -7,17 +7,19 @@ import CallToAction from "@/components/blog/CallToAction";
 import RelatedPosts from "@/components/blog/RelatedPosts";
 import Header from "@/components/shared/layout/Header";
 import Footer from "@/components/shared/layout/Footer";
-import { notFound } from "next/navigation";
 import { Metadata } from "next";
 
 // Get all blog posts at build time
 export async function generateStaticParams() {
-  const postsDirectory = path.join(process.cwd(), "app/blog/posts");
-  const filenames = fs.readdirSync(postsDirectory);
-
-  return filenames.map((filename) => ({
-    slug: filename.replace(".mdx", ""),
-  }));
+  try {
+    const posts = await getBlogPosts();
+    return posts.map((post) => ({
+      slug: post.slug,
+    }));
+  } catch (error) {
+    console.error("Error generating static params for blog:", error);
+    return [];
+  }
 }
 
 // This generates the metadata for each blog post
@@ -74,11 +76,7 @@ export async function generateMetadata({
   }
 }
 
-export default async function BlogPostPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+async function BlogPostContent({ params }: { params: { slug: string } }) {
   try {
     const posts = await getBlogPosts();
     const post = posts.find((p) => p.slug === params.slug);
@@ -93,37 +91,71 @@ export default async function BlogPostPage({
       : [];
 
     return (
+      <article className="max-w-4xl mx-auto px-4 py-12">
+        <BlogPostLayout frontmatter={post.frontmatter}>
+          {post.frontmatter.showCTA && (
+            <div className="mb-12">
+              <CallToAction
+                copy={post.frontmatter.ctaCopy}
+                link={post.frontmatter.ctaLink}
+              />
+            </div>
+          )}
+          <MDXContent source={post.content} />
+          {post.frontmatter.showCTA && (
+            <div className="mt-12">
+              <CallToAction
+                copy={post.frontmatter.ctaCopy}
+                link={post.frontmatter.ctaLink}
+              />
+            </div>
+          )}
+        </BlogPostLayout>
+
+        {relatedPosts.length > 0 && <RelatedPosts posts={relatedPosts} />}
+      </article>
+    );
+  } catch (error) {
+    console.error(`Error rendering blog post ${params.slug}:`, error);
+    notFound();
+  }
+}
+
+export default async function BlogPostPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gray-900">
+          <Header />
+          <main className="max-w-4xl mx-auto px-4 py-12">
+            <div className="animate-pulse">
+              <div className="h-96 bg-gray-800 rounded-lg mb-8"></div>
+              <div className="h-8 bg-gray-800 rounded w-3/4 mb-4"></div>
+              <div className="h-4 bg-gray-800 rounded w-1/2 mb-8"></div>
+              <div className="space-y-4">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="h-4 bg-gray-800 rounded w-full"></div>
+                ))}
+              </div>
+            </div>
+          </main>
+          <Footer />
+        </div>
+      }
+    >
       <>
         <Header />
         <main className="min-h-screen bg-gray-900">
-          <article className="max-w-4xl mx-auto px-4 py-12">
-            <BlogPostLayout frontmatter={post.frontmatter}>
-              {post.frontmatter.showCTA && (
-                <div className="mb-12">
-                  <CallToAction
-                    copy={post.frontmatter.ctaCopy}
-                    link={post.frontmatter.ctaLink}
-                  />
-                </div>
-              )}
-              <MDXContent source={post.content} />
-              {post.frontmatter.showCTA && (
-                <div className="mt-12">
-                  <CallToAction
-                    copy={post.frontmatter.ctaCopy}
-                    link={post.frontmatter.ctaLink}
-                  />
-                </div>
-              )}
-            </BlogPostLayout>
-
-            {relatedPosts.length > 0 && <RelatedPosts posts={relatedPosts} />}
-          </article>
+          <Suspense fallback={<div>Loading...</div>}>
+            <BlogPostContent params={params} />
+          </Suspense>
         </main>
         <Footer />
       </>
-    );
-  } catch (error) {
-    notFound();
-  }
+    </Suspense>
+  );
 }

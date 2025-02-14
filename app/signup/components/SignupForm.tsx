@@ -4,74 +4,54 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { SignupMessage } from "./SignupMessage";
-import {
-  getVersionFromStorage,
-  isValidVersion,
-  setVersionInStorage,
-  getCanonicalVersion,
-  getVersionContent,
-  type VersionId,
-  STORAGE_KEY,
-  DEFAULT_VERSION,
-  VERSIONS,
-} from "@/config/versions";
-
-// Helper function to set version in both localStorage and cookie
-async function setVersion(version: VersionId) {
-  // Set in localStorage
-  setVersionInStorage(version);
-
-  // Set in cookie via API
-  try {
-    await fetch("/api/version", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ version }),
-    });
-  } catch (err) {
-    console.error("Failed to set version cookie:", err);
-  }
-}
+import { useVersion } from "@/lib/version/VersionContext";
+import { getVersionContent, VERSIONS } from "@/lib/version/versionService";
 
 export default function SignupForm() {
   const [error, setError] = useState<string[]>([]);
-  const [version, setVersionState] = useState<VersionId | null>(null);
+  const { version, setVersion, resolveVersion } = useVersion();
   const searchParams = useSearchParams();
   const versionParam = searchParams.get("version");
 
   useEffect(() => {
-    const storedVersion = getVersionFromStorage();
-
-    // Handle version resolution and aliases
-    let resolvedVersion: VersionId = "ephemeral";
-    if (versionParam === "ai") {
-      // Store ephemeral version but don't update state yet
-      setVersion("ephemeral");
-    } else if (versionParam && isValidVersion(versionParam)) {
-      resolvedVersion = getCanonicalVersion(versionParam);
-      setVersion(resolvedVersion);
-    } else if (storedVersion) {
-      resolvedVersion = storedVersion;
-      setVersion(resolvedVersion);
-    } else {
-      resolvedVersion = DEFAULT_VERSION;
-      setVersion(DEFAULT_VERSION);
-    }
-
-    setVersionState(resolvedVersion);
-  }, [searchParams, version, versionParam]);
-
-  // Don't render anything until we have resolved the version
-  if (!version) {
-    return null;
-  }
+    // Special case for AI version and URL parameters
+    const resolvedVersion = resolveVersion({
+      urlVersion: versionParam,
+    });
+    setVersion(resolvedVersion);
+  }, [versionParam, setVersion, resolveVersion]);
 
   // Get content based on version
   const content =
     versionParam === "ai"
-      ? VERSIONS.ephemeral.signupContent
+      ? {
+          title: "Deploy High-Performance AI Models with Ease",
+          benefits: [
+            {
+              icon: "performance",
+              title: "High-Performance Inference",
+              description:
+                "Deploy models with sub-100ms latency. Our optimized infrastructure ensures rapid response times for your AI applications.",
+            },
+            {
+              icon: "scale",
+              title: "Seamless Scalability",
+              description:
+                "Automatically scale from zero to thousands of concurrent requests. Our platform grows with your needs, ensuring consistent performance.",
+            },
+            {
+              icon: "security",
+              title: "Enterprise-Grade Security",
+              description:
+                "Benefit from SOC 2 Type II compliance, private networking, and end-to-end encryption. Your models and data remain secure and compliant.",
+            },
+          ],
+          steps: [
+            "Start with 5 free GPU hours",
+            "Deploy your first AI model",
+            "Scale with confidence",
+          ],
+        }
       : getVersionContent(version);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -134,7 +114,9 @@ export default function SignupForm() {
   const handleGoogleSignup = async (e: React.MouseEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch("/api/auth?provider=google&registration=true");
+      const response = await fetch(
+        "/api/auth?provider=google&registration=true",
+      );
       const data = await response.json();
       if (response.ok) {
         window.location.href = data.redirectUrl;
@@ -162,7 +144,9 @@ export default function SignupForm() {
     } catch (err) {
       console.error("Enterprise SSO error:", err);
       setError([
-        err instanceof Error ? err.message : "Failed to initiate Enterprise SSO",
+        err instanceof Error
+          ? err.message
+          : "Failed to initiate Enterprise SSO",
       ]);
     }
   };
@@ -387,4 +371,4 @@ export default function SignupForm() {
       )}
     </>
   );
-} 
+}

@@ -3,6 +3,7 @@
 import { useEffect, useState, ComponentType } from "react";
 import Header from "@/components/shared/layout/Header";
 import Footer from "@/components/shared/layout/Footer";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import {
   getVersionFromStorage,
   isValidVersion,
@@ -37,6 +38,7 @@ export default function LandingWrapper({
   AIPipelineLanding,
 }: LandingWrapperProps) {
   console.log("LandingWrapper - Mounting with version:", initialVersion);
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   const [CurrentComponent, setCurrentComponent] =
     useState<ComponentType | null>(() => {
@@ -55,8 +57,9 @@ export default function LandingWrapper({
           return CloudDevLanding;
         case "cloud":
           return CloudLanding;
-        case "ephemeral":
         case "ai-pipeline":
+          return AIPipelineLanding;
+        case "ephemeral":
         default:
           return LandingPage;
       }
@@ -82,35 +85,55 @@ export default function LandingWrapper({
       case "cloud":
         newComponent = CloudLanding;
         break;
-      case "ephemeral":
       case "ai-pipeline":
+        newComponent = AIPipelineLanding;
+        break;
+      case "ephemeral":
       default:
         newComponent = LandingPage;
         break;
     }
 
-    if (newComponent && newComponent !== CurrentComponent) {
+    if (newComponent) {
       console.log(
         "LandingWrapper - Updating component for version:",
         initialVersion,
       );
-      setCurrentComponent(newComponent);
+      setCurrentComponent(() => newComponent);
     }
   }, [
     initialVersion,
     GitLabLandingPage,
     KubernetesLandingPage,
     ReplicatedLandingPage,
-    EphemeralLanding,
     CloudDevLanding,
     CloudLanding,
+    AIPipelineLanding,
     LandingPage,
-    CurrentComponent,
   ]);
 
+  useEffect(() => {
+    // Preserve scroll position on layout changes
+    const scrollY = window.scrollY;
+    window.scrollTo(0, scrollY);
+  }, [isMobile]);
+
   if (!CurrentComponent) {
-    return <div className="min-h-screen bg-gray-900">Loading...</div>;
+    return null;
   }
 
-  return <CurrentComponent />;
+  const layoutClass = isMobile ? "mobile-layout" : "desktop-layout";
+  const versionLayoutClass = `${initialVersion}-${isMobile ? "mobile" : "desktop"}-layout`;
+
+  return (
+    <div className={`${layoutClass} ${versionLayoutClass}`}>
+      <Header />
+      <main>
+        <div data-testid={`${initialVersion}-content-wrapper`}>
+          <CurrentComponent />
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
 }

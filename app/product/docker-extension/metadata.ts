@@ -1,31 +1,31 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Docker Extension | Release",
+  title: "Release Share Docker Extension | Release",
   description:
-    "Enhance your Docker development workflow with the Release Docker Extension. Manage environments and deployments directly from Docker Desktop.",
+    "Instantly share local containers with customizable URLs. Test, preview, and QA earlier and faster throughout the SDLC.",
   openGraph: {
-    title: "Docker Extension | Release",
+    title: "Release Share Docker Extension | Release",
     description:
-      "Enhance your Docker development workflow with the Release Docker Extension. Manage environments and deployments directly from Docker Desktop.",
+      "Instantly share local containers with customizable URLs. Test, preview, and QA earlier and faster throughout the SDLC.",
     type: "article",
     url: "/product/docker-extension",
     images: [
       {
-        url: "/og/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Release - The Ephemeral Environments Platform",
+        url: "/images/product/docker-extension/header.svg",
+        width: 2000,
+        height: 1500,
+        alt: "Release Share Docker Extension Interface",
       },
     ],
     siteName: "Release",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Docker Extension | Release",
+    title: "Release Share Docker Extension | Release",
     description:
-      "Enhance your Docker development workflow with the Release Docker Extension. Manage environments and deployments directly from Docker Desktop.",
-    images: ["/og/og-image.png"],
+      "Instantly share local containers with customizable URLs. Test, preview, and QA earlier and faster throughout the SDLC.",
+    images: ["/images/product/docker-extension/header.svg"],
     creator: "@release_hub",
   },
   alternates: {

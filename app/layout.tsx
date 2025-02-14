@@ -4,6 +4,7 @@ import "./globals.css";
 import Script from "next/script";
 import PathStorage from "./components/PathStorage";
 import "highlight.js/styles/github-dark.css";
+import { VersionProvider } from "@/lib/version/VersionContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -109,7 +110,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} bg-gray-900`}>
         <PathStorage />
-        {children}
+        <VersionProvider>{children}</VersionProvider>
       </body>
     </html>
   );

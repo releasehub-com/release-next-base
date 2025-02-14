@@ -1,6 +1,7 @@
 import { render } from "@testing-library/react";
 import { useSearchParams, usePathname } from "next/navigation";
 import { Metadata } from "next";
+import { VersionProvider } from "@/lib/version/VersionContext";
 
 // Mock next/navigation
 jest.mock("next/navigation", () => ({
@@ -14,11 +15,19 @@ jest.mock("next/navigation", () => ({
   })),
 }));
 
+// Mock the PricingRedirect navigation function
+jest.mock("@/app/pricing/components/PricingRedirect", () => ({
+  navigateToExternalPricing: jest.fn(),
+  __esModule: true,
+  default: () => null,
+}));
+
 // Mock next/image
 jest.mock("next/image", () => ({
   __esModule: true,
   default: (props: any) => {
-    return <img {...props} />;
+    const { unoptimized, priority, fill, ...otherProps } = props;
+    return <img {...otherProps} />;
   },
 }));
 
@@ -38,7 +47,6 @@ import CompanyPage from "@/app/company/page";
 import PricingPage from "@/app/pricing/page";
 import UseCasesPage from "@/app/use-cases/page";
 import ComparisonPage from "@/app/comparison/page";
-import GitLabIntegrationPage from "@/app/gitlab-integration/page";
 import BookADemoPage from "@/app/book-a-demo/page";
 import PartnersPage from "@/app/partners/page";
 import LegalPage from "@/app/legal/[slug]/page";
@@ -52,14 +60,14 @@ import EphemeralEnvironmentsPage from "@/app/ephemeral-environments-platform/pag
 import CaseStudiesPage from "@/app/case-studies/page";
 
 // Import landing pages
-import DefaultLandingPage from "@/components/landing-pages/default/LandingPage";
-import GitLabLandingPage from "@/components/landing-pages/gitlab/GitLabLandingPage";
-import KubernetesLandingPage from "@/components/landing-pages/kubernetes/KubernetesLandingPage";
-import ReplicatedLandingPage from "@/components/landing-pages/replicated/ReplicatedLandingPage";
-import CloudLandingPage from "@/components/landing-pages/cloud/CloudLanding";
-import CloudDevLandingPage from "@/components/landing-pages/cloud-dev/CloudDevLanding";
-import EphemeralLandingPage from "@/components/landing-pages/ephemeral/EphemeralLanding";
-import AIPipelineLandingPage from "@/components/landing-pages/ai-pipeline/AIPipelineLanding";
+import DefaultLandingPage from "@/app/ephemeral-environments-platform/components/EphemeralLanding";
+import GitLabLandingPage from "@/app/gitlab/components/GitLabContent";
+import KubernetesLandingPage from "@/app/kubernetes-management/components/KubernetesLandingPage";
+import ReplicatedLandingPage from "@/app/replicated/components/ReplicatedLandingPage";
+import CloudLandingPage from "@/app/cloud-development-environments/components/CloudDevContent";
+import CloudDevLandingPage from "@/app/cloud-development-environments/components/CloudDevLanding";
+import EphemeralLandingPage from "@/app/ephemeral-environments-platform/components/EphemeralLanding";
+import AIPipelineLandingPage from "@/app/ai-ready-infrastructure-pipeline/components/AIPipelineContent";
 
 // Mock getPartners utility
 jest.mock("@/app/partners/utils", () => ({
@@ -117,7 +125,6 @@ describe("Page Rendering Tests", () => {
     { name: "Pricing", component: PricingPage },
     { name: "Use Cases", component: UseCasesPage },
     { name: "Comparison", component: ComparisonPage },
-    { name: "GitLab Integration", component: GitLabIntegrationPage },
     { name: "Book a Demo", component: BookADemoPage },
     { name: "Partners", component: PartnersPage },
     {
@@ -154,7 +161,11 @@ describe("Page Rendering Tests", () => {
   test.each(pages)(
     "$name page renders without crashing",
     async ({ component: Component }) => {
-      const { container } = render(<Component />);
+      const { container } = render(
+        <VersionProvider>
+          <Component />
+        </VersionProvider>,
+      );
       await new Promise((resolve) => setTimeout(resolve, 0)); // Allow async rendering to complete
       expect(container).toBeInTheDocument();
     },
