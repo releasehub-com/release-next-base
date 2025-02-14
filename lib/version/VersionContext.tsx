@@ -28,7 +28,7 @@ export function VersionProvider({ children }: { children: React.ReactNode }) {
   });
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div className="hidden"></div>}>
       <VersionProviderInner version={version} setVersionState={setVersionState}>
         {children}
       </VersionProviderInner>
