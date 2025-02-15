@@ -1,0 +1,44 @@
+{
+  "title": "Build AI, Automate the Infrastructure. Join the Release.ai Technical Preview",
+  "summary": "Learn about Release.ai, a cloud-agnostic, framework-agnostic, and compute-agnostic platform for AI infrastructure.",
+  "publishDate": "Mon Mar 18 2024 20:47:23 GMT+0000 (Coordinated Universal Time)",
+  "author": "michael-poon",
+  "readingTime": 3,
+  "categories": [
+    "ai",
+    "kubernetes",
+    "nvidia",
+    "platform-engineering"
+  ],
+  "mainImage": "/blog-images/69e8ac9e4966689046f1a95353e74484.png",
+  "imageAlt": "Join the ReleaseAI early access program",
+  "showCTA": true,
+  "ctaCopy": "Simplify AI infrastructure like in the Release.ai technical preview. Automate environments for seamless AI model deployment.",
+  "ctaLink": "https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=join-the-release-ai-technical-preview",
+  "relatedPosts": [
+    ""
+  ],
+  "ogImage": "/blog-images/69e8ac9e4966689046f1a95353e74484.png",
+  "excerpt": "Learn about Release.ai, a cloud-agnostic, framework-agnostic, and compute-agnostic platform for AI infrastructure.",
+  "tags": [
+    "ai",
+    "kubernetes",
+    "nvidia",
+    "platform-engineering"
+  ],
+  "ctaButton": "Try Release for Free",
+  "body": {
+    "raw": "\nToday we are excited to launch the technical preview for [Release.ai](http://release.ai) – a cloud-agnostic, framework-agnostic, and compute-agnostic platform for AI infrastructure. As the team here at Release was working on our own AI DevOps assistant, and comparing notes with teams who build, fine-tune, and integrate AI models into products, we saw a consistent challenge: the infrastructure is burdensome. \n\nAll across the industry we see amazing innovations pop up daily, and underneath the surface to make it all happen are infrastructure teams toiling away at accumulating GPUs, managing finicky clusters, investigating the latest timeouts, grappling with latest framework peculiarities, and making their finance folks bug-eyed at the bills being generated. It does not have to be this hard.\n\n[Release](http://release.com) has been abstracting away infrastructure complexity for conventional SDLC processes for years. Helping engineering teams focus on shipping high-quality products, faster. Now we bring our expertise to support AI engineering teams. To begin, we partnered with NVIDIA to simplify infrastructure setup and management of the [NVIDIA NeMo framework](https://www.nvidia.com/en-us/ai-data-science/generative-ai/nemo-framework/). Now you can use NeMo and Release to build and deploy models in a portable and cloud-agnostic way, on top of the Kubernetes clusters that we manage for you. This automates resource management, speeds up time-to-insight and gives AI development teams greater control over their infrastructure. \n\nWhile we are building Release.ai to simplify AI infrastructure, you don’t have to choose between simplicity and control - everything on Release.ai is orchestrated in your cloud account, on the hardware that you own, simplifying toil while maintaining control. Currently we support training, fine-tuning, and inference workflows with more workflows and frameworks to come. \n\nThis is your opportunity to get in on the ground floor. [Join our technical preview today](https://release.ai/) to experience our solution firsthand, provide invaluable feedback, and become a key design partner helping to shape the future of AI infrastructure tooling. Together, we can untether AI teams from infrastructure complexities so they can pour their energy into innovation.\n",
+    "code": "var Component=(()=>{var m=Object.create;var r=Object.defineProperty;var h=Object.getOwnPropertyDescriptor;var g=Object.getOwnPropertyNames;var p=Object.getPrototypeOf,d=Object.prototype.hasOwnProperty;var f=(t,e)=>()=>(e||t((e={exports:{}}).exports,e),e.exports),w=(t,e)=>{for(var n in e)r(t,n,{get:e[n],enumerable:!0})},s=(t,e,n,o)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let i of g(e))!d.call(t,i)&&i!==n&&r(t,i,{get:()=>e[i],enumerable:!(o=h(e,i))||o.enumerable});return t};var y=(t,e,n)=>(n=t!=null?m(p(t)):{},s(e||!t||!t.__esModule?r(n,\"default\",{value:t,enumerable:!0}):n,t)),b=t=>s(r({},\"__esModule\",{value:!0}),t);var l=f((R,c)=>{c.exports=_jsx_runtime});var k={};w(k,{default:()=>I,frontmatter:()=>v});var a=y(l()),v={title:\"Build AI, Automate the Infrastructure. Join the Release.ai Technical Preview\",summary:\"Learn about Release.ai, a cloud-agnostic, framework-agnostic, and compute-agnostic platform for AI infrastructure.\",publishDate:\"Mon Mar 18 2024 20:47:23 GMT+0000 (Coordinated Universal Time)\",author:\"michael-poon\",readingTime:3,categories:[\"ai\",\"kubernetes\",\"nvidia\",\"platform-engineering\"],mainImage:\"/blog-images/69e8ac9e4966689046f1a95353e74484.png\",imageAlt:\"Join the ReleaseAI early access program\",showCTA:!0,ctaCopy:\"Simplify AI infrastructure like in the Release.ai technical preview. Automate environments for seamless AI model deployment.\",ctaLink:\"https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=join-the-release-ai-technical-preview\",relatedPosts:[\"\"],ogImage:\"/blog-images/69e8ac9e4966689046f1a95353e74484.png\",excerpt:\"Learn about Release.ai, a cloud-agnostic, framework-agnostic, and compute-agnostic platform for AI infrastructure.\",tags:[\"ai\",\"kubernetes\",\"nvidia\",\"platform-engineering\"],ctaButton:\"Try Release for Free\"};function u(t){let e=Object.assign({p:\"p\",a:\"a\"},t.components);return(0,a.jsxs)(a.Fragment,{children:[(0,a.jsxs)(e.p,{children:[\"Today we are excited to launch the technical preview for \",(0,a.jsx)(e.a,{href:\"http://release.ai\",children:\"Release.ai\"}),\" \\u2013 a cloud-agnostic, framework-agnostic, and compute-agnostic platform for AI infrastructure. As the team here at Release was working on our own AI DevOps assistant, and comparing notes with teams who build, fine-tune, and integrate AI models into products, we saw a consistent challenge: the infrastructure is burdensome.\\xA0\"]}),`\n`,(0,a.jsx)(e.p,{children:\"All across the industry we see amazing innovations pop up daily, and underneath the surface to make it all happen are infrastructure teams toiling away at accumulating GPUs, managing finicky clusters, investigating the latest timeouts, grappling with latest framework peculiarities, and making their finance folks bug-eyed at the bills being generated. It does not have to be this hard.\"}),`\n`,(0,a.jsxs)(e.p,{children:[(0,a.jsx)(e.a,{href:\"http://release.com\",children:\"Release\"}),\" has been abstracting away infrastructure complexity for conventional SDLC processes for years. Helping engineering teams focus on shipping high-quality products, faster. Now we bring our expertise to support AI engineering teams. To begin, we partnered with NVIDIA to simplify infrastructure setup and management of the \",(0,a.jsx)(e.a,{href:\"https://www.nvidia.com/en-us/ai-data-science/generative-ai/nemo-framework/\",children:\"NVIDIA NeMo framework\"}),\". Now you can use NeMo and Release to build and deploy models in a portable and cloud-agnostic way, on top of the Kubernetes clusters that we manage for you. This automates resource management, speeds up time-to-insight and gives AI development teams greater control over their infrastructure.\\xA0\"]}),`\n`,(0,a.jsx)(e.p,{children:\"While we are building Release.ai to simplify AI infrastructure, you don\\u2019t have to choose between simplicity and control - everything on Release.ai is orchestrated in your cloud account, on the hardware that you own, simplifying toil while maintaining control. Currently we support training, fine-tuning, and inference workflows with more workflows and frameworks to come.\\xA0\"}),`\n`,(0,a.jsxs)(e.p,{children:[\"This is your opportunity to get in on the ground floor. \",(0,a.jsx)(e.a,{href:\"https://release.ai/\",children:\"Join our technical preview today\"}),\" to experience our solution firsthand, provide invaluable feedback, and become a key design partner helping to shape the future of AI infrastructure tooling. Together, we can untether AI teams from infrastructure complexities so they can pour their energy into innovation.\"]})]})}function A(t={}){let{wrapper:e}=t.components||{};return e?(0,a.jsx)(e,Object.assign({},t,{children:(0,a.jsx)(u,t)})):u(t)}var I=A;return b(k);})();\n;return Component;"
+  },
+  "_id": "blog/posts/join-the-release-ai-technical-preview.mdx",
+  "_raw": {
+    "sourceFilePath": "blog/posts/join-the-release-ai-technical-preview.mdx",
+    "sourceFileName": "join-the-release-ai-technical-preview.mdx",
+    "sourceFileDir": "blog/posts",
+    "contentType": "mdx",
+    "flattenedPath": "blog/posts/join-the-release-ai-technical-preview"
+  },
+  "type": "BlogPost",
+  "computedSlug": "join-the-release-ai-technical-preview"
+}

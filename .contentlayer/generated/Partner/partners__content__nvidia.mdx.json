@@ -1,0 +1,35 @@
+{
+  "title": "Welcome to the Future of AI with Release and NVIDIA",
+  "slug": "nvidia",
+  "description": "Bringing self-service AI environments tailored for NVIDIA's powerful GPUs to your fingertips.",
+  "category": "AI stack partner",
+  "thumbnail": "/partner-images/fc0911e0f23fd4e98d43f0b3c83c894c.svg",
+  "mainImage": "/partner-images/5bd77296623aa78e839aa0e43f44e1a0.svg",
+  "featureImage": "/partner-images/1784daf3cc8c84a01fce45ec27577072.svg",
+  "buttonCopy": "Start Building Now",
+  "buttonLink": "/signup",
+  "featureTitle": "Democratizing AI Training, Testing and Deployment",
+  "featureList": "<ul id=\"\"><li id=\"\">Release is thrilled to be an NVIDIA Inception Program Partner working on cutting edge technologies and solutions for our joint customers.</li><li id=\"\">Together we unlock the value in your data by automating the creation of full-stack AI applications for NVIDIA GPUs.</li><li id=\"\">Want to join the preview program for new products we're building? Email us at <a href=\"mailto:partner@release.com\">partner@release.com</a></li></ul>",
+  "betterTitle": "Better Together",
+  "betterDescription": "Release and NVIDIA partner to help organizations deploy and manage AI environments with ease, bringing powerful GPU capabilities to your development workflow.",
+  "betterCards": [
+    "<figure class=\"w-richtext-figure-type-image w-richtext-align-normal\"><div><img src=\"https://uploads-ssl.webflow.com/603dd147c5b0a4221d1bd360/65ca4b217375e35a5653f46f_Seamless%20Integration%20-%20icon.svg\" loading=\"lazy\"></div></figure><h5>Automated AI Environments</h5><p>Release automates the creation of AI environments on the NVIDIA stack, offering a seamless, cost-effective solution for accessing the computational power of GPUs.</p>",
+    "<figure class=\"w-richtext-figure-type-image w-richtext-align-normal\"><div><img src=\"https://uploads-ssl.webflow.com/603dd147c5b0a4221d1bd360/65ca4b4003e629bd11e72326_Optimize%20cloud%20spend%20-%20icon.svg\" loading=\"lazy\"></div></figure><h5>Tailored for Your Needs</h5><p>Customize your AI technology stack with everything from frameworks and foundation models to tools and inference engines, all deployed in your AI infrastructure automatically.</p>",
+    "<figure class=\"w-richtext-figure-type-image w-richtext-align-normal\"><div><img src=\"https://uploads-ssl.webflow.com/603dd147c5b0a4221d1bd360/65ca4bacb6b468d0df7a6f32_Preview%20Programs%20icon.svg\" loading=\"lazy\"></div></figure><h5>Ephemeral AI Environments</h5><p>Optimize costs and enhance security with ephemeral AI environments that are activated only when needed, and equipped with guardrails to prevent data mishaps.</p>"
+  ],
+  "publishDate": "2024-02-14T17:24:50.000Z",
+  "body": {
+    "raw": "",
+    "code": "var Component=(()=>{var g=Object.create;var n=Object.defineProperty;var u=Object.getOwnPropertyDescriptor;var m=Object.getOwnPropertyNames;var f=Object.getPrototypeOf,p=Object.prototype.hasOwnProperty;var h=(e,t)=>()=>(t||e((t={exports:{}}).exports,t),t.exports),w=(e,t)=>{for(var a in t)n(e,a,{get:t[a],enumerable:!0})},s=(e,t,a,o)=>{if(t&&typeof t==\"object\"||typeof t==\"function\")for(let r of m(t))!p.call(e,r)&&r!==a&&n(e,r,{get:()=>t[r],enumerable:!(o=u(t,r))||o.enumerable});return e};var b=(e,t,a)=>(a=e!=null?g(f(e)):{},s(t||!e||!e.__esModule?n(a,\"default\",{value:e,enumerable:!0}):a,e)),v=e=>s(n({},\"__esModule\",{value:!0}),e);var c=h((k,l)=>{l.exports=_jsx_runtime});var x={};w(x,{default:()=>A,frontmatter:()=>I});var i=b(c()),I={title:\"Welcome to the Future of AI with Release and NVIDIA\",slug:\"nvidia\",description:\"Bringing self-service AI environments tailored for NVIDIA's powerful GPUs to your fingertips.\",category:\"AI stack partner\",thumbnail:\"/partner-images/fc0911e0f23fd4e98d43f0b3c83c894c.svg\",mainImage:\"/partner-images/5bd77296623aa78e839aa0e43f44e1a0.svg\",featureImage:\"/partner-images/1784daf3cc8c84a01fce45ec27577072.svg\",buttonCopy:\"Start Building Now\",buttonLink:\"/signup\",featureTitle:\"Democratizing AI Training, Testing and Deployment\",featureList:`<ul id=\"\"><li id=\"\">Release is thrilled to be an NVIDIA Inception Program Partner working on cutting edge technologies and solutions for our joint customers.</li><li id=\"\">Together we unlock the value in your data by automating the creation of full-stack AI applications for NVIDIA GPUs.</li><li id=\"\">Want to join the preview program for new products we're building? Email us at <a href=\"mailto:partner@release.com\">partner@release.com</a></li></ul>`,betterTitle:\"Better Together\",betterDescription:\"Release and NVIDIA partner to help organizations deploy and manage AI environments with ease, bringing powerful GPU capabilities to your development workflow.\",betterCards:['<figure class=\"w-richtext-figure-type-image w-richtext-align-normal\"><div><img src=\"https://uploads-ssl.webflow.com/603dd147c5b0a4221d1bd360/65ca4b217375e35a5653f46f_Seamless%20Integration%20-%20icon.svg\" loading=\"lazy\"></div></figure><h5>Automated AI Environments</h5><p>Release automates the creation of AI environments on the NVIDIA stack, offering a seamless, cost-effective solution for accessing the computational power of GPUs.</p>','<figure class=\"w-richtext-figure-type-image w-richtext-align-normal\"><div><img src=\"https://uploads-ssl.webflow.com/603dd147c5b0a4221d1bd360/65ca4b4003e629bd11e72326_Optimize%20cloud%20spend%20-%20icon.svg\" loading=\"lazy\"></div></figure><h5>Tailored for Your Needs</h5><p>Customize your AI technology stack with everything from frameworks and foundation models to tools and inference engines, all deployed in your AI infrastructure automatically.</p>','<figure class=\"w-richtext-figure-type-image w-richtext-align-normal\"><div><img src=\"https://uploads-ssl.webflow.com/603dd147c5b0a4221d1bd360/65ca4bacb6b468d0df7a6f32_Preview%20Programs%20icon.svg\" loading=\"lazy\"></div></figure><h5>Ephemeral AI Environments</h5><p>Optimize costs and enhance security with ephemeral AI environments that are activated only when needed, and equipped with guardrails to prevent data mishaps.</p>'],publishDate:\"Wed Feb 14 2024 17:24:50 GMT+0000 (Coordinated Universal Time)\"};function d(e){return(0,i.jsx)(i.Fragment,{})}function y(e={}){let{wrapper:t}=e.components||{};return t?(0,i.jsx)(t,Object.assign({},e,{children:(0,i.jsx)(d,e)})):d(e)}var A=y;return v(x);})();\n;return Component;"
+  },
+  "_id": "partners/content/nvidia.mdx",
+  "_raw": {
+    "sourceFilePath": "partners/content/nvidia.mdx",
+    "sourceFileName": "nvidia.mdx",
+    "sourceFileDir": "partners/content",
+    "contentType": "mdx",
+    "flattenedPath": "partners/content/nvidia"
+  },
+  "type": "Partner",
+  "computedSlug": "nvidia"
+}

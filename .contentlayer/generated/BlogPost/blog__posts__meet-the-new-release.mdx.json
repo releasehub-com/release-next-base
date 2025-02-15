@@ -1,0 +1,40 @@
+{
+  "title": "Meet the new Release!",
+  "summary": "New year, new name. Check out the new Release!",
+  "publishDate": "Fri Jan 13 2023 20:27:52 GMT+0000 (Coordinated Universal Time)",
+  "author": "matt-carter",
+  "readingTime": 2,
+  "categories": [
+    "platform-engineering",
+    "product"
+  ],
+  "mainImage": "/blog-images/4b10ddea9172d8780dd08c36f90b18fa.jpg",
+  "imageAlt": "Meet the new Release!",
+  "showCTA": true,
+  "ctaCopy": "Simplify your configuration changes with Release's ephemeral environments for seamless app delivery workflows.",
+  "ctaLink": "https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=meet-the-new-release",
+  "relatedPosts": [
+    ""
+  ],
+  "ogImage": "/blog-images/4b10ddea9172d8780dd08c36f90b18fa.jpg",
+  "excerpt": "New year, new name. Check out the new Release!",
+  "tags": [
+    "platform-engineering",
+    "product"
+  ],
+  "ctaButton": "Try Release for Free",
+  "body": {
+    "raw": "\nIt's a new year, and we’re making some changes to our brand and web property. Moving forward, we are now known as simply Release, and our domain name is release.com. This change doesn’t impact the functionality of our current environments-as-a-service offerings, but better reflects how we support the release tasks of app delivery teams across the lifecycle.\n\nThis change may require you to make some minor changes to your configuration files moving forward. All existing releasehub.com pages will redirect to release.com equivalents, which might require reworking your CI/CD configuration files. APIs using ReleaseHub will continue to work after this change.\n\nCustomers who have questions about the change are encouraged to post these to their private Release Slack channel so our team can address them.\n\nThe product roadmap for the year ahead is exciting and is directly evolved from feedback from our users. We’re excited to make this change to our brand and website, and how it sets us up for the years ahead.\n\nI look forward to seeing the great things you release next!\n",
+    "code": "var Component=(()=>{var u=Object.create;var o=Object.defineProperty;var h=Object.getOwnPropertyDescriptor;var d=Object.getOwnPropertyNames;var g=Object.getPrototypeOf,p=Object.prototype.hasOwnProperty;var f=(t,e)=>()=>(e||t((e={exports:{}}).exports,e),e.exports),w=(t,e)=>{for(var r in e)o(t,r,{get:e[r],enumerable:!0})},i=(t,e,r,s)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let n of d(e))!p.call(t,n)&&n!==r&&o(t,n,{get:()=>e[n],enumerable:!(s=h(e,n))||s.enumerable});return t};var y=(t,e,r)=>(r=t!=null?u(g(t)):{},i(e||!t||!t.__esModule?o(r,\"default\",{value:t,enumerable:!0}):r,t)),b=t=>i(o({},\"__esModule\",{value:!0}),t);var m=f((j,c)=>{c.exports=_jsx_runtime});var _={};w(_,{default:()=>v,frontmatter:()=>k});var a=y(m()),k={title:\"Meet the new Release!\",summary:\"New year, new name. Check out the new Release!\",publishDate:\"Fri Jan 13 2023 20:27:52 GMT+0000 (Coordinated Universal Time)\",author:\"matt-carter\",readingTime:2,categories:[\"platform-engineering\",\"product\"],mainImage:\"/blog-images/4b10ddea9172d8780dd08c36f90b18fa.jpg\",imageAlt:\"Meet the new Release!\",showCTA:!0,ctaCopy:\"Simplify your configuration changes with Release's ephemeral environments for seamless app delivery workflows.\",ctaLink:\"https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=meet-the-new-release\",relatedPosts:[\"\"],ogImage:\"/blog-images/4b10ddea9172d8780dd08c36f90b18fa.jpg\",excerpt:\"New year, new name. Check out the new Release!\",tags:[\"platform-engineering\",\"product\"],ctaButton:\"Try Release for Free\"};function l(t){let e=Object.assign({p:\"p\"},t.components);return(0,a.jsxs)(a.Fragment,{children:[(0,a.jsx)(e.p,{children:\"It's a new year, and we\\u2019re making some changes to our brand and web property. Moving forward, we are now known as simply Release, and our domain name is release.com. This change doesn\\u2019t impact the functionality of our current environments-as-a-service offerings, but better reflects how we support the release tasks of app delivery teams across the lifecycle.\"}),`\n`,(0,a.jsx)(e.p,{children:\"This change may require you to make some minor changes to your configuration files moving forward. All existing releasehub.com pages will redirect to release.com equivalents, which might require reworking your CI/CD configuration files. APIs using ReleaseHub will continue to work after this change.\"}),`\n`,(0,a.jsx)(e.p,{children:\"Customers who have questions about the change are encouraged to post these to their private Release Slack channel so our team can address them.\"}),`\n`,(0,a.jsx)(e.p,{children:\"The product roadmap for the year ahead is exciting and is directly evolved from feedback from our users. We\\u2019re excited to make this change to our brand and website, and how it sets us up for the years ahead.\"}),`\n`,(0,a.jsx)(e.p,{children:\"I look forward to seeing the great things you release next!\"})]})}function x(t={}){let{wrapper:e}=t.components||{};return e?(0,a.jsx)(e,Object.assign({},t,{children:(0,a.jsx)(l,t)})):l(t)}var v=x;return b(_);})();\n;return Component;"
+  },
+  "_id": "blog/posts/meet-the-new-release.mdx",
+  "_raw": {
+    "sourceFilePath": "blog/posts/meet-the-new-release.mdx",
+    "sourceFileName": "meet-the-new-release.mdx",
+    "sourceFileDir": "blog/posts",
+    "contentType": "mdx",
+    "flattenedPath": "blog/posts/meet-the-new-release"
+  },
+  "type": "BlogPost",
+  "computedSlug": "meet-the-new-release"
+}

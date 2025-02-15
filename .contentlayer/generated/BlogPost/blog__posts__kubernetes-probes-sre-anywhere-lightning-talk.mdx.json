@@ -1,0 +1,40 @@
+{
+  "title": "Kubernetes Probes: SRE Anywhere Lightning Talk",
+  "summary": "Regis Wilson presents a 5 minute video submission for a lightning talk presentation at the SRE From Anywhere event.",
+  "publishDate": "Thu Jun 10 2021 22:11:25 GMT+0000 (Coordinated Universal Time)",
+  "author": "regis-wilson",
+  "readingTime": 5,
+  "categories": [
+    "kubernetes",
+    "platform-engineering"
+  ],
+  "mainImage": "/blog-images/63bf7e512270f0f923aaa42de8f1ba58.jpg",
+  "imageAlt": "Catchpoint SRE from Anywhere virtual conference announcement banner",
+  "showCTA": true,
+  "ctaCopy": "Improve Kubernetes probes with Release's ephemeral environments for faster bug resolution and stable deployments.",
+  "ctaLink": "https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=kubernetes-probes-sre-anywhere-lightning-talk",
+  "relatedPosts": [
+    ""
+  ],
+  "ogImage": "/blog-images/63bf7e512270f0f923aaa42de8f1ba58.jpg",
+  "excerpt": "Regis Wilson presents a 5 minute video submission for a lightning talk presentation at the SRE From Anywhere event.",
+  "tags": [
+    "kubernetes",
+    "platform-engineering"
+  ],
+  "ctaButton": "Try Release for Free",
+  "body": {
+    "raw": "\nIt was my pleasure to present a five minute lighting talk at the [Catchpoint SRE from Anywhere](https://www.catchpoint.com/sre/from-anywhere-2021) virtual conference on June 10, 2021. You can see the video presentation which was based on my earlier blog post on [Kubernetes probes](https://releasehub.com/blog/kubernetes-health-checks-2-ways-to-improve-stability).\n",
+    "code": "var Component=(()=>{var c=Object.create;var s=Object.defineProperty;var h=Object.getOwnPropertyDescriptor;var g=Object.getOwnPropertyNames;var p=Object.getPrototypeOf,b=Object.prototype.hasOwnProperty;var f=(e,t)=>()=>(t||e((t={exports:{}}).exports,t),t.exports),d=(e,t)=>{for(var n in t)s(e,n,{get:t[n],enumerable:!0})},i=(e,t,n,o)=>{if(t&&typeof t==\"object\"||typeof t==\"function\")for(let r of g(t))!b.call(e,r)&&r!==n&&s(e,r,{get:()=>t[r],enumerable:!(o=h(t,r))||o.enumerable});return e};var w=(e,t,n)=>(n=e!=null?c(p(e)):{},i(t||!e||!e.__esModule?s(n,\"default\",{value:e,enumerable:!0}):n,e)),y=e=>i(s({},\"__esModule\",{value:!0}),e);var l=f((R,m)=>{m.exports=_jsx_runtime});var _={};d(_,{default:()=>x,frontmatter:()=>v});var a=w(l()),v={title:\"Kubernetes Probes: SRE Anywhere Lightning Talk\",summary:\"Regis Wilson presents a 5 minute video submission for a lightning talk presentation at the SRE From Anywhere event.\",publishDate:\"Thu Jun 10 2021 22:11:25 GMT+0000 (Coordinated Universal Time)\",author:\"regis-wilson\",readingTime:5,categories:[\"kubernetes\",\"platform-engineering\"],mainImage:\"/blog-images/63bf7e512270f0f923aaa42de8f1ba58.jpg\",imageAlt:\"Catchpoint SRE from Anywhere virtual conference announcement banner\",showCTA:!0,ctaCopy:\"Improve Kubernetes probes with Release's ephemeral environments for faster bug resolution and stable deployments.\",ctaLink:\"https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=kubernetes-probes-sre-anywhere-lightning-talk\",relatedPosts:[\"\"],ogImage:\"/blog-images/63bf7e512270f0f923aaa42de8f1ba58.jpg\",excerpt:\"Regis Wilson presents a 5 minute video submission for a lightning talk presentation at the SRE From Anywhere event.\",tags:[\"kubernetes\",\"platform-engineering\"],ctaButton:\"Try Release for Free\"};function u(e){let t=Object.assign({p:\"p\",a:\"a\"},e.components);return(0,a.jsxs)(t.p,{children:[\"It was my pleasure to present a five minute lighting talk at the \",(0,a.jsx)(t.a,{href:\"https://www.catchpoint.com/sre/from-anywhere-2021\",children:\"Catchpoint SRE\\xA0from Anywhere\"}),\" virtual conference on June 10, 2021. You can see the video presentation which was based on my earlier blog post on \",(0,a.jsx)(t.a,{href:\"https://releasehub.com/blog/kubernetes-health-checks-2-ways-to-improve-stability\",children:\"Kubernetes probes\"}),\".\"]})}function k(e={}){let{wrapper:t}=e.components||{};return t?(0,a.jsx)(t,Object.assign({},e,{children:(0,a.jsx)(u,e)})):u(e)}var x=k;return y(_);})();\n;return Component;"
+  },
+  "_id": "blog/posts/kubernetes-probes-sre-anywhere-lightning-talk.mdx",
+  "_raw": {
+    "sourceFilePath": "blog/posts/kubernetes-probes-sre-anywhere-lightning-talk.mdx",
+    "sourceFileName": "kubernetes-probes-sre-anywhere-lightning-talk.mdx",
+    "sourceFileDir": "blog/posts",
+    "contentType": "mdx",
+    "flattenedPath": "blog/posts/kubernetes-probes-sre-anywhere-lightning-talk"
+  },
+  "type": "BlogPost",
+  "computedSlug": "kubernetes-probes-sre-anywhere-lightning-talk"
+}

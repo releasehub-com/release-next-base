@@ -1,0 +1,42 @@
+{
+  "title": "Release is going to RailsConf 2023",
+  "summary": "RailsConf 2023 is almost here! We will be showing off some exciting additions to the Release Development Platform.",
+  "publishDate": "Fri Apr 14 2023 18:07:19 GMT+0000 (Coordinated Universal Time)",
+  "author": "erik-landerholm",
+  "readingTime": 2,
+  "categories": [
+    "platform-engineering",
+    "kubernetes",
+    "ai"
+  ],
+  "mainImage": "/blog-images/4913678b8a8bea1cd41e57f2115805bb.jpg",
+  "imageAlt": "Release is going to RailsConf 2023",
+  "showCTA": true,
+  "ctaCopy": "Empower your Rails projects with AI-driven cloud deployment on Release for seamless environment management.",
+  "ctaLink": "https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=release-is-going-to-railsconf-2023",
+  "relatedPosts": [
+    ""
+  ],
+  "ogImage": "/blog-images/4913678b8a8bea1cd41e57f2115805bb.jpg",
+  "excerpt": "RailsConf 2023 is almost here! We will be showing off some exciting additions to the Release Development Platform.",
+  "tags": [
+    "platform-engineering",
+    "kubernetes",
+    "ai"
+  ],
+  "ctaButton": "Try Release for Free",
+  "body": {
+    "raw": "\n[RailsConf 2023](https://railsconf.org/) is almost here and we at Release are delighted to be attending and showing off some really exciting additions to the Release Development Platform.  We love attending RailsConf to hear amazing talks and show people all the cool things we are working on to support developers and teams as they use Rails to create amazing products.  \n\nFounded in 2019 Release was and still is built almost entirely with [Rails](https://rubycentral.org)!  The founding team has 30+ years of Rails experience and Rails has served us perfectly in our drive to create a development platform that serves the modern development organization.\n\nOur vision at Release is for all developers and teams to use the cloud to its full potential without needing to be experts in everything. We do this by simplifying the creation, access and usage of all environments (development, ephemeral, testing, staging, production, etc.), while maintaining access to advanced tooling.\n\nThis year we will be demoing something we are super excited about!  Our newest “Code to Cloud” feature was developed using AI to get your applications running on [AWS](https://docs.release.com/integrations/integrations-overview/aws-integration/aws-howtos) or [GCP](https://docs.release.com/integrations/integrations-overview/gcp-integration) quickly!  Release now gets your Rails project into the cloud without you needing to be docker, k8s, terraform, buildpacks, helm or even cloud specialist. \n\nWe use advanced AI to interrogate your repositories and generate all the necessary configuration (dockerfiles, k8s manifests, etc.) with very little intervention and iteration on your part.  We smooth out the learning curve of moving from something like heroku to AWS while allowing you to retain the simplicity of heroku with the power of AWS!\n\nIf you are looking for ways to increase developer productivity through a truly modern cloud agnostic platform or just want to see a cool demo of getting a Rails repository running in AWS on EKS, come see us at our booth! We love chatting with developers, learning about their successes and challenges (comparing notes) and making teams as productive as possible.  See you there!\n",
+    "code": "var Component=(()=>{var d=Object.create;var a=Object.defineProperty;var m=Object.getOwnPropertyDescriptor;var h=Object.getOwnPropertyNames;var u=Object.getPrototypeOf,p=Object.prototype.hasOwnProperty;var f=(t,e)=>()=>(e||t((e={exports:{}}).exports,e),e.exports),w=(t,e)=>{for(var n in e)a(t,n,{get:e[n],enumerable:!0})},r=(t,e,n,s)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let i of h(e))!p.call(t,i)&&i!==n&&a(t,i,{get:()=>e[i],enumerable:!(s=m(e,i))||s.enumerable});return t};var v=(t,e,n)=>(n=t!=null?d(u(t)):{},r(e||!t||!t.__esModule?a(n,\"default\",{value:t,enumerable:!0}):n,t)),y=t=>r(a({},\"__esModule\",{value:!0}),t);var c=f((j,l)=>{l.exports=_jsx_runtime});var x={};w(x,{default:()=>k,frontmatter:()=>b});var o=v(c()),b={title:\"Release is going to RailsConf 2023\",summary:\"RailsConf 2023 is almost here! We will be showing off some exciting additions to the Release Development Platform.\",publishDate:\"Fri Apr 14 2023 18:07:19 GMT+0000 (Coordinated Universal Time)\",author:\"erik-landerholm\",readingTime:2,categories:[\"platform-engineering\",\"kubernetes\",\"ai\"],mainImage:\"/blog-images/4913678b8a8bea1cd41e57f2115805bb.jpg\",imageAlt:\"Release is going to RailsConf 2023\",showCTA:!0,ctaCopy:\"Empower your Rails projects with AI-driven cloud deployment on Release for seamless environment management.\",ctaLink:\"https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=release-is-going-to-railsconf-2023\",relatedPosts:[\"\"],ogImage:\"/blog-images/4913678b8a8bea1cd41e57f2115805bb.jpg\",excerpt:\"RailsConf 2023 is almost here! We will be showing off some exciting additions to the Release Development Platform.\",tags:[\"platform-engineering\",\"kubernetes\",\"ai\"],ctaButton:\"Try Release for Free\"};function g(t){let e=Object.assign({p:\"p\",a:\"a\"},t.components);return(0,o.jsxs)(o.Fragment,{children:[(0,o.jsxs)(e.p,{children:[(0,o.jsx)(e.a,{href:\"https://railsconf.org/\",children:\"RailsConf 2023\"}),\" is almost here and we at Release are delighted to be attending and showing off some really exciting additions to the Release Development Platform.\\xA0 We love attending RailsConf to hear amazing talks and show people all the cool things we are working on to support developers and teams as they use Rails to create amazing products.\\xA0\\xA0\"]}),`\n`,(0,o.jsxs)(e.p,{children:[\"Founded in 2019 Release was and still is built almost entirely with \",(0,o.jsx)(e.a,{href:\"https://rubycentral.org\",children:\"Rails\"}),\"!\\xA0 The founding team has 30+ years of Rails experience and Rails has served us perfectly in our drive to create a development platform that serves the modern development organization.\"]}),`\n`,(0,o.jsx)(e.p,{children:\"Our vision at Release is for all developers and teams to use the cloud to its full potential without needing to be experts in everything. We do this by simplifying the creation, access and usage of all environments (development, ephemeral, testing, staging, production, etc.), while maintaining access to advanced tooling.\"}),`\n`,(0,o.jsxs)(e.p,{children:[\"This year we will be demoing something we are super excited about!\\xA0 Our newest \\u201CCode to Cloud\\u201D feature was developed using AI to get your applications running on \",(0,o.jsx)(e.a,{href:\"https://docs.release.com/integrations/integrations-overview/aws-integration/aws-howtos\",children:\"AWS\"}),\" or \",(0,o.jsx)(e.a,{href:\"https://docs.release.com/integrations/integrations-overview/gcp-integration\",children:\"GCP\"}),\" quickly!\\xA0 Release now gets your Rails project into the cloud without you needing to be docker, k8s, terraform, buildpacks, helm or even cloud specialist.\\xA0\"]}),`\n`,(0,o.jsx)(e.p,{children:\"We use advanced AI to interrogate your repositories and generate all the necessary configuration (dockerfiles, k8s manifests, etc.) with very little intervention and iteration on your part.\\xA0 We smooth out the learning curve of moving from something like heroku to AWS while allowing you to retain the simplicity of heroku with the power of AWS!\"}),`\n`,(0,o.jsx)(e.p,{children:\"If you are looking for ways to increase developer productivity through a truly modern cloud agnostic platform or just want to see a cool demo of getting a Rails repository running in AWS on EKS, come see us at our booth! We love chatting with developers, learning about their successes and challenges (comparing notes) and making teams as productive as possible.\\xA0 See you there!\"})]})}function R(t={}){let{wrapper:e}=t.components||{};return e?(0,o.jsx)(e,Object.assign({},t,{children:(0,o.jsx)(g,t)})):g(t)}var k=R;return y(x);})();\n;return Component;"
+  },
+  "_id": "blog/posts/release-is-going-to-railsconf-2023.mdx",
+  "_raw": {
+    "sourceFilePath": "blog/posts/release-is-going-to-railsconf-2023.mdx",
+    "sourceFileName": "release-is-going-to-railsconf-2023.mdx",
+    "sourceFileDir": "blog/posts",
+    "contentType": "mdx",
+    "flattenedPath": "blog/posts/release-is-going-to-railsconf-2023"
+  },
+  "type": "BlogPost",
+  "computedSlug": "release-is-going-to-railsconf-2023"
+}
