@@ -3,8 +3,6 @@
 import React from "react";
 import Image from "next/image";
 import { CaseStudyFrontmatter } from "../types";
-import Header from "@/components/shared/layout/Header";
-import Footer from "@/components/shared/layout/Footer";
 
 interface CaseStudyPageProps {
   content: React.ReactNode;
@@ -17,7 +15,6 @@ export default function CaseStudyPage({
 }: CaseStudyPageProps) {
   return (
     <>
-      <Header />
       {/* Add SVG Filter definition */}
       <svg className="hidden">
         <defs>
@@ -287,7 +284,6 @@ export default function CaseStudyPage({
           </article>
         </div>
       </main>
-      <Footer />
     </>
   );
 }

@@ -19,6 +19,14 @@ export default function Footer() {
                   Our Company
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/partners"
+                  className="hover:text-[#00bb93] transition-colors"
+                >
+                  Partners
+                </Link>
+              </li>
             </ul>
           </div>
           <div>
