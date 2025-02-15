@@ -31,50 +31,79 @@ ctaButton: Try Release for Free
 
 We sat down with Michael Gorsuch, Director of Infrastructure at DebtBook, a rapidly growing financial software company to talk about ways they are improving developer experience and accelerating product delivery in a highly regulated field. Throughout the conversation we learned about the unexpected cultural shifts implementing Release brought to their team, discussed process improvements, and explored future collaboration plans.
 
-Q: Michael, tell us about DebtBook.
+Q:
+Michael, tell us about DebtBook.
 
-A: DebtBook builds accounting software for public sector finance teams. Regulatory landscape around public spending is rapidly changing and becoming more complex with the introduction of the Financial Data Transparency Act, GASB 87, GASB 96, and more. All these regulations are great for the taxpayers but add layers of complexity for the resource-strapped finance teams, making it that much more difficult to keep up. DebtBook founders spent years in the public sector regulatory space and saw how no one was addressing these challenges well, leaving the finance teams buried in disparate spreadsheets with outdated figures. With DebtBook, teams at your local hospitals, universities and city governments have a unified view of their debt, lease, subscription management, and compliance reporting, making sure tax-payers funds are spent wisely and transparently.
+A:
+DebtBook builds accounting software for public sector finance teams. Regulatory landscape around public spending is rapidly changing and becoming more complex with the introduction of the Financial Data Transparency Act, GASB 87, GASB 96, and more. All these regulations are great for the taxpayers but add layers of complexity for the resource-strapped finance teams, making it that much more difficult to keep up. DebtBook founders spent years in the public sector regulatory space and saw how no one was addressing these challenges well, leaving the finance teams buried in disparate spreadsheets with outdated figures. With DebtBook, teams at your local hospitals, universities and city governments have a unified view of their debt, lease, subscription management, and compliance reporting, making sure tax-payers funds are spent wisely and transparently.
 
-Q: Sounds like DebtBook has an important mission to fulfill. Tell us more about your particular team and the role you have in the company.
+Q:
+Sounds like DebtBook has an important mission to fulfill. Tell us more about your particular team and the role you have in the company.
 
-A: I lead the Infrastructure team inside the Product Engineering org at DebtBook, and our primary role is to help our engineering team win. Aside form the day-to-day duties, my team has two main objectives:
+A:
+I lead the Infrastructure team inside the Product Engineering org at DebtBook, and our primary role is to help our engineering team win. Aside form the day-to-day duties, my team has two main objectives:
 
 1. Ensure that the infrastructure is well aligned to how our engineering team wants to function, so that it is easy for them to stay on task.
 2. Make sure everything [infra] is running smoothly and securely, so our engineering team is not bogged down with unnecessary toil.
 
 I believe that our work is hard enough, and the challenges we are solving for our customers are extremely complex, so we do not need infrastructure to slow us down. We need to work on the hard, unsolved problems, and make everything that's already been solved by someone else easy.
 
-Q: What development challenges were top of mind for you?
+Q:
+What development challenges were top of mind for you?
 
-A: We relied on a number of shared environments to work through our deployment process. As the team grew and our product became more complex, the shared environments became more complex as well and our commit-to-customer cycle expanded to go well over a month. As you might expect, such long release cycles caused friction. Developers would spend a significant amount of energy perfecting their code, only to learn a few weeks later that they built an awesome feature that was not actually addressing the customer's needs. It was frustrating to context switch to old issues all because our shared environments setup was too slow and cumbersome to accommodate timely feedback. We knew we could ease these frustrations, shorten the feedback loop and speed up our deployment process, we just needed the right tools.
+A:
+We relied on a number of shared environments to work through our deployment process. As the team grew and our product became more complex, the shared environments became more complex as well and our commit-to-customer cycle expanded to go well over a month. As you might expect, such long release cycles caused friction. Developers would spend a significant amount of energy perfecting their code, only to learn a few weeks later that they built an awesome feature that was not actually addressing the customer's needs. It was frustrating to context switch to old issues all because our shared environments setup was too slow and cumbersome to accommodate timely feedback. We knew we could ease these frustrations, shorten the feedback loop and speed up our deployment process, we just needed the right tools.
 
-Q: Why did you think an ephemeral environments solution like Release could be the answer?
+Q:
+Why did you think an ephemeral environments solution like Release could be the answer?
 
-A: We knew we needed a preview or on-demand environments option, and that our shared environments process was not going to cut it as the company grew and our product became more complex. In the past I worked with Heroku and came to rely on the preview functionality it offered. It made feedback faster and more actionable, and made collaboration easier overall. For various reasons Heroku was not a good fit at Debtbook, so we needed to find a reliable, secure, scalable and functional solution that our engineers could incorporate into their workflow quickly.
+A:
+We knew we needed a preview or on-demand environments option, and that our shared environments process was not going to cut it as the company grew and our product became more complex. In the past I worked with Heroku and came to rely on the preview functionality it offered. It made feedback faster and more actionable, and made collaboration easier overall. For various reasons Heroku was not a good fit at Debtbook, so we needed to find a reliable, secure, scalable and functional solution that our engineers could incorporate into their workflow quickly.
 
-Q: Did you consider building a preview or an ephemeral environment solution in-house?
-A: Building an ephemeral environment platform ourselves was never a serious consideration at DebtBook. We knew it would take at least two senior engineers to build something usable, and it would take time. Time we did not have and time we did not want to spend on a project outside of our core competencies. As an engineer you always want to tackle the problem yourself, but as a leader you need to allocate your resources to the most impactful work, and building a platform someone already perfected made no sense for our growth.
+Q:
+Did you consider building a preview or an ephemeral environment solution in-house?
 
-Q: Release is not the only environments-as-a-service offering (although we'd argue it's the best), how did you evaluate all the options and make your decision?
-A: Surprisingly there are not that many options for true environments-as-service platforms out there. Many claim they offer ephemeral environments, but are not a fit for complex, large applications that require high levels of reliability, security and scalability. That said, we did find a couple that seemed to fit the bill. We timeboxed the evaluation to a week, and set out to build a working prototype for engineers to play with. Release was the only one that actually worked as described. I was able to stand something up in one afternoon, shared it with the engineers and they got excited. It started a feedback loop to bring more things into Release and refine it, and it worked, it simply worked. I got good use of the free trial and once we were happy with the results, we engaged Release to start rolling it out to a wider team. The team at Release was on-point from day one, and continues to be a trusted partner.
+A:
+Building an ephemeral environment platform ourselves was never a serious consideration at DebtBook. We knew it would take at least two senior engineers to build something usable, and it would take time. Time we did not have and time we did not want to spend on a project outside of our core competencies. As an engineer you always want to tackle the problem yourself, but as a leader you need to allocate your resources to the most impactful work, and building a platform someone already perfected made no sense for our growth.
 
-Q: As you onboarded with Release, what changes did you start seeing in your organization?
-A: Release team was tremendously helpful during the onboarding process. It took us about a month to get everything up and running at the level we needed it, and roll it out to the wider team. From the start, we got amazing adoption among engineers. They all wanted a simpler, more seamless way to preview, test and deploy their changes and Release did just that from day one. Now within 10 minutes on average of pushing up a commit they have a full-stack production-like environment they can share with product or other engineers and show their work. They can do whatever they want in it without any risk of messing up production, or stepping on each other's toes.
+Q:
+Release is not the only environments-as-a-service offering (although we'd argue it's the best), how did you evaluate all the options and make your decision?
+
+A:
+Surprisingly there are not that many options for true environments-as-service platforms out there. Many claim they offer ephemeral environments, but are not a fit for complex, large applications that require high levels of reliability, security and scalability. That said, we did find a couple that seemed to fit the bill. We timeboxed the evaluation to a week, and set out to build a working prototype for engineers to play with. Release was the only one that actually worked as described. I was able to stand something up in one afternoon, shared it with the engineers and they got excited. It started a feedback loop to bring more things into Release and refine it, and it worked, it simply worked. I got good use of the free trial and once we were happy with the results, we engaged Release to start rolling it out to a wider team. The team at Release was on-point from day one, and continues to be a trusted partner.
+
+Q:
+As you onboarded with Release, what changes did you start seeing in your organization?
+
+A:
+Release team was tremendously helpful during the onboarding process. It took us about a month to get everything up and running at the level we needed it, and roll it out to the wider team. From the start, we got amazing adoption among engineers. They all wanted a simpler, more seamless way to preview, test and deploy their changes and Release did just that from day one. Now within 10 minutes on average of pushing up a commit they have a full-stack production-like environment they can share with product or other engineers and show their work. They can do whatever they want in it without any risk of messing up production, or stepping on each other's toes.
 
 With ephemeral environments we expected to see the commit-to-customer cycle to go down, and it did. We went from 40 days to less than a week to ship changes. What we did not expect was the massive culture change that followed. Giving engineers self-service, on-demand, isolated environments that spin up in minutes, with production-like data in tow, allowed them to take more chances, satisfy their curiosity and start digging into the issues that they simply could not have thought about before. Release allowed them to try out completely different patterns and effectively deploy something and show it to their peers or even to the customer right then and there, without breaking anything. We could not do these kinds of experiments with the static environments we had before. This has a tangible impact for our customers too. The other day we had a ticket go from creation to completely reviewed, tested and merged, and it took us less than 2 hours. A year ago before several changes (including using Release as the latest one) that would have taken days. Things like this make our engineers happy to come to work each day.
 
-Q: What are the key benefits of implementing Release at DebtBook?
-A: There are three main benefits:
+Q:
+What are the key benefits of implementing Release at DebtBook?
+
+A:
+There are three main benefits:
 
 1. **Development velocity** - we 6x our development velocity. Going from over 40 days to ship new features, to shipping multiple times a week. And that's still slow. We are working on moving even faster as we speak.
 2. **Developer experience** - our feedback loops shrank significantly. Our engineers are less frustrated, they collaborate and share ideas more freely, and get features in the hands of our customers faster. All this gives our team excitement and energy to tackle the next challenge.
 3. **Lean operations** - as a small infrastructure team, we are able to deliver functionality well above our size. We're small but mighty, leveraging our resources in a smart way.
 
-Q: How would your team react if you stopped using Release today?
-A: Funny you ask that. At our recent offsite I had multiple engineers come up and comment on how happy they were with Release and how it made their life easier, and if I made it go away they would not stand for it. At this point Release is an essential part of our development workflow. It allows engineers to experiment and get relevant feedback in minutes, not days, which makes them that much more excited to work on our product.
+Q:
+How would your team react if you stopped using Release today?
 
-Q: It's great to hear that everyone is happy with Release. But I'm sure you have suggestions for improvement. Are there features or functionality Release is missing?
-A: We've been vocal about our feature requests from early days, and so far Release either implemented the requests, found workarounds, or helped us rethink processes on our side to make things flow smoother. It's been a great partnership. Every time we have questions, Release team responds within minutes with genuine curiosity and willingness to help. I'd say Release meets our requirements at the moment and I'm confident they will continue to grow and improve alongside us.
+A:
+Funny you ask that. At our recent offsite I had multiple engineers come up and comment on how happy they were with Release and how it made their life easier, and if I made it go away they would not stand for it. At this point Release is an essential part of our development workflow. It allows engineers to experiment and get relevant feedback in minutes, not days, which makes them that much more excited to work on our product.
 
-Q: Who would you recommend Release to?
-A: Who wouldn't I recommend Release to? If you are building software you should be using Release. Unless you're building an environments-as-a-service or infrastructure-as-a-service platform, and that's your core business, or you're Google, Facebook or Netflix with hundreds of infrastructure engineers, you should not be building this functionality yourself. Inevitably it will consume too much of your time, effort and money, and you'll still get something that's only a fraction as good as Release. So who should use Release? Any company with complex cloud-first, containerized applications (internal or external) who wants to move faster and have a competitive advantage in their industry. [Give it a try](https://release.com/signup), and see for yourself.
+Q:
+It's great to hear that everyone is happy with Release. But I'm sure you have suggestions for improvement. Are there features or functionality Release is missing?
+
+A:
+We've been vocal about our feature requests from early days, and so far Release either implemented the requests, found workarounds, or helped us rethink processes on our side to make things flow smoother. It's been a great partnership. Every time we have questions, Release team responds within minutes with genuine curiosity and willingness to help. I'd say Release meets our requirements at the moment and I'm confident they will continue to grow and improve alongside us.
+
+Q:
+Who would you recommend Release to?
+
+A:
+Who wouldn't I recommend Release to? If you are building software you should be using Release. Unless you're building an environments-as-a-service or infrastructure-as-a-service platform, and that's your core business, or you're Google, Facebook or Netflix with hundreds of infrastructure engineers, you should not be building this functionality yourself. Inevitably it will consume too much of your time, effort and money, and you'll still get something that's only a fraction as good as Release. So who should use Release? Any company with complex cloud-first, containerized applications (internal or external) who wants to move faster and have a competitive advantage in their industry. [Give it a try](https://release.com/signup), and see for yourself.
