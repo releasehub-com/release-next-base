@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-
 export const metadata: Metadata = {
   title: "Release - Kubernetes Management",
   description:
@@ -9,10 +8,9 @@ export const metadata: Metadata = {
     description:
       "Simplify your Kubernetes operations with Release. Get enterprise-grade Kubernetes management without the complexity.",
     type: "article",
-    url: "/kubernetes-management",
     images: [
       {
-        url: "/og/og-image.png",
+        url: "/blog-images/hero.svg",
         width: 1200,
         height: 630,
         alt: "Release - The Ephemeral Environments Platform",
@@ -27,8 +25,5 @@ export const metadata: Metadata = {
       "Simplify your Kubernetes operations with Release. Get enterprise-grade Kubernetes management without the complexity.",
     images: ["/og/og-image.png"],
     creator: "@release_hub",
-  },
-  alternates: {
-    canonical: "/kubernetes-management",
   },
 };

@@ -1,20 +1,32 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import LandingPageWrapper from "@/components/shared/layout/LandingPageWrapper";
-
-const EphemeralContent = dynamic(
-  () =>
-    import(
-      "@/app/ephemeral-environments-platform/components/EphemeralContent"
-    ).then((mod) => mod.default),
-  { ssr: false },
-);
+import { useVersion } from "@/lib/version/VersionContext";
+import EphemeralContent from "../ephemeral-environments-platform/components/EphemeralContent";
+import KubernetesContent from "../kubernetes-management/components/KubernetesContent";
+import CloudDevContent from "../cloud-development-environments/components/CloudDevContent";
+import ReplicatedContent from "../replicated/components/ReplicatedContent";
+import GitLabContent from "../gitlab/components/GitLabContent";
+import { default as PaasContent } from "../platform-as-a-service/components/PaasContent";
+import AIPipelineContent from "../ai-ready-infrastructure-pipeline/components/AIPipelineContent";
 
 export default function HomeContent() {
-  return (
-    <LandingPageWrapper>
-      <EphemeralContent />
-    </LandingPageWrapper>
-  );
+  const { version } = useVersion();
+
+  switch (version) {
+    case "kubernetes":
+      return <KubernetesContent />;
+    case "cloud-dev":
+      return <CloudDevContent />;
+    case "replicated":
+      return <ReplicatedContent />;
+    case "gitlab":
+      return <GitLabContent />;
+    case "cloud":
+      return <PaasContent />;
+    case "ai-pipeline":
+      return <AIPipelineContent />;
+    case "ephemeral":
+    default:
+      return <EphemeralContent />;
+  }
 }

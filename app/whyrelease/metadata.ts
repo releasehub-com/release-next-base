@@ -27,7 +27,4 @@ export const metadata: Metadata = {
     images: ["/images/why-release-poster.png"],
     creator: "@release_hub",
   },
-  alternates: {
-    canonical: "/whyrelease",
-  },
 };

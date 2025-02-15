@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-
 export const metadata: Metadata = {
   title: "Partner Program | Release",
   description:
@@ -9,7 +8,6 @@ export const metadata: Metadata = {
     description:
       "Join the Release Partner Program to help your clients accelerate their development workflows with ephemeral environments and modern cloud infrastructure.",
     type: "article",
-    url: "/partners",
     images: [
       {
         url: "/og/og-image.png",
@@ -27,8 +25,5 @@ export const metadata: Metadata = {
       "Join the Release Partner Program to help your clients accelerate their development workflows with ephemeral environments and modern cloud infrastructure.",
     images: ["/og/og-image.png"],
     creator: "@release_hub",
-  },
-  alternates: {
-    canonical: "/partners",
   },
 };

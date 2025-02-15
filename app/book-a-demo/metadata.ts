@@ -9,7 +9,6 @@ export const metadata: Metadata = {
     description:
       "Schedule a personalized demo to see how Release can help your team ship faster and more reliably. Our experts will show you how to get the most out of our platform.",
     type: "article",
-    url: "/book-a-demo",
     images: [
       {
         url: "/og/og-image.png",
@@ -27,8 +26,5 @@ export const metadata: Metadata = {
       "Schedule a personalized demo to see how Release can help your team ship faster and more reliably. Our experts will show you how to get the most out of our platform.",
     images: ["/og/og-image.png"],
     creator: "@release_hub",
-  },
-  alternates: {
-    canonical: "/book-a-demo",
   },
 };

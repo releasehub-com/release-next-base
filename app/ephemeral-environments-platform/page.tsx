@@ -1,39 +1,17 @@
-"use client";
-
-import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import type { Metadata } from "next";
+import { metadata } from "./metadata";
 import EphemeralContent from "./components/EphemeralContent";
-import { setVersionInStorage, type VersionId } from "@/config/versions";
+import VersionPageWrapper from "@/components/shared/layout/VersionPageWrapper";
+import { Suspense } from "react";
 
-// Helper function to set version in both localStorage and cookie
-async function setVersion(version: VersionId) {
-  // Set in localStorage
-  setVersionInStorage(version);
+export { metadata };
 
-  // Set in cookie via API
-  try {
-    await fetch("/api/version", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ version }),
-    });
-  } catch (err) {
-    console.error("Failed to set version cookie:", err);
-  }
-}
-
-export default function EphemeralPage() {
-  const searchParams = useSearchParams();
-  const urlVersion = searchParams.get("version");
-
-  useEffect(() => {
-    // If no version in URL, set to ephemeral
-    if (!urlVersion) {
-      setVersion("ephemeral");
-    }
-  }, [urlVersion]);
-
-  return <EphemeralContent />;
+export default function EphemeralEnvironmentsPage() {
+  return (
+    <VersionPageWrapper includeLayout={true}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <EphemeralContent />
+      </Suspense>
+    </VersionPageWrapper>
+  );
 }

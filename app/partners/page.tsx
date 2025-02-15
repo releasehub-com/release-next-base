@@ -1,14 +1,19 @@
-import { Metadata } from "next";
-import PartnerIndex from "./components/PartnerIndex";
-import { Partner } from "./types";
-import { getPartners } from "./utils";
+import type { Metadata } from "next";
+import PartnerList from "./components/PartnerList";
+import Header from "@/components/shared/layout/Header";
+import Footer from "@/components/shared/layout/Footer";
+import { metadata } from "./metadata";
 
-export const metadata: Metadata = {
-  title: "Partners | Release",
-  description: "Explore Release's technology and integration partners",
-};
+export { metadata };
 
 export default function PartnersPage() {
-  const partners = getPartners();
-  return <PartnerIndex partners={partners} />;
+  return (
+    <>
+      <Header />
+      <main className="min-h-screen bg-gray-900">
+        <PartnerList />
+      </main>
+      <Footer />
+    </>
+  );
 }

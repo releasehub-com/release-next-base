@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 
+// Get the base URL from environment or default to release.com
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://release.com";
+
 export const metadata: Metadata = {
   title: "Sign Up | Release",
   description:
@@ -8,7 +11,8 @@ export const metadata: Metadata = {
     title: "Sign Up | Release",
     description:
       "Get started with Release. Create your account and start building better development environments today.",
-    type: "website",
+    type: "article",
+    url: "/signup",
     images: [
       {
         url: "/og/og-image.png",

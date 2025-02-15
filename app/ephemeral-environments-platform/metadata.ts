@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-
 export const metadata: Metadata = {
   title: "Release - Ephemeral Environments Platform",
   description:
@@ -9,7 +8,6 @@ export const metadata: Metadata = {
     description:
       "Create on-demand, production-like environments for testing, staging, and development. Eliminate environment bottlenecks and accelerate your development workflow.",
     type: "article",
-    url: "/ephemeral-environments-platform",
     images: [
       {
         url: "/og/og-image.png",
@@ -27,8 +25,5 @@ export const metadata: Metadata = {
       "Create on-demand, production-like environments for testing, staging, and development. Eliminate environment bottlenecks and accelerate your development workflow.",
     images: ["/og/og-image.png"],
     creator: "@release_hub",
-  },
-  alternates: {
-    canonical: "/ephemeral-environments-platform",
   },
 };

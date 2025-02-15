@@ -4,7 +4,6 @@ import "./globals.css";
 import Script from "next/script";
 import PathStorage from "./components/PathStorage";
 import "highlight.js/styles/github-dark.css";
-import { VersionProvider } from "@/lib/version/VersionContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,8 +16,8 @@ const metadataBaseUrl = new URL(
 export const metadata: Metadata = {
   metadataBase: metadataBaseUrl,
   title: {
-    default: "Release - The Ephemeral Environments Platform",
     template: "%s | Release",
+    default: "Release - The Ephemeral Environments Platform",
   },
   description:
     "Create and manage on-demand environments in minutes. Empower developers, reduce costs, and accelerate your development workflow with Release.",
@@ -68,9 +67,6 @@ export const metadata: Metadata = {
     "google-site-verification": "your-google-verification-code",
     "yandex-verification": "your-yandex-verification-code",
   },
-  alternates: {
-    canonical: "/",
-  },
   verification: {
     google: "your-google-verification-code",
   },
@@ -110,7 +106,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} bg-gray-900`}>
         <PathStorage />
-        <VersionProvider>{children}</VersionProvider>
+        {children}
       </body>
     </html>
   );

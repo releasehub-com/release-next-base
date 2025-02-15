@@ -12,14 +12,10 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { CheckIcon, XIcon } from "lucide-react";
-import Header from "@/components/shared/layout/Header";
-import Footer from "@/components/shared/layout/Footer";
 
 export default function KubernetesLandingPage() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-gray-100">
-      <Header />
-
       <main className="flex-1">
         <section className="w-full py-12 md:py-16 lg:py-20">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -271,8 +267,6 @@ export default function KubernetesLandingPage() {
           </div>
         </section>
       </main>
-
-      <Footer />
     </div>
   );
 }

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-
 export const metadata: Metadata = {
   title: "Use Cases | Release",
   description:
@@ -10,7 +9,6 @@ export const metadata: Metadata = {
       "From short-lived production-like environments for building and testing features, to running complex applications in production. See how Release streamlines software delivery across the whole application lifecycle.",
     type: "article",
     siteName: "Release",
-    url: "/use-cases",
     images: [
       {
         url: "/og/og-image.png",
@@ -27,8 +25,5 @@ export const metadata: Metadata = {
     description:
       "From short-lived production-like environments for building and testing features, to running complex applications in production. See how Release streamlines software delivery across the whole application lifecycle.",
     images: ["/og/og-image.png"],
-  },
-  alternates: {
-    canonical: "/use-cases",
   },
 };

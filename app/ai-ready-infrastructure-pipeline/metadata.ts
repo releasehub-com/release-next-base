@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-
 export const metadata: Metadata = {
   title: "Release - AI-Ready Infrastructure Pipeline",
   description:
@@ -9,7 +8,6 @@ export const metadata: Metadata = {
     description:
       "Build and deploy AI/ML applications with confidence. Get the infrastructure you need for your AI workloads without the complexity.",
     type: "article",
-    url: "/ai-ready-infrastructure-pipeline",
     images: [
       {
         url: "/images/ai-pipeline/hero.svg",
@@ -27,8 +25,5 @@ export const metadata: Metadata = {
       "Build and deploy AI/ML applications with confidence. Get the infrastructure you need for your AI workloads without the complexity.",
     images: ["/images/ai-pipeline/hero.svg"],
     creator: "@release_hub",
-  },
-  alternates: {
-    canonical: "/ai-ready-infrastructure-pipeline",
   },
 };

@@ -9,7 +9,6 @@ export const metadata: Metadata = {
     description:
       "Explore the tradeoffs between building your own environment management solution versus buying a solution like Release. Learn about the costs, benefits, and considerations for each approach.",
     type: "article",
-    url: "/build-vs-buy",
     images: [
       {
         url: "/og/og-image.png",
@@ -27,8 +26,5 @@ export const metadata: Metadata = {
       "Explore the tradeoffs between building your own environment management solution versus buying a solution like Release. Learn about the costs, benefits, and considerations for each approach.",
     images: ["/og/og-image.png"],
     creator: "@release_hub",
-  },
-  alternates: {
-    canonical: "/build-vs-buy",
   },
 };

@@ -9,7 +9,6 @@ export const metadata: Metadata = {
     description:
       "Simple, transparent pricing for teams of all sizes. Start for free and scale as you grow.",
     type: "article",
-    url: "/pricing",
     images: [
       {
         url: "/og/og-image.png",
@@ -27,8 +26,5 @@ export const metadata: Metadata = {
       "Simple, transparent pricing for teams of all sizes. Start for free and scale as you grow.",
     images: ["/og/og-image.png"],
     creator: "@release_hub",
-  },
-  alternates: {
-    canonical: "/pricing",
   },
 };

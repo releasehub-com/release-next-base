@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-
 export const metadata: Metadata = {
   title: "Staging Environments | Release",
   description:
@@ -9,7 +8,6 @@ export const metadata: Metadata = {
     description:
       "Create production-like staging environments on demand. Test your applications in isolated environments that perfectly mirror your production setup.",
     type: "article",
-    url: "/staging-environments",
     images: [
       {
         url: "/og/og-image.png",
@@ -27,8 +25,5 @@ export const metadata: Metadata = {
       "Create production-like staging environments on demand. Test your applications in isolated environments that perfectly mirror your production setup.",
     images: ["/og/og-image.png"],
     creator: "@release_hub",
-  },
-  alternates: {
-    canonical: "/staging-environments",
   },
 };

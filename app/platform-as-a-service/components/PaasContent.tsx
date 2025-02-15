@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Header from "@/components/shared/layout/Header";
-import Footer from "@/components/shared/layout/Footer";
+import { useSearchParams } from "next/navigation";
+import { useVersion } from "@/lib/version/VersionContext";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -13,18 +13,21 @@ import PaaSIntegration from "./PaaSIntegration";
 import PaaSUseCases from "./PaaSUseCases";
 import PaaSCTA from "./PaaSCTA";
 import EphemeralDocumentation from "./EphemeralDocumentation";
-import { useVersion } from "@/lib/version/VersionContext";
 
 export default function PaasContent() {
   const { setVersion } = useVersion();
+  const searchParams = useSearchParams();
+  const urlVersion = searchParams.get("version");
 
   useEffect(() => {
-    setVersion("cloud");
-  }, [setVersion]);
+    // If no version in URL, set to cloud
+    if (!urlVersion) {
+      setVersion("cloud");
+    }
+  }, [urlVersion, setVersion]);
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-gray-100">
-      <Header />
       <main className="flex-1">
         <PaaSHero />
         <div className="bg-gray-800/50 py-8">
@@ -47,7 +50,6 @@ export default function PaasContent() {
         <EphemeralDocumentation />
         <PaaSCTA />
       </main>
-      <Footer />
     </div>
   );
 }

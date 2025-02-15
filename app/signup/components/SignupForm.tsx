@@ -7,6 +7,21 @@ import { SignupMessage } from "./SignupMessage";
 import { useVersion } from "@/lib/version/VersionContext";
 import { getVersionContent, VERSIONS } from "@/lib/version/versionService";
 
+// Client-side only wrapper for version-dependent content
+function VersionContent({ children }: { children: React.ReactNode }) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null; // or a loading skeleton
+  }
+
+  return <>{children}</>;
+}
+
 export default function SignupForm() {
   const [error, setError] = useState<string[]>([]);
   const { version, setVersion, resolveVersion } = useVersion();
@@ -155,9 +170,11 @@ export default function SignupForm() {
     <>
       <div className="w-full lg:w-1/2 p-6 lg:p-16">
         <div className="max-w-md mx-auto">
-          <h1 className="text-2xl font-bold text-gray-100 mb-8">
-            Create a Release account
-          </h1>
+          <VersionContent>
+            <h1 className="text-2xl font-bold text-gray-100 mb-8">
+              Create a Release account
+            </h1>
+          </VersionContent>
 
           <form
             method="post"

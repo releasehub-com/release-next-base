@@ -9,7 +9,6 @@ export const metadata: Metadata = {
     description:
       "Release is a team of entrepreneurs and systems engineers building efficient collaboration tools for developers. Learn more about our mission and team.",
     type: "article",
-    url: "/company",
     images: [
       {
         url: "/og/og-image.png",
@@ -27,8 +26,5 @@ export const metadata: Metadata = {
       "Release is a team of entrepreneurs and systems engineers building efficient collaboration tools for developers. Learn more about our mission and team.",
     images: ["/og/og-image.png"],
     creator: "@release_hub",
-  },
-  alternates: {
-    canonical: "/company",
   },
 };

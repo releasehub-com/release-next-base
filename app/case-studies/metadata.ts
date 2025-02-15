@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-
 export const metadata: Metadata = {
   title: "Customer Case Studies | Release",
   description:
@@ -9,7 +8,6 @@ export const metadata: Metadata = {
     description:
       "Discover how leading companies use Release to streamline their development workflows, improve collaboration, and ship faster with confidence.",
     type: "article",
-    url: "/case-studies",
     images: [
       {
         url: "/og/og-image.png",
@@ -27,8 +25,5 @@ export const metadata: Metadata = {
       "Discover how leading companies use Release to streamline their development workflows, improve collaboration, and ship faster with confidence.",
     images: ["/og/og-image.png"],
     creator: "@release_hub",
-  },
-  alternates: {
-    canonical: "/case-studies",
   },
 };

@@ -20,6 +20,41 @@ import {
 
 const VersionContext = createContext<VersionContextType | null>(null);
 
+// Helper function to set version in both localStorage and cookie
+async function setVersionWithStorage(version: VersionId) {
+  // Set in localStorage and context via service
+  setVersionService(version);
+
+  // Set in cookie via API
+  try {
+    await fetch("/api/version", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ version }),
+    });
+  } catch (err) {
+    console.error("Failed to set version cookie:", err);
+  }
+}
+
+// Custom hook for handling version setting in landing pages
+export function useVersionSetter(defaultVersion: VersionId) {
+  const searchParams = useSearchParams();
+  const urlVersion = searchParams.get("version");
+  const pathname = usePathname();
+  const pathVersion = getVersionFromPath(pathname);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const version =
+      resolveVersionService({ urlVersion, pathVersion }) || defaultVersion;
+    setVersionWithStorage(version);
+  }, [urlVersion, pathVersion, defaultVersion]);
+}
+
 export function VersionProvider({ children }: { children: React.ReactNode }) {
   // Initialize with stored version or default
   const [version, setVersionState] = useState<VersionId>(() => {

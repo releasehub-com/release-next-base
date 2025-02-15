@@ -9,7 +9,6 @@ export const metadata: Metadata = {
     description:
       "See how Release compares to other platforms and tools. Find out why leading teams choose Release for their environment management and deployment needs.",
     type: "article",
-    url: "/comparison",
     images: [
       {
         url: "/og/og-image.png",
@@ -27,8 +26,5 @@ export const metadata: Metadata = {
       "See how Release compares to other platforms and tools. Find out why leading teams choose Release for their environment management and deployment needs.",
     images: ["/og/og-image.png"],
     creator: "@release_hub",
-  },
-  alternates: {
-    canonical: "/comparison",
   },
 };

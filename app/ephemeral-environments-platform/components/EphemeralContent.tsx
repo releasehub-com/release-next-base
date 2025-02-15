@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Header from "@/components/shared/layout/Header";
-import Footer from "@/components/shared/layout/Footer";
+import { useSearchParams } from "next/navigation";
 import EphemeralHero from "./EphemeralHero";
 import EphemeralFeatures from "./EphemeralFeatures";
 import EphemeralUseCases from "./EphemeralUseCases";
@@ -13,14 +12,21 @@ import { useVersion } from "@/lib/version/VersionContext";
 
 export default function EphemeralContent() {
   const { setVersion } = useVersion();
+  const searchParams = useSearchParams();
+  const urlVersion = searchParams.get("version");
 
   useEffect(() => {
-    setVersion("ephemeral");
-  }, [setVersion]);
+    // If no version in URL, set to ephemeral
+    if (!urlVersion) {
+      setVersion("ephemeral");
+    }
+  }, [urlVersion, setVersion]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-900 text-gray-100">
-      <Header />
+    <div
+      data-testid="ephemeral-content-wrapper"
+      className="flex flex-col min-h-screen bg-gray-900 text-gray-100"
+    >
       <main className="flex-1">
         <EphemeralHero />
         <EphemeralFeatures />
@@ -29,7 +35,6 @@ export default function EphemeralContent() {
         <EphemeralDocumentation />
         <EphemeralCTA />
       </main>
-      <Footer />
     </div>
   );
 }

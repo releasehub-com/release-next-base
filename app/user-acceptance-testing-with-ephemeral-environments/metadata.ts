@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-
 export const metadata: Metadata = {
   title: "User Acceptance Testing (UAT) with Release Ephemeral Environments",
   description:
@@ -9,7 +8,6 @@ export const metadata: Metadata = {
     description:
       "Learn how Release's Ephemeral Environments enable efficient User Acceptance Testing (UAT) for Product Managers, Designers, QA teams, and stakeholders.",
     type: "article",
-    url: "/user-acceptance-testing-with-ephemeral-environments",
     images: [
       {
         url: "/og/user-acceptance-testing.png",
@@ -25,8 +23,5 @@ export const metadata: Metadata = {
     description:
       "Learn how Release's Ephemeral Environments enable efficient User Acceptance Testing (UAT) for Product Managers, Designers, QA teams, and stakeholders.",
     images: ["/og/user-acceptance-testing.png"],
-  },
-  alternates: {
-    canonical: "/user-acceptance-testing-with-ephemeral-environments",
   },
 };

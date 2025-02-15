@@ -1,8 +1,12 @@
+import type { Metadata } from "next";
 import { getBlogPosts } from "./lib/blog";
 import BlogIndex from "./components/BlogIndex";
 import { Suspense } from "react";
 import Header from "@/components/shared/layout/Header";
 import Footer from "@/components/shared/layout/Footer";
+import { metadata } from "./metadata";
+
+export { metadata };
 
 export default async function BlogPage({
   searchParams,

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -12,21 +13,22 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { CheckIcon, StarIcon, X } from "lucide-react";
-import Header from "@/components/shared/layout/Header";
-import Footer from "@/components/shared/layout/Footer";
 import { useVersion } from "@/lib/version/VersionContext";
 
 export default function GitLabContent() {
   const { setVersion } = useVersion();
+  const searchParams = useSearchParams();
+  const urlVersion = searchParams.get("version");
 
   useEffect(() => {
-    setVersion("gitlab");
-  }, [setVersion]);
+    // If no version in URL, set to gitlab
+    if (!urlVersion) {
+      setVersion("gitlab");
+    }
+  }, [urlVersion, setVersion]);
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-gray-100">
-      <Header />
-
       <main className="flex-1">
         <section className="w-full py-6 md:py-12 lg:py-16">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -302,8 +304,6 @@ export default function GitLabContent() {
           </div>
         </section>
       </main>
-
-      <Footer />
     </div>
   );
 }

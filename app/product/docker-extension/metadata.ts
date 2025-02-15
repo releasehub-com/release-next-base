@@ -9,7 +9,6 @@ export const metadata: Metadata = {
     description:
       "Instantly share local containers with customizable URLs. Test, preview, and QA earlier and faster throughout the SDLC.",
     type: "article",
-    url: "/product/docker-extension",
     images: [
       {
         url: "/images/product/docker-extension/header.svg",
@@ -27,8 +26,5 @@ export const metadata: Metadata = {
       "Instantly share local containers with customizable URLs. Test, preview, and QA earlier and faster throughout the SDLC.",
     images: ["/images/product/docker-extension/header.svg"],
     creator: "@release_hub",
-  },
-  alternates: {
-    canonical: "/product/docker-extension",
   },
 };

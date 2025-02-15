@@ -3,7 +3,9 @@ import type { ComponentType } from "react";
 
 // Basic mock components with data-testid for easy testing
 const EphemeralLandingComponent = () => (
-  <div data-testid="ephemeral-landing">Ephemeral Landing</div>
+  <div data-testid="ephemeral-content-wrapper">
+    <div data-testid="ephemeral-content">Ephemeral Landing</div>
+  </div>
 );
 const GitLabLandingComponent = () => (
   <div data-testid="gitlab-landing">GitLab Landing</div>

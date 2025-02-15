@@ -45,7 +45,7 @@ Create a new file at `app/your-landing-page/page.tsx`:
     "use client";
 
     import dynamic from "next/dynamic";
-    import LandingPageWrapper from "@/components/LandingPageWrapper";
+    import VersionPageWrapper from "@/components/shared/layout/VersionPageWrapper";
 
     const YourLandingPage = dynamic(
       () => import("@/components/YourLandingPage").then((mod) => mod.default),
@@ -54,9 +54,9 @@ Create a new file at `app/your-landing-page/page.tsx`:
 
     export default function YourLandingPagePage() {
       return (
-        <LandingPageWrapper>
+        <VersionPageWrapper>
           <YourLandingPage />
-        </LandingPageWrapper>
+        </VersionPageWrapper>
       );
     }
 
@@ -312,7 +312,7 @@ Verify the AI's response includes:
 2. Landing Page:
 
    - Proper imports
-   - LandingPageWrapper usage
+   - VersionPageWrapper usage
    - Dynamic imports
 
 3. Tests:

@@ -9,7 +9,6 @@ export const metadata: Metadata = {
     description:
       "Create instant, isolated datasets for your development and testing environments. Speed up your development process with Release's instant dataset cloning capabilities.",
     type: "article",
-    url: "/product/instant-datasets",
     images: [
       {
         url: "/images/product/instant-datasets/header.webp",
@@ -27,8 +26,5 @@ export const metadata: Metadata = {
       "Create instant, isolated datasets for your development and testing environments. Speed up your development process with Release's instant dataset cloning capabilities.",
     images: ["/images/product/instant-datasets/header.webp"],
     creator: "@release_hub",
-  },
-  alternates: {
-    canonical: "/product/instant-datasets",
   },
 };
