@@ -121,3 +121,18 @@ export async function waitForAllImages(page: Page) {
     throw error;
   }
 }
+
+export async function saveErrorScreenshot(
+  page: Page,
+  error: Error,
+  name: string
+): Promise<void> {
+  try {
+    await page.screenshot({
+      path: `test-artifacts/${name}-error.png`,
+      fullPage: true,
+    });
+  } catch (screenshotError) {
+    console.error("Failed to save error screenshot:", screenshotError);
+  }
+}
