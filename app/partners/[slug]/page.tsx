@@ -2,9 +2,57 @@ import { notFound } from "next/navigation";
 import { getPartnerBySlug, getPartners } from "../utils";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import PartnerCTA from "../components/PartnerCTA";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "@/components/shared/layout/Header";
+import Footer from "@/components/shared/layout/Footer";
 import Image from "next/image";
+import type { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  try {
+    const partner = getPartnerBySlug(params.slug);
+    if (!partner) {
+      return {
+        title: "Partner Not Found | Release",
+        description: "The requested partner information could not be found.",
+      };
+    }
+
+    return {
+      title: `${partner.title} | Release Partners`,
+      description: partner.description,
+      openGraph: {
+        title: `${partner.title} | Release Partners`,
+        description: partner.description,
+        type: "article",
+        images: [
+          {
+            url: partner.mainImage || partner.logo,
+            width: 1200,
+            height: 630,
+            alt: partner.title,
+          },
+        ],
+        siteName: "Release",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: `${partner.title} | Release Partners`,
+        description: partner.description,
+        images: [partner.mainImage || partner.logo],
+        creator: "@release_hub",
+      },
+    };
+  } catch (error) {
+    return {
+      title: "Partner Not Found | Release",
+      description: "The requested partner information could not be found.",
+    };
+  }
+}
 
 export async function generateStaticParams() {
   const partners = getPartners();
@@ -40,9 +88,8 @@ export default function PartnerPage({ params }: { params: { slug: string } }) {
                 </p>
                 {partner.buttonCopy && (
                   <a
-                    href={partner.buttonLink || "https://release.com/signup"}
+                    href={partner.buttonLink || "/signup"}
                     className="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-700 transition-colors"
-                    target="_blank"
                     rel="noopener noreferrer"
                   >
                     {partner.buttonCopy}

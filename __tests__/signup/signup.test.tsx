@@ -7,13 +7,8 @@ import {
   waitFor,
   act,
 } from "@testing-library/react";
-import { useSearchParams } from "next/navigation";
 import SignupPage from "@/app/signup/page";
-
-// Mock next/navigation
-jest.mock("next/navigation", () => ({
-  useSearchParams: jest.fn(),
-}));
+import { VersionProvider } from "@/lib/version/VersionContext";
 
 // Mock fetch API
 global.fetch = jest.fn(() =>
@@ -63,21 +58,27 @@ describe("SignupPage", () => {
   });
 
   describe("Version Resolution", () => {
-    it("should use ephemeral version when ?version=ai is present", async () => {
+    it("should use ai-pipeline version when ?version=ai is present", async () => {
       // Mock URL params
-      (useSearchParams as jest.Mock).mockImplementation(() => ({
-        get: (param: string) => (param === "version" ? "ai" : null),
-      }));
+      const mockParams = new URLSearchParams();
+      mockParams.set("version", "ai");
+      (global.__mocks__.mockUseSearchParams as jest.Mock).mockImplementation(
+        () => mockParams,
+      );
 
       await act(async () => {
-        render(<SignupPage />);
+        render(
+          <VersionProvider>
+            <SignupPage />
+          </VersionProvider>,
+        );
       });
 
-      // Should store ephemeral version
+      // Should store ai-pipeline version
       await waitFor(() => {
         expect(localStorage.setItem).toHaveBeenCalledWith(
           "landing_version",
-          "ephemeral",
+          "ai-pipeline",
         );
       });
 
@@ -89,12 +90,18 @@ describe("SignupPage", () => {
 
     it("should use version from URL param when valid version is provided", async () => {
       // Mock URL params with 'cloud' version
-      (useSearchParams as jest.Mock).mockImplementation(() => ({
-        get: (param: string) => (param === "version" ? "cloud" : null),
-      }));
+      const mockParams = new URLSearchParams();
+      mockParams.set("version", "cloud");
+      (global.__mocks__.mockUseSearchParams as jest.Mock).mockImplementation(
+        () => mockParams,
+      );
 
       await act(async () => {
-        render(<SignupPage />);
+        render(
+          <VersionProvider>
+            <SignupPage />
+          </VersionProvider>,
+        );
       });
 
       // Should store cloud version
@@ -115,7 +122,11 @@ describe("SignupPage", () => {
   describe("Form Validation", () => {
     it("should validate email format", async () => {
       await act(async () => {
-        render(<SignupPage />);
+        render(
+          <VersionProvider>
+            <SignupPage />
+          </VersionProvider>,
+        );
       });
 
       // Fill out the form
@@ -172,7 +183,11 @@ describe("SignupPage", () => {
 
     it("should validate password matching", async () => {
       await act(async () => {
-        render(<SignupPage />);
+        render(
+          <VersionProvider>
+            <SignupPage />
+          </VersionProvider>,
+        );
       });
 
       // Fill out the form
@@ -230,7 +245,11 @@ describe("SignupPage", () => {
   describe("Form Submission", () => {
     it("should handle successful signup and redirect", async () => {
       await act(async () => {
-        render(<SignupPage />);
+        render(
+          <VersionProvider>
+            <SignupPage />
+          </VersionProvider>,
+        );
       });
 
       // Mock successful API response with redirect URL

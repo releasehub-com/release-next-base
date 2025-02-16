@@ -68,10 +68,13 @@ RUN npm install sharp
 
 COPY package.json pnpm-lock.yaml .npmrc ./
 
+# Copy necessary files for Contentlayer
 COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/.next /app/.next
+COPY --from=builder /app/.contentlayer /app/.contentlayer
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/app /app/app
+COPY --from=builder /app/contentlayer.config.ts ./
 
 #USER nextjs
 

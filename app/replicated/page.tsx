@@ -1,17 +1,17 @@
-"use client";
+import type { Metadata } from "next";
+import { metadata } from "./metadata";
+import ReplicatedContent from "./components/ReplicatedContent";
+import VersionPageWrapper from "@/components/shared/layout/VersionPageWrapper";
+import { Suspense } from "react";
 
-import dynamic from "next/dynamic";
-import LandingPageWrapper from "@/components/LandingPageWrapper";
-
-const ReleaseVsReplicated = dynamic(
-  () => import("@/components/ReplicatedLandingPage"),
-  { ssr: false },
-);
+export { metadata };
 
 export default function ReplicatedPage() {
   return (
-    <LandingPageWrapper>
-      <ReleaseVsReplicated />
-    </LandingPageWrapper>
+    <VersionPageWrapper includeLayout={true}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <ReplicatedContent />
+      </Suspense>
+    </VersionPageWrapper>
   );
 }

@@ -1,32 +1,29 @@
 import type { Metadata } from "next";
-
 export const metadata: Metadata = {
-  title: "Release Delivery | Release",
+  title: "Release Delivery - Enterprise Software Distribution | Release",
   description:
-    "Automate your software delivery with Release Delivery. Deploy faster and more reliably with automated pipelines, infrastructure as code, and comprehensive testing.",
+    "Ship your cloud-native applications to enterprise customers with ease. Release Delivery provides a container-based platform for deploying your software on-premises, in private clouds, or hybrid environments.",
   openGraph: {
-    title: "Release Delivery | Release",
+    title: "Release Delivery - Enterprise Software Distribution | Release",
     description:
-      "Automate your software delivery with Release Delivery. Deploy faster and more reliably with automated pipelines, infrastructure as code, and comprehensive testing.",
+      "Ship your cloud-native applications to enterprise customers with ease. Release Delivery provides a container-based platform for deploying your software on-premises, in private clouds, or hybrid environments.",
     type: "article",
-    url: "https://release.com/product/release-delivery",
     images: [
       {
-        url: "https://release.com/images/product/release-delivery/header.svg",
-        width: 2000,
-        height: 1500,
-        alt: "Release Delivery Platform Interface",
+        url: "/images/product/release-delivery/header.svg",
+        width: 1200,
+        height: 630,
+        alt: "Release Delivery Platform",
       },
     ],
+    siteName: "Release",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Release Delivery | Release",
+    title: "Release Delivery - Enterprise Software Distribution | Release",
     description:
-      "Automate your software delivery with Release Delivery. Deploy faster and more reliably with automated pipelines, infrastructure as code, and comprehensive testing.",
-    images: ["https://release.com/images/product/release-delivery/header.svg"],
-  },
-  alternates: {
-    canonical: "https://release.com/product/release-delivery",
+      "Ship your cloud-native applications to enterprise customers with ease. Release Delivery provides a container-based platform for deploying your software on-premises, in private clouds, or hybrid environments.",
+    images: ["/images/product/release-delivery/header.svg"],
+    creator: "@release_hub",
   },
 };

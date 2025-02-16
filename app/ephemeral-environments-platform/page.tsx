@@ -1,12 +1,17 @@
-"use client";
+import type { Metadata } from "next";
+import { metadata } from "./metadata";
+import EphemeralContent from "./components/EphemeralContent";
+import VersionPageWrapper from "@/components/shared/layout/VersionPageWrapper";
+import { Suspense } from "react";
 
-import dynamic from "next/dynamic";
+export { metadata };
 
-const EphemeralLanding = dynamic(
-  () => import("@/components/EphemeralLanding").then((mod) => mod.default),
-  { ssr: false },
-);
-
-export default function EphemeralEnvironmentsPlatformPage() {
-  return <EphemeralLanding />;
+export default function EphemeralEnvironmentsPage() {
+  return (
+    <VersionPageWrapper includeLayout={true}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <EphemeralContent />
+      </Suspense>
+    </VersionPageWrapper>
+  );
 }

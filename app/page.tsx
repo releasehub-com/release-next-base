@@ -1,17 +1,12 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import LandingPageWrapper from "@/components/LandingPageWrapper";
-
-const LandingPage = dynamic(
-  () => import("@/components/LandingPage").then((mod) => mod.default),
-  { ssr: false },
-);
+import HomeContent from "./components/HomeContent";
+import VersionPageWrapper from "@/components/shared/layout/VersionPageWrapper";
 
 export default function HomePage() {
   return (
-    <LandingPageWrapper>
-      <LandingPage />
-    </LandingPageWrapper>
+    <VersionPageWrapper>
+      <HomeContent />
+    </VersionPageWrapper>
   );
 }

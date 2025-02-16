@@ -41,3 +41,6 @@ next-env.d.ts
 
 # Test artifacts
 test-artifacts/
+
+# Contentlayer
+.contentlayer

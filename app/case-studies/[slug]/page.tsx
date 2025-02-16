@@ -7,6 +7,8 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import { CaseStudyFrontmatter } from "../types";
 import CaseStudyPage from "../components/CaseStudyPage";
 import CaseStudyCTA from "../components/CaseStudyCTA";
+import Header from "@/components/shared/layout/Header";
+import Footer from "@/components/shared/layout/Footer";
 
 const components = {
   CaseStudyCTA,
@@ -74,9 +76,15 @@ export default function CaseStudySlugPage({ params }: Props) {
   if (!caseStudy) notFound();
 
   return (
-    <CaseStudyPage
-      content={<MDXRemote source={caseStudy.content} components={components} />}
-      frontmatter={caseStudy.frontmatter}
-    />
+    <>
+      <Header />
+      <CaseStudyPage
+        content={
+          <MDXRemote source={caseStudy.content} components={components} />
+        }
+        frontmatter={caseStudy.frontmatter}
+      />
+      <Footer />
+    </>
   );
 }

@@ -27,13 +27,13 @@ tags: *ref_0
 ctaButton: Try Release for Free
 ---
 
-Complex applications on AWS frequently combine not only the core code but also connections to resources and dependencies (such as ECS Tasks and Lambdas). We’re excited to announce support for ECS tasks! Development, testing, and production of complex apps can now be managed through our newest Release update. This latest update includes support for the use of IaC (Infrastructure as Code, for example, Terraform and Pulumi)  to create resources in ECS, which you can manage in Release right alongside your EKS resources. In this post, we'll show you some simple set-up steps to add ECS resources to Release, access them through the terminal, and view their logs.
+Complex applications on AWS frequently combine not only the core code but also connections to resources and dependencies (such as ECS Tasks and Lambdas). We're excited to announce support for ECS tasks! Development, testing, and production of complex apps can now be managed through our newest Release update. This latest update includes support for the use of IaC (Infrastructure as Code, for example, Terraform and Pulumi) to create resources in ECS, which you can manage in Release right alongside your EKS resources. In this post, we'll show you some simple set-up steps to add ECS resources to Release, access them through the terminal, and view their logs.
 
-Release is a Kubernetes-first platform, but we have many customers that have described their environments in detail with an IaC and would like their environments to match their production environments as closely as possible. With our support for ECS you can now view and manage your ECS and EKS resources through Release’s single administration interface. Release automatically tags and configures your ECS resources if you use our Infrastructure Runner, but we also allow you to tag and configure any ECS resources and manage them in Release, regardless of how they were deployed.
+Release is a Kubernetes-first platform, but we have many customers that have described their environments in detail with an IaC and would like their environments to match their production environments as closely as possible. With our support for ECS you can now view and manage your ECS and EKS resources through Release's single administration interface. Release automatically tags and configures your ECS resources if you use our Infrastructure Runner, but we also allow you to tag and configure any ECS resources and manage them in Release, regardless of how they were deployed.
 
 ### AWS ECS Task Support
 
-The first supported cloud resources are AWS ECS Tasks, but more resource types will be supported soon. Let us know what cloud resources you’d like to see supported!
+The first supported cloud resources are AWS ECS Tasks, but more resource types will be supported soon. Let us know what cloud resources you'd like to see supported!
 
 ### Cloud Resources
 
@@ -62,40 +62,10 @@ To add a cloud resource to your Release environments, you'll need to add a coupl
 
 Two tags with values are required:
 
-                                                           
-
-| Tag Key | Tag Value | Location in UI | Env variable |
-| ------- | --------- | -------------- | ------------ |
-
-|      
-releasehub.com/app
-
-     
-
-name
-
-    |      Tag Key     |      Top of the environment page. In the screenshot below, the app name is      
-
-example-voting-app
-
-    |      
-
-RELEASE_APP_NAME
-
-     (see default Release environment variables)     |
-|      
-
-releasehub.com/env-id
-
-    |      (the environment handle)     |      In the screenshot below, the environment handle is      
-
-ted3bff
-
-    |      
-
-RELEASE_ENV_ID
-
-     (see default Release environment variables)     |
+| Tag Key               | Tag Value                | Location in UI                                                                             | Env variable                                                   |
+| --------------------- | ------------------------ | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| releasehub.com/app    | name                     | Top of the environment page. In the screenshot below, the app name is `example-voting-app` | `RELEASE_APP_NAME` (see default Release environment variables) |
+| releasehub.com/env-id | (the environment handle) | In the screenshot below, the environment handle is `ted3bff`                               | `RELEASE_ENV_ID` (see default Release environment variables)   |
 
 ![](/blog-images/ca4729f2662588d2986369bd3eab969f.png)
 
@@ -107,27 +77,27 @@ In order to send your ECS task logs to the Release log viewer, you must configur
 
 You can specify the log driver in the task definition. Inside each entry in containerDefinitions, update (or add) the logConfiguration key to specify the logDriver and options. Options must specify awslogs-group, and awslogs-stream-prefix. The logDriver must be awslogs, but you may choose your own group and stream-prefix.
 
-That section of your task definition should look something like this when you’re done:
+That section of your task definition should look something like this when you're done:
 
 ```yaml
-
-‍
 {
-   "containerDefinitions": [
-       {
-           "logConfiguration": {
-               "logDriver": "awslogs",
-               "options": {
-                   "awslogs-group": "firelens-container",
-                   "awslogs-region": "us-west-2",
-                   "awslogs-create-group": "true",
-                   "awslogs-stream-prefix": "firelens"
-               }
-           }
-       }
-   ]
+  "containerDefinitions":
+    [
+      {
+        "logConfiguration":
+          {
+            "logDriver": "awslogs",
+            "options":
+              {
+                "awslogs-group": "firelens-container",
+                "awslogs-region": "us-west-2",
+                "awslogs-create-group": "true",
+                "awslogs-stream-prefix": "firelens",
+              },
+          },
+      },
+    ],
 }
-
 ```
 
 For more details, check out the [AWS documentation on using the awslogs log driver](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_awslogs.html#specify-log-config).

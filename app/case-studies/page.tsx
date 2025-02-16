@@ -4,12 +4,11 @@ import path from "path";
 import matter from "gray-matter";
 import CaseStudyIndex from "./components/CaseStudyIndex";
 import { CaseStudy, CaseStudyFrontmatter } from "./types";
+import { metadata } from "./metadata";
+import Header from "@/components/shared/layout/Header";
+import Footer from "@/components/shared/layout/Footer";
 
-export const metadata: Metadata = {
-  title: "Case Studies | Release",
-  description:
-    "Learn how companies are using Release to improve their development workflow",
-};
+export { metadata };
 
 function getCaseStudies(): CaseStudy[] {
   try {
@@ -81,5 +80,13 @@ export default function CaseStudiesPage() {
     );
   }
 
-  return <CaseStudyIndex caseStudies={caseStudies} />;
+  return (
+    <>
+      <Header />
+      <main className="min-h-screen bg-gray-900">
+        <CaseStudyIndex caseStudies={caseStudies} />
+      </main>
+      <Footer />
+    </>
+  );
 }

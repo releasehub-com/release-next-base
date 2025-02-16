@@ -1,17 +1,17 @@
-"use client";
+import type { Metadata } from "next";
+import { metadata } from "./metadata";
+import PaasContent from "./components/PaasContent";
+import VersionPageWrapper from "@/components/shared/layout/VersionPageWrapper";
+import { Suspense } from "react";
 
-import dynamic from "next/dynamic";
-import LandingPageWrapper from "@/components/LandingPageWrapper";
-
-const CloudLanding = dynamic(
-  () => import("@/components/CloudLanding").then((mod) => mod.default),
-  { ssr: false },
-);
+export { metadata };
 
 export default function PlatformAsAServicePage() {
   return (
-    <LandingPageWrapper>
-      <CloudLanding />
-    </LandingPageWrapper>
+    <VersionPageWrapper includeLayout={true}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <PaasContent />
+      </Suspense>
+    </VersionPageWrapper>
   );
 }

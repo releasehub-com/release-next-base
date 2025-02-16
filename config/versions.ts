@@ -46,31 +46,31 @@ export const VERSIONS = {
       ],
     },
     signupContent: {
-      title: "Deploy High-Performance AI Models with Ease",
+      title: "Get Started with Ephemeral Environments",
       benefits: [
         {
           icon: "performance",
-          title: "High-Performance Inference",
+          title: "Instant Environment Creation",
           description:
-            "Deploy models with sub-100ms latency. Our optimized infrastructure ensures rapid response times for your AI applications.",
+            "Spin up full-stack environments in seconds, complete with your entire application stack and dependencies.",
         },
         {
-          icon: "scale",
-          title: "Seamless Scalability",
+          icon: "automation",
+          title: "Automated Cleanup",
           description:
-            "Automatically scale from zero to thousands of concurrent requests. Our platform grows with your needs, ensuring consistent performance.",
+            "Save costs with automatic environment cleanup. Environments are destroyed when they're no longer needed.",
         },
         {
-          icon: "security",
-          title: "Enterprise-Grade Security",
+          icon: "collaboration",
+          title: "Seamless Team Collaboration",
           description:
-            "Benefit from SOC 2 Type II compliance, private networking, and end-to-end encryption. Your models and data remain secure and compliant.",
+            "Share environments instantly with your team for faster code reviews and easier debugging.",
         },
       ],
       steps: [
-        "Start with 5 free GPU hours",
-        "Deploy your first AI model",
-        "Scale with confidence",
+        "Connect your repositories",
+        "Configure your environment template",
+        "Spin up your first environment",
       ],
     },
   },
@@ -275,7 +275,7 @@ export const VERSIONS = {
   gitlab: {
     id: "gitlab",
     aliases: [],
-    path: "/gitlab-integration",
+    path: "/gitlab",
     content: {
       title: "Seamless GitLab Integration for Modern DevOps",
       benefits: [

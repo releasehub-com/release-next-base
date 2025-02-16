@@ -1,14 +1,17 @@
-"use client";
+import type { Metadata } from "next";
+import { metadata } from "./metadata";
+import HerokuRedirectContent from "./components/HerokuRedirectContent";
+import VersionPageWrapper from "@/components/shared/layout/VersionPageWrapper";
+import { Suspense } from "react";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+export { metadata };
 
-export default function HerokuRedirect() {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.replace("/platform-as-a-service");
-  }, [router]);
-
-  return null;
+export default function HerokuCompetitorPage() {
+  return (
+    <VersionPageWrapper includeLayout={true}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <HerokuRedirectContent />
+      </Suspense>
+    </VersionPageWrapper>
+  );
 }

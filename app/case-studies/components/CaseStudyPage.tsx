@@ -3,8 +3,6 @@
 import React from "react";
 import Image from "next/image";
 import { CaseStudyFrontmatter } from "../types";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 interface CaseStudyPageProps {
   content: React.ReactNode;
@@ -17,7 +15,6 @@ export default function CaseStudyPage({
 }: CaseStudyPageProps) {
   return (
     <>
-      <Header />
       {/* Add SVG Filter definition */}
       <svg className="hidden">
         <defs>
@@ -46,7 +43,7 @@ export default function CaseStudyPage({
                     width={160}
                     height={40}
                     className="mx-auto brightness-0 invert"
-                    unoptimized={frontmatter.logo.endsWith('.svg')}
+                    unoptimized={frontmatter.logo.endsWith(".svg")}
                   />
                 </div>
               )}
@@ -287,7 +284,6 @@ export default function CaseStudyPage({
           </article>
         </div>
       </main>
-      <Footer />
     </>
   );
 }

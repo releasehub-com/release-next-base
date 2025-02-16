@@ -1,17 +1,17 @@
-"use client";
+import type { Metadata } from "next";
+import { metadata } from "./metadata";
+import KubernetesContent from "./components/KubernetesContent";
+import VersionPageWrapper from "@/components/shared/layout/VersionPageWrapper";
+import { Suspense } from "react";
 
-import dynamic from "next/dynamic";
-import LandingPageWrapper from "@/components/LandingPageWrapper";
+export { metadata };
 
-const KubernetesLandingPage = dynamic(
-  () => import("@/components/KubernetesLandingPage").then((mod) => mod.default),
-  { ssr: false },
-);
-
-export default function KubernetesManagementPage() {
+export default function KubernetesPage() {
   return (
-    <LandingPageWrapper>
-      <KubernetesLandingPage />
-    </LandingPageWrapper>
+    <VersionPageWrapper includeLayout={true}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <KubernetesContent />
+      </Suspense>
+    </VersionPageWrapper>
   );
 }

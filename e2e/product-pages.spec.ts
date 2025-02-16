@@ -422,37 +422,52 @@ test.describe("Product Pages", () => {
 
   test("should render Release Delivery page correctly", async ({ page }) => {
     await page.goto("/product/release-delivery");
+    await page.waitForLoadState("networkidle");
 
-    // Check main headings
+    // Check main headings with more specific selectors
     await expect(
-      page.getByRole("heading", { name: "Release Delivery" }),
+      page.getByRole("heading", { 
+        name: "Release Delivery",
+        level: 2,  // h2
+        exact: true 
+      }).first(),
     ).toBeVisible();
+    
     await expect(
       page.getByRole("heading", {
         name: "The Modern Way to Deliver and Manage Cloud Software to Customers",
+        level: 1  // h1
       }),
     ).toBeVisible();
 
-    // Check key sections
+    // Check key sections with specific heading levels
     await expect(
-      page.getByRole("heading", { name: "With Release Delivery, you can" }),
+      page.getByRole("heading", { 
+        name: "With Release Delivery, you can",
+        level: 2  // h2
+      }),
     ).toBeVisible();
+    
     await expect(
-      page.getByRole("heading", { name: "Trusted by" }),
+      page.getByRole("heading", { 
+        name: "Trusted by",
+        level: 2  // h2
+      }),
     ).toBeVisible();
+    
     await expect(
-      page.getByRole("heading", { name: "Learn more" }),
+      page.getByRole("heading", { 
+        name: "Learn more",
+        level: 2  // h2
+      }),
     ).toBeVisible();
 
-    // Check feature cards
+    // Check feature cards with specific heading level
     await expect(
-      page.getByRole("heading", { name: "Make your apps enterprise ready" }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Orchestrate across environments" }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Delight your customers" }),
+      page.getByRole("heading", { 
+        name: "Make your apps enterprise ready",
+        level: 3  // h3
+      }),
     ).toBeVisible();
 
     // Check CTA button

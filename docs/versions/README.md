@@ -45,7 +45,7 @@ Create a new file at `app/your-landing-page/page.tsx`:
     "use client";
 
     import dynamic from "next/dynamic";
-    import LandingPageWrapper from "@/components/LandingPageWrapper";
+    import VersionPageWrapper from "@/components/shared/layout/VersionPageWrapper";
 
     const YourLandingPage = dynamic(
       () => import("@/components/YourLandingPage").then((mod) => mod.default),
@@ -54,9 +54,9 @@ Create a new file at `app/your-landing-page/page.tsx`:
 
     export default function YourLandingPagePage() {
       return (
-        <LandingPageWrapper>
+        <VersionPageWrapper>
           <YourLandingPage />
-        </LandingPageWrapper>
+        </VersionPageWrapper>
       );
     }
 
@@ -312,7 +312,7 @@ Verify the AI's response includes:
 2. Landing Page:
 
    - Proper imports
-   - LandingPageWrapper usage
+   - VersionPageWrapper usage
    - Dynamic imports
 
 3. Tests:
@@ -329,3 +329,199 @@ After getting AI output:
 3. Test all paths and aliases
 4. Check content formatting
 5. Run the test suite
+
+# Adding New Versions
+
+This document explains how to add new versions to the Release landing page system.
+
+## Overview
+
+A "version" in our system represents a different landing page experience, each targeting specific use cases or products (e.g., Kubernetes, GitLab, Cloud Platform).
+
+## Steps to Add a New Version
+
+1. **Add Version Configuration**
+
+   - Location: `config/versions.ts`
+   - Add a new entry to the `VERSIONS` object with the following structure:
+
+   ```typescript
+   your_version_id: {
+     id: "your_version_id",
+     aliases: ["optional_alias1", "optional_alias2"],
+     path: "/your-version-path",
+     content: {
+       title: "Your Version Title",
+       benefits: [
+         {
+           icon: "icon_name",
+           title: "Benefit Title",
+           description: "Benefit description.",
+         },
+         // Exactly 3 benefits required
+       ],
+       steps: [
+         "Step 1 description",
+         "Step 2 description",
+         "Step 3 description",
+         // Exactly 3 steps required
+       ],
+     },
+     signupContent?: {  // Optional signup-specific content
+       title: "Signup Page Title",
+       benefits: [], // Same structure as above
+       steps: [],   // Same structure as above
+     },
+   }
+   ```
+
+2. **Create Landing Page Component**
+
+   - Location: `app/your-version-path/components/`
+   - Required files:
+     - `YourVersionContent.tsx` - Main content component
+     - Additional components as needed (Hero, Features, etc.)
+   - Example structure:
+
+   ```typescript
+   "use client";
+
+   import { useEffect } from "react";
+   import { useVersion } from "@/lib/version/VersionContext";
+
+   export default function YourVersionContent() {
+     const { setVersion } = useVersion();
+
+     useEffect(() => {
+       setVersion("your_version_id");
+     }, [setVersion]);
+
+     return (
+       // Your landing page content
+     );
+   }
+   ```
+
+3. **Add Dynamic Import**
+
+   - Location: `components/ClientSideRenderer.tsx`
+   - Add the dynamic import:
+
+   ```typescript
+   const YourVersionContent = dynamic(
+     () => import("@/app/your-version-path/components/YourVersionContent"),
+     { ssr: false },
+   );
+   ```
+
+   - Add to the LandingWrapper props:
+
+   ```typescript
+   <LandingWrapper
+     // ... existing props ...
+     YourVersionLanding={YourVersionContent}
+   />
+   ```
+
+4. **Update Types**
+
+   - Location: `lib/version/types.ts`
+   - Add your version ID to the VersionId type:
+
+   ```typescript
+   export type VersionId = "existing_versions" | "your_version_id";
+   ```
+
+5. **Update Landing Wrapper**
+   - Location: `components/shared/layout/LandingWrapper.tsx`
+   - Add the new prop type:
+   ```typescript
+   interface LandingWrapperProps {
+     // ... existing props ...
+     YourVersionLanding: ComponentType;
+   }
+   ```
+   - Add to the version switch cases:
+   ```typescript
+   switch (initialVersion) {
+     // ... existing cases ...
+     case "your_version_id":
+       return YourVersionLanding;
+   }
+   ```
+
+## Testing Your New Version
+
+1. Test URL parameter access:
+
+   ```
+   /?version=your_version_id
+   ```
+
+2. Test direct path access:
+
+   ```
+   /your-version-path
+   ```
+
+3. Test aliases (if configured):
+
+   ```
+   /?version=optional_alias1
+   ```
+
+4. Verify content:
+   - Check that benefits and steps are displayed correctly
+   - Verify icons are loading
+   - Test signup flow with version-specific content
+
+## Best Practices
+
+1. **Version IDs**
+
+   - Use kebab-case for paths (`/your-version-path`)
+   - Use camelCase for IDs (`yourVersionId`)
+   - Keep IDs short but descriptive
+
+2. **Content Guidelines**
+
+   - Always provide exactly 3 benefits
+   - Always provide exactly 3 steps
+   - Keep benefit descriptions under 150 characters
+   - Keep step descriptions under 50 characters
+
+3. **Icons**
+
+   - Use consistent icon names from our icon set
+   - Standard icons: `automation`, `cloud-provider`, `collaboration`, `security`, `scale`, `performance`
+
+4. **Testing**
+   - Test both desktop and mobile layouts
+   - Verify all links work correctly
+   - Check that version persistence works (localStorage)
+   - Verify version resolution with aliases
+
+## Common Issues
+
+1. **Version Not Loading**
+
+   - Check that the path in `versions.ts` matches your component location
+   - Verify dynamic import path is correct
+   - Check console for loading errors
+
+2. **Content Not Updating**
+
+   - Verify `useEffect` is setting the version correctly
+   - Check that version ID matches exactly in all locations
+
+3. **Type Errors**
+   - Ensure version ID is added to VersionId type
+   - Verify all required content fields are provided
+
+## Need Help?
+
+If you encounter issues or need clarification:
+
+1. Check the version service logs (enabled in development)
+2. Review the version resolution flow in `versionService.ts`
+3. Contact the team for assistance

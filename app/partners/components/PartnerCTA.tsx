@@ -1,8 +1,14 @@
-export default function PartnerCTA() {
+interface PartnerCTAProps {
+  partner?: string;
+}
+
+export default function PartnerCTA({ partner }: PartnerCTAProps) {
   return (
     <div className="bg-gray-800 rounded-lg p-8 mt-12">
       <h2 className="text-2xl font-bold text-white mb-4">
-        Want to see your company alongside these amazing partners?
+        {partner
+          ? `Want to partner with Release like ${partner}?`
+          : "Want to see your company alongside these amazing partners?"}
       </h2>
       <p className="text-gray-300 mb-6">
         Reach out to our partner team and let's create value together.

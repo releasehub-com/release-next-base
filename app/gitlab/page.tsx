@@ -1,12 +1,17 @@
-"use client";
+import type { Metadata } from "next";
+import { metadata } from "./metadata";
+import GitLabContent from "./components/GitLabContent";
+import VersionPageWrapper from "@/components/shared/layout/VersionPageWrapper";
+import { Suspense } from "react";
 
-import dynamic from "next/dynamic";
-
-const GitLabLandingPage = dynamic(
-  () => import("@/components/GitLabLandingPage"),
-  { ssr: false },
-);
+export { metadata };
 
 export default function GitLabPage() {
-  return <GitLabLandingPage />;
+  return (
+    <VersionPageWrapper includeLayout={true}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <GitLabContent />
+      </Suspense>
+    </VersionPageWrapper>
+  );
 }

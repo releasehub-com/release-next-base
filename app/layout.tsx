@@ -7,11 +7,17 @@ import "highlight.js/styles/github-dark.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
+// Get the base URL from environment or default to release.com
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://release.com";
+const metadataBaseUrl = new URL(
+  baseUrl.startsWith("http") ? baseUrl : `https://${baseUrl}`,
+);
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://release.com"),
+  metadataBase: metadataBaseUrl,
   title: {
-    default: "Release - The Ephemeral Environments Platform",
     template: "%s | Release",
+    default: "Release - The Ephemeral Environments Platform",
   },
   description:
     "Create and manage on-demand environments in minutes. Empower developers, reduce costs, and accelerate your development workflow with Release.",
@@ -29,7 +35,6 @@ export const metadata: Metadata = {
         alt: "Release Ephemeral Environments Platform",
       },
     ],
-    url: "https://release.com",
     siteName: "Release",
     type: "website",
   },
@@ -44,17 +49,26 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    nocache: true,
+    "max-image-preview": "large",
+    "max-video-preview": -1,
+    "max-snippet": -1,
     googleBot: {
       index: true,
       follow: true,
+      noimageindex: true,
       "max-video-preview": -1,
       "max-image-preview": "large",
       "max-snippet": -1,
+      notranslate: true,
     },
   },
+  other: {
+    "google-site-verification": "your-google-verification-code",
+    "yandex-verification": "your-yandex-verification-code",
+  },
   verification: {
-    google: "your-google-site-verification-code",
-    yandex: "your-yandex-verification-code",
+    google: "your-google-verification-code",
   },
 };
 

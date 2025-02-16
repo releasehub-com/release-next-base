@@ -20,6 +20,18 @@ function isLandingPath(path: string): path is (typeof LANDING_PATHS)[number] {
 }
 
 export function middleware(request: NextRequest) {
+  // Create base response
+  const response = NextResponse.next();
+
+  // Add security headers to all responses
+  response.headers.set(
+    "Strict-Transport-Security",
+    "max-age=31536000; includeSubDomains",
+  );
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  // Allow framing only from same origin
+  response.headers.set("X-Frame-Options", "SAMEORIGIN");
+
   // Handle version parameter redirects first
   const version = request.nextUrl.searchParams.get("version");
 
@@ -58,7 +70,6 @@ export function middleware(request: NextRequest) {
 
   // Handle landing pages
   if (isLandingPath(request.nextUrl.pathname)) {
-    const response = NextResponse.next();
     const version = getVersionFromPath(request.nextUrl.pathname);
     response.cookies.set("landing_version", version, {
       path: "/",
@@ -68,26 +79,9 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {
-  matcher: [
-    "/",
-    "/ephemeral-environments-platform",
-    "/gitlab-integration",
-    "/kubernetes-management",
-    "/replicated",
-    "/cloud-development-environments",
-    "/platform-as-a-service",
-    "/comparison",
-    "/comparison/gitlab",
-    "/comparison/signadot",
-    "/comparison/bunnyshell",
-    "/comparison/qovery",
-    "/comparison/shipyard",
-    "/partners",
-    "/signup",
-    "/sitemap.xml",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };

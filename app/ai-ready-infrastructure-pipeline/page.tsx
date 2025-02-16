@@ -1,7 +1,17 @@
-"use client";
+import type { Metadata } from "next";
+import { metadata } from "./metadata";
+import AIPipelineContent from "./components/AIPipelineContent";
+import VersionPageWrapper from "@/components/shared/layout/VersionPageWrapper";
+import { Suspense } from "react";
 
-import AIPipelineLanding from "@/components/AIPipelineLanding";
+export { metadata };
 
 export default function AIPipelinePage() {
-  return <AIPipelineLanding />;
+  return (
+    <VersionPageWrapper includeLayout={true}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <AIPipelineContent />
+      </Suspense>
+    </VersionPageWrapper>
+  );
 }
