@@ -8,6 +8,7 @@ import EphemeralUseCases from "./EphemeralUseCases";
 import EphemeralCTA from "./EphemeralCTA";
 import EphemeralIntegration from "./EphemeralIntegration";
 import EphemeralDocumentation from "./EphemeralDocumentation";
+import EphemeralUsers from "./EphemeralUsers";
 import { useVersion } from "@/lib/version/VersionContext";
 
 export default function EphemeralContent() {
@@ -29,6 +30,7 @@ export default function EphemeralContent() {
     >
       <main className="flex-1">
         <EphemeralHero />
+        <EphemeralUsers />
         <EphemeralFeatures />
         <EphemeralIntegration />
         <EphemeralUseCases />
