@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install curl -y
 # Install dependencies only when needed
 FROM base AS deps
 WORKDIR /build
+# Install build dependencies for sharp
+RUN apt-get update && apt-get install -y build-essential python3
 COPY package.json pnpm-lock.yaml .npmrc ./
 RUN pnpm install --frozen-lockfile
 
@@ -24,13 +26,16 @@ ARG DD_API_KEY
 ENV NEXT_PUBLIC_APP_BASE_URL=$NEXT_PUBLIC_APP_BASE_URL \
     DD_API_KEY=$DD_API_KEY
 
-# Install sharp for image optimization
-RUN apt-get update && apt-get install -y build-essential
-RUN npm install sharp
+# Install build dependencies
+RUN apt-get update && apt-get install -y build-essential python3
 
 COPY package.json pnpm-lock.yaml .npmrc ./
 COPY . .
+
+# Copy node_modules but rebuild sharp
 COPY --from=deps /build/node_modules ./node_modules
+RUN rm -rf node_modules/sharp
+RUN pnpm add sharp
 
 RUN pnpm build
 
@@ -39,21 +44,14 @@ RUN pnpm build
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED 1
 
-# Prune out the devDependencies from node_modules after build
-RUN pnpm install --production --frozen-lockfile
-
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
-
-# Pass through the environment variables
+ENV NODE_ENV=production
 ARG NEXT_PUBLIC_APP_BASE_URL
 ENV NEXT_PUBLIC_APP_BASE_URL=$NEXT_PUBLIC_APP_BASE_URL
-
-# Uncomment the following line in case you want to disable telemetry during runtime.
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -62,14 +60,14 @@ RUN adduser --system --uid 1001 nextjs
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
-# Install sharp in the runner stage as well
-RUN apt-get update && apt-get install -y build-essential
-RUN npm install sharp
-
+# Install only sharp and its dependencies
+RUN apt-get update && apt-get install -y build-essential python3
 COPY package.json pnpm-lock.yaml .npmrc ./
+COPY --from=builder /app/node_modules ./node_modules
+RUN rm -rf node_modules/sharp
+RUN pnpm add sharp
 
 # Copy necessary files for Contentlayer
-COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/.next /app/.next
 COPY --from=builder /app/.contentlayer /app/.contentlayer
 COPY --from=builder /app/public ./public
@@ -79,9 +77,8 @@ COPY --from=builder /app/contentlayer.config.ts ./
 #USER nextjs
 
 EXPOSE 4001
-
-ENV PORT 4001
-# ENV NODE_OPTIONS "-r dd-trace/init"
+ENV PORT=4001
+# ENV NODE_OPTIONS="-r dd-trace/init"
 
 WORKDIR /app
 CMD ["pnpm", "start"]

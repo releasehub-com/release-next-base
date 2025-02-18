@@ -13,20 +13,20 @@ const logos = [
     logo: "/logos/drata.svg",
   },
   {
-    name: "Ethos",
-    logo: "/logos/ethos.svg",
+    name: "Ezcater",
+    logo: "/logos/ezcater.svg",
   },
   {
-    name: "Cortex",
-    logo: "/logos/cortex.svg",
+    name: "Ethos",
+    logo: "/logos/ethos.svg",
   },
   {
     name: "Navan",
     logo: "/logos/navan.svg",
   },
   {
-    name: "Chipper",
-    logo: "/logos/chipper.svg",
+    name: "Cortex",
+    logo: "/logos/cortex.svg",
   },
   {
     name: "Dispatch Health",
