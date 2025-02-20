@@ -8,13 +8,12 @@ excerpt: >-
   Discover how Release shifted from Webflow's limitations to a faster, AI-driven
   development process, unlocking new potentials in marketing and deployment.
 categories: &ref_0
-  - ai-technology
-  - web-development
-  - startup-insights
+  - ai
+  - startups
 imageAlt: >-
   Before and after images showcasing the transition from an old Webflow site to
   a new AI-driven site.
-publishDate: '2025-02-20T20:41:46.069Z'
+publishDate: "2025-02-20T20:41:46.069Z"
 author: tommy-mcclung
 readingTime: 6
 mainImage: /blog-images/v0-cursor-release.png
@@ -38,7 +37,10 @@ Hey everyone,
 I'm Tommy, founder of Release and I'm going to share a bit of my AI journey and a project I've been working on. As I started to build out our AI strategy and story at Release, I saw the CEO of Vercel talking about [v0.dev](https://v0.dev) on X. I knew I had to get a v0 account and explore its potential. I originally built all of the frontend code at Release in React and thought playing around with something familiar to me would be good for me to start getting acquainted with what was possible. I quickly realized a new way of building was upon us and wanted to see how I could apply this to what we do at Release.
 
 <div className="blog-image">
-<img src="/blog-images/rip-cms-header.png" alt="Before & After Comparison: Old Webflow site vs. New AI-Driven Site" />
+  <img
+    src="/blog-images/rip-cms-header.png"
+    alt="Before & After Comparison: Old Webflow site vs. New AI-Driven Site"
+  />
 </div>
 
 Playing with v0 was eye-opening. It unlocked my ability, as the CEO, to take the reins of our marketing site and get our ideas out to the world faster. (Which happens to be our mission at Release). For years, our marketing site was built on Webflow—it looked great, but it was slowing us down and I never really loved how we had to work with it. We had to have a designer come up with designs, someone familiar with Webflow had to implement the designs and, in all, it took us about 2-3 weeks to make even the most straightforward changes to it. I wasn't originally looking to replace our site; I just wanted to see what was happening in the world of AI. But I quickly realized there was an opportunity to move faster and release my ideas to the world faster.
@@ -71,17 +73,21 @@ My journey began with v0.dev. Intrigued by what I had seen online, I fed v0 a si
 <div className="blog-quote">
 Build a landing page for Release.com out of this description:
 
-Release.com provides a platform called Environments as a Service, designed to streamline 
-the development, testing, and deployment of software by offering instant, isolated, and 
-production-like environments. These environments can be created on demand, allowing teams 
-to build, test, and release software faster without the complexity of managing 
+Release.com provides a platform called Environments as a Service, designed to streamline
+the development, testing, and deployment of software by offering instant, isolated, and
+production-like environments. These environments can be created on demand, allowing teams
+to build, test, and release software faster without the complexity of managing
 infrastructure manually.
+
 </div>
 
 The result was a basic, functional page—a fitting homage to the CMS that was about to be laid to rest.
 
 <div className="blog-image">
-<img src="/blog-images/v0-initial-design.png" alt="v0.dev Generated Design: Screenshot of the initial landing page draft" />
+  <img
+    src="/blog-images/v0-initial-design.png"
+    alt="v0.dev Generated Design: Screenshot of the initial landing page draft"
+  />
 </div>
 
 ### Step 2: Refining and Expanding with Cursor
@@ -95,6 +101,7 @@ I then imported the v0.dev output into Cursor. I started in **Composer Mode** to
 **A Quick Word on Agent Mode:**
 
 It was a huge time-saver, but not without its quirks. Sometimes, Agent Mode would:
+
 - **Refactor entire sections unexpectedly**
 - **Duplicate code in multiple areas**
 - **Rewrite already migrated content**
@@ -102,7 +109,10 @@ It was a huge time-saver, but not without its quirks. Sometimes, Agent Mode woul
 I often had to revert to earlier file versions. Despite these challenges, the process reinforced my belief that AI-powered tools can render the old CMS model obsolete. **RIP CMS.**
 
 <div className="blog-image">
-<img src="/blog-images/cursor-refactoring.png" alt="Cursor in Action: Screenshot of Cursor IDE with code refactoring" />
+  <img
+    src="/blog-images/cursor-refactoring.png"
+    alt="Cursor in Action: Screenshot of Cursor IDE with code refactoring"
+  />
 </div>
 
 ### Step 3: Migrating Blog Posts, Legal Pages, Case Studies & More
@@ -117,7 +127,10 @@ Migrating our CMS-driven content was another eye-opener. **Not just our blog, bu
 Now, **anyone can contribute new content—whether it's a case study, a legal update, or a partner page—by simply adding an MDX file to the repo.** You don't even need a local setup—just use GitHub's UI, which has excellent Markdown support.
 
 <div className="blog-image">
-<img src="/blog-images/mdx-migration-example.png" alt="Migrated Blog Post: Before/After snippet of a blog post in Markdown" />
+  <img
+    src="/blog-images/mdx-migration-example.png"
+    alt="Migrated Blog Post: Before/After snippet of a blog post in Markdown"
+  />
 </div>
 
 ### Step 4: Empowering the Team with a Git-Based Content Workflow
@@ -126,16 +139,16 @@ The real magic happened when we established a clear contribution process. Now, a
 
 1. **Simple File Creation:** Create a new `.mdx` file in `app/blog/posts/` with your content.
 2. **Automated Processing:** Our custom tooling handles the heavy lifting:
-    - Automatically generates SEO-optimized frontmatter
-    - Creates summaries and social media excerpts
-    - Calculates reading time
-    - Suggests relevant related posts
-    - Validates spelling and technical terms
+   - Automatically generates SEO-optimized frontmatter
+   - Creates summaries and social media excerpts
+   - Calculates reading time
+   - Suggests relevant related posts
+   - Validates spelling and technical terms
 3. **Built-in Quality Checks:** Every contribution is automatically validated for:
-    - Content quality and minimum word count
-    - Proper image dimensions and optimization
-    - Required metadata and frontmatter
-    - Link validation and UTM parameters
+   - Content quality and minimum word count
+   - Proper image dimensions and optimization
+   - Required metadata and frontmatter
+   - Link validation and UTM parameters
 
 The best part? You don't need to be a developer. Our process is designed so that anyone comfortable with Markdown can contribute. Even if you're new to it, GitHub's UI makes it easy to write and preview your content.
 

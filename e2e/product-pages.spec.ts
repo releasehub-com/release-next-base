@@ -426,47 +426,49 @@ test.describe("Product Pages", () => {
 
     // Check main headings with more specific selectors
     await expect(
-      page.getByRole("heading", { 
-        name: "Release Delivery",
-        level: 2,  // h2
-        exact: true 
-      }).first(),
+      page
+        .getByRole("heading", {
+          name: "Release Delivery",
+          level: 2, // h2
+          exact: true,
+        })
+        .first(),
     ).toBeVisible();
-    
+
     await expect(
       page.getByRole("heading", {
         name: "The Modern Way to Deliver and Manage Cloud Software to Customers",
-        level: 1  // h1
+        level: 1, // h1
       }),
     ).toBeVisible();
 
     // Check key sections with specific heading levels
     await expect(
-      page.getByRole("heading", { 
+      page.getByRole("heading", {
         name: "With Release Delivery, you can",
-        level: 2  // h2
+        level: 2, // h2
       }),
     ).toBeVisible();
-    
+
     await expect(
-      page.getByRole("heading", { 
+      page.getByRole("heading", {
         name: "Trusted by",
-        level: 2  // h2
+        level: 2, // h2
       }),
     ).toBeVisible();
-    
+
     await expect(
-      page.getByRole("heading", { 
+      page.getByRole("heading", {
         name: "Learn more",
-        level: 2  // h2
+        level: 2, // h2
       }),
     ).toBeVisible();
 
     // Check feature cards with specific heading level
     await expect(
-      page.getByRole("heading", { 
+      page.getByRole("heading", {
         name: "Make your apps enterprise ready",
-        level: 3  // h3
+        level: 3, // h3
       }),
     ).toBeVisible();
 
