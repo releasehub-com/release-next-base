@@ -1,7 +1,7 @@
-import fs from "fs";
-import path from "path";
-import { Builder } from "xml2js";
-import { parseStringPromise } from "xml2js";
+const fs = require("fs");
+const path = require("path");
+const { Builder } = require("xml2js");
+const { parseStringPromise } = require("xml2js");
 
 interface SitemapURL {
   loc: string;
