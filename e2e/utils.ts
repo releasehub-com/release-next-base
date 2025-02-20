@@ -125,7 +125,7 @@ export async function waitForAllImages(page: Page) {
 export async function saveErrorScreenshot(
   page: Page,
   error: Error,
-  name: string
+  name: string,
 ): Promise<void> {
   try {
     await page.screenshot({

@@ -19,6 +19,7 @@ Welcome to the Release blog! We're excited to have you contribute. This guide wi
    ```
 4. Write your blog post content in `app/blog/posts/your-post-title.mdx` (without frontmatter)
 5. Process your blog post to generate frontmatter and check spelling:
+
    ```bash
    # First, preview the generated frontmatter
    pnpm process-blog:dry-run app/blog/posts/your-post-title.mdx
@@ -26,6 +27,7 @@ Welcome to the Release blog! We're excited to have you contribute. This guide wi
    # If the output looks good, apply the changes
    pnpm process-blog app/blog/posts/your-post-title.mdx
    ```
+
 6. Make any necessary adjustments to the generated frontmatter
 7. Validate your blog post before submitting:
    ```bash
@@ -39,6 +41,7 @@ Welcome to the Release blog! We're excited to have you contribute. This guide wi
 Our blog post workflow is split into two parts:
 
 ### 1. Content Processing and Generation
+
 The `process-blog` command helps you create your post by:
 
 - **Generating SEO-Optimized Frontmatter**: Uses AI to analyze your content and generate:
@@ -47,24 +50,21 @@ The `process-blog` command helps you create your post by:
   - Excerpt for social media
   - Categories and tags
   - Image alt text
-  
 - **Automatic Calculations**:
   - Reading time (based on word count)
   - Publication date (current date)
-  
 - **Smart Related Posts**:
   - Automatically selects 3 most relevant existing blog posts
   - Uses AI to analyze content similarity
-  
 - **Default Values**:
   - Standard CTA configuration
   - Proper UTM parameters
-  
 - **Spell Checking**:
   - Identifies possible spelling errors
   - Suggests corrections
 
 ### 2. Pre-Publication Validation
+
 The `validate-blog` command performs comprehensive checks:
 
 - **Content Quality**:
@@ -77,11 +77,9 @@ The `validate-blog` command performs comprehensive checks:
     - Excludes image hashes and hex strings
     - Ignores URLs and file paths
     - Shows spelling suggestions as warnings
-  
 - **Author Validation**:
   - Author must exist in `app/blog/lib/authors.ts`
   - Special case: 'default' author is used as fallback
-  
 - **Image Validation**:
   - File existence in `/public/blog-images` directory
   - Recommended dimensions (1200x630px)
@@ -90,15 +88,12 @@ The `validate-blog` command performs comprehensive checks:
     - Content images
   - File size (max 500KB)
   - Format (JPEG/PNG)
-  
 - **Link Validation**:
   - Proper UTM parameters
   - Valid CTA configuration
-  
 - **Related Content**:
   - Exactly 3 related posts required
   - All related posts must exist in the blog directory
-  
 - **Metadata Validation**:
   - Categories and tags presence
   - Summary length (max 2 sentences)
@@ -107,11 +102,13 @@ The `validate-blog` command performs comprehensive checks:
 ### Environment Setup
 
 The blog processing tools use OpenAI's API for several features:
+
 - Generating SEO-optimized frontmatter
 - Finding related posts
 - Creating engaging excerpts and summaries
 
 To use these features, create a `.env.blog` file in the root directory with your OpenAI API key:
+
 ```bash
 OPENAI_API_KEY="your-openai-api-key"
 ```
@@ -132,6 +129,7 @@ Note: The `validate-blog` command for checking spelling, images, and other requi
 ### Common Validation Issues and Solutions
 
 1. **Spelling Issues**:
+
    - Review spelling warnings in content
    - Technical terms are automatically ignored, including:
      - Programming languages and tools
@@ -147,6 +145,7 @@ Note: The `validate-blog` command for checking spelling, images, and other requi
    - Consider adding missing technical terms to the dictionary if needed
 
 2. **Author Issues**:
+
    - Ensure author is specified in frontmatter
    - Author must be defined in `app/blog/lib/authors.ts`
    - Each author entry requires:
@@ -156,6 +155,7 @@ Note: The `validate-blog` command for checking spelling, images, and other requi
    - Use 'default' if no specific author is assigned
 
 3. **Image Issues**:
+
    - Ensure all images exist in `/public/blog-images/`
    - Main image and content images should be 1200x630px
    - Use image optimization tools to meet size requirements (max 500KB)
@@ -163,12 +163,14 @@ Note: The `validate-blog` command for checking spelling, images, and other requi
    - Warning: Content images with incorrect dimensions will be flagged
 
 4. **Content Issues**:
+
    - Ensure minimum 300-word length
    - Break long summaries into shorter sentences
    - Add missing categories or tags
    - Categories must be lowercase and use dashes instead of spaces
 
 5. **Related Posts**:
+
    - Exactly 3 related posts required
    - All related post slugs must match existing blog posts
    - Wait for AI to suggest related posts
@@ -182,11 +184,13 @@ Note: The `validate-blog` command for checking spelling, images, and other requi
 ## Blog Post Structure
 
 ### File Location and Naming
+
 - All blog posts should be placed in the `app/blog/posts/` directory
 - Use kebab-case for file names: `your-blog-post-title.mdx`
 - File extension must be `.mdx`
 
 ### Required Frontmatter
+
 Every blog post needs the following frontmatter at the top of the file:
 
 ```yaml
@@ -194,9 +198,9 @@ Every blog post needs the following frontmatter at the top of the file:
 title: "Your Blog Post Title"
 summary: "A compelling 1-2 sentence summary of your post"
 publishDate: "YYYY-MM-DD"
-author: "author-id"  # Must match an entry in app/blog/lib/authors.ts
+author: "author-id" # Must match an entry in app/blog/lib/authors.ts
 readingTime: 5
-categories: 
+categories:
   - platform-engineering
   - product
 mainImage: "/blog-images/your-image-name.jpg"
@@ -217,6 +221,7 @@ ctaButton: "Try Release for Free"
 ```
 
 ### Images
+
 - Place all blog images in the `/blog-images/` directory
 - Use optimized images (JPEG/PNG) under 500KB
 - Recommended main image dimensions: 1200x630px
@@ -225,12 +230,14 @@ ctaButton: "Try Release for Free"
 ## Writing Guidelines
 
 ### Content Structure
+
 1. Start with a clear introduction
 2. Use proper heading hierarchy (H2, H3, H4)
 3. Include code examples where relevant
 4. End with a clear conclusion or call to action
 
 ### Markdown Features
+
 - Use standard markdown syntax
 - MDX supports React components
 - Code blocks should specify language:
@@ -239,6 +246,7 @@ ctaButton: "Try Release for Free"
   ```
 
 ### Style Guidelines
+
 - Use clear, concise language
 - Break up long paragraphs
 - Use bullet points and lists for better readability
@@ -250,11 +258,13 @@ ctaButton: "Try Release for Free"
 To preview your blog post locally:
 
 1. Install dependencies:
+
    ```bash
    npm install
    ```
 
 2. Start the development server:
+
    ```bash
    npm run dev
    ```
@@ -264,11 +274,13 @@ To preview your blog post locally:
 ## Submission Process
 
 1. Create a new branch:
+
    ```bash
    git checkout -b blog/your-post-name
    ```
 
 2. Add and commit your changes:
+
    ```bash
    git add .
    git commit -m "Add blog post: Your Post Title"
@@ -287,6 +299,7 @@ To preview your blog post locally:
 ## Categories and Tags
 
 Common categories include:
+
 - platform-engineering
 - product
 - engineering
@@ -298,9 +311,10 @@ Choose relevant categories and tags that best describe your content.
 ## Code of Conduct
 
 Please ensure your content:
+
 - Is original and not published elsewhere
 - Respects intellectual property rights
 - Follows our inclusive language guidelines
 - Maintains a professional tone
 
-Thank you for contributing to the Release blog! We look forward to your submissions. 
+Thank you for contributing to the Release blog! We look forward to your submissions.

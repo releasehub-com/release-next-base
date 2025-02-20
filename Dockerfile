@@ -38,6 +38,7 @@ RUN rm -rf node_modules/sharp
 RUN pnpm add sharp
 
 RUN pnpm build
+RUN pnpm update-sitemap
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry

@@ -33,24 +33,22 @@ export default function BlogIndex({
 
   // Filter posts excluding the featured post
   const filteredPosts = useMemo(() => {
-    return posts
-      .filter((post) => post.slug !== blogConfig.featuredPost)
-      .filter((post) => {
-        const matchesSearch =
-          post.frontmatter.title
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          post.frontmatter.summary
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase());
+    return posts.filter((post) => {
+      const matchesSearch =
+        post.frontmatter.title
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        post.frontmatter.summary
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
 
-        const matchesCategory =
-          !selectedCategory ||
-          (post.frontmatter.categories &&
-            post.frontmatter.categories.includes(selectedCategory));
+      const matchesCategory =
+        !selectedCategory ||
+        (post.frontmatter.categories &&
+          post.frontmatter.categories.includes(selectedCategory));
 
-        return matchesSearch && matchesCategory;
-      });
+      return matchesSearch && matchesCategory;
+    });
   }, [posts, searchTerm, selectedCategory]);
 
   // Calculate pagination

@@ -9,7 +9,7 @@ async function retryClick(locator: any, maxAttempts = 3) {
       return;
     } catch (e) {
       if (i === maxAttempts - 1) throw e;
-      await new Promise(r => setTimeout(r, 1000));
+      await new Promise((r) => setTimeout(r, 1000));
     }
   }
 }
@@ -18,8 +18,8 @@ test.describe("Blog Posts", () => {
   // Add a hook to handle navigation timeouts and add logging
   test.beforeEach(async ({ page }) => {
     // Add console logging
-    page.on('console', msg => console.log(`Browser console: ${msg.text()}`));
-    
+    page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
+
     // Increase navigation timeout for slower connections
     page.setDefaultNavigationTimeout(90000);
     page.setDefaultTimeout(90000);
@@ -27,7 +27,7 @@ test.describe("Blog Posts", () => {
 
   test("should load and render blog index page correctly", async ({ page }) => {
     await page.goto("/blog");
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState("networkidle");
     await page.waitForSelector("h1");
 
     // Get initial articles and their titles
@@ -134,7 +134,9 @@ test.describe("Blog Posts", () => {
     await expect(categories).toHaveCount(2); // platform-engineering and product
 
     // Verify reading time is displayed - updated to be more flexible
-    const readingTimeText = await page.locator('text=/\\d+ min read/').textContent();
+    const readingTimeText = await page
+      .locator("text=/\\d+ min read/")
+      .textContent();
     expect(readingTimeText).toMatch(/\d+ min read/);
 
     // Check CTA section
@@ -170,16 +172,19 @@ test.describe("Blog Posts", () => {
     // Click first blog post with improved mobile handling
     const firstArticle = page.locator("article").first();
     await firstArticle.waitFor({ state: "attached" });
-    
+
     // Scroll into view using JavaScript
-    await page.evaluate((el) => el.scrollIntoView(), await firstArticle.elementHandle());
+    await page.evaluate(
+      (el) => el.scrollIntoView(),
+      await firstArticle.elementHandle(),
+    );
     await page.waitForTimeout(1000); // Small delay to ensure stability
 
     // Get the link within the article and click it with navigation wait
     const firstArticleLink = firstArticle.locator("a").first();
     await Promise.all([
-      page.waitForNavigation({ waitUntil: 'networkidle', timeout: 30000 }),
-      retryClick(firstArticleLink)
+      page.waitForNavigation({ waitUntil: "networkidle", timeout: 30000 }),
+      retryClick(firstArticleLink),
     ]);
 
     // Verify we're on a blog post page
@@ -212,14 +217,17 @@ test.describe("Blog Posts", () => {
     // Click a different blog post with improved mobile handling
     const secondArticle = page.locator("article").nth(1);
     await secondArticle.waitFor({ state: "attached" });
-    await page.evaluate((el) => el.scrollIntoView(), await secondArticle.elementHandle());
+    await page.evaluate(
+      (el) => el.scrollIntoView(),
+      await secondArticle.elementHandle(),
+    );
     await page.waitForTimeout(1000); // Small delay to ensure stability
 
     // Get the link within the second article and click it with navigation wait
     const secondArticleLink = secondArticle.locator("a").first();
     await Promise.all([
-      page.waitForNavigation({ waitUntil: 'networkidle', timeout: 30000 }),
-      retryClick(secondArticleLink)
+      page.waitForNavigation({ waitUntil: "networkidle", timeout: 30000 }),
+      retryClick(secondArticleLink),
     ]);
 
     // Verify we're on a different post

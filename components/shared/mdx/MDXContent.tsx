@@ -42,9 +42,17 @@ const defaultComponents = {
     <ul className="list-disc pl-6 mb-4 text-gray-300" {...props} />
   ),
   ol: (props: ComponentProps<"ol">) => (
-    <ol className="list-decimal pl-6 mb-4 text-gray-300" {...props} />
+    <ol
+      className="list-none pl-8 mb-4 text-gray-300 space-y-8 relative [counter-reset:section]"
+      {...props}
+    />
   ),
-  li: (props: ComponentProps<"li">) => <li className="mb-2" {...props} />,
+  li: (props: ComponentProps<"li">) => (
+    <li
+      className="relative pl-2 [counter-increment:section] before:content-[counter(section)'.'] before:absolute before:-left-8 before:text-gray-300"
+      {...props}
+    />
+  ),
   strong: (props: ComponentProps<"strong">) => (
     <strong className="font-semibold text-white" {...props} />
   ),
