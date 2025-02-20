@@ -70,7 +70,6 @@ After five years on Webflow, I realized our process was more of a bottleneck tha
 
 My journey began with v0.dev. Intrigued by what I had seen online, I fed v0 a simple prompt:
 
-<div className="blog-quote">
 Build a landing page for Release.com out of this description:
 
 Release.com provides a platform called Environments as a Service, designed to streamline
@@ -78,8 +77,6 @@ the development, testing, and deployment of software by offering instant, isolat
 production-like environments. These environments can be created on demand, allowing teams
 to build, test, and release software faster without the complexity of managing
 infrastructure manually.
-
-</div>
 
 The result was a basic, functional page—a fitting homage to the CMS that was about to be laid to rest.
 
@@ -114,6 +111,33 @@ I often had to revert to earlier file versions. Despite these challenges, the pr
     alt="Cursor in Action: Screenshot of Cursor IDE with code refactoring"
   />
 </div>
+
+### Building Landing Pages at Scale with AI
+
+One of the most powerful aspects of this new workflow is how quickly we can build and iterate on landing pages. Using v0 and Cursor together, we've created a suite of specialized landing pages that would have taken weeks or months with our old Webflow process. Here's how we do it:
+
+1. **Start with v0 for the Base Design:** I feed v0 a description of what the landing page should accomplish, and it generates a clean, modern design that follows our brand guidelines. For example, our ephemeral environments page started with this prompt:
+   > Build a landing page that explains ephemeral environments - temporary, isolated environments for development, testing, and demos that help teams ship better software faster. Include sections about automation, data replication, and sharing capabilities.
+2. **Refine with Cursor:** Cursor helps us take that initial design and rapidly integrate it into our codebase. It understands our component structure and can:
+   - Suggest improvements to the layout
+   - Add proper SEO metadata
+   - Ensure accessibility compliance
+   - Integrate with our analytics
+3. **Modular Components:** We've built a library of reusable components that make new pages consistent and quick to assemble:
+   - SEO-optimized layouts
+   - Hero sections
+   - Feature grids
+   - Testimonial blocks
+   - Call-to-action sections
+
+Here are some examples of landing pages we've built using this approach:
+
+- [Ephemeral Environments](https://release.com/ephemeral-environments) - Our comprehensive guide to temporary environments
+- [Platform as a Service](https://release.com/platform-as-a-service) - How Release compares to traditional PaaS
+- [Cloud Development](https://release.com/cloud-development-environments) - Our take on modern development environments
+- [Kubernetes Management](https://release.com/kubernetes-management) - Simplifying container orchestration
+
+What used to take weeks in Webflow now takes hours. More importantly, these pages aren't just faster to build—they're easier to maintain, test, and improve. Every change goes through our Git workflow, can be previewed in an ephemeral environment, and gets thoroughly tested before deployment.
 
 ### Step 3: Migrating Blog Posts, Legal Pages, Case Studies & More
 

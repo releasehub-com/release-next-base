@@ -22,9 +22,14 @@ const components = {
     <ul className="list-disc pl-6 mb-4 text-gray-300" {...props} />
   ),
   ol: (props: ComponentProps<"ol">) => (
-    <ol className="list-decimal pl-6 mb-4 text-gray-300" {...props} />
+    <ol className="list-decimal pl-8 mb-4 text-gray-300" {...props} />
   ),
-  li: (props: ComponentProps<"li">) => <li className="mb-2" {...props} />,
+  li: (props: ComponentProps<"li">) => (
+    <li
+      className="mb-8 [&>p]:inline-block [&>ul]:block [&>ul]:mt-4"
+      {...props}
+    />
+  ),
   strong: (props: ComponentProps<"strong">) => (
     <strong className="font-semibold text-white" {...props} />
   ),
