@@ -38,13 +38,34 @@
     
     return blogFiles.map(file => {
       const content = fs.readFileSync(path.join(blogDir, file), 'utf-8');
-      const frontmatterMatch = content.match(/---\n([\s\S]*?)\n---/);
-      const frontmatter = frontmatterMatch ? yaml.load(frontmatterMatch[1]) as Partial<BlogFrontmatter> : {};
+      let title = '';
+      let mainContent = content;
+
+      // Try to extract frontmatter if it exists
+      const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+      if (frontmatterMatch) {
+        try {
+          const frontmatter = yaml.load(frontmatterMatch[1]) as Partial<BlogFrontmatter>;
+          title = frontmatter.title || '';
+          mainContent = content.replace(/^---\n[\s\S]*?\n---\n/, '').trim();
+        } catch (error) {
+          // If YAML parsing fails, treat it as content without frontmatter
+          console.log(`Warning: Invalid frontmatter in ${file}, treating as content`);
+        }
+      }
+
+      // If no title from frontmatter, try to get it from the first heading
+      if (!title) {
+        const titleMatch = mainContent.match(/^#\s+(.+)$/m);
+        if (titleMatch) {
+          title = titleMatch[1];
+        }
+      }
       
       return {
-        title: frontmatter.title || '',
+        title,
         slug: file.replace('.mdx', ''),
-        content: content.replace(/---\n[\s\S]*?\n---/, '').trim() // Remove frontmatter
+        content: mainContent
       };
     });
   }
@@ -65,7 +86,7 @@
       messages: [
         {
           role: "system",
-          content: "You are an expert at finding related content. Given a blog post and a list of other posts, select the 3 most relevant related posts. Return ONLY an array of slugs."
+          content: "You are an expert at finding related content. Given a blog post and a list of other posts, select the 3 most relevant related posts. Return ONLY the slugs, one per line, without numbers or backticks."
         },
         {
           role: "user",
@@ -80,13 +101,31 @@
     });
 
     try {
-      const responseText = completion.choices[0].message.content || '[]';
-      const jsonMatch = responseText.match(/\[[\s\S]*\]/);
-      if (!jsonMatch) {
-        throw new Error('No valid JSON array found in response');
+      const responseText = completion.choices[0].message.content || '';
+      // First try parsing as JSON
+      try {
+        const jsonMatch = responseText.match(/\[[\s\S]*\]/);
+        if (jsonMatch) {
+          const relatedSlugs = JSON.parse(jsonMatch[0]);
+          return relatedSlugs.slice(0, 3);
+        }
+      } catch (e) {
+        // Ignore JSON parse error and try text format
       }
-      const relatedSlugs = JSON.parse(jsonMatch[0]);
-      return relatedSlugs.slice(0, 3); // Ensure we only get 3 posts
+
+      // If not JSON, try parsing as text list
+      const slugs = responseText
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0)
+        .map(line => line
+          .replace(/^\d+\.\s*/, '') // Remove leading numbers
+          .replace(/^[`']|[`']$/g, '') // Remove backticks/quotes
+        )
+        .filter(slug => slug.length > 0)
+        .slice(0, 3);
+
+      return slugs;
     } catch (error) {
       console.error('Error parsing related posts response:', error);
       console.error('Raw response:', completion.choices[0].message.content);
@@ -121,8 +160,15 @@
   }
 
   async function generateFrontmatter(content: string, filePath: string, author?: string): Promise<BlogFrontmatter> {
-    // Get first 2000 chars for content analysis
-    const truncatedContent = content.substring(0, 2000);
+    // Extract the actual content, skipping any markdown headers
+    const contentWithoutHeaders = content.replace(/^#[^\n]*\n/, '').trim();
+    
+    // Get first 2000 chars for content analysis, but make sure we get complete sentences
+    let truncatedContent = contentWithoutHeaders.substring(0, 2000);
+    const lastPeriod = truncatedContent.lastIndexOf('.');
+    if (lastPeriod > 0) {
+      truncatedContent = truncatedContent.substring(0, lastPeriod + 1);
+    }
     
     let aiResponse;
     let attempts = 0;
@@ -217,24 +263,34 @@
   async function processBlogPost(filePath: string, options: { dryRun?: boolean; author?: string } = {}) {
     const content = fs.readFileSync(filePath, 'utf-8');
     
-    // Check if frontmatter already exists by looking for frontmatter fields
+    // Check if frontmatter already exists by looking for the frontmatter delimiters
     const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+    let existingContent = content;
+    
     if (frontmatterMatch) {
-      const frontmatter = yaml.load(frontmatterMatch[1]) as Partial<BlogFrontmatter>;
-      // Only consider it frontmatter if it has typical frontmatter fields
-      if (frontmatter && (
-        frontmatter.title ||
-        frontmatter.summary ||
-        frontmatter.publishDate ||
-        frontmatter.author
-      )) {
-        console.log('Frontmatter already exists. Skipping processing.');
-        return;
+      try {
+        const frontmatter = yaml.load(frontmatterMatch[1]) as Partial<BlogFrontmatter>;
+        // Only consider it frontmatter if it has typical frontmatter fields
+        if (frontmatter && (
+          frontmatter.title ||
+          frontmatter.summary ||
+          frontmatter.publishDate ||
+          frontmatter.author
+        )) {
+          console.log('Frontmatter already exists. Skipping processing.');
+          return;
+        }
+      } catch (error) {
+        // If YAML parsing fails, treat it as content without frontmatter
+        console.log('Invalid frontmatter found, treating as content without frontmatter');
       }
     }
 
+    // Strip any invalid frontmatter-like sections from the beginning
+    existingContent = existingContent.replace(/^---\n[\s\S]*?\n---\n/, '');
+
     // Generate frontmatter
-    const frontmatter = await generateFrontmatter(content, filePath, options.author);
+    const frontmatter = await generateFrontmatter(existingContent, filePath, options.author);
     
     // Convert to YAML with anchor and alias
     let frontmatterYaml = yaml.dump(frontmatter);
@@ -251,7 +307,7 @@
         .replace(tagsBlock, 'tags: *ref_0');
     }
     
-    const newContent = `---\n${frontmatterYaml}---\n\n${content}`;
+    const newContent = `---\n${frontmatterYaml}---\n\n${existingContent.trim()}`;
     
     if (options.dryRun) {
       console.log('Generated frontmatter:');
