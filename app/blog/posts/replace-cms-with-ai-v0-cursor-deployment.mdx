@@ -1,5 +1,5 @@
 ---
-title: We Ditched Webflow for v0, Cursor and Release For Our Marketing Site
+title: "The Future of Marketing Sites: Why We Left Webflow for v0, Cursor, and Release"
 summary: >-
   Tommy, founder of Release, shares the transformative journey from being bogged
   down by Webflow to embracing AI-driven development with v0 and Cursor,
@@ -19,7 +19,7 @@ author: tommy-mcclung
 readingTime: 6
 mainImage: /blog-images/v0-cursor-release.png
 showCTA: true
-ctaCopy: Try Release today to streamline your development workflow.
+ctaCopy: Try Release to modernize your marketing site deployment and say goodbye to traditional CMS
 ctaLink: >-
   https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=replace-cms-with-ai-v0-cursor-deployment
 relatedPosts:
@@ -33,15 +33,21 @@ ctaButton: Try Release for Free
 
 # RIP CMS: How Our Migration from Webflow Proved AI and Git Workflows Are Killing the Old Model
 
-Hey everyone,  
+Hey everyone,
 
-I'm Tommy, founder of Release. My mission at Release is simple: help people release their ideas to the world faster. For years, our marketing site was built on Webflow—it looked great, but it was slowing us down. I wasn't originally looking to replace our site; I just wanted to see what was happening in the world of AI. When I saw the CEO of Vercel talking about v0 on X, I knew I had to get a v0 account and explore its potential.
+I'm Tommy, founder of Release and I'm going to share a bit of my AI journey and a project I've been working on. As I started to build out our AI strategy and story at Release, I saw the CEO of Vercel talking about [v0.dev](https://v0.dev) on X. I knew I had to get a v0 account and explore its potential. I originally built all of the frontend code at Release in React and thought playing around with something familiar to me would be good for me to start getting acquainted with what was possible. I quickly realized a new way of building was upon us and wanted to see how I could apply this to what we do at Release.
 
-![Before & After Comparison: Old Webflow site vs. New AI-Driven Site](/blog-images/rip-cms-header.png)
+<div className="blog-image">
+<img src="/blog-images/rip-cms-header.png" alt="Before & After Comparison: Old Webflow site vs. New AI-Driven Site" />
+</div>
 
-Playing with v0 was eye-opening. It unlocked my ability, as the CEO, to take the reins of our marketing site and get our ideas out to the world faster. But v0 wasn't perfect—it had limitations when it came to building a real, production-ready site. That's when Release came into the picture. We created our repo ([release-next-base](https://github.com/releasehub-com/release-next-base)) to serve as a base image, so I could bring my designs from v0 into a working app that was easy to deploy to Release.
+Playing with v0 was eye-opening. It unlocked my ability, as the CEO, to take the reins of our marketing site and get our ideas out to the world faster. (Which happens to be our mission at Release). For years, our marketing site was built on Webflow—it looked great, but it was slowing us down and I never really loved how we had to work with it. We had to have a designer come up with designs, someone familiar with Webflow had to implement the designs and, in all, it took us about 2-3 weeks to make even the most straightforward changes to it. I wasn't originally looking to replace our site; I just wanted to see what was happening in the world of AI. But I quickly realized there was an opportunity to move faster and release my ideas to the world faster.
 
-Even then, it was cumbersome. v0 had no awareness of my repo structure, how my files were laid out, or how my content should live in production. Enter Cursor—it solved that problem by seamlessly bridging the gap between v0's designs and a fully functioning, deployable site. And thus, our migration began. **RIP CMS.**
+This image shows the before and after of the design, but what it doesn't show is how fast we can how ship changes to our marketing site, without design, without a frontend engineer... all powered by v0, Cursor and Release.
+
+v0 wasn't perfect—it had limitations when it came to building a real, production-ready site. I decided to marry by prototype components with our deployment capabilities at Release. With the help of Griff, my co-founder, we created our repo ([release-next-base](https://github.com/releasehub-com/release-next-base)) to serve as a base image, so I could bring my designs from v0 into a working app that was easy to deploy to Release.
+
+Even then, it was cumbersome. v0 had no awareness of my repo structure, how my files were laid out, or how my content should live in production. Enter Cursor—it solved that problem by seamlessly bridging the gap between v0's designs and a fully functioning, deployable site. So with v0, Cursor and Release all in play, our migration off of Webflow began. **RIP CMS.**
 
 ---
 
@@ -52,7 +58,7 @@ After five years on Webflow, I realized our process was more of a bottleneck tha
 - **Slow Iteration Cycles:** Every change involved a lengthy back-and-forth with our design firm—sometimes taking weeks or even months.
 - **Limited A/B Testing:** The rigidity of Webflow made it nearly impossible to quickly test new landing page messages.
 - **Platform Dependency:** We were locked into an ecosystem where every update required specialized know-how.
-- **The AI Advantage:** Tools like **v0.dev and Cursor** showed me that automation and Git-based workflows could not only accelerate our process but also put me in full control. The traditional CMS model just couldn't keep up. **RIP CMS.**
+- **The AI Advantage:** Tools like **v0.dev and Cursor and Release** showed me that automation and Git-based workflows could not only accelerate our process but also put me in full control. The traditional CMS model just couldn't keep up. **RIP CMS.**
 
 ---
 
@@ -62,17 +68,21 @@ After five years on Webflow, I realized our process was more of a bottleneck tha
 
 My journey began with v0.dev. Intrigued by what I had seen online, I fed v0 a simple prompt:
 
-> Build a landing page for Release.com out of this description:
->
-> Release.com provides a platform called Environments as a Service, designed to streamline 
-> the development, testing, and deployment of software by offering instant, isolated, and 
-> production-like environments. These environments can be created on demand, allowing teams 
-> to build, test, and release software faster without the complexity of managing 
-> infrastructure manually.
+<div className="blog-quote">
+Build a landing page for Release.com out of this description:
+
+Release.com provides a platform called Environments as a Service, designed to streamline 
+the development, testing, and deployment of software by offering instant, isolated, and 
+production-like environments. These environments can be created on demand, allowing teams 
+to build, test, and release software faster without the complexity of managing 
+infrastructure manually.
+</div>
 
 The result was a basic, functional page—a fitting homage to the CMS that was about to be laid to rest.
 
-![v0.dev Generated Design: Screenshot of the initial landing page draft](/blog-images/v0-initial-design.png)
+<div className="blog-image">
+<img src="/blog-images/v0-initial-design.png" alt="v0.dev Generated Design: Screenshot of the initial landing page draft" />
+</div>
 
 ### Step 2: Refining and Expanding with Cursor
 
@@ -82,7 +92,8 @@ I then imported the v0.dev output into Cursor. I started in **Composer Mode** to
 - Refactoring components for a fresh, modern look.
 - Generating scripts to migrate assets and content.
 
-**A Quick Word on Agent Mode:**  
+**A Quick Word on Agent Mode:**
+
 It was a huge time-saver, but not without its quirks. Sometimes, Agent Mode would:
 - **Refactor entire sections unexpectedly**
 - **Duplicate code in multiple areas**
@@ -90,7 +101,9 @@ It was a huge time-saver, but not without its quirks. Sometimes, Agent Mode woul
 
 I often had to revert to earlier file versions. Despite these challenges, the process reinforced my belief that AI-powered tools can render the old CMS model obsolete. **RIP CMS.**
 
-![Cursor in Action: Screenshot of Cursor IDE with code refactoring](/blog-images/cursor-refactoring.png)
+<div className="blog-image">
+<img src="/blog-images/cursor-refactoring.png" alt="Cursor in Action: Screenshot of Cursor IDE with code refactoring" />
+</div>
 
 ### Step 3: Migrating Blog Posts, Legal Pages, Case Studies & More
 
@@ -103,25 +116,26 @@ Migrating our CMS-driven content was another eye-opener. **Not just our blog, bu
 
 Now, **anyone can contribute new content—whether it's a case study, a legal update, or a partner page—by simply adding an MDX file to the repo.** You don't even need a local setup—just use GitHub's UI, which has excellent Markdown support.
 
-![Migrated Blog Post: Before/After snippet of a blog post in Markdown](/blog-images/mdx-migration-example.png)
+<div className="blog-image">
+<img src="/blog-images/mdx-migration-example.png" alt="Migrated Blog Post: Before/After snippet of a blog post in Markdown" />
+</div>
 
 ### Step 4: Empowering the Team with a Git-Based Content Workflow
 
 The real magic happened when we established a clear contribution process. Now, any Release employee can add content by following our straightforward guidelines:
 
-1. **Simple File Creation:** Create a new `.mdx` file in `app/blog/posts/` with your content
+1. **Simple File Creation:** Create a new `.mdx` file in `app/blog/posts/` with your content.
 2. **Automated Processing:** Our custom tooling handles the heavy lifting:
-   - Automatically generates SEO-optimized frontmatter
-   - Creates summaries and social media excerpts
-   - Calculates reading time
-   - Suggests relevant related posts
-   - Validates spelling and technical terms
-
+    - Automatically generates SEO-optimized frontmatter
+    - Creates summaries and social media excerpts
+    - Calculates reading time
+    - Suggests relevant related posts
+    - Validates spelling and technical terms
 3. **Built-in Quality Checks:** Every contribution is automatically validated for:
-   - Content quality and minimum word count
-   - Proper image dimensions and optimization
-   - Required metadata and frontmatter
-   - Link validation and UTM parameters
+    - Content quality and minimum word count
+    - Proper image dimensions and optimization
+    - Required metadata and frontmatter
+    - Link validation and UTM parameters
 
 The best part? You don't need to be a developer. Our process is designed so that anyone comfortable with Markdown can contribute. Even if you're new to it, GitHub's UI makes it easy to write and preview your content.
 
@@ -129,7 +143,7 @@ The best part? You don't need to be a developer. Our process is designed so that
 
 ## 3. The Role of Release: Instant Previews & Deployment
 
-A cornerstone of our new workflow is how we deploy changes using [Release](https://release.com). Here's what makes it revolutionary:
+A cornerstone of our new workflow is how we deploy changes using [Release](https://release.com). Here's what makes it awesome:
 
 - **Ephemeral Environments on Every Branch:** Every time a contributor pushes content, Release automatically spins up an ephemeral environment.
 - **Automated Testing with Playwright:** End-to-end tests catch UI, SEO, and OpenGraph issues before anything hits production.
@@ -142,7 +156,7 @@ Now, releasing new content isn't just for engineers—it's for **anyone** with a
 
 ## 4. Conclusion: Faster, Smarter, and More Scalable
 
-Switching off Webflow has been one of the best moves I've made for Release. By embracing AI tools and a Git-based workflow, we:
+Switching off Webflow has been one of the best moves I've made for Release. By embracing AI tools and a Release centered, Git-based workflow, we:
 
 - **Reduced turnaround time from weeks to minutes.**
 - **Enabled non-engineers to contribute content effortlessly.**
@@ -155,5 +169,9 @@ Let's build the future together—one push at a time.
 
 ## 5. Resources
 
-- **Starter Repo:** [Release Next Base on GitHub](https://github.com/releasehub-com/release-next-base)  
-- **Sign Up for Release:** [Release Signup](https://release.com/signup)
+<div className="blog-links">
+
+[Release Next Base on GitHub](https://github.com/releasehub-com/release-next-base)  
+[Release Signup](https://release.com/signup)
+
+</div>
