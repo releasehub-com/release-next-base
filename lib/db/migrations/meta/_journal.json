@@ -1,12 +1,12 @@
 {
-  "version": "7",
-  "dialect": "postgresql",
+  "version": "5",
+  "dialect": "pg",
   "entries": [
     {
       "idx": 0,
-      "version": "7",
-      "when": 1740120852251,
-      "tag": "0000_hesitant_typhoid_mary",
+      "version": "5",
+      "when": 1740163487797,
+      "tag": "0000_flat_stature",
       "breakpoints": true
     }
   ]

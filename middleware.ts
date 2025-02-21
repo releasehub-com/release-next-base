@@ -1,42 +1,13 @@
+import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { getToken } from "next-auth/jwt";
 
-export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+// List of paths that should not have the admin layout
+const NO_ADMIN_LAYOUT_PATHS = ['/admin/login'];
 
-  // Add pathname to headers for layout detection
+// Middleware function that runs before withAuth
+function addHeaders(request: Request) {
   const requestHeaders = new Headers(request.headers);
-  requestHeaders.set('x-pathname', pathname);
-
-  // For non-admin routes, just pass through with the pathname header
-  if (!pathname.startsWith('/admin')) {
-    return NextResponse.next({
-      request: {
-        headers: requestHeaders,
-      },
-    });
-  }
-
-  // Allow access to login page
-  if (pathname === '/admin/login') {
-    return NextResponse.next({
-      request: {
-        headers: requestHeaders,
-      },
-    });
-  }
-
-  // Check for auth token
-  const token = await getToken({ req: request });
-  
-  // If no token or not admin, redirect to login
-  if (!token?.isAdmin) {
-    const loginUrl = new URL('/admin/login', request.url);
-    // Preserve the original URL as callback URL
-    loginUrl.searchParams.set('callbackUrl', pathname);
-    return NextResponse.redirect(loginUrl);
-  }
+  requestHeaders.set('x-url', request.url);
 
   return NextResponse.next({
     request: {
@@ -45,16 +16,64 @@ export async function middleware(request: NextRequest) {
   });
 }
 
-// Only match admin routes and root for pathname detection
+export default withAuth(
+  function middleware(req) {
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.set('x-url', req.url);
+
+    // Set a header to indicate whether to show admin layout
+    requestHeaders.set('x-show-admin-layout', 
+      !NO_ADMIN_LAYOUT_PATHS.includes(req.nextUrl.pathname) ? '1' : '0'
+    );
+    
+    const token = req.nextauth.token;
+    const isLoginPage = req.nextUrl.pathname === "/admin/login";
+
+    // If trying to access login page while authenticated, redirect to admin
+    if (isLoginPage && token?.isAdmin) {
+      return NextResponse.redirect(new URL("/admin", req.url));
+    }
+
+    // If trying to access admin routes but not authenticated or not admin
+    if (!isLoginPage && req.nextUrl.pathname.startsWith("/admin")) {
+      if (!token || !token.isAdmin) {
+        // Create login URL
+        const loginUrl = new URL("/admin/login", req.url);
+        // Only set callbackUrl if it's not already the login page
+        if (!req.nextUrl.pathname.includes("/admin/login")) {
+          loginUrl.searchParams.set("callbackUrl", "/admin");
+        }
+        return NextResponse.redirect(loginUrl);
+      }
+    }
+
+    // For all other cases, continue with added headers
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
+  },
+  {
+    callbacks: {
+      authorized: ({ token, req }) => {
+        // Allow access to login page without authentication
+        if (req.nextUrl.pathname === "/admin/login") {
+          return true;
+        }
+        // For admin routes, require admin token
+        if (req.nextUrl.pathname.startsWith("/admin")) {
+          return token?.isAdmin === true;
+        }
+        return true;
+      }
+    },
+    pages: {
+      signIn: "/admin/login",
+    }
+  }
+);
+
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api/auth (auth endpoints)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    '/((?!api/auth|_next/static|_next/image|favicon.ico).*)',
-  ],
+  matcher: ["/admin/:path*"]
 };

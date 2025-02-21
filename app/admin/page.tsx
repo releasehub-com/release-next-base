@@ -27,6 +27,16 @@ export default function AdminPage() {
 
               <div className="relative rounded-lg border border-gray-700 bg-gray-800 px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-600 transition-colors">
                 <div className="flex-1 min-w-0">
+                  <Link href="/admin/scheduled" className="focus:outline-none">
+                    <span className="absolute inset-0" aria-hidden="true" />
+                    <p className="text-sm font-medium text-white">Scheduled Posts</p>
+                    <p className="text-sm text-gray-300">View and manage your scheduled social media posts</p>
+                  </Link>
+                </div>
+              </div>
+
+              <div className="relative rounded-lg border border-gray-700 bg-gray-800 px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-600 transition-colors">
+                <div className="flex-1 min-w-0">
                   <Link href="/admin/settings" className="focus:outline-none">
                     <span className="absolute inset-0" aria-hidden="true" />
                     <p className="text-sm font-medium text-white">AI Assistant Settings</p>

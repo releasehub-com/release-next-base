@@ -11,26 +11,26 @@ import type { AdapterAccount } from "@auth/core/adapters";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const users = pgTable("users", {
+export const user = pgTable("user", {
   id: text("id").notNull().primaryKey(),
   name: text("name"),
   email: text("email").notNull(),
-  emailVerified: timestamp("email_verified", { mode: "date" }),
+  emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
-  isAdmin: boolean("is_admin").default(false).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  isAdmin: boolean("isAdmin").default(false).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
-export const accounts = pgTable(
-  "accounts",
+export const account = pgTable(
+  "account",
   {
-    userId: text("user_id")
+    userId: text("userId")
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
+      .references(() => user.id, { onDelete: "cascade" }),
     type: text("type").$type<AdapterAccount["type"]>().notNull(),
     provider: text("provider").notNull(),
-    providerAccountId: text("provider_account_id").notNull(),
+    providerAccountId: text("providerAccountId").notNull(),
     refresh_token: text("refresh_token"),
     access_token: text("access_token"),
     expires_at: integer("expires_at"),
@@ -46,16 +46,16 @@ export const accounts = pgTable(
   })
 );
 
-export const sessions = pgTable("sessions", {
-  sessionToken: text("session_token").notNull().primaryKey(),
-  userId: text("user_id")
+export const session = pgTable("session", {
+  sessionToken: text("sessionToken").notNull().primaryKey(),
+  userId: text("userId")
     .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+    .references(() => user.id, { onDelete: "cascade" }),
   expires: timestamp("expires", { mode: "date" }).notNull(),
 });
 
-export const verificationTokens = pgTable(
-  "verification_tokens",
+export const verificationToken = pgTable(
+  "verification_token",
   {
     identifier: text("identifier").notNull(),
     token: text("token").notNull(),
@@ -68,40 +68,63 @@ export const verificationTokens = pgTable(
 
 export const socialAccounts = pgTable("social_accounts", {
   id: text("id").notNull().primaryKey(),
-  userId: text("user_id")
+  userId: text("userId")
     .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+    .references(() => user.id, { onDelete: "cascade" }),
   provider: text("provider").notNull(), // 'linkedin' or 'twitter'
-  providerAccountId: text("provider_account_id").notNull(),
-  accessToken: text("access_token").notNull(),
-  refreshToken: text("refresh_token"),
-  expiresAt: timestamp("expires_at", { mode: "date" }),
-  tokenType: text("token_type"),
+  providerAccountId: text("providerAccountId").notNull(),
+  accessToken: text("accessToken").notNull(),
+  refreshToken: text("refreshToken"),
+  expiresAt: timestamp("expiresAt", { mode: "date" }),
+  tokenType: text("tokenType"),
   scope: text("scope"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
   metadata: jsonb("metadata").$type<Record<string, any>>(),
 });
 
+export const scheduledPosts = pgTable("scheduled_posts", {
+  id: text("id").notNull().primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  socialAccountId: text("socialAccountId")
+    .notNull()
+    .references(() => socialAccounts.id, { onDelete: "cascade" }),
+  content: text("content").notNull(),
+  scheduledFor: timestamp("scheduledFor", { mode: "date" }).notNull(),
+  status: text("status").$type<'scheduled' | 'posted' | 'failed'>().notNull().default('scheduled'),
+  errorMessage: text("errorMessage"),
+  metadata: jsonb("metadata").$type<Record<string, any>>(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
 // Schema types
-export type User = typeof users.$inferSelect;
-export type NewUser = typeof users.$inferInsert;
+export type User = typeof user.$inferSelect;
+export type NewUser = typeof user.$inferInsert;
 
-export type Account = typeof accounts.$inferSelect;
-export type NewAccount = typeof accounts.$inferInsert;
+export type Account = typeof account.$inferSelect;
+export type NewAccount = typeof account.$inferInsert;
 
-export type Session = typeof sessions.$inferSelect;
-export type NewSession = typeof sessions.$inferInsert;
+export type Session = typeof session.$inferSelect;
+export type NewSession = typeof session.$inferInsert;
 
-export type VerificationToken = typeof verificationTokens.$inferSelect;
-export type NewVerificationToken = typeof verificationTokens.$inferInsert;
+export type VerificationToken = typeof verificationToken.$inferSelect;
+export type NewVerificationToken = typeof verificationToken.$inferInsert;
 
 export type SocialAccount = typeof socialAccounts.$inferSelect;
 export type NewSocialAccount = typeof socialAccounts.$inferInsert;
 
+export type ScheduledPost = typeof scheduledPosts.$inferSelect;
+export type NewScheduledPost = typeof scheduledPosts.$inferInsert;
+
 // Zod schemas for validation
-export const insertUserSchema = createInsertSchema(users);
-export const selectUserSchema = createSelectSchema(users);
+export const insertUserSchema = createInsertSchema(user);
+export const selectUserSchema = createSelectSchema(user);
 
 export const insertSocialAccountSchema = createInsertSchema(socialAccounts);
-export const selectSocialAccountSchema = createSelectSchema(socialAccounts); 
+export const selectSocialAccountSchema = createSelectSchema(socialAccounts);
+
+export const insertScheduledPostSchema = createInsertSchema(scheduledPosts);
+export const selectScheduledPostSchema = createSelectSchema(scheduledPosts); 

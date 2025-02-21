@@ -5,6 +5,7 @@ import Script from "next/script";
 import PathStorage from "./components/PathStorage";
 import "highlight.js/styles/github-dark.css";
 import { SessionProvider } from "./components/SessionProvider";
+import FloatingActionButton from "./components/admin/FloatingActionButton";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -109,6 +110,7 @@ export default function RootLayout({
         <SessionProvider>
           <PathStorage />
           {children}
+          <FloatingActionButton />
         </SessionProvider>
       </body>
     </html>

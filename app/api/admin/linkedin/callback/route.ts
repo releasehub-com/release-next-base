@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server';
-import { upsertSocialAccount } from '@/lib/db';
+import { upsertSocialAccount, db } from '@/lib/db';
+import { getServerSession } from 'next-auth';
+import { user } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
 
 const LINKEDIN_TOKEN_URL = 'https://www.linkedin.com/oauth/v2/accessToken';
-const LINKEDIN_ME_URL = 'https://api.linkedin.com/v2/me';
+const LINKEDIN_USERINFO_URL = 'https://api.linkedin.com/v2/userinfo';
 const REDIRECT_URI = `${process.env.NEXTAUTH_URL}/api/admin/linkedin/callback`;
 
-async function getLinkedInAccessToken(code: string): Promise<any> {
+async function getLinkedInTokens(code: string): Promise<any> {
   const response = await fetch(LINKEDIN_TOKEN_URL, {
     method: 'POST',
     headers: {
@@ -30,10 +33,9 @@ async function getLinkedInAccessToken(code: string): Promise<any> {
 }
 
 async function getLinkedInProfile(accessToken: string): Promise<any> {
-  const response = await fetch(LINKEDIN_ME_URL, {
+  const response = await fetch(LINKEDIN_USERINFO_URL, {
     headers: {
       'Authorization': `Bearer ${accessToken}`,
-      'X-Restli-Protocol-Version': '2.0.0',
     },
   });
 
@@ -50,7 +52,6 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get('code');
   const state = searchParams.get('state');
-  const email = searchParams.get('email');
   const error = searchParams.get('error');
   const errorDescription = searchParams.get('error_description');
 
@@ -61,35 +62,61 @@ export async function GET(request: Request) {
     );
   }
 
-  if (!code || !state || !email) {
+  if (!code || !state) {
     return NextResponse.redirect(
       `${process.env.NEXTAUTH_URL}/admin/social?error=missing_params`
     );
   }
 
   try {
-    // Exchange code for access token
-    const tokenData = await getLinkedInAccessToken(code);
+    // Get the current session to get the authenticated user's email
+    const session = await getServerSession();
+    if (!session?.user?.email) {
+      console.error('No authenticated user found');
+      return NextResponse.redirect(
+        `${process.env.NEXTAUTH_URL}/admin/social?error=unauthorized`
+      );
+    }
+
+    // Get the user's ID from the database
+    const userResult = await db
+      .select()
+      .from(user)
+      .where(eq(user.email, session.user.email));
+
+    if (!userResult.length) {
+      console.error('User not found in database');
+      return NextResponse.redirect(
+        `${process.env.NEXTAUTH_URL}/admin/social?error=user_not_found`
+      );
+    }
+
+    const userId = userResult[0].id;
+
+    // Exchange code for tokens
+    const tokenData = await getLinkedInTokens(code);
     console.log('LinkedIn token data:', tokenData);
     
-    // Get user's LinkedIn profile
+    // Get user's profile using OIDC userinfo endpoint
     const profile = await getLinkedInProfile(tokenData.access_token);
     console.log('LinkedIn profile:', profile);
 
-    // Store the connection in the database using the upsert helper
+    // Store the connection in the database using the user's ID
     await upsertSocialAccount({
-      userId: email,
+      id: `linkedin_${profile.sub}`,
+      userId,
       provider: 'linkedin',
-      providerAccountId: profile.id,
+      providerAccountId: profile.sub,
       accessToken: tokenData.access_token,
-      tokenType: tokenData.token_type,
-      scope: process.env.LINKEDIN_OAUTH_SCOPES,
+      tokenType: tokenData.token_type || undefined,
+      scope: tokenData.scope || undefined,
       expiresAt: tokenData.expires_in ? new Date(Date.now() + tokenData.expires_in * 1000) : undefined,
       metadata: {
         profile: {
-          id: profile.id,
-          firstName: profile.localizedFirstName,
-          lastName: profile.localizedLastName,
+          id: profile.sub,
+          firstName: profile.given_name,
+          lastName: profile.family_name,
+          email: profile.email,
         }
       }
     });

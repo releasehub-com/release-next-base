@@ -2,9 +2,12 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { v4 as uuidv4 } from 'uuid';
 
-// LinkedIn OAuth 2.0 endpoints
+// LinkedIn OAuth 2.0 endpoints with OIDC
 const LINKEDIN_AUTH_URL = 'https://www.linkedin.com/oauth/v2/authorization';
 const REDIRECT_URI = `${process.env.NEXTAUTH_URL}/api/admin/linkedin/callback`;
+
+// OpenID Connect scopes
+const SCOPES = 'openid profile email w_member_social';
 
 export async function GET() {
   try {
@@ -25,25 +28,26 @@ export async function GET() {
     // Generate a unique state to prevent CSRF
     const state = uuidv4();
 
-    // Get scopes from env and ensure they're properly formatted
-    const scopes = process.env.LINKEDIN_OAUTH_SCOPES?.replace(/\s+/g, ' ').trim() || 
-      'r_liteprofile r_emailaddress w_member_social';
-
     // Build the authorization URL manually to ensure proper encoding
     const authUrl = new URL(LINKEDIN_AUTH_URL);
     
-    // Add required parameters
+    // Add required parameters with proper encoding
     authUrl.searchParams.append('response_type', 'code');
     authUrl.searchParams.append('client_id', process.env.LINKEDIN_CLIENT_ID);
     authUrl.searchParams.append('redirect_uri', REDIRECT_URI);
     authUrl.searchParams.append('state', state);
-    authUrl.searchParams.append('scope', scopes);
+    authUrl.searchParams.append('scope', SCOPES);
 
+    // Add OIDC-specific parameters
+    authUrl.searchParams.append('nonce', uuidv4()); // Required for OIDC
+    authUrl.searchParams.append('prompt', 'consent');
+
+    // Log the full URL and debug info
     console.log('LinkedIn Auth URL:', authUrl.toString());
     console.log('Debug info:', {
       clientId: process.env.LINKEDIN_CLIENT_ID,
       redirectUri: REDIRECT_URI,
-      scopes,
+      scopes: SCOPES,
       state,
       fullUrl: authUrl.toString()
     });
@@ -53,7 +57,7 @@ export async function GET() {
 
     return NextResponse.json({ 
       authUrl: authUrl.toString(),
-      redirectUri: REDIRECT_URI, // Include for debugging
+      redirectUri: REDIRECT_URI,
     });
   } catch (error) {
     console.error('Error generating LinkedIn auth URL:', error);

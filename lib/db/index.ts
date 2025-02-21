@@ -1,7 +1,7 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { and, eq } from 'drizzle-orm';
 import postgres from 'postgres';
-import { users, socialAccounts } from './schema';
+import { user, socialAccounts } from './schema';
 import type { NewSocialAccount, SocialAccount, User } from './schema';
 
 // Create postgres client for queries
@@ -18,10 +18,10 @@ export async function getAdminUser(email: string): Promise<User | undefined> {
   try {
     const results = await db
       .select()
-      .from(users)
+      .from(user)
       .where(and(
-        eq(users.email, email),
-        eq(users.isAdmin, true)
+        eq(user.email, email),
+        eq(user.isAdmin, true)
       ));
     return results[0];
   } catch (error) {

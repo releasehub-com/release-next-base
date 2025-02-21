@@ -1,7 +1,7 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as dotenv from 'dotenv';
-import { users } from './schema';
+import { user } from './schema';
 import { v4 as uuidv4 } from 'uuid';
 import { eq } from 'drizzle-orm';
 
@@ -31,8 +31,8 @@ async function main() {
     // Check if user already exists
     const existingUser = await db
       .select()
-      .from(users)
-      .where(eq(users.email, adminEmail));
+      .from(user)
+      .where(eq(user.email, adminEmail));
     
     if (existingUser.length > 0) {
       if (existingUser[0].isAdmin) {
@@ -42,18 +42,18 @@ async function main() {
       
       // Update existing user to be admin
       await db
-        .update(users)
+        .update(user)
         .set({
           isAdmin: true,
           updatedAt: new Date(),
         })
-        .where(eq(users.email, adminEmail));
+        .where(eq(user.email, adminEmail));
       
       console.log(`User ${adminEmail} has been updated to admin`);
     } else {
       // Create new admin user
       await db
-        .insert(users)
+        .insert(user)
         .values({
           id: uuidv4(),
           email: adminEmail,

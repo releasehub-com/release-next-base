@@ -26,6 +26,24 @@ export default function SocialMediaPage() {
     // Handle URL parameters
     const urlError = searchParams.get('error');
     const urlSuccess = searchParams.get('success');
+    const code = searchParams.get('code');
+    const state = searchParams.get('state');
+    
+    // Handle Twitter OAuth callback
+    if (code && state) {
+      // Directly redirect to callback with parameters
+      const params = new URLSearchParams({
+        code: code,
+        state: state
+      });
+
+      const callbackUrl = `/api/admin/twitter/callback?${params.toString()}`;
+      console.log('Redirecting to callback URL:', callbackUrl);
+
+      // Redirect to the callback URL
+      window.location.replace(callbackUrl);
+      return;
+    }
     
     if (urlError) {
       setError(getErrorMessage(urlError));
@@ -102,8 +120,32 @@ export default function SocialMediaPage() {
   };
 
   const handleConnectTwitter = async () => {
-    // TODO: Implement Twitter OAuth flow
-    console.log('Connecting Twitter...');
+    try {
+      setError(null);
+      const response = await fetch('/api/admin/twitter/auth');
+      const data = await response.json();
+      
+      if (data.error) {
+        console.error('Twitter auth error:', data.error);
+        setError('Failed to start Twitter authentication');
+        return;
+      }
+
+      if (!data.authUrl) {
+        console.error('No auth URL returned:', data);
+        setError('Failed to get Twitter authentication URL');
+        return;
+      }
+
+      console.log('Redirecting to Twitter:', data.authUrl);
+      console.log('Redirect URI configured as:', data.redirectUri);
+
+      // Redirect to Twitter's authorization page
+      window.location.assign(data.authUrl);
+    } catch (error) {
+      console.error('Error starting Twitter auth:', error);
+      setError('Failed to start Twitter authentication');
+    }
   };
 
   const getErrorMessage = (code: string) => {
@@ -112,6 +154,10 @@ export default function SocialMediaPage() {
         return 'LinkedIn authentication failed. Please try again.';
       case 'linkedin_connection_failed':
         return 'Failed to connect LinkedIn account. Please try again.';
+      case 'twitter_auth_failed':
+        return 'Twitter authentication failed. Please try again.';
+      case 'twitter_connection_failed':
+        return 'Failed to connect Twitter account. Please try again.';
       case 'missing_params':
         return 'Invalid authentication response. Please try again.';
       case 'database_connection_error':
@@ -125,6 +171,8 @@ export default function SocialMediaPage() {
     switch (code) {
       case 'linkedin_connected':
         return 'LinkedIn account connected successfully!';
+      case 'twitter_connected':
+        return 'Twitter account connected successfully!';
       default:
         return 'Operation completed successfully!';
     }
