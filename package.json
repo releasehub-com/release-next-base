@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "db:migrate": "tsx lib/db/migrate.ts",
+    "db:create-admin": "tsx lib/db/create-admin.ts",
     "import-blogs": "ts-node scripts/import-blog-posts.ts",
     "update-og-images": "ts-node scripts/update-blog-og-images.ts",
     "enhance-seo": "ts-node scripts/enhance-blog-seo.ts",
@@ -35,7 +37,15 @@
     "process-blog:dry-run": "ts-node scripts/process-blog-post.ts --dry-run",
     "validate-blog": "ts-node scripts/validate-blog-post.ts"
   },
+  "pnpm": {
+    "overrides": {
+      "drizzle-orm": "0.29.3",
+      "@auth/drizzle-adapter": "1.7.4"
+    }
+  },
   "dependencies": {
+    "@auth/core": "^0.37.4",
+    "@auth/drizzle-adapter": "^1.7.4",
     "@mdx-js/mdx": "^3.1.0",
     "@mdx-js/react": "^3.1.0",
     "@radix-ui/react-accordion": "^1.2.1",
@@ -43,7 +53,9 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@svgr/webpack": "^8.1.0",
     "@types/mdx": "^2.0.13",
+    "@types/uuid": "^10.0.0",
     "@types/xml2js": "^0.4.14",
+    "@vercel/postgres": "^0.10.0",
     "autoprefixer": "^10.4.20",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
@@ -53,14 +65,20 @@
     "csv-parse": "^5.6.0",
     "dd-trace": "^5.22.0",
     "dotenv": "^16.4.7",
+    "drizzle-kit": "^0.30.4",
+    "drizzle-orm": "^0.29.3",
+    "drizzle-zod": "^0.7.0",
     "gray-matter": "^4.0.3",
     "highlight.js": "^11.11.1",
     "js-yaml": "^4.1.0",
     "lucide-react": "^0.446.0",
     "next": "14.2.13",
+    "next-auth": "^4.24.11",
     "next-contentlayer": "^0.3.4",
     "next-mdx-remote": "^5.0.0",
     "openai": "^4.28.0",
+    "pg": "^8.13.3",
+    "postgres": "^3.4.5",
     "prettier": "^3.4.2",
     "react": "^18",
     "react-calendly": "^4.3.1",
@@ -76,7 +94,9 @@
     "tailwindcss-animate": "^1.0.7",
     "turndown": "^7.2.0",
     "turndown-plugin-gfm": "^1.0.2",
-    "xml2js": "^0.6.2"
+    "uuid": "^11.1.0",
+    "xml2js": "^0.6.2",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@playwright/test": "^1.50.1",

@@ -4,6 +4,7 @@ import "./globals.css";
 import Script from "next/script";
 import PathStorage from "./components/PathStorage";
 import "highlight.js/styles/github-dark.css";
+import { SessionProvider } from "./components/SessionProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -105,8 +106,10 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.className} bg-gray-900`}>
-        <PathStorage />
-        {children}
+        <SessionProvider>
+          <PathStorage />
+          {children}
+        </SessionProvider>
       </body>
     </html>
   );
