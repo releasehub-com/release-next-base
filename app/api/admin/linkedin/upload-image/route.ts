@@ -210,9 +210,9 @@ export async function POST(request: Request) {
     // Upload the image
     await uploadImage(uploadUrl, buffer);
 
-    console.log('LinkedIn image upload response:', {
+    console.log('LinkedIn image upload successful:', {
       asset,
-      displayUrl
+      imageSize: Math.round(buffer.length / 1024) + 'KB'
     });
 
     return NextResponse.json({ 

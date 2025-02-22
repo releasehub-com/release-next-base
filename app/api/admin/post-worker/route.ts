@@ -29,15 +29,10 @@ async function postToTwitter(content: string, account: typeof socialAccounts.$in
     };
   }
 
-  // Log the full request details for debugging
-  console.log('Twitter API request:', {
-    url: 'https://api.twitter.com/2/tweets',
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${account.accessToken}`,
-      'Content-Type': 'application/json'
-    },
-    data: requestBody
+  // Log minimal request info for debugging
+  console.log('Posting to Twitter:', {
+    postId: requestBody.text.substring(0, 20) + '...',
+    hasMedia: !!imageAssets?.length
   });
 
   const response = await fetch('https://api.twitter.com/2/tweets', {
@@ -52,13 +47,15 @@ async function postToTwitter(content: string, account: typeof socialAccounts.$in
 
   if (!response.ok) {
     const error = await response.json();
-    console.log('Twitter API response headers:', Object.fromEntries(response.headers.entries()));
-    console.log('Twitter API request body:', requestBody);
-    throw new Error(`Twitter API error: ${JSON.stringify(error)}`);
+    console.error('Twitter API error:', {
+      status: response.status,
+      message: error.detail || error.message
+    });
+    throw new Error(`Twitter API error: ${error.detail || error.message}`);
   }
 
   const responseData = await response.json();
-  console.log('Twitter post response:', responseData);
+  console.log('Twitter post successful:', { id: responseData.data?.id });
 }
 
 // Helper function to post to LinkedIn
@@ -90,16 +87,16 @@ async function postToLinkedIn(content: string, account: typeof socialAccounts.$i
           const errorText = await statusResponse.text();
           console.error('LinkedIn asset status check error:', {
             status: statusResponse.status,
-            statusText: statusResponse.statusText,
-            error: errorText,
-            assetUrn: urn,
             assetId
           });
-          throw new Error(`Failed to check LinkedIn image status: ${errorText}`);
+          throw new Error(`Failed to check LinkedIn image status: ${statusResponse.status}`);
         }
 
         const status = await statusResponse.json();
-        console.log('LinkedIn asset status:', status);
+        console.log('LinkedIn asset status check:', {
+          assetId,
+          status: status.status
+        });
 
         if (status.status === 'ALLOWED') {
           isReady = true;
@@ -149,7 +146,10 @@ async function postToLinkedIn(content: string, account: typeof socialAccounts.$i
     }));
   }
 
-  console.log('LinkedIn post body:', JSON.stringify(body, null, 2));
+  console.log('Posting to LinkedIn:', {
+    postId: content.substring(0, 20) + '...',
+    hasMedia: !!imageAssets?.length
+  });
 
   const response = await fetch('https://api.linkedin.com/v2/ugcPosts', {
     method: 'POST',
@@ -164,12 +164,15 @@ async function postToLinkedIn(content: string, account: typeof socialAccounts.$i
 
   if (!response.ok) {
     const error = await response.text();
-    console.error('LinkedIn post error:', error);
-    throw new Error(`LinkedIn API error: ${error}`);
+    console.error('LinkedIn API error:', {
+      status: response.status,
+      error: error.substring(0, 100) + '...'
+    });
+    throw new Error(`LinkedIn API error: ${response.status}`);
   }
 
   const responseData = await response.json();
-  console.log('LinkedIn post response:', responseData);
+  console.log('LinkedIn post successful:', { id: responseData.id });
 }
 
 export async function POST(request: Request) {
@@ -203,12 +206,12 @@ export async function POST(request: Request) {
 
     console.log('Found posts:', duePosts.length);
     if (duePosts.length > 0) {
-      console.log('Posts and their scheduled times:');
-      duePosts.forEach(({ post }) => {
-        console.log(`- Post ${post.id} scheduled for:`, new Date(post.scheduledFor).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
-      });
+      console.log('Posts to process:', duePosts.map(({ post }) => ({
+        id: post.id,
+        scheduledFor: new Date(post.scheduledFor).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }),
+        platform: post.metadata?.platform
+      })));
     }
-    console.log('Posts:', JSON.stringify(duePosts, null, 2));
 
     const results = [];
 

@@ -203,9 +203,9 @@ function ConfirmationDialog({ isOpen, onClose, onConfirm, content, platform, sch
           dangerouslySetInnerHTML={{ __html: processed }}
         />
         {/* Show Twitter images if any */}
-        {imageAssets.twitter.length > 0 && (
-          <div className={`grid ${imageAssets.twitter.length === 1 ? '' : 'grid-cols-2'} gap-2 mt-4`}>
-            {imageAssets.twitter.map((imageAsset, index) => (
+        {(imageAssets.twitter || []).length > 0 && (
+          <div className={`grid ${(imageAssets.twitter || []).length === 1 ? '' : 'grid-cols-2'} gap-2 mt-4`}>
+            {(imageAssets.twitter || []).map((imageAsset, index) => (
               <div key={`preview-${imageAsset.asset}-${index}`} className="relative aspect-w-16 aspect-h-9">
                 <img
                   src={imageAsset.displayUrl}
@@ -217,7 +217,7 @@ function ConfirmationDialog({ isOpen, onClose, onConfirm, content, platform, sch
           </div>
         )}
         {/* Only show URL preview if no images are attached */}
-        {pageContext.url && imageAssets.twitter.length === 0 && (
+        {pageContext.url && (imageAssets.twitter || []).length === 0 && (
           <div className="mt-3 border border-gray-700 rounded-xl overflow-hidden bg-black/50">
             {pageContext.url.includes(process.env.NEXT_PUBLIC_BASE_URL || '') && (
               <img 
@@ -274,9 +274,9 @@ function ConfirmationDialog({ isOpen, onClose, onConfirm, content, platform, sch
           />
         ))}
         {/* Show LinkedIn images if any */}
-        {imageAssets.linkedin.length > 0 && (
-          <div className={`grid ${imageAssets.linkedin.length === 1 ? '' : 'grid-cols-2'} gap-2 mt-4`}>
-            {imageAssets.linkedin.map((imageAsset, index) => (
+        {(imageAssets.linkedin || []).length > 0 && (
+          <div className={`grid ${(imageAssets.linkedin || []).length === 1 ? '' : 'grid-cols-2'} gap-2 mt-4`}>
+            {(imageAssets.linkedin || []).map((imageAsset, index) => (
               <div key={`preview-${imageAsset.asset}-${index}`} className="relative aspect-w-16 aspect-h-9">
                 <img
                   src={imageAsset.displayUrl}
@@ -288,7 +288,7 @@ function ConfirmationDialog({ isOpen, onClose, onConfirm, content, platform, sch
           </div>
         )}
         {/* Only show URL preview if no images are attached */}
-        {pageContext.url && imageAssets.linkedin.length === 0 && (
+        {pageContext.url && (imageAssets.linkedin || []).length === 0 && (
           <div className="mt-4 border border-gray-200 rounded-lg overflow-hidden bg-white">
             {pageContext.url.includes(process.env.NEXT_PUBLIC_BASE_URL || '') && (
               <img 
@@ -361,6 +361,40 @@ function ConfirmationDialog({ isOpen, onClose, onConfirm, content, platform, sch
       </div>
     </div>
   );
+}
+
+// Add this function before the AIMarketingModal component
+function calculateTwitterLength(text: string): number {
+  if (!text) return 0;
+  
+  // Find all URLs in the text
+  const urlRegex = /https?:\/\/[^\s]+/g;
+  const urls = text.match(urlRegex) || [];
+  
+  // Start with the total text length
+  let length = text.length;
+  
+  // For each URL, subtract its length and add 23 (Twitter's t.co length)
+  urls.forEach(url => {
+    length = length - url.length + 23;
+  });
+  
+  return length;
+}
+
+// Add this function before the AIMarketingModal component
+function calculateLinkedInLength(text: string): number {
+  if (!text) return 0;
+  return text.length;
+}
+
+function getLinkedInLengthFeedback(length: number): { message: string; color: string } {
+  if (length === 0) return { message: 'characters', color: 'text-gray-400' };
+  if (length <= 200) return { message: 'Will show in feed without truncation', color: 'text-green-400' };
+  if (length <= 1200) return { message: 'Optimal length', color: 'text-green-400' };
+  if (length <= 2000) return { message: 'Good length', color: 'text-blue-400' };
+  if (length <= 3000) return { message: 'Approaching limit', color: 'text-yellow-400' };
+  return { message: 'Exceeds recommended length', color: 'text-red-400' };
 }
 
 export default function AIMarketingModal({
@@ -633,9 +667,9 @@ export default function AIMarketingModal({
           />
         ))}
         {/* Show LinkedIn images if any */}
-        {imageAssets.linkedin.length > 0 && (
-          <div className={`grid ${imageAssets.linkedin.length === 1 ? '' : 'grid-cols-2'} gap-2 mt-4`}>
-            {imageAssets.linkedin.map((imageAsset, index) => (
+        {(imageAssets.linkedin || []).length > 0 && (
+          <div className={`grid ${(imageAssets.linkedin || []).length === 1 ? '' : 'grid-cols-2'} gap-2 mt-4`}>
+            {(imageAssets.linkedin || []).map((imageAsset, index) => (
               <div key={`preview-${imageAsset.asset}-${index}`} className="relative aspect-w-16 aspect-h-9">
                 <img
                   src={imageAsset.displayUrl}
@@ -647,7 +681,7 @@ export default function AIMarketingModal({
           </div>
         )}
         {/* Only show URL preview if no images are attached */}
-        {pageContext.url && imageAssets.linkedin.length === 0 && (
+        {pageContext.url && (imageAssets.linkedin || []).length === 0 && (
           <div className="mt-4 border border-gray-200 rounded-lg overflow-hidden bg-white">
             {pageContext.url.includes(process.env.NEXT_PUBLIC_BASE_URL || '') && (
               <img 
@@ -698,9 +732,9 @@ export default function AIMarketingModal({
           dangerouslySetInnerHTML={{ __html: processed }}
         />
         {/* Show Twitter images if any */}
-        {imageAssets.twitter.length > 0 && (
-          <div className={`grid ${imageAssets.twitter.length === 1 ? '' : 'grid-cols-2'} gap-2 mt-4`}>
-            {imageAssets.twitter.map((imageAsset, index) => (
+        {(imageAssets.twitter || []).length > 0 && (
+          <div className={`grid ${(imageAssets.twitter || []).length === 1 ? '' : 'grid-cols-2'} gap-2 mt-4`}>
+            {(imageAssets.twitter || []).map((imageAsset, index) => (
               <div key={`preview-${imageAsset.asset}-${index}`} className="relative aspect-w-16 aspect-h-9">
                 <img
                   src={imageAsset.displayUrl}
@@ -712,7 +746,7 @@ export default function AIMarketingModal({
           </div>
         )}
         {/* Only show URL preview if no images are attached */}
-        {pageContext.url && imageAssets.twitter.length === 0 && (
+        {pageContext.url && (imageAssets.twitter || []).length === 0 && (
           <div className="mt-3 border border-gray-700 rounded-xl overflow-hidden bg-black/50">
             {pageContext.url.includes(process.env.NEXT_PUBLIC_BASE_URL || '') && (
               <img 
@@ -742,6 +776,12 @@ export default function AIMarketingModal({
 
   const handleSchedulePost = async (scheduledFor: Date) => {
     if (!selectedPlatform || !editedPreviews[selectedPlatform]) return;
+
+    // Add validation for Twitter length
+    if (selectedPlatform === 'twitter' && editedPreviews.twitter && calculateTwitterLength(editedPreviews.twitter) > 280) {
+      alert('Tweet is too long. Please shorten your message.');
+      return;
+    }
 
     // Set pending schedule time and open confirmation dialog
     setPendingScheduleTime(scheduledFor);
@@ -1041,11 +1081,16 @@ export default function AIMarketingModal({
                           <textarea
                             value={editedPreviews.twitter || ''}
                             onChange={(e) => handlePreviewEdit('twitter', e.target.value)}
-                            className="w-full flex-1 bg-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-base leading-relaxed resize-none"
+                            className={`w-full flex-1 bg-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-base leading-relaxed resize-none ${
+                              calculateTwitterLength(editedPreviews.twitter || '') > 280 ? 'border-2 border-red-500' : ''
+                            }`}
                             placeholder="No content available"
                           />
-                          <p className={`text-xs mt-2 ${(editedPreviews.twitter?.length || 0) > 280 ? 'text-red-400' : 'text-gray-400'}`}>
-                            {editedPreviews.twitter?.length || 0}/280 characters
+                          <p className={`text-xs mt-2 ${calculateTwitterLength(editedPreviews.twitter || '') > 280 ? 'text-red-400' : 'text-gray-400'}`}>
+                            {calculateTwitterLength(editedPreviews.twitter || '')}/280 characters
+                            {calculateTwitterLength(editedPreviews.twitter || '') > 280 && (
+                              <span className="ml-2 text-red-400">Tweet is too long</span>
+                            )}
                           </p>
 
                           {/* Add Twitter image upload UI */}
@@ -1059,14 +1104,14 @@ export default function AIMarketingModal({
                                   className="hidden"
                                   accept="image/*"
                                   onChange={handleImageUpload}
-                                  disabled={isUploading || (imageAssets.twitter.length >= 4)}
+                                  disabled={isUploading || ((modalState.imageAssets?.twitter || []).length >= 4)}
                                 />
                               </label>
                             </div>
                             
-                            {imageAssets.twitter.length > 0 && (
-                              <div className="grid grid-cols-2 gap-2 mt-2">
-                                {imageAssets.twitter.map((imageAsset, index) => {
+                            {(modalState.imageAssets?.twitter || []).length > 0 && (
+                              <div className={`grid ${(modalState.imageAssets?.twitter || []).length === 1 ? '' : 'grid-cols-2'} gap-2 mt-2`}>
+                                {(modalState.imageAssets?.twitter || []).map((imageAsset, index) => {
                                   const key = `edit-${imageAsset.asset}-${index}`;
                                   return (
                                     <div key={key} className="relative group">
@@ -1091,7 +1136,7 @@ export default function AIMarketingModal({
                               </div>
                             )}
                             
-                            {imageAssets.twitter.length >= 4 && (
+                            {(modalState.imageAssets?.twitter || []).length >= 4 && (
                               <p className="text-xs text-yellow-400 mt-1">
                                 Maximum number of images (4) reached
                               </p>
@@ -1122,11 +1167,30 @@ export default function AIMarketingModal({
                           <textarea
                             value={editedPreviews.linkedin || ''}
                             onChange={(e) => handlePreviewEdit('linkedin', e.target.value)}
-                            className="w-full flex-1 bg-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-base leading-relaxed resize-none"
+                            className={`w-full flex-1 bg-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-base leading-relaxed resize-none ${
+                              calculateLinkedInLength(editedPreviews.linkedin || '') > 3000 ? 'border-2 border-red-500' : ''
+                            }`}
                             placeholder="No content available"
                           />
-                          
-                          {/* Image upload UI */}
+                          {/* Add LinkedIn character count and feedback */}
+                          {(() => {
+                            const length = calculateLinkedInLength(editedPreviews.linkedin || '');
+                            const feedback = getLinkedInLengthFeedback(length);
+                            return (
+                              <div className="flex items-center justify-between mt-2 text-xs">
+                                <span className={feedback.color}>
+                                  {length.toLocaleString()}/3,000 {feedback.message}
+                                </span>
+                                {length > 200 && (
+                                  <span className="text-gray-400">
+                                    First {Math.min(length, 200)} characters visible in feed
+                                  </span>
+                                )}
+                              </div>
+                            );
+                          })()}
+
+                          {/* Existing image upload UI */}
                           <div className="mt-4">
                             <div className="flex items-center justify-between mb-2">
                               <h4 className="text-sm font-medium text-gray-300">Images</h4>
@@ -1137,14 +1201,14 @@ export default function AIMarketingModal({
                                   className="hidden"
                                   accept="image/*"
                                   onChange={handleImageUpload}
-                                  disabled={isUploading || (imageAssets.linkedin.length >= 9)}
+                                  disabled={isUploading || ((modalState.imageAssets?.linkedin || []).length >= 9)}
                                 />
                               </label>
                             </div>
                             
-                            {imageAssets.linkedin.length > 0 && (
+                            {(imageAssets.linkedin || []).length > 0 && (
                               <div className="grid grid-cols-3 gap-2 mt-2">
-                                {imageAssets.linkedin.map((imageAsset, index) => {
+                                {(imageAssets.linkedin || []).map((imageAsset, index) => {
                                   const key = `edit-${imageAsset.asset}-${index}`;
                                   return (
                                     <div key={key} className="relative group">
@@ -1169,7 +1233,7 @@ export default function AIMarketingModal({
                               </div>
                             )}
                             
-                            {imageAssets.linkedin.length >= 9 && (
+                            {(modalState.imageAssets?.linkedin || []).length >= 9 && (
                               <p className="text-xs text-yellow-400 mt-1">
                                 Maximum number of images (9) reached
                               </p>
