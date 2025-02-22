@@ -17,6 +17,10 @@ interface ModalState {
     twitter: Array<{ content: string; timestamp: number; source: 'ai' | 'user' }>;
     linkedin: Array<{ content: string; timestamp: number; source: 'ai' | 'user' }>;
   };
+  imageAssets: {
+    twitter: Array<{ asset: string; displayUrl: string }>;
+    linkedin: Array<{ asset: string; displayUrl: string }>;
+  };
 }
 
 interface AIMarketingModalProps {
@@ -64,7 +68,9 @@ function ScheduleDialog({ isOpen, onClose, onSchedule }: ScheduleDialogProps) {
   };
 
   const handlePostNow = () => {
-    onSchedule(new Date());
+    // Schedule for 1 minute in the future to pass validation
+    const scheduledFor = new Date(Date.now() + 60000);
+    onSchedule(scheduledFor);
     onClose();
   };
 
@@ -140,7 +146,7 @@ function ScheduleDialog({ isOpen, onClose, onSchedule }: ScheduleDialogProps) {
   );
 }
 
-// Add new interface for confirmation dialog
+// Update the interface first
 interface ConfirmationDialogProps {
   isOpen: boolean;
   onClose: () => void;
@@ -153,9 +159,13 @@ interface ConfirmationDialogProps {
     description: string;
     url: string;
   };
+  imageAssets: {
+    twitter: Array<{ asset: string; displayUrl: string }>;
+    linkedin: Array<{ asset: string; displayUrl: string }>;
+  };
 }
 
-function ConfirmationDialog({ isOpen, onClose, onConfirm, content, platform, scheduledTime, pageContext }: ConfirmationDialogProps) {
+function ConfirmationDialog({ isOpen, onClose, onConfirm, content, platform, scheduledTime, pageContext, imageAssets }: ConfirmationDialogProps) {
   if (!isOpen) return null;
 
   const isScheduled = scheduledTime.getTime() > Date.now() + 60000; // More than 1 minute in the future
@@ -164,7 +174,6 @@ function ConfirmationDialog({ isOpen, onClose, onConfirm, content, platform, sch
     timeStyle: 'short'
   });
 
-  // Reuse the same content rendering functions from the main component
   const renderTwitterPreview = () => {
     // Process content to handle URLs, hashtags, and mentions
     let processed = content;
@@ -193,6 +202,21 @@ function ConfirmationDialog({ isOpen, onClose, onConfirm, content, platform, sch
           className="text-white whitespace-pre-wrap break-words text-[15px] leading-[20px]"
           dangerouslySetInnerHTML={{ __html: processed }}
         />
+        {/* Show Twitter images if any */}
+        {imageAssets.twitter.length > 0 && (
+          <div className={`grid ${imageAssets.twitter.length === 1 ? '' : 'grid-cols-2'} gap-2 mt-4`}>
+            {imageAssets.twitter.map((imageAsset, index) => (
+              <div key={`preview-${imageAsset.asset}-${index}`} className="relative aspect-w-16 aspect-h-9">
+                <img
+                  src={imageAsset.displayUrl}
+                  alt={`Image ${index + 1}`}
+                  className="object-cover rounded-lg w-full h-full"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+        {/* Existing URL preview card */}
         {pageContext.url && (
           <div className="mt-3 border border-gray-700 rounded-xl overflow-hidden bg-black/50">
             {pageContext.url.includes(process.env.NEXT_PUBLIC_BASE_URL || '') && (
@@ -249,6 +273,21 @@ function ConfirmationDialog({ isOpen, onClose, onConfirm, content, platform, sch
             dangerouslySetInnerHTML={{ __html: paragraph }}
           />
         ))}
+        {/* Show LinkedIn images if any */}
+        {imageAssets.linkedin.length > 0 && (
+          <div className={`grid ${imageAssets.linkedin.length === 1 ? '' : 'grid-cols-2'} gap-2 mt-4`}>
+            {imageAssets.linkedin.map((imageAsset, index) => (
+              <div key={`preview-${imageAsset.asset}-${index}`} className="relative aspect-w-16 aspect-h-9">
+                <img
+                  src={imageAsset.displayUrl}
+                  alt={`Image ${index + 1}`}
+                  className="object-cover rounded-lg w-full h-full"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+        {/* Existing URL preview card */}
         {pageContext.url && (
           <div className="mt-4 border border-gray-200 rounded-lg overflow-hidden bg-white">
             {pageContext.url.includes(process.env.NEXT_PUBLIC_BASE_URL || '') && (
@@ -339,7 +378,8 @@ export default function AIMarketingModal({
     preview,
     editedPreviews,
     isPreviewMode,
-    versions
+    versions,
+    imageAssets = { twitter: [], linkedin: [] }
   } = modalState;
 
   // Add state to track last saved content
@@ -572,6 +612,23 @@ export default function AIMarketingModal({
             dangerouslySetInnerHTML={{ __html: paragraph }}
           />
         ))}
+        {/* Show uploaded images if any */}
+        {imageAssets.linkedin.length > 0 && (
+          <div className={`grid ${imageAssets.linkedin.length === 1 ? '' : 'grid-cols-2'} gap-2 mt-4`}>
+            {imageAssets.linkedin.map((imageAsset, index) => {
+              const key = `preview-${imageAsset.asset}-${index}`;
+              return (
+                <div key={key} className="relative aspect-w-16 aspect-h-9">
+                  <img
+                    src={imageAsset.displayUrl}
+                    alt={`Image ${index + 1}`}
+                    className="object-cover rounded-lg w-full h-full"
+                  />
+                </div>
+              );
+            })}
+          </div>
+        )}
         {/* LinkedIn URL Preview Card */}
         {pageContext.url && (
           <div className="mt-4 border border-gray-200 rounded-lg overflow-hidden bg-white">
@@ -661,12 +718,71 @@ export default function AIMarketingModal({
     setIsConfirmationDialogOpen(true);
   };
 
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!selectedPlatform || !event.target.files?.length) return;
+
+    const file = event.target.files[0];
+    const formData = new FormData();
+    formData.append('image', file);
+
+    setIsUploading(true);
+
+    try {
+      const response = await fetch(`/api/admin/${selectedPlatform}/upload-image`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload image');
+      }
+
+      const { asset, displayUrl } = await response.json();
+
+      // Update image assets in modal state
+      updateModalState({
+        ...modalState,
+        imageAssets: {
+          ...modalState.imageAssets,
+          [selectedPlatform]: [
+            ...(modalState.imageAssets?.[selectedPlatform as 'linkedin' | 'twitter'] || []),
+            { asset, displayUrl }
+          ]
+        }
+      });
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to upload image. Please try again.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleRemoveImage = (platform: 'linkedin' | 'twitter', index: number) => {
+    const newAssets = [...(modalState.imageAssets?.[platform] || [])];
+    newAssets.splice(index, 1);
+    
+    updateModalState({
+      ...modalState,
+      imageAssets: {
+        ...modalState.imageAssets,
+        [platform]: newAssets
+      }
+    });
+  };
+
   const handleConfirmPost = async () => {
     if (!selectedPlatform || !editedPreviews[selectedPlatform] || !pendingScheduleTime) return;
 
     try {
       const account = accounts.find(acc => acc.provider === selectedPlatform);
       if (!account) return;
+
+      // Extract just the asset URNs from the image assets
+      const platformImageAssets = imageAssets[selectedPlatform as 'linkedin' | 'twitter'] || [];
+      const assetUrns = platformImageAssets.map(img => img.asset);
 
       const response = await fetch('/api/admin/schedule-post', {
         method: 'POST',
@@ -679,22 +795,23 @@ export default function AIMarketingModal({
           socialAccountId: account.id,
           metadata: {
             platform: selectedPlatform,
-            pageContext
+            pageContext,
+            imageAssets: assetUrns
           }
         }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to schedule post');
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to schedule post');
       }
 
-      // Show success message or notification
       alert('Post scheduled successfully!');
       setIsConfirmationDialogOpen(false);
       setPendingScheduleTime(null);
     } catch (error) {
       console.error('Error scheduling post:', error);
-      alert('Failed to schedule post. Please try again.');
+      alert(error instanceof Error ? error.message : 'Failed to schedule post. Please try again.');
     }
   };
 
@@ -900,6 +1017,56 @@ export default function AIMarketingModal({
                           <p className={`text-xs mt-2 ${(editedPreviews.twitter?.length || 0) > 280 ? 'text-red-400' : 'text-gray-400'}`}>
                             {editedPreviews.twitter?.length || 0}/280 characters
                           </p>
+
+                          {/* Add Twitter image upload UI */}
+                          <div className="mt-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <h4 className="text-sm font-medium text-gray-300">Images</h4>
+                              <label className="cursor-pointer px-3 py-1 text-sm rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                                {isUploading ? 'Uploading...' : 'Add Image'}
+                                <input
+                                  type="file"
+                                  className="hidden"
+                                  accept="image/*"
+                                  onChange={handleImageUpload}
+                                  disabled={isUploading || (imageAssets.twitter.length >= 4)}
+                                />
+                              </label>
+                            </div>
+                            
+                            {imageAssets.twitter.length > 0 && (
+                              <div className="grid grid-cols-2 gap-2 mt-2">
+                                {imageAssets.twitter.map((imageAsset, index) => {
+                                  const key = `edit-${imageAsset.asset}-${index}`;
+                                  return (
+                                    <div key={key} className="relative group">
+                                      <div className="aspect-w-16 aspect-h-9 bg-gray-700 rounded-lg overflow-hidden">
+                                        <img
+                                          src={imageAsset.displayUrl}
+                                          alt={`Image ${index + 1}`}
+                                          className="object-cover w-full h-full"
+                                        />
+                                      </div>
+                                      <button
+                                        onClick={() => handleRemoveImage('twitter', index)}
+                                        className="absolute top-1 right-1 p-1 bg-red-600 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                      >
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                      </button>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+                            
+                            {imageAssets.twitter.length >= 4 && (
+                              <p className="text-xs text-yellow-400 mt-1">
+                                Maximum number of images (4) reached
+                              </p>
+                            )}
+                          </div>
                         </>
                       )}
                     </div>
@@ -921,12 +1088,64 @@ export default function AIMarketingModal({
                           {renderLinkedInContent(editedPreviews.linkedin || '')}
                         </div>
                       ) : (
-                        <textarea
-                          value={editedPreviews.linkedin || ''}
-                          onChange={(e) => handlePreviewEdit('linkedin', e.target.value)}
-                          className="w-full flex-1 bg-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-base leading-relaxed resize-none"
-                          placeholder="No content available"
-                        />
+                        <>
+                          <textarea
+                            value={editedPreviews.linkedin || ''}
+                            onChange={(e) => handlePreviewEdit('linkedin', e.target.value)}
+                            className="w-full flex-1 bg-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-base leading-relaxed resize-none"
+                            placeholder="No content available"
+                          />
+                          
+                          {/* Image upload UI */}
+                          <div className="mt-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <h4 className="text-sm font-medium text-gray-300">Images</h4>
+                              <label className="cursor-pointer px-3 py-1 text-sm rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                                {isUploading ? 'Uploading...' : 'Add Image'}
+                                <input
+                                  type="file"
+                                  className="hidden"
+                                  accept="image/*"
+                                  onChange={handleImageUpload}
+                                  disabled={isUploading || (imageAssets.linkedin.length >= 9)}
+                                />
+                              </label>
+                            </div>
+                            
+                            {imageAssets.linkedin.length > 0 && (
+                              <div className="grid grid-cols-3 gap-2 mt-2">
+                                {imageAssets.linkedin.map((imageAsset, index) => {
+                                  const key = `edit-${imageAsset.asset}-${index}`;
+                                  return (
+                                    <div key={key} className="relative group">
+                                      <div className="aspect-w-16 aspect-h-9 bg-gray-700 rounded-lg overflow-hidden">
+                                        <img
+                                          src={imageAsset.displayUrl}
+                                          alt={`Image ${index + 1}`}
+                                          className="object-cover w-full h-full"
+                                        />
+                                      </div>
+                                      <button
+                                        onClick={() => handleRemoveImage('linkedin', index)}
+                                        className="absolute top-1 right-1 p-1 bg-red-600 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                      >
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                      </button>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+                            
+                            {imageAssets.linkedin.length >= 9 && (
+                              <p className="text-xs text-yellow-400 mt-1">
+                                Maximum number of images (9) reached
+                              </p>
+                            )}
+                          </div>
+                        </>
                       )}
                     </div>
                   </div>
@@ -950,6 +1169,7 @@ export default function AIMarketingModal({
           platform={selectedPlatform}
           scheduledTime={pendingScheduleTime}
           pageContext={pageContext}
+          imageAssets={imageAssets}
         />
       )}
 

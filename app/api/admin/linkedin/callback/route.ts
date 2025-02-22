@@ -6,6 +6,7 @@ import { eq } from 'drizzle-orm';
 
 const LINKEDIN_TOKEN_URL = 'https://www.linkedin.com/oauth/v2/accessToken';
 const LINKEDIN_USERINFO_URL = 'https://api.linkedin.com/v2/userinfo';
+const LINKEDIN_ME_URL = 'https://api.linkedin.com/v2/me';
 const REDIRECT_URI = `${process.env.NEXTAUTH_URL}/api/admin/linkedin/callback`;
 
 async function getLinkedInTokens(code: string): Promise<any> {
@@ -33,19 +34,23 @@ async function getLinkedInTokens(code: string): Promise<any> {
 }
 
 async function getLinkedInProfile(accessToken: string): Promise<any> {
-  const response = await fetch(LINKEDIN_USERINFO_URL, {
+  const userInfoResponse = await fetch(LINKEDIN_USERINFO_URL, {
     headers: {
       'Authorization': `Bearer ${accessToken}`,
     },
   });
 
-  if (!response.ok) {
-    const error = await response.text();
+  if (!userInfoResponse.ok) {
+    const error = await userInfoResponse.text();
     console.error('LinkedIn profile error:', error);
     throw new Error('Failed to get LinkedIn profile');
   }
 
-  return response.json();
+  const userInfo = await userInfoResponse.json();
+  return {
+    ...userInfo,
+    memberId: userInfo.sub // Use the sub claim as the member ID
+  };
 }
 
 export async function GET(request: Request) {
@@ -106,7 +111,7 @@ export async function GET(request: Request) {
       id: `linkedin_${profile.sub}`,
       userId,
       provider: 'linkedin',
-      providerAccountId: profile.sub,
+      providerAccountId: profile.memberId,
       accessToken: tokenData.access_token,
       tokenType: tokenData.token_type || undefined,
       scope: tokenData.scope || undefined,
@@ -117,6 +122,7 @@ export async function GET(request: Request) {
           firstName: profile.given_name,
           lastName: profile.family_name,
           email: profile.email,
+          memberId: profile.memberId
         }
       }
     });

@@ -27,7 +27,7 @@ export async function DELETE(
 
     const userId = userResult[0].id;
 
-    // Delete the post if it belongs to the user
+    // Delete the post, ensuring it belongs to the user
     const result = await db
       .delete(scheduledPosts)
       .where(
@@ -49,7 +49,7 @@ export async function DELETE(
   } catch (error) {
     console.error('Error deleting scheduled post:', error);
     return NextResponse.json(
-      { error: 'Failed to delete scheduled post' },
+      { error: 'Failed to delete post' },
       { status: 500 }
     );
   }

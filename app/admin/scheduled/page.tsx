@@ -16,6 +16,10 @@ interface ScheduledPost {
       title: string;
       url: string;
     };
+    imageAssets?: Array<{
+      asset: string;
+      displayUrl: string;
+    }>;
   };
   createdAt: string;
   updatedAt: string;
@@ -87,6 +91,21 @@ function PostPreviewModal({ post, onClose, onDelete, onEdit }: PostPreviewModalP
             dangerouslySetInnerHTML={{ __html: paragraph }}
           />
         ))}
+        {/* Show LinkedIn images if any */}
+        {post.metadata.imageAssets && post.metadata.imageAssets.length > 0 && (
+          <div className={`grid ${post.metadata.imageAssets.length === 1 ? 'grid-cols-1' : 'grid-cols-2'} gap-2 mt-4`}>
+            {post.metadata.imageAssets.map((imageAsset, index) => (
+              <div key={`preview-${imageAsset.asset}-${index}`} className="relative aspect-[16/9]">
+                <img
+                  src={imageAsset.displayUrl}
+                  alt={`Image ${index + 1}`}
+                  className="object-cover rounded-lg w-full h-full"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+        {/* LinkedIn URL Preview Card */}
         {post.metadata.pageContext.url && (
           <div className="mt-4 border border-gray-200 rounded-lg overflow-hidden bg-white">
             {post.metadata.pageContext.url.includes(process.env.NEXT_PUBLIC_BASE_URL || '') && (
@@ -136,6 +155,21 @@ function PostPreviewModal({ post, onClose, onDelete, onEdit }: PostPreviewModalP
           className="text-white whitespace-pre-wrap break-words text-[15px] leading-[20px]"
           dangerouslySetInnerHTML={{ __html: processed }}
         />
+        {/* Show Twitter images if any */}
+        {post.metadata.imageAssets && post.metadata.imageAssets.length > 0 && (
+          <div className={`grid ${post.metadata.imageAssets.length === 1 ? 'grid-cols-1' : 'grid-cols-2'} gap-2 mt-4`}>
+            {post.metadata.imageAssets.map((imageAsset, index) => (
+              <div key={`preview-${imageAsset.asset}-${index}`} className="relative aspect-[16/9]">
+                <img
+                  src={imageAsset.displayUrl}
+                  alt={`Image ${index + 1}`}
+                  className="object-cover rounded-lg w-full h-full"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+        {/* Twitter URL Preview Card */}
         {post.metadata.pageContext.url && (
           <div className="mt-3 border border-gray-700 rounded-xl overflow-hidden bg-black/50">
             {post.metadata.pageContext.url.includes(process.env.NEXT_PUBLIC_BASE_URL || '') && (
@@ -505,6 +539,9 @@ export default function ScheduledPostsPage() {
       if (!response.ok) {
         throw new Error('Failed to delete post');
       }
+      
+      // Close the modal if a post is currently selected
+      setSelectedPost(null);
       
       // Refresh posts list
       fetchPosts();

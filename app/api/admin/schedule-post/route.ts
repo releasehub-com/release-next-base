@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { db } from '@/lib/db';
-import { user, scheduledPosts } from '@/lib/db/schema';
-import { eq } from 'drizzle-orm';
+import { user, scheduledPosts, socialAccounts } from '@/lib/db/schema';
+import { eq, and } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request: Request) {
@@ -44,6 +44,71 @@ export async function POST(request: Request) {
       );
     }
 
+    // Validate image assets if present
+    if (metadata?.imageAssets) {
+      if (!Array.isArray(metadata.imageAssets)) {
+        return NextResponse.json(
+          { error: 'imageAssets must be an array' },
+          { status: 400 }
+        );
+      }
+
+      if (metadata.imageAssets.length > 9) {
+        return NextResponse.json(
+          { error: 'Maximum of 9 images allowed' },
+          { status: 400 }
+        );
+      }
+
+      // Get the user's LinkedIn account
+      const linkedInAccount = await db
+        .select()
+        .from(socialAccounts)
+        .where(
+          and(
+            eq(socialAccounts.userId, userId),
+            eq(socialAccounts.provider, 'linkedin')
+          )
+        )
+        .limit(1);
+
+      if (!linkedInAccount.length) {
+        return NextResponse.json(
+          { error: 'LinkedIn account not found' },
+          { status: 404 }
+        );
+      }
+
+      // Fetch display URLs for each asset
+      const imageAssets = await Promise.all(
+        metadata.imageAssets.map(async (asset) => {
+          try {
+            const response = await fetch(`https://api.linkedin.com/v2/assets/${asset}`, {
+              headers: {
+                'Authorization': `Bearer ${linkedInAccount[0].accessToken}`,
+                'X-Restli-Protocol-Version': '2.0.0',
+              },
+            });
+
+            if (!response.ok) {
+              throw new Error('Failed to fetch asset details');
+            }
+
+            const data = await response.json();
+            return {
+              asset,
+              displayUrl: data.value.downloadUrl || data.value.mediaUrl
+            };
+          } catch (error) {
+            console.error('Error fetching asset details:', error);
+            return { asset, displayUrl: null };
+          }
+        })
+      );
+
+      metadata.imageAssets = imageAssets;
+    }
+
     // Create scheduled post
     const [scheduledPost] = await db
       .insert(scheduledPosts)
@@ -53,7 +118,10 @@ export async function POST(request: Request) {
         socialAccountId,
         content,
         scheduledFor: scheduledTime,
-        metadata,
+        metadata: {
+          ...metadata,
+          imageAssets: metadata?.imageAssets || []
+        },
         createdAt: new Date(),
         updatedAt: new Date(),
       })
