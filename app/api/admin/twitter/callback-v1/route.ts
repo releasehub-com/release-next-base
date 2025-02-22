@@ -11,11 +11,25 @@ const TWITTER_ACCESS_TOKEN_URL = "https://api.twitter.com/oauth/access_token";
 const TWITTER_VERIFY_CREDENTIALS_URL =
   "https://api.twitter.com/1.1/account/verify_credentials.json";
 
+interface TwitterV1TokenResponse {
+  oauth_token: string;
+  oauth_token_secret: string;
+  user_id: string;
+  screen_name: string;
+}
+
+interface TwitterV1UserResponse {
+  id_str: string;
+  name: string;
+  screen_name: string;
+  profile_image_url_https?: string;
+}
+
 async function getTwitterAccessToken(
   oauthToken: string,
   oauthVerifier: string,
   oauthTokenSecret: string,
-): Promise<any> {
+): Promise<TwitterV1TokenResponse> {
   const oauth = new OAuth({
     consumer: {
       key: process.env.TWITTER_API_KEY!,
@@ -69,7 +83,7 @@ async function getTwitterAccessToken(
 async function getTwitterProfile(
   accessToken: string,
   tokenSecret: string,
-): Promise<any> {
+): Promise<TwitterV1UserResponse> {
   const oauth = new OAuth({
     consumer: {
       key: process.env.TWITTER_API_KEY!,
@@ -103,7 +117,27 @@ async function getTwitterProfile(
     throw new Error("Failed to get Twitter profile");
   }
 
-  return response.json();
+  const tokenResponse = (await response.json()) as TwitterV1TokenResponse;
+  const userResponse = await fetch(TWITTER_VERIFY_CREDENTIALS_URL, {
+    headers: {
+      ...oauth.toHeader(oauth.authorize(requestData, token)),
+    },
+  });
+
+  if (!userResponse.ok) {
+    const error = await userResponse.text();
+    console.error("Twitter user profile error:", error);
+    throw new Error("Failed to get Twitter user profile");
+  }
+
+  const userData = (await userResponse.json()) as TwitterV1UserResponse;
+
+  return {
+    id_str: userData.id_str,
+    name: userData.name,
+    screen_name: userData.screen_name,
+    profile_image_url_https: userData.profile_image_url_https,
+  };
 }
 
 export async function GET(request: Request) {

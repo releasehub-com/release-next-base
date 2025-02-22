@@ -240,7 +240,7 @@ Remember: Generate content exactly as it would appear on the platform - no markd
     // Call OpenAI API for main response
     const completion = await openai.chat.completions.create({
       model: "gpt-4-turbo-preview",
-      messages: messages as any,
+      messages: messages as Message[],
       temperature: 0.7,
       max_tokens: 1000,
     });

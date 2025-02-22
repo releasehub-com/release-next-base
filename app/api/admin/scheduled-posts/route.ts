@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { db } from "@/lib/db";
@@ -28,23 +30,28 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get("status");
     const platform = searchParams.get("platform");
-    
+
     const conditions = {
       status: status || undefined,
       platform: platform || undefined,
     };
 
     // Build query conditions
-    let conditionsQuery = [eq(scheduledPosts.userId, userId)];
+    const conditionsQuery = [eq(scheduledPosts.userId, userId)];
     if (
       conditions.status &&
       ["scheduled", "posted", "failed"].includes(conditions.status)
     ) {
-      conditionsQuery.push(eq(scheduledPosts.status, conditions.status as any));
+      conditionsQuery.push(
+        eq(
+          scheduledPosts.status,
+          conditions.status as "scheduled" | "posted" | "failed",
+        ),
+      );
     }
     if (conditions.platform) {
       conditionsQuery.push(
-        sql`${scheduledPosts.metadata}->>'platform' = ${conditions.platform}`
+        sql`${scheduledPosts.metadata}->>'platform' = ${conditions.platform}`,
       );
     }
 

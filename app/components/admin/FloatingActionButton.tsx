@@ -87,9 +87,26 @@ export default function FloatingActionButton() {
 
   useEffect(() => {
     if (session?.user?.isAdmin) {
+      const fetchAccounts = async () => {
+        try {
+          const response = await fetch("/api/admin/social-accounts");
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || "Failed to fetch accounts");
+          }
+
+          setAccounts(data.accounts);
+        } catch (error) {
+          console.error("Error fetching accounts:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
       fetchAccounts();
     }
-  }, [session]);
+  }, [session?.user?.isAdmin]);
 
   // Reset modal state when pathname changes
   useEffect(() => {
@@ -132,14 +149,14 @@ export default function FloatingActionButton() {
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [pathname, accounts]);
+  }, [pathname, accounts, session?.user?.isAdmin]);
 
   // Add effect to set initial platform when accounts are loaded
   useEffect(() => {
     if (accounts.length > 0 && !modalState.selectedPlatform) {
-      setModalState(prevState => ({
+      setModalState((prevState) => ({
         ...prevState,
-        selectedPlatform: accounts[0].provider
+        selectedPlatform: accounts[0].provider,
       }));
     }
   }, [accounts, modalState.selectedPlatform]);
@@ -149,23 +166,6 @@ export default function FloatingActionButton() {
       setShowButton(true);
     }
   }, [session?.user?.isAdmin]);
-
-  const fetchAccounts = async () => {
-    try {
-      const response = await fetch("/api/admin/social-accounts");
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to fetch accounts");
-      }
-
-      setAccounts(data.accounts);
-    } catch (error) {
-      console.error("Error fetching accounts:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const extractPageContext = () => {
     // Get page title

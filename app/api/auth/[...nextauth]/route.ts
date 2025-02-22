@@ -115,7 +115,7 @@ const handler = NextAuth({
         session.user.email = token.email;
         session.user.name = token.name;
         session.user.image = token.picture;
-        // @ts-ignore - Add the ID to the session
+        // @ts-expect-error - Add the ID to the session
         session.user.id = token.sub;
       }
       return session;

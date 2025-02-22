@@ -11,8 +11,8 @@ import type { AdapterAccount } from "@auth/core/adapters";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
-type Json = string | number | boolean | null | { [key: string]: Json } | Json[]
-type JsonObject = { [key: string]: Json }
+type Json = string | number | boolean | null | { [key: string]: Json } | Json[];
+type JsonObject = { [key: string]: Json };
 
 export const user = pgTable("user", {
   id: text("id").notNull().primaryKey(),

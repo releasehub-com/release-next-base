@@ -9,7 +9,23 @@ import {
   List,
   ChevronDown,
 } from "lucide-react";
-import Image from 'next/image';
+import Image from "next/image";
+
+interface ImageAsset {
+  asset: string;
+  displayUrl: string;
+}
+
+function isImageAsset(asset: unknown): asset is ImageAsset {
+  return (
+    typeof asset === "object" &&
+    asset !== null &&
+    "asset" in asset &&
+    "displayUrl" in asset &&
+    typeof (asset as ImageAsset).asset === "string" &&
+    typeof (asset as ImageAsset).displayUrl === "string"
+  );
+}
 
 interface ScheduledPost {
   id: string;
@@ -23,10 +39,7 @@ interface ScheduledPost {
       title: string;
       url: string;
     };
-    imageAssets?: Array<{
-      asset: string;
-      displayUrl: string;
-    }>;
+    imageAssets?: ImageAsset[];
   };
   createdAt: string;
   updatedAt: string;
@@ -47,6 +60,16 @@ interface EditPostModalProps {
     content: string,
     scheduledFor: Date,
   ) => Promise<void>;
+}
+
+interface ErrorResponse {
+  error: string;
+  details?: string;
+}
+
+interface ApiResponse {
+  posts: ScheduledPost[];
+  error?: string;
 }
 
 // Helper function for status badge styling
@@ -117,11 +140,11 @@ function PostPreviewModal({
                 key={`preview-${imageAsset.asset}-${index}`}
                 className="relative aspect-[16/9]"
               >
-                <Image 
-                  src={imageAsset.displayUrl} 
-                  alt={`Image ${index + 1}`} 
-                  width={200} 
-                  height={150} 
+                <Image
+                  src={imageAsset.displayUrl}
+                  alt={`Image ${index + 1}`}
+                  width={200}
+                  height={150}
                   className="rounded-lg object-cover"
                 />
               </div>
@@ -136,11 +159,11 @@ function PostPreviewModal({
               {post.metadata.pageContext.url.includes(
                 process.env.NEXT_PUBLIC_BASE_URL || "",
               ) && (
-                <Image 
-                  src="/og/og-image.png" 
-                  alt="Article preview" 
-                  width={200} 
-                  height={150} 
+                <Image
+                  src="/og/og-image.png"
+                  alt="Article preview"
+                  width={200}
+                  height={150}
                   className="rounded-lg object-cover"
                 />
               )}
@@ -198,11 +221,11 @@ function PostPreviewModal({
                 key={`preview-${imageAsset.asset}-${index}`}
                 className="relative aspect-[16/9]"
               >
-                <Image 
-                  src={imageAsset.displayUrl} 
-                  alt={`Image ${index + 1}`} 
-                  width={200} 
-                  height={150} 
+                <Image
+                  src={imageAsset.displayUrl}
+                  alt={`Image ${index + 1}`}
+                  width={200}
+                  height={150}
                   className="rounded-lg object-cover"
                 />
               </div>
@@ -217,11 +240,11 @@ function PostPreviewModal({
               {post.metadata.pageContext.url.includes(
                 process.env.NEXT_PUBLIC_BASE_URL || "",
               ) && (
-                <Image 
-                  src="/og/og-image.png" 
-                  alt="Article preview" 
-                  width={200} 
-                  height={150} 
+                <Image
+                  src="/og/og-image.png"
+                  alt="Article preview"
+                  width={200}
+                  height={150}
                   className="rounded-lg object-cover"
                 />
               )}
@@ -238,6 +261,18 @@ function PostPreviewModal({
       </div>
     );
   };
+
+  // Extract image assets from metadata
+  const rawAssets = (post.metadata?.imageAssets || []) as unknown[];
+  const imageAssets = rawAssets.map((asset) => {
+    if (typeof asset === "string") {
+      return { asset, displayUrl: asset };
+    }
+    if (isImageAsset(asset)) {
+      return asset;
+    }
+    throw new Error("Invalid image asset format");
+  });
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -551,7 +586,9 @@ function ListView({
             <span className="text-sm text-gray-400">Sort by:</span>
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
+              onChange={(e) =>
+                setSortBy(e.target.value as "date" | "platform" | "status")
+              }
               className="bg-gray-700 text-white rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               <option value="date">Date</option>
@@ -563,7 +600,11 @@ function ListView({
             <span className="text-sm text-gray-400">Status:</span>
             <select
               value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value as any)}
+              onChange={(e) =>
+                setFilterStatus(
+                  e.target.value as "all" | "scheduled" | "posted" | "failed",
+                )
+              }
               className="bg-gray-700 text-white rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               <option value="all">All</option>
@@ -677,9 +718,9 @@ export default function ScheduledPostsPage() {
   const fetchPosts = async () => {
     try {
       const response = await fetch("/api/admin/scheduled-posts");
-      const data = await response.json();
+      const data = (await response.json()) as ApiResponse;
 
-      if (!response.ok) {
+      if (!response.ok || data.error) {
         throw new Error(data.error || "Failed to fetch scheduled posts");
       }
 

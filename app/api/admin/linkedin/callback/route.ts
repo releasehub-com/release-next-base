@@ -8,7 +8,34 @@ const LINKEDIN_TOKEN_URL = "https://www.linkedin.com/oauth/v2/accessToken";
 const LINKEDIN_USERINFO_URL = "https://api.linkedin.com/v2/userinfo";
 const REDIRECT_URI = `${process.env.NEXTAUTH_URL}/api/admin/linkedin/callback`;
 
-async function getLinkedInTokens(code: string): Promise<any> {
+interface LinkedInTokenResponse {
+  access_token: string;
+  expires_in: number;
+  refresh_token?: string;
+  scope: string;
+  token_type: string;
+}
+
+interface LinkedInProfileResponse {
+  sub: string;
+  given_name?: string;
+  family_name?: string;
+  email?: string;
+  name?: string;
+  locale?: {
+    country: string;
+    language: string;
+  };
+}
+
+interface LinkedInProfile {
+  memberId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+async function getLinkedInTokens(code: string): Promise<LinkedInTokenResponse> {
   const response = await fetch(LINKEDIN_TOKEN_URL, {
     method: "POST",
     headers: {
@@ -29,10 +56,13 @@ async function getLinkedInTokens(code: string): Promise<any> {
     throw new Error("Failed to get LinkedIn access token");
   }
 
-  return response.json();
+  const tokenResponse = (await response.json()) as LinkedInTokenResponse;
+  return tokenResponse;
 }
 
-async function getLinkedInProfile(accessToken: string): Promise<any> {
+async function getLinkedInProfile(
+  accessToken: string,
+): Promise<LinkedInProfile> {
   try {
     // Get user info from OIDC userinfo endpoint
     const userInfoResponse = await fetch(LINKEDIN_USERINFO_URL, {
@@ -47,19 +77,20 @@ async function getLinkedInProfile(accessToken: string): Promise<any> {
       throw new Error(`Failed to get LinkedIn user info: ${error}`);
     }
 
-    const userInfo = await userInfoResponse.json();
-    console.log("LinkedIn userInfo:", userInfo);
+    const profileResponse =
+      (await userInfoResponse.json()) as LinkedInProfileResponse;
+    console.log("LinkedIn userInfo:", profileResponse);
 
-    if (!userInfo.sub) {
-      console.error("LinkedIn member ID not found in response:", userInfo);
-      throw new Error("LinkedIn member ID not found in response");
+    if (!profileResponse.sub) {
+      console.error("LinkedIn sub ID not found in response:", profileResponse);
+      throw new Error("LinkedIn sub ID not found in response");
     }
 
     return {
-      memberId: userInfo.sub,
-      firstName: userInfo.given_name || "",
-      lastName: userInfo.family_name || "",
-      email: userInfo.email || "",
+      memberId: profileResponse.sub,
+      firstName: profileResponse.given_name || "",
+      lastName: profileResponse.family_name || "",
+      email: profileResponse.email || "",
     };
   } catch (error) {
     console.error(

@@ -9,6 +9,23 @@ import crypto from "crypto";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 
+interface UserMetadata {
+  username?: string;
+  profile?: {
+    id: string;
+    name: string;
+    username?: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    memberId?: string;
+  };
+  oauth1?: {
+    accessToken: string;
+    tokenSecret: string;
+  };
+}
+
 async function resizeImageIfNeeded(
   buffer: Buffer,
   mimeType: string,
@@ -267,7 +284,7 @@ export async function POST(request: Request) {
     }
 
     // Get OAuth 1.0a credentials from the account metadata
-    const oauth1Creds = accountResult[0].metadata?.oauth1;
+    const oauth1Creds = (accountResult[0].metadata as UserMetadata)?.oauth1;
     if (!oauth1Creds?.accessToken || !oauth1Creds?.tokenSecret) {
       return NextResponse.json(
         {

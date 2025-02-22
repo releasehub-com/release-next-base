@@ -1,18 +1,18 @@
-import { getServerSession } from "next-auth";
+"use client";
+
 import Link from "next/link";
 import LogoutButton from "./components/LogoutButton";
-import { headers } from "next/headers";
+import { useSession } from "next-auth/react";
 
-export default async function AdminLayout({
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession();
-  const headersList = headers();
-  const showAdminLayout = headersList.get("x-show-admin-layout") === "1";
+  const { data: session, status } = useSession();
 
-  if (!showAdminLayout) {
+  // Only show admin layout when authenticated and admin
+  if (status !== "authenticated" || !session?.user?.isAdmin) {
     return children;
   }
 

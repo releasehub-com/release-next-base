@@ -1,17 +1,34 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
+
+interface UserMetadata {
+  username?: string;
+  profile?: {
+    id: string;
+    name: string;
+    username?: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    memberId?: string;
+  };
+  oauth1?: {
+    accessToken: string;
+    tokenSecret: string;
+  };
+}
 
 type SocialAccount = {
   id: string;
   provider: "linkedin" | "twitter";
   providerAccountId: string;
-  metadata?: Record<string, any>;
+  metadata?: UserMetadata;
 };
 
-export default function SocialMediaPage() {
+function SocialContent() {
   const { data: session } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -412,5 +429,13 @@ export default function SocialMediaPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SocialPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SocialContent />
+    </Suspense>
   );
 }

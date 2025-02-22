@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo } from "react";
 import type { SocialAccount } from "@/lib/db/schema";
-import Image from 'next/image';
+import Image from "next/image";
 
 interface ModalState {
   message: string;
@@ -439,7 +439,7 @@ function calculateTwitterLength(text: string): number {
 
   // Find all URLs in the text
   const urlRegex = /https?:\/\/[^\s]+/g;
-  const urls = text.match(urlRegex) || [];
+  const urls: string[] = text.match(urlRegex) || [];
 
   // Start with the total text length
   let length = text.length;
@@ -519,12 +519,15 @@ export default function AIMarketingModal({
   const [lastSavedContent, setLastSavedContent] = useState<{
     twitter?: string;
     linkedin?: string;
-  }>({});
+  }>({
+    twitter: editedPreviews.twitter || "",
+    linkedin: editedPreviews.linkedin || "",
+  });
 
   // Function to check if there are unsaved changes
   const hasUnsavedChanges = (platform: "twitter" | "linkedin"): boolean => {
     const currentContent = editedPreviews[platform];
-    const savedContent = lastSavedContent[platform];
+    const savedContent = lastSavedContent[platform] || "";
     return currentContent !== savedContent;
   };
 
@@ -716,15 +719,15 @@ export default function AIMarketingModal({
     });
   };
 
-  // Update lastSavedContent when AI generates new content
+  // Update lastSavedContent when AI generates new content or when editedPreviews changes
   useEffect(() => {
     if (selectedPlatform && editedPreviews[selectedPlatform]) {
-      setLastSavedContent({
-        ...lastSavedContent,
+      setLastSavedContent((prev) => ({
+        ...prev,
         [selectedPlatform]: editedPreviews[selectedPlatform],
-      });
+      }));
     }
-  }, [preview]);
+  }, [selectedPlatform, editedPreviews]);
 
   const renderLinkedInContent = (content: string) => {
     if (!content) return null;
@@ -1307,20 +1310,22 @@ export default function AIMarketingModal({
                         </div>
                       ) : (
                         <div className="flex-1 overflow-y-auto pr-2">
-                          <textarea
-                            value={editedPreviews.twitter || ""}
-                            onChange={(e) =>
-                              handlePreviewEdit("twitter", e.target.value)
-                            }
-                            className={`w-full h-40 bg-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-base leading-relaxed resize-none mb-2 ${
-                              calculateTwitterLength(
-                                editedPreviews.twitter || "",
-                              ) > 280
-                                ? "border-2 border-red-500"
-                                : ""
-                            }`}
-                            placeholder="No content available"
-                          />
+                          <div className="relative p-2">
+                            <textarea
+                              value={editedPreviews.twitter || ""}
+                              onChange={(e) =>
+                                handlePreviewEdit("twitter", e.target.value)
+                              }
+                              className={`w-full h-40 bg-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-4 focus:ring-offset-gray-900 text-base leading-relaxed resize-none mb-2 ${
+                                calculateTwitterLength(
+                                  editedPreviews.twitter || "",
+                                ) > 280
+                                  ? "border-2 border-red-500"
+                                  : ""
+                              }`}
+                              placeholder="No content available"
+                            />
+                          </div>
                           <p
                             className={`text-xs mb-4 ${calculateTwitterLength(editedPreviews.twitter || "") > 280 ? "text-red-400" : "text-gray-400"}`}
                           >
@@ -1359,7 +1364,8 @@ export default function AIMarketingModal({
                               </label>
                             </div>
 
-                            {(modalState.imageAssets?.twitter || []).length > 0 && (
+                            {(modalState.imageAssets?.twitter || []).length >
+                              0 && (
                               <div className="grid grid-cols-4 gap-2">
                                 {(modalState.imageAssets?.twitter || []).map(
                                   (imageAsset, index) => {
@@ -1402,7 +1408,8 @@ export default function AIMarketingModal({
                               </div>
                             )}
 
-                            {(modalState.imageAssets?.twitter || []).length >= 4 && (
+                            {(modalState.imageAssets?.twitter || []).length >=
+                              4 && (
                               <p className="text-xs text-yellow-400 mt-1">
                                 Maximum number of images (4) reached
                               </p>
@@ -1434,20 +1441,22 @@ export default function AIMarketingModal({
                         </div>
                       ) : (
                         <>
-                          <textarea
-                            value={editedPreviews.linkedin || ""}
-                            onChange={(e) =>
-                              handlePreviewEdit("linkedin", e.target.value)
-                            }
-                            className={`w-full flex-1 bg-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-base leading-relaxed resize-none ${
-                              calculateLinkedInLength(
-                                editedPreviews.linkedin || "",
-                              ) > 3000
-                                ? "border-2 border-red-500"
-                                : ""
-                            }`}
-                            placeholder="No content available"
-                          />
+                          <div className="relative">
+                            <textarea
+                              value={editedPreviews.linkedin || ""}
+                              onChange={(e) =>
+                                handlePreviewEdit("linkedin", e.target.value)
+                              }
+                              className={`w-full flex-1 bg-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-base leading-relaxed resize-none ${
+                                calculateLinkedInLength(
+                                  editedPreviews.linkedin || "",
+                                ) > 3000
+                                  ? "border-2 border-red-500"
+                                  : ""
+                              }`}
+                              placeholder="No content available"
+                            />
+                          </div>
                           {/* Add LinkedIn character count and feedback */}
                           {(() => {
                             const length = calculateLinkedInLength(

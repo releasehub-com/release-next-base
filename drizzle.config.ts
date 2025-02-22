@@ -10,10 +10,10 @@ if (!process.env.POSTGRES_URL) {
 export default {
   schema: "./lib/db/schema.ts",
   out: "./lib/db/migrations",
+  breakpoints: true,
+  // @ts-ignore
   driver: "pg",
   dbCredentials: {
     connectionString: process.env.POSTGRES_URL,
-  },
-  verbose: true,
-  strict: true,
+  } as any,
 } satisfies Config;

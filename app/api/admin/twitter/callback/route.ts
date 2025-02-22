@@ -9,10 +9,26 @@ import { cookies } from "next/headers";
 const TWITTER_TOKEN_URL = "https://api.twitter.com/2/oauth2/token";
 const TWITTER_USERINFO_URL = "https://api.twitter.com/2/users/me";
 
+interface TwitterTokenResponse {
+  access_token: string;
+  expires_in: number;
+  refresh_token?: string;
+  scope: string;
+  token_type: string;
+}
+
+interface TwitterUserResponse {
+  data: {
+    id: string;
+    name: string;
+    username: string;
+  };
+}
+
 async function getTwitterTokens(
   code: string,
   codeVerifier: string,
-): Promise<any> {
+): Promise<TwitterTokenResponse> {
   // Create Basic Auth header from client ID and secret
   const basicAuth = Buffer.from(
     `${process.env.TWITTER_CLIENT_ID}:${process.env.TWITTER_CLIENT_SECRET}`,
@@ -40,10 +56,13 @@ async function getTwitterTokens(
     throw new Error("Failed to get Twitter access token");
   }
 
-  return response.json();
+  const tokenResponse = (await response.json()) as TwitterTokenResponse;
+  return tokenResponse;
 }
 
-async function getTwitterProfile(accessToken: string): Promise<any> {
+async function getTwitterProfile(
+  accessToken: string,
+): Promise<TwitterUserResponse> {
   const response = await fetch(TWITTER_USERINFO_URL, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -56,7 +75,8 @@ async function getTwitterProfile(accessToken: string): Promise<any> {
     throw new Error("Failed to get Twitter profile");
   }
 
-  return response.json();
+  const userData = (await response.json()) as TwitterUserResponse;
+  return userData;
 }
 
 export async function GET(request: Request) {
@@ -140,10 +160,6 @@ export async function GET(request: Request) {
           id: profile.data.id,
           name: profile.data.name,
           username: profile.data.username,
-        },
-        oauth1: {
-          accessToken: process.env.TWITTER_ACCESS_TOKEN,
-          tokenSecret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
         },
       },
     });
