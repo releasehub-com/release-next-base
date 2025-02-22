@@ -1,0 +1,79 @@
+---
+app: ar-react-rust-postgres
+auto_deploy: true
+context: release-handsup-us-east-1
+domain: ar-react-rust-postgres.releaseapp.gethandsup.com
+repo_name: awesome-release/react-rust-postgres
+hostnames:
+- frontend: frontend-${env_id}-${domain}
+- db: db-${env_id}-${domain}
+environment_templates:
+- name: ephemeral
+- name: permanent
+resources:
+  cpu:
+    limits: 1000m
+    requests: 100m
+  memory:
+    limits: 1Gi
+    requests: 100Mi
+  replicas: 1
+services:
+- name: frontend
+  image: awesome-release/react-rust-postgres/frontend
+  has_repo: true
+  static: false
+  ports:
+  - type: node_port
+    target_port: '3000'
+    port: '3000'
+  build:
+    context: frontend
+    target: development
+- name: backend
+  image: awesome-release/react-rust-postgres/backend
+  has_repo: true
+  static: false
+  volumes:
+  - type: persistent
+    name: backend-cache
+    mount_path: "/code/target"
+  depends_on:
+  - db
+  ports:
+  - type: container_port
+    port: '8000'
+  storage:
+    size: 10Gi
+    type: aws-efs
+  build:
+    context: backend
+    target: development
+- name: db
+  image: postgres:12-alpine
+  volumes:
+  - type: persistent
+    name: db-data
+    mount_path: "/var/lib/postgresql/data"
+  ports:
+  - type: node_port
+    target_port: '5432'
+    port: '5432'
+  storage:
+    size: 10Gi
+    type: aws-efs
+workflows:
+- name: setup
+  order_from:
+  - services.all
+- name: patch
+  order_from:
+  - services.frontend
+  - services.backend
+  - services.db
+- name: teardown
+  parallelize:
+  - step: remove_environment
+    tasks:
+    - release.remove_environment
+
