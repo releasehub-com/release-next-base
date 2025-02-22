@@ -87,8 +87,11 @@ export async function POST(request: Request) {
         const imageAssets = await Promise.all(
           metadata.imageAssets.map(async (asset) => {
             try {
-              // Extract the asset ID from the URN
-              const assetId = asset.split(':').pop();
+              // Extract the asset ID from the URN, handling both string and object formats
+              const assetUrn = typeof asset === 'string' ? asset : asset.asset;
+              // Extract just the asset ID from the URN (everything after the last colon)
+              const assetId = assetUrn.split(':').pop();
+              
               const response = await fetch(`https://api.linkedin.com/v2/assets/${assetId}`, {
                 headers: {
                   'Authorization': `Bearer ${linkedInAccount[0].accessToken}`,
@@ -104,7 +107,7 @@ export async function POST(request: Request) {
                   status: response.status,
                   statusText: response.statusText,
                   error: errorText,
-                  asset,
+                  assetUrn,
                   assetId
                 });
                 throw new Error(`Failed to fetch asset details: ${errorText}`);
@@ -119,12 +122,12 @@ export async function POST(request: Request) {
               }
 
               return {
-                asset,
-                displayUrl: asset // For LinkedIn, use the URN as displayUrl
+                asset: assetUrn,
+                displayUrl: typeof asset === 'object' ? asset.displayUrl : assetUrn
               };
             } catch (error) {
               console.error('Error fetching LinkedIn asset details:', error);
-              return { asset, displayUrl: asset };
+              return typeof asset === 'object' ? asset : { asset, displayUrl: asset };
             }
           })
         );

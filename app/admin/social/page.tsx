@@ -28,8 +28,10 @@ export default function SocialMediaPage() {
     const urlSuccess = searchParams.get('success');
     const code = searchParams.get('code');
     const state = searchParams.get('state');
+    const oauth_token = searchParams.get('oauth_token');
+    const oauth_verifier = searchParams.get('oauth_verifier');
     
-    // Handle Twitter OAuth callback
+    // Handle Twitter OAuth 2.0 callback
     if (code && state) {
       // Directly redirect to callback with parameters
       const params = new URLSearchParams({
@@ -38,7 +40,23 @@ export default function SocialMediaPage() {
       });
 
       const callbackUrl = `/api/admin/twitter/callback?${params.toString()}`;
-      console.log('Redirecting to callback URL:', callbackUrl);
+      console.log('Redirecting to OAuth 2.0 callback URL:', callbackUrl);
+
+      // Redirect to the callback URL
+      window.location.replace(callbackUrl);
+      return;
+    }
+
+    // Handle Twitter OAuth 1.0a callback
+    if (oauth_token && oauth_verifier) {
+      // Directly redirect to callback with parameters
+      const params = new URLSearchParams({
+        oauth_token: oauth_token,
+        oauth_verifier: oauth_verifier
+      });
+
+      const callbackUrl = `/api/admin/twitter/callback-v1?${params.toString()}`;
+      console.log('Redirecting to OAuth 1.0a callback URL:', callbackUrl);
 
       // Redirect to the callback URL
       window.location.replace(callbackUrl);
@@ -148,6 +166,35 @@ export default function SocialMediaPage() {
     }
   };
 
+  const handleConnectTwitterOAuth1 = async () => {
+    try {
+      setError(null);
+      const response = await fetch('/api/admin/twitter/auth-v1');
+      const data = await response.json();
+      
+      if (data.error) {
+        console.error('Twitter OAuth 1.0a auth error:', data.error);
+        setError('Failed to start Twitter OAuth 1.0a authentication');
+        return;
+      }
+
+      if (!data.authUrl) {
+        console.error('No auth URL returned:', data);
+        setError('Failed to get Twitter OAuth 1.0a authentication URL');
+        return;
+      }
+
+      console.log('Redirecting to Twitter OAuth 1.0a:', data.authUrl);
+      console.log('Redirect URI configured as:', data.redirectUri);
+
+      // Redirect to Twitter's authorization page
+      window.location.assign(data.authUrl);
+    } catch (error) {
+      console.error('Error starting Twitter OAuth 1.0a auth:', error);
+      setError('Failed to start Twitter OAuth 1.0a authentication');
+    }
+  };
+
   const getErrorMessage = (code: string) => {
     switch (code) {
       case 'linkedin_auth_failed':
@@ -158,6 +205,10 @@ export default function SocialMediaPage() {
         return 'Twitter authentication failed. Please try again.';
       case 'twitter_connection_failed':
         return 'Failed to connect Twitter account. Please try again.';
+      case 'twitter_oauth1_auth_failed':
+        return 'Twitter OAuth 1.0a authentication failed. Please try again.';
+      case 'twitter_oauth1_connection_failed':
+        return 'Failed to connect Twitter OAuth 1.0a. Please try again.';
       case 'missing_params':
         return 'Invalid authentication response. Please try again.';
       case 'database_connection_error':
@@ -172,7 +223,9 @@ export default function SocialMediaPage() {
       case 'linkedin_connected':
         return 'LinkedIn account connected successfully!';
       case 'twitter_connected':
-        return 'Twitter account connected successfully!';
+        return 'Twitter OAuth 2.0 connected successfully!';
+      case 'twitter_oauth1_connected':
+        return 'Twitter OAuth 1.0a connected successfully!';
       default:
         return 'Operation completed successfully!';
     }
@@ -241,24 +294,51 @@ export default function SocialMediaPage() {
 
           {/* Twitter Card */}
           <div className="bg-gray-800 shadow rounded-lg p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-medium text-white">Twitter</h3>
-                <p className="mt-1 text-sm text-gray-300">
-                  Post tweets and engage with your Twitter audience
-                </p>
+            <div className="flex flex-col">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-medium text-white">Twitter</h3>
+                  <p className="mt-1 text-sm text-gray-300">
+                    Post tweets and engage with your Twitter audience
+                  </p>
+                </div>
               </div>
-              <button
-                onClick={handleConnectTwitter}
-                disabled={accounts.some(a => a.provider === 'twitter')}
-                className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white ${
-                  accounts.some(a => a.provider === 'twitter')
-                    ? 'bg-gray-600 cursor-not-allowed'
-                    : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:ring-offset-gray-800'
-                }`}
-              >
-                {accounts.some(a => a.provider === 'twitter') ? 'Connected' : 'Connect'}
-              </button>
+              <div className="mt-4 flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-300">OAuth 2.0</h4>
+                    <p className="text-xs text-gray-400">Required for API access</p>
+                  </div>
+                  <button
+                    onClick={handleConnectTwitter}
+                    disabled={accounts.some(a => a.provider === 'twitter')}
+                    className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white ${
+                      accounts.some(a => a.provider === 'twitter')
+                        ? 'bg-gray-600 cursor-not-allowed'
+                        : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:ring-offset-gray-800'
+                    }`}
+                  >
+                    {accounts.some(a => a.provider === 'twitter') ? 'Connected' : 'Connect OAuth 2.0'}
+                  </button>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-300">OAuth 1.0a</h4>
+                    <p className="text-xs text-gray-400">Required for media uploads</p>
+                  </div>
+                  <button
+                    onClick={handleConnectTwitterOAuth1}
+                    disabled={accounts.some(a => a.provider === 'twitter' && a.metadata?.oauth1)}
+                    className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white ${
+                      accounts.some(a => a.provider === 'twitter' && a.metadata?.oauth1)
+                        ? 'bg-gray-600 cursor-not-allowed'
+                        : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:ring-offset-gray-800'
+                    }`}
+                  >
+                    {accounts.some(a => a.provider === 'twitter' && a.metadata?.oauth1) ? 'Connected' : 'Connect OAuth 1.0a'}
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { db } from '@/lib/db';
 import { user, socialAccounts } from '@/lib/db/schema';
 import { eq, and } from 'drizzle-orm';
+import sharp from 'sharp';
 
 async function registerImageUpload(accessToken: string, providerAccountId: string): Promise<{ uploadUrl: string; asset: string }> {
   // First, register the upload
@@ -40,12 +41,104 @@ async function registerImageUpload(accessToken: string, providerAccountId: strin
 }
 
 async function uploadImage(uploadUrl: string, imageData: Buffer): Promise<void> {
+  // Get image metadata to check format
+  const metadata = await sharp(imageData).metadata();
+  
+  // Process the image
+  let processedImage: Buffer;
+  let contentType: string;
+  
+  // Determine content type and processing based on format
+  switch (metadata.format) {
+    case 'jpeg':
+      contentType = 'image/jpeg';
+      processedImage = await sharp(imageData)
+        .resize({
+          width: 1104,
+          height: 736,
+          fit: 'inside',
+          withoutEnlargement: true
+        })
+        .jpeg({ quality: 80 })
+        .toBuffer();
+      break;
+    case 'png':
+      contentType = 'image/png';
+      processedImage = await sharp(imageData)
+        .resize({
+          width: 1104,
+          height: 736,
+          fit: 'inside',
+          withoutEnlargement: true
+        })
+        .png({ quality: 80 })
+        .toBuffer();
+      break;
+    case 'gif':
+      contentType = 'image/gif';
+      processedImage = await sharp(imageData)
+        .resize({
+          width: 1104,
+          height: 736,
+          fit: 'inside',
+          withoutEnlargement: true
+        })
+        .toBuffer();
+      break;
+    default:
+      // Convert unsupported formats to JPEG
+      contentType = 'image/jpeg';
+      processedImage = await sharp(imageData)
+        .resize({
+          width: 1104,
+          height: 736,
+          fit: 'inside',
+          withoutEnlargement: true
+        })
+        .jpeg({ quality: 80 })
+        .toBuffer();
+  }
+
+  // If the image is still over 5MB, try compression
+  if (processedImage.length > 5 * 1024 * 1024) {
+    let compressedImage: Buffer;
+    
+    if (metadata.format === 'png') {
+      compressedImage = await sharp(imageData)
+        .resize({
+          width: 1104,
+          height: 736,
+          fit: 'inside',
+          withoutEnlargement: true
+        })
+        .png({ quality: 60, compressionLevel: 9 })
+        .toBuffer();
+    } else {
+      // For JPEG or other formats, compress as JPEG
+      compressedImage = await sharp(imageData)
+        .resize({
+          width: 1104,
+          height: 736,
+          fit: 'inside',
+          withoutEnlargement: true
+        })
+        .jpeg({ quality: 60 })
+        .toBuffer();
+      contentType = 'image/jpeg';
+    }
+    
+    if (compressedImage.length < processedImage.length) {
+      processedImage = compressedImage;
+    }
+  }
+
+  // Upload the processed image
   const uploadResponse = await fetch(uploadUrl, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/octet-stream',
+      'Content-Type': contentType,
     },
-    body: imageData,
+    body: processedImage,
   });
 
   if (!uploadResponse.ok) {

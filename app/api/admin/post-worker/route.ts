@@ -16,71 +16,106 @@ async function mockPostToLinkedIn(content: string): Promise<void> {
 }
 
 // Helper function to post to Twitter
-async function postToTwitter(content: string, accessToken: string, tokenSecret: string, imageAssets?: (string | { asset: string, displayUrl: string })[]): Promise<void> {
-  const data: any = { status: content };
+async function postToTwitter(content: string, account: typeof socialAccounts.$inferSelect, imageAssets?: (string | { asset: string, displayUrl: string })[]): Promise<void> {
+  // Format the request body according to Twitter v2 API
+  const requestBody: any = {
+    text: content
+  };
 
-  // Add media IDs if provided
+  // Add media IDs if provided - format according to v2 API spec
   if (imageAssets?.length) {
-    data.media_ids = imageAssets.map(asset => typeof asset === 'string' ? asset : asset.asset).join(',');
+    requestBody.media = {
+      media_ids: imageAssets.map(asset => typeof asset === 'string' ? asset : asset.asset)
+    };
   }
-
-  const oauth = new OAuth({
-    consumer: {
-      key: process.env.TWITTER_API_KEY!,
-      secret: process.env.TWITTER_API_SECRET!
-    },
-    signature_method: 'HMAC-SHA1',
-    hash_function(base_string, key) {
-      return crypto
-        .createHmac('sha1', key)
-        .update(base_string)
-        .digest('base64');
-    },
-  });
-
-  const token = {
-    key: accessToken,
-    secret: tokenSecret
-  };
-
-  // Create request object with data as parameters
-  const request = {
-    url: 'https://api.twitter.com/1.1/statuses/update.json',
-    method: 'POST',
-    data: data
-  };
-
-  // Get authorization header
-  const authHeader = oauth.toHeader(oauth.authorize(request, token));
 
   // Log the full request details for debugging
   console.log('Twitter API request:', {
-    url: request.url,
-    method: request.method,
-    headers: authHeader,
-    data: data
+    url: 'https://api.twitter.com/2/tweets',
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${account.accessToken}`,
+      'Content-Type': 'application/json'
+    },
+    data: requestBody
   });
 
-  const response = await fetch(request.url, {
-    method: request.method,
+  const response = await fetch('https://api.twitter.com/2/tweets', {
+    method: 'POST',
     headers: {
-      ...authHeader,
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Authorization': `Bearer ${account.accessToken}`,
+      'Content-Type': 'application/json',
+      'x-client-type': 'API'
     },
-    body: new URLSearchParams(data).toString()
+    body: JSON.stringify(requestBody)
   });
 
   if (!response.ok) {
     const error = await response.json();
     console.log('Twitter API response headers:', Object.fromEntries(response.headers.entries()));
-    console.log('Twitter API request headers:', authHeader);
-    console.log('Twitter API request body:', data);
+    console.log('Twitter API request body:', requestBody);
     throw new Error(`Twitter API error: ${JSON.stringify(error)}`);
   }
+
+  const responseData = await response.json();
+  console.log('Twitter post response:', responseData);
 }
 
 // Helper function to post to LinkedIn
 async function postToLinkedIn(content: string, account: typeof socialAccounts.$inferSelect, imageAssets?: Array<string | { asset: string }>): Promise<void> {
+  // If we have image assets, check their status first
+  if (imageAssets?.length) {
+    // Extract just the URN from the asset object if it's an object
+    const assetUrns = imageAssets.map(asset => typeof asset === 'string' ? asset : asset.asset);
+    
+    // Check status of each image and wait for them to be ready
+    for (const urn of assetUrns) {
+      let isReady = false;
+      let attempts = 0;
+      const maxAttempts = 20; // Increased from 10 to 20 attempts
+      
+      while (!isReady && attempts < maxAttempts) {
+        // Extract just the asset ID from the URN (everything after the last colon)
+        const assetId = urn.split(':').pop();
+        
+        const statusResponse = await fetch(`https://api.linkedin.com/v2/assets/${assetId}`, {
+          headers: {
+            'Authorization': `Bearer ${account.accessToken}`,
+            'X-Restli-Protocol-Version': '2.0.0',
+            'LinkedIn-Version': '202304'
+          }
+        });
+
+        if (!statusResponse.ok) {
+          const errorText = await statusResponse.text();
+          console.error('LinkedIn asset status check error:', {
+            status: statusResponse.status,
+            statusText: statusResponse.statusText,
+            error: errorText,
+            assetUrn: urn,
+            assetId
+          });
+          throw new Error(`Failed to check LinkedIn image status: ${errorText}`);
+        }
+
+        const status = await statusResponse.json();
+        console.log('LinkedIn asset status:', status);
+
+        if (status.status === 'ALLOWED') {
+          isReady = true;
+        } else {
+          attempts++;
+          // Wait longer between attempts (2 seconds instead of 1)
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+      }
+
+      if (!isReady) {
+        throw new Error(`LinkedIn image ${urn} not ready after ${maxAttempts} attempts`);
+      }
+    }
+  }
+
   const body: any = {
     author: `urn:li:person:${account.providerAccountId}`,
     lifecycleState: 'PUBLISHED',
@@ -89,7 +124,7 @@ async function postToLinkedIn(content: string, account: typeof socialAccounts.$i
         shareCommentary: {
           text: content
         },
-        shareMediaCategory: 'NONE'
+        shareMediaCategory: imageAssets?.length ? 'IMAGE' : 'NONE'
       }
     },
     visibility: {
@@ -102,7 +137,6 @@ async function postToLinkedIn(content: string, account: typeof socialAccounts.$i
     // Extract just the URN from the asset object if it's an object
     const assetUrns = imageAssets.map(asset => typeof asset === 'string' ? asset : asset.asset);
     
-    body.specificContent['com.linkedin.ugc.ShareContent'].shareMediaCategory = 'IMAGE';
     body.specificContent['com.linkedin.ugc.ShareContent'].media = assetUrns.map(urn => ({
       status: 'READY',
       description: {
@@ -130,8 +164,12 @@ async function postToLinkedIn(content: string, account: typeof socialAccounts.$i
 
   if (!response.ok) {
     const error = await response.text();
+    console.error('LinkedIn post error:', error);
     throw new Error(`LinkedIn API error: ${error}`);
   }
+
+  const responseData = await response.json();
+  console.log('LinkedIn post response:', responseData);
 }
 
 export async function POST(request: Request) {
@@ -199,15 +237,9 @@ export async function POST(request: Request) {
         } else {
           // Actually post in normal mode
           if (account.provider === 'twitter') {
-            // Extract image assets and token secret from metadata
+            // Extract image assets from metadata
             const imageAssets = post.metadata?.imageAssets as string[] | undefined;
-            const tokenSecret = account.metadata?.tokenSecret;
-            
-            if (!tokenSecret) {
-              throw new Error('Twitter OAuth token secret not found');
-            }
-            
-            await postToTwitter(post.content, account.accessToken, tokenSecret, imageAssets);
+            await postToTwitter(post.content, account, imageAssets);
           } else if (account.provider === 'linkedin') {
             // Extract image assets from metadata if present
             const imageAssets = post.metadata?.imageAssets as string[] | undefined;

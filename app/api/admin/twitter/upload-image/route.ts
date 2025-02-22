@@ -3,24 +3,9 @@ import { getServerSession } from 'next-auth';
 import { db } from '@/lib/db';
 import { user, socialAccounts } from '@/lib/db/schema';
 import { eq, and } from 'drizzle-orm';
+import sharp from 'sharp';
 import OAuth from 'oauth-1.0a';
 import crypto from 'crypto';
-import sharp from 'sharp';
-
-// Create OAuth 1.0a instance
-const oauth = new OAuth({
-  consumer: {
-    key: process.env.TWITTER_API_KEY!,
-    secret: process.env.TWITTER_API_SECRET!
-  },
-  signature_method: 'HMAC-SHA1',
-  hash_function(base_string, key) {
-    return crypto
-      .createHmac('sha1', key)
-      .update(base_string)
-      .digest('base64');
-  },
-});
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 
@@ -50,7 +35,7 @@ async function resizeImageIfNeeded(buffer: Buffer, mimeType: string): Promise<Bu
   return resizedBuffer;
 }
 
-async function uploadImageToTwitter(file: File, token: { key: string, secret: string }): Promise<{ media_id: string, media_key: string }> {
+async function uploadImageToTwitter(file: File, accessToken: string, tokenSecret: string): Promise<{ media_id: string }> {
   // Convert file to buffer
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
@@ -64,32 +49,53 @@ async function uploadImageToTwitter(file: File, token: { key: string, secret: st
     throw new Error(`Image is too large (${total_bytes} bytes) even after compression. Maximum size is ${MAX_FILE_SIZE} bytes.`);
   }
 
+  // Create OAuth 1.0a instance
+  const oauth = new OAuth({
+    consumer: {
+      key: process.env.TWITTER_API_KEY!,
+      secret: process.env.TWITTER_API_SECRET!
+    },
+    signature_method: 'HMAC-SHA1',
+    hash_function(baseString: string, key: string) {
+      return crypto.createHmac('sha1', key).update(baseString).digest('base64');
+    }
+  });
+
+  // Use the app's OAuth 1.0a tokens
+  const token = {
+    key: accessToken,
+    secret: tokenSecret
+  };
+
+  // Log the request details for debugging
+  console.log('OAuth credentials:', {
+    consumerKey: process.env.TWITTER_API_KEY,
+    hasConsumerSecret: !!process.env.TWITTER_API_SECRET,
+    hasAccessToken: !!accessToken,
+    hasAccessTokenSecret: !!tokenSecret
+  });
+
   const baseUrl = 'https://upload.twitter.com/1.1/media/upload.json';
 
   // INIT phase
-  const initRequestData = oauth.authorize({
+  const initRequestData = {
     url: baseUrl,
     method: 'POST',
     data: {
       command: 'INIT',
       total_bytes: total_bytes.toString(),
-      media_type: 'image/jpeg', // Always use JPEG for compressed images
-      media_category: 'tweet_image'
-    }
-  }, token);
-
-  const initResponse = await fetch(baseUrl, {
-    method: 'POST',
-    headers: {
-      ...Object.fromEntries(Object.entries(oauth.toHeader(initRequestData))),
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: new URLSearchParams({
-      command: 'INIT',
-      total_bytes: total_bytes.toString(),
       media_type: 'image/jpeg',
       media_category: 'tweet_image'
-    }).toString()
+    }
+  };
+
+  const initResponse = await fetch(initRequestData.url, {
+    method: initRequestData.method,
+    headers: {
+      ...oauth.toHeader(oauth.authorize(initRequestData, token)),
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: new URLSearchParams(initRequestData.data).toString()
   });
 
   if (!initResponse.ok) {
@@ -102,29 +108,24 @@ async function uploadImageToTwitter(file: File, token: { key: string, secret: st
   const mediaId = initData.media_id_string;
 
   // APPEND phase
-  const appendRequestData = oauth.authorize({
+  const appendRequestData = {
     url: baseUrl,
     method: 'POST',
     data: {
       command: 'APPEND',
       media_id: mediaId,
-      media_data: base64,
-      segment_index: '0'
+      segment_index: '0',
+      media_data: base64
     }
-  }, token);
+  };
 
-  const appendResponse = await fetch(baseUrl, {
-    method: 'POST',
+  const appendResponse = await fetch(appendRequestData.url, {
+    method: appendRequestData.method,
     headers: {
-      ...Object.fromEntries(Object.entries(oauth.toHeader(appendRequestData))),
+      ...oauth.toHeader(oauth.authorize(appendRequestData, token)),
       'Content-Type': 'application/x-www-form-urlencoded'
     },
-    body: new URLSearchParams({
-      command: 'APPEND',
-      media_id: mediaId,
-      media_data: base64,
-      segment_index: '0'
-    }).toString()
+    body: new URLSearchParams(appendRequestData.data).toString()
   });
 
   if (!appendResponse.ok) {
@@ -134,25 +135,22 @@ async function uploadImageToTwitter(file: File, token: { key: string, secret: st
   }
 
   // FINALIZE phase
-  const finalizeRequestData = oauth.authorize({
+  const finalizeRequestData = {
     url: baseUrl,
     method: 'POST',
     data: {
       command: 'FINALIZE',
       media_id: mediaId
     }
-  }, token);
+  };
 
-  const finalizeResponse = await fetch(baseUrl, {
-    method: 'POST',
+  const finalizeResponse = await fetch(finalizeRequestData.url, {
+    method: finalizeRequestData.method,
     headers: {
-      ...Object.fromEntries(Object.entries(oauth.toHeader(finalizeRequestData))),
+      ...oauth.toHeader(oauth.authorize(finalizeRequestData, token)),
       'Content-Type': 'application/x-www-form-urlencoded'
     },
-    body: new URLSearchParams({
-      command: 'FINALIZE',
-      media_id: mediaId
-    }).toString()
+    body: new URLSearchParams(finalizeRequestData.data).toString()
   });
 
   if (!finalizeResponse.ok) {
@@ -172,18 +170,19 @@ async function uploadImageToTwitter(file: File, token: { key: string, secret: st
       await new Promise(resolve => setTimeout(resolve, (processingData.check_after_secs || 1) * 1000));
 
       // Check status
-      const statusUrl = `${baseUrl}?command=STATUS&media_id=${mediaId}`;
-      const statusRequestData = oauth.authorize({
-        url: statusUrl,
+      const statusRequestData = {
+        url: baseUrl,
         method: 'GET',
         data: {
           command: 'STATUS',
           media_id: mediaId
         }
-      }, token);
+      };
 
-      const statusResponse = await fetch(statusUrl, {
-        headers: Object.fromEntries(Object.entries(oauth.toHeader(statusRequestData)))
+      const statusResponse = await fetch(`${statusRequestData.url}?${new URLSearchParams(statusRequestData.data).toString()}`, {
+        headers: {
+          ...oauth.toHeader(oauth.authorize(statusRequestData, token))
+        }
       });
 
       if (!statusResponse.ok) {
@@ -196,15 +195,12 @@ async function uploadImageToTwitter(file: File, token: { key: string, secret: st
       processingData = statusData.processing_info;
 
       if (processingData.state === 'failed') {
-        throw new Error(`Media processing failed: ${processingData.error.message}`);
+        throw new Error(`Media processing failed: ${processingData.error?.message || 'Unknown error'}`);
       }
     }
   }
 
-  return { 
-    media_id: mediaId,
-    media_key: finalizeData.media_key
-  };
+  return { media_id: mediaId };
 }
 
 export async function POST(request: Request) {
@@ -255,37 +251,33 @@ export async function POST(request: Request) {
       );
     }
 
+    // Get OAuth 1.0a credentials from the account metadata
+    const oauth1Creds = accountResult[0].metadata?.oauth1;
+    if (!oauth1Creds?.accessToken || !oauth1Creds?.tokenSecret) {
+      return NextResponse.json(
+        { error: 'Twitter OAuth 1.0a credentials not found. Please connect your account with OAuth 1.0a.' },
+        { status: 400 }
+      );
+    }
+
     // Create object URL for preview
     const arrayBuffer = await file.arrayBuffer();
     const base64 = Buffer.from(arrayBuffer).toString('base64');
     const mimeType = file.type;
     const displayUrl = `data:${mimeType};base64,${base64}`;
 
-    // Get OAuth tokens from the account
-    const token = {
-      key: accountResult[0].accessToken,
-      secret: accountResult[0].metadata?.tokenSecret || ''
-    };
-
-    if (!token.secret) {
-      return NextResponse.json(
-        { error: 'Twitter OAuth token secret not found' },
-        { status: 400 }
-      );
-    }
-
-    // Upload image to Twitter
-    const { media_id } = await uploadImageToTwitter(file, token);
+    // Upload image to Twitter using OAuth 1.0a credentials
+    const { media_id } = await uploadImageToTwitter(file, oauth1Creds.accessToken, oauth1Creds.tokenSecret);
 
     // Use the base64 data URL for preview
     return NextResponse.json({ 
       asset: media_id,
-      displayUrl: displayUrl // Use the base64 data URL we created earlier
+      displayUrl: displayUrl
     });
   } catch (error) {
-    console.error('Error uploading image to Twitter:', error);
+    console.error('Error uploading image:', error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to upload image' },
+      { error: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

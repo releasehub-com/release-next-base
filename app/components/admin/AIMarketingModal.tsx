@@ -371,6 +371,26 @@ export default function AIMarketingModal({
   modalState,
   onModalStateChange,
 }: AIMarketingModalProps) {
+  const initialState: ModalState = {
+    message: '',
+    conversations: {
+      twitter: [],
+      linkedin: []
+    },
+    selectedPlatform: null,
+    preview: {},
+    editedPreviews: {},
+    isPreviewMode: false,
+    versions: {
+      twitter: [],
+      linkedin: []
+    },
+    imageAssets: {
+      twitter: [],
+      linkedin: []
+    }
+  };
+
   const {
     message,
     conversations,
