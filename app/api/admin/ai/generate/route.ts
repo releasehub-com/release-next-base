@@ -1,13 +1,13 @@
-import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import OpenAI from 'openai';
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import OpenAI from "openai";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
 interface Message {
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
 }
 
@@ -27,37 +27,41 @@ interface UserIntent {
 // Function to analyze user intent
 async function analyzeUserIntent(message: string): Promise<UserIntent> {
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4-turbo-preview',
+    model: "gpt-4-turbo-preview",
     messages: [
       {
-        role: 'system',
+        role: "system",
         content: `Analyze the user's message intent. Return ONLY a JSON object with these boolean fields:
 - isGeneratingPost: true if user wants to create/generate a new post or modify existing one substantially
 - isEditing: true if user wants to make minor edits to existing post
-- isAnalyzing: true if user is asking for analysis, explanation, or suggestions`
+- isAnalyzing: true if user is asking for analysis, explanation, or suggestions`,
       },
       {
-        role: 'user',
-        content: message
-      }
+        role: "user",
+        content: message,
+      },
     ],
     response_format: { type: "json_object" },
     temperature: 0,
   });
 
-  return JSON.parse(completion.choices[0].message.content || '{"isGeneratingPost":false,"isEditing":false,"isAnalyzing":true}');
+  return JSON.parse(
+    completion.choices[0].message.content ||
+      '{"isGeneratingPost":false,"isEditing":false,"isAnalyzing":true}',
+  );
 }
 
 // Function to generate platform-specific previews
 async function generatePlatformPreviews(
   platforms: string[],
   pageContext: PageContext,
-  aiResponse: string
+  aiResponse: string,
 ): Promise<Record<string, string>> {
   const previews: Record<string, string> = {};
 
-  await Promise.all(platforms.map(async (platform) => {
-    const platformPrompt = `Create a ${platform} post about this content. Your response must contain ONLY the post content, exactly as it should appear on ${platform}. Do not include any explanations, markdown, or additional text.
+  await Promise.all(
+    platforms.map(async (platform) => {
+      const platformPrompt = `Create a ${platform} post about this content. Your response must contain ONLY the post content, exactly as it should appear on ${platform}. Do not include any explanations, markdown, or additional text.
 
 Page Context:
 Title: ${pageContext.title}
@@ -75,67 +79,74 @@ Requirements:
 - For Twitter: Plain text, max 280 characters
 - Always include the URL in the post`;
 
-    const platformPreview = await openai.chat.completions.create({
-      model: 'gpt-4-turbo-preview',
-      messages: [
-        {
-          role: 'system',
-          content: `You are generating ONLY the content for a ${platform} post. Do not include any explanations, prefixes, or formatting. Return exactly what should appear in the post.
+      const platformPreview = await openai.chat.completions.create({
+        model: "gpt-4-turbo-preview",
+        messages: [
+          {
+            role: "system",
+            content: `You are generating ONLY the content for a ${platform} post. Do not include any explanations, prefixes, or formatting. Return exactly what should appear in the post.
 
 Format requirements:
-${platform === 'twitter' 
-  ? `- Maximum 280 characters
+${
+  platform === "twitter"
+    ? `- Maximum 280 characters
 - Plain text only
 - Include relevant hashtags
 - Always include "${pageContext.url}" in the post
 - Place URL where it makes most sense (typically at end)`
-  : `- Plain text only
+    : `- Plain text only
 - Use line breaks for paragraphs
 - No markdown or bullet points
 - Always include "${pageContext.url}" in the post
 - Place URL where it makes most sense (typically after the main content)
-- Include relevant hashtags at the end`}`
-        },
-        {
-          role: 'user',
-          content: platformPrompt
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: platform === 'twitter' ? 200 : 500,
-    });
+- Include relevant hashtags at the end`
+}`,
+          },
+          {
+            role: "user",
+            content: platformPrompt,
+          },
+        ],
+        temperature: 0.7,
+        max_tokens: platform === "twitter" ? 200 : 500,
+      });
 
-    let postContent = platformPreview.choices[0].message.content || '';
+      let postContent = platformPreview.choices[0].message.content || "";
 
-    // Clean up any remaining formatting or prefixes
-    postContent = postContent
-      .replace(/^(Here['']s|This is|I['']ve created|Here is|Draft for|Post for)[^:]*/i, '')
-      .replace(/^[:\s-]+/, '')
-      .replace(/^["'\s\n]+/, '')
-      .replace(/["'\s\n]+$/, '')
-      .replace(/\[Link to .*?\]/gi, pageContext.url)
-      .replace(/\[URL\]/gi, pageContext.url)
-      .trim();
-
-    // For LinkedIn, ensure no markdown or special formatting remains
-    if (platform === 'linkedin') {
+      // Clean up any remaining formatting or prefixes
       postContent = postContent
-        .replace(/[*_~`]/g, '')
-        .replace(/^[-*+] /gm, '')
-        .replace(/^\d+\. /gm, '')
-        .replace(/\n{3,}/g, '\n\n')
+        .replace(
+          /^(Here['']s|This is|I['']ve created|Here is|Draft for|Post for)[^:]*/i,
+          "",
+        )
+        .replace(/^[:\s-]+/, "")
+        .replace(/^["'\s\n]+/, "")
+        .replace(/["'\s\n]+$/, "")
+        .replace(/\[Link to .*?\]/gi, pageContext.url)
+        .replace(/\[URL\]/gi, pageContext.url)
         .trim();
-    }
 
-    // Ensure URL is included if it's not already
-    if (!postContent.includes(pageContext.url)) {
-      postContent = platform === 'twitter'
-        ? `${postContent}\n\n${pageContext.url}`
-        : `${postContent}\n\nLearn more: ${pageContext.url}`;
-    }
+      // For LinkedIn, ensure no markdown or special formatting remains
+      if (platform === "linkedin") {
+        postContent = postContent
+          .replace(/[*_~`]/g, "")
+          .replace(/^[-*+] /gm, "")
+          .replace(/^\d+\. /gm, "")
+          .replace(/\n{3,}/g, "\n\n")
+          .trim();
+      }
 
-    previews[platform] = postContent;
-  }));
+      // Ensure URL is included if it's not already
+      if (!postContent.includes(pageContext.url)) {
+        postContent =
+          platform === "twitter"
+            ? `${postContent}\n\n${pageContext.url}`
+            : `${postContent}\n\nLearn more: ${pageContext.url}`;
+      }
+
+      previews[platform] = postContent;
+    }),
+  );
 
   return previews;
 }
@@ -145,14 +156,14 @@ export async function POST(request: Request) {
     const session = await getServerSession();
 
     if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     if (!process.env.OPENAI_API_KEY) {
-      console.error('OpenAI API key is not configured');
+      console.error("OpenAI API key is not configured");
       return NextResponse.json(
-        { error: 'OpenAI API key is not configured' },
-        { status: 500 }
+        { error: "OpenAI API key is not configured" },
+        { status: 500 },
       );
     }
 
@@ -167,8 +178,8 @@ export async function POST(request: Request) {
     // Validate required fields
     if (!message || !pageContext || !platforms || !conversation) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
+        { error: "Missing required fields" },
+        { status: 400 },
       );
     }
 
@@ -182,7 +193,7 @@ You have access to the following page context:
 Title: ${pageContext.title}
 Description: ${pageContext.description}
 URL: ${pageContext.url}
-${pageContext.content ? `Content: ${pageContext.content.substring(0, 500)}...` : ''}
+${pageContext.content ? `Content: ${pageContext.content.substring(0, 500)}...` : ""}
 
 Your task is to help create engaging social media posts optimized for ${platforms[0]}.
 
@@ -219,40 +230,44 @@ Remember: Generate content exactly as it would appear on the platform - no markd
 
     // Prepare conversation history
     const messages = [
-      { role: 'system', content: systemMessage },
-      ...conversation.map(msg => ({
+      { role: "system", content: systemMessage },
+      ...conversation.map((msg) => ({
         role: msg.role,
-        content: msg.content
-      }))
+        content: msg.content,
+      })),
     ];
 
     // Call OpenAI API for main response
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4-turbo-preview',
+      model: "gpt-4-turbo-preview",
       messages: messages as any,
       temperature: 0.7,
       max_tokens: 1000,
     });
 
     // Extract response
-    const aiResponse = completion.choices[0].message.content || '';
+    const aiResponse = completion.choices[0].message.content || "";
 
     // Generate platform-specific previews only if we're creating/editing a post
     let previews: Record<string, string> = {};
     if (intent.isGeneratingPost || intent.isEditing) {
-      previews = await generatePlatformPreviews(platforms, pageContext, aiResponse);
+      previews = await generatePlatformPreviews(
+        platforms,
+        pageContext,
+        aiResponse,
+      );
     }
 
     return NextResponse.json({
       response: aiResponse,
       previews,
-      intent
+      intent,
     });
   } catch (error) {
-    console.error('Error generating content:', error);
+    console.error("Error generating content:", error);
     return NextResponse.json(
-      { error: 'Failed to generate content' },
-      { status: 500 }
+      { error: "Failed to generate content" },
+      { status: 500 },
     );
   }
-} 
+}

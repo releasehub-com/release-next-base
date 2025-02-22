@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { signOut } from 'next-auth/react';
+import { signOut } from "next-auth/react";
 
 export default function LogoutButton() {
   const handleLogout = async () => {
-    await signOut({ 
-      callbackUrl: '/admin/login',
-      redirect: true 
+    await signOut({
+      callbackUrl: "/admin/login",
+      redirect: true,
     });
   };
 
@@ -18,4 +18,4 @@ export default function LogoutButton() {
       Sign Out
     </button>
   );
-} 
+}

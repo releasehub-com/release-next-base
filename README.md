@@ -49,24 +49,32 @@ The application includes a worker service that executes scheduled social media p
 ### Testing and Development
 
 #### List Scheduled Posts
+
 View all posts that are scheduled and due for posting:
+
 ```bash
 pnpm post-worker:list
 ```
 
 #### Dry Run Mode
+
 Test the worker without actually posting to social media:
+
 ```bash
 pnpm post-worker:dry-run
 ```
+
 This will:
+
 - Find all posts that would be published
 - Simulate the posting process
 - Show what would happen without making actual API calls
 - Not modify any post statuses in the database
 
 #### Test Posts
+
 You can test posting to social media platforms directly:
+
 ```bash
 # Test posting to Twitter
 pnpm test-post -p twitter -c "This is a test tweet"
@@ -76,10 +84,12 @@ pnpm test-post -p linkedin -c "This is a test LinkedIn post"
 ```
 
 Note: Both Twitter and LinkedIn do not provide sandbox environments for testing. However:
+
 - Twitter offers a [Developer Environment](https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api) that can be used for testing
 - LinkedIn provides a [Development Mode](https://www.linkedin.com/developers/apps) for applications
 
 For development, we recommend:
+
 1. Creating development applications in both platforms
 2. Using separate development credentials
 3. Using the dry-run mode for initial testing
@@ -88,12 +98,14 @@ For development, we recommend:
 ### Setup
 
 1. Set the required environment variables:
+
    ```bash
    POST_WORKER_API_KEY=your-secure-api-key
    NEXTAUTH_URL=http://your-app-url
    ```
 
 2. Run the worker manually:
+
    ```bash
    pnpm post-worker
    ```

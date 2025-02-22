@@ -11,6 +11,9 @@ import type { AdapterAccount } from "@auth/core/adapters";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
+type Json = string | number | boolean | null | { [key: string]: Json } | Json[]
+type JsonObject = { [key: string]: Json }
+
 export const user = pgTable("user", {
   id: text("id").notNull().primaryKey(),
   name: text("name"),
@@ -43,7 +46,7 @@ export const account = pgTable(
     compoundKey: primaryKey({
       columns: [account.provider, account.providerAccountId],
     }),
-  })
+  }),
 );
 
 export const session = pgTable("session", {
@@ -63,7 +66,7 @@ export const verificationToken = pgTable(
   },
   (vt) => ({
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
-  })
+  }),
 );
 
 export const socialAccounts = pgTable("social_accounts", {
@@ -80,7 +83,7 @@ export const socialAccounts = pgTable("social_accounts", {
   scope: text("scope"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
-  metadata: jsonb("metadata").$type<Record<string, any>>(),
+  metadata: jsonb("metadata").$type<JsonObject>(),
 });
 
 export const scheduledPosts = pgTable("scheduled_posts", {
@@ -93,9 +96,12 @@ export const scheduledPosts = pgTable("scheduled_posts", {
     .references(() => socialAccounts.id, { onDelete: "cascade" }),
   content: text("content").notNull(),
   scheduledFor: timestamp("scheduledFor", { mode: "date" }).notNull(),
-  status: text("status").$type<'scheduled' | 'posted' | 'failed'>().notNull().default('scheduled'),
+  status: text("status")
+    .$type<"scheduled" | "posted" | "failed">()
+    .notNull()
+    .default("scheduled"),
   errorMessage: text("errorMessage"),
-  metadata: jsonb("metadata").$type<Record<string, any>>(),
+  metadata: jsonb("metadata").$type<JsonObject>(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
@@ -127,4 +133,4 @@ export const insertSocialAccountSchema = createInsertSchema(socialAccounts);
 export const selectSocialAccountSchema = createSelectSchema(socialAccounts);
 
 export const insertScheduledPostSchema = createInsertSchema(scheduledPosts);
-export const selectScheduledPostSchema = createSelectSchema(scheduledPosts); 
+export const selectScheduledPostSchema = createSelectSchema(scheduledPosts);

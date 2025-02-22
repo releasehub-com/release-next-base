@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import Link from "next/link";
 import LogoutButton from "./components/LogoutButton";
-import { headers } from 'next/headers';
+import { headers } from "next/headers";
 
 export default async function AdminLayout({
   children,
@@ -10,7 +10,7 @@ export default async function AdminLayout({
 }) {
   const session = await getServerSession();
   const headersList = headers();
-  const showAdminLayout = headersList.get('x-show-admin-layout') === '1';
+  const showAdminLayout = headersList.get("x-show-admin-layout") === "1";
 
   if (!showAdminLayout) {
     return children;
@@ -61,4 +61,4 @@ export default async function AdminLayout({
       </div>
     </div>
   );
-} 
+}

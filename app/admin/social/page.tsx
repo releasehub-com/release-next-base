@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type SocialAccount = {
   id: string;
-  provider: 'linkedin' | 'twitter';
+  provider: "linkedin" | "twitter";
   providerAccountId: string;
   metadata?: Record<string, any>;
 };
@@ -22,25 +22,25 @@ export default function SocialMediaPage() {
 
   useEffect(() => {
     fetchAccounts();
-    
+
     // Handle URL parameters
-    const urlError = searchParams.get('error');
-    const urlSuccess = searchParams.get('success');
-    const code = searchParams.get('code');
-    const state = searchParams.get('state');
-    const oauth_token = searchParams.get('oauth_token');
-    const oauth_verifier = searchParams.get('oauth_verifier');
-    
+    const urlError = searchParams.get("error");
+    const urlSuccess = searchParams.get("success");
+    const code = searchParams.get("code");
+    const state = searchParams.get("state");
+    const oauth_token = searchParams.get("oauth_token");
+    const oauth_verifier = searchParams.get("oauth_verifier");
+
     // Handle Twitter OAuth 2.0 callback
     if (code && state) {
       // Directly redirect to callback with parameters
       const params = new URLSearchParams({
         code: code,
-        state: state
+        state: state,
       });
 
       const callbackUrl = `/api/admin/twitter/callback?${params.toString()}`;
-      console.log('Redirecting to OAuth 2.0 callback URL:', callbackUrl);
+      console.log("Redirecting to OAuth 2.0 callback URL:", callbackUrl);
 
       // Redirect to the callback URL
       window.location.replace(callbackUrl);
@@ -52,17 +52,17 @@ export default function SocialMediaPage() {
       // Directly redirect to callback with parameters
       const params = new URLSearchParams({
         oauth_token: oauth_token,
-        oauth_verifier: oauth_verifier
+        oauth_verifier: oauth_verifier,
       });
 
       const callbackUrl = `/api/admin/twitter/callback-v1?${params.toString()}`;
-      console.log('Redirecting to OAuth 1.0a callback URL:', callbackUrl);
+      console.log("Redirecting to OAuth 1.0a callback URL:", callbackUrl);
 
       // Redirect to the callback URL
       window.location.replace(callbackUrl);
       return;
     }
-    
+
     if (urlError) {
       setError(getErrorMessage(urlError));
     }
@@ -73,17 +73,21 @@ export default function SocialMediaPage() {
 
   const fetchAccounts = async () => {
     try {
-      const response = await fetch('/api/admin/social-accounts');
+      const response = await fetch("/api/admin/social-accounts");
       const data = await response.json();
-      
+
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to fetch accounts');
+        throw new Error(data.error || "Failed to fetch accounts");
       }
-      
+
       setAccounts(data.accounts);
     } catch (error) {
-      console.error('Error fetching accounts:', error);
-      setError(error instanceof Error ? error.message : 'Failed to fetch connected accounts');
+      console.error("Error fetching accounts:", error);
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch connected accounts",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -91,143 +95,148 @@ export default function SocialMediaPage() {
 
   const handleDisconnect = async (accountId: string) => {
     try {
-      const response = await fetch(`/api/admin/social-accounts?id=${accountId}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(
+        `/api/admin/social-accounts?id=${accountId}`,
+        {
+          method: "DELETE",
+        },
+      );
       const data = await response.json();
-      
+
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to disconnect account');
+        throw new Error(data.error || "Failed to disconnect account");
       }
-      
+
       await fetchAccounts();
-      setSuccess('Account disconnected successfully');
+      setSuccess("Account disconnected successfully");
     } catch (error) {
-      console.error('Error disconnecting account:', error);
-      setError(error instanceof Error ? error.message : 'Failed to disconnect account');
+      console.error("Error disconnecting account:", error);
+      setError(
+        error instanceof Error ? error.message : "Failed to disconnect account",
+      );
     }
   };
 
   const handleConnectLinkedIn = async () => {
     try {
       setError(null);
-      const response = await fetch('/api/admin/linkedin/auth');
+      const response = await fetch("/api/admin/linkedin/auth");
       const data = await response.json();
-      
+
       if (data.error) {
-        console.error('LinkedIn auth error:', data.error);
-        setError('Failed to start LinkedIn authentication');
+        console.error("LinkedIn auth error:", data.error);
+        setError("Failed to start LinkedIn authentication");
         return;
       }
 
       if (!data.authUrl) {
-        console.error('No auth URL returned:', data);
-        setError('Failed to get LinkedIn authentication URL');
+        console.error("No auth URL returned:", data);
+        setError("Failed to get LinkedIn authentication URL");
         return;
       }
 
-      console.log('Redirecting to LinkedIn:', data.authUrl);
-      console.log('Redirect URI configured as:', data.redirectUri);
+      console.log("Redirecting to LinkedIn:", data.authUrl);
+      console.log("Redirect URI configured as:", data.redirectUri);
 
       // Redirect to LinkedIn's authorization page
       window.location.assign(data.authUrl);
     } catch (error) {
-      console.error('Error starting LinkedIn auth:', error);
-      setError('Failed to start LinkedIn authentication');
+      console.error("Error starting LinkedIn auth:", error);
+      setError("Failed to start LinkedIn authentication");
     }
   };
 
   const handleConnectTwitter = async () => {
     try {
       setError(null);
-      const response = await fetch('/api/admin/twitter/auth');
+      const response = await fetch("/api/admin/twitter/auth");
       const data = await response.json();
-      
+
       if (data.error) {
-        console.error('Twitter auth error:', data.error);
-        setError('Failed to start Twitter authentication');
+        console.error("Twitter auth error:", data.error);
+        setError("Failed to start Twitter authentication");
         return;
       }
 
       if (!data.authUrl) {
-        console.error('No auth URL returned:', data);
-        setError('Failed to get Twitter authentication URL');
+        console.error("No auth URL returned:", data);
+        setError("Failed to get Twitter authentication URL");
         return;
       }
 
-      console.log('Redirecting to Twitter:', data.authUrl);
-      console.log('Redirect URI configured as:', data.redirectUri);
+      console.log("Redirecting to Twitter:", data.authUrl);
+      console.log("Redirect URI configured as:", data.redirectUri);
 
       // Redirect to Twitter's authorization page
       window.location.assign(data.authUrl);
     } catch (error) {
-      console.error('Error starting Twitter auth:', error);
-      setError('Failed to start Twitter authentication');
+      console.error("Error starting Twitter auth:", error);
+      setError("Failed to start Twitter authentication");
     }
   };
 
   const handleConnectTwitterOAuth1 = async () => {
     try {
       setError(null);
-      const response = await fetch('/api/admin/twitter/auth-v1');
+      const response = await fetch("/api/admin/twitter/auth-v1");
       const data = await response.json();
-      
+
       if (data.error) {
-        console.error('Twitter OAuth 1.0a auth error:', data.error);
-        setError('Failed to start Twitter OAuth 1.0a authentication');
+        console.error("Twitter OAuth 1.0a auth error:", data.error);
+        setError("Failed to start Twitter OAuth 1.0a authentication");
         return;
       }
 
       if (!data.authUrl) {
-        console.error('No auth URL returned:', data);
-        setError('Failed to get Twitter OAuth 1.0a authentication URL');
+        console.error("No auth URL returned:", data);
+        setError("Failed to get Twitter OAuth 1.0a authentication URL");
         return;
       }
 
-      console.log('Redirecting to Twitter OAuth 1.0a:', data.authUrl);
-      console.log('Redirect URI configured as:', data.redirectUri);
+      console.log("Redirecting to Twitter OAuth 1.0a:", data.authUrl);
+      console.log("Redirect URI configured as:", data.redirectUri);
 
       // Redirect to Twitter's authorization page
       window.location.assign(data.authUrl);
     } catch (error) {
-      console.error('Error starting Twitter OAuth 1.0a auth:', error);
-      setError('Failed to start Twitter OAuth 1.0a authentication');
+      console.error("Error starting Twitter OAuth 1.0a auth:", error);
+      setError("Failed to start Twitter OAuth 1.0a authentication");
     }
   };
 
   const getErrorMessage = (code: string) => {
     switch (code) {
-      case 'linkedin_auth_failed':
-        return 'LinkedIn authentication failed. Please try again.';
-      case 'linkedin_connection_failed':
-        return 'Failed to connect LinkedIn account. Please try again.';
-      case 'twitter_auth_failed':
-        return 'Twitter authentication failed. Please try again.';
-      case 'twitter_connection_failed':
-        return 'Failed to connect Twitter account. Please try again.';
-      case 'twitter_oauth1_auth_failed':
-        return 'Twitter OAuth 1.0a authentication failed. Please try again.';
-      case 'twitter_oauth1_connection_failed':
-        return 'Failed to connect Twitter OAuth 1.0a. Please try again.';
-      case 'missing_params':
-        return 'Invalid authentication response. Please try again.';
-      case 'database_connection_error':
-        return 'Database connection error. Please try again later.';
+      case "linkedin_auth_failed":
+        return "LinkedIn authentication failed. Please try again.";
+      case "linkedin_connection_failed":
+        return "Failed to connect LinkedIn account. Please try again.";
+      case "twitter_auth_failed":
+        return "Twitter authentication failed. Please try again.";
+      case "twitter_connection_failed":
+        return "Failed to connect Twitter account. Please try again.";
+      case "twitter_oauth1_auth_failed":
+        return "Twitter OAuth 1.0a authentication failed. Please try again.";
+      case "twitter_oauth1_connection_failed":
+        return "Failed to connect Twitter OAuth 1.0a. Please try again.";
+      case "missing_params":
+        return "Invalid authentication response. Please try again.";
+      case "database_connection_error":
+        return "Database connection error. Please try again later.";
       default:
-        return 'An error occurred. Please try again.';
+        return "An error occurred. Please try again.";
     }
   };
 
   const getSuccessMessage = (code: string) => {
     switch (code) {
-      case 'linkedin_connected':
-        return 'LinkedIn account connected successfully!';
-      case 'twitter_connected':
-        return 'Twitter OAuth 2.0 connected successfully!';
-      case 'twitter_oauth1_connected':
-        return 'Twitter OAuth 1.0a connected successfully!';
+      case "linkedin_connected":
+        return "LinkedIn account connected successfully!";
+      case "twitter_connected":
+        return "Twitter OAuth 2.0 connected successfully!";
+      case "twitter_oauth1_connected":
+        return "Twitter OAuth 1.0a connected successfully!";
       default:
-        return 'Operation completed successfully!';
+        return "Operation completed successfully!";
     }
   };
 
@@ -251,7 +260,9 @@ export default function SocialMediaPage() {
   return (
     <div className="py-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-2xl font-semibold text-white">Social Media Accounts</h1>
+        <h1 className="text-2xl font-semibold text-white">
+          Social Media Accounts
+        </h1>
         <p className="mt-1 text-sm text-gray-300">
           Connect your social media accounts to enable AI-powered posting.
         </p>
@@ -280,14 +291,16 @@ export default function SocialMediaPage() {
               </div>
               <button
                 onClick={handleConnectLinkedIn}
-                disabled={accounts.some(a => a.provider === 'linkedin')}
+                disabled={accounts.some((a) => a.provider === "linkedin")}
                 className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white ${
-                  accounts.some(a => a.provider === 'linkedin')
-                    ? 'bg-gray-600 cursor-not-allowed'
-                    : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:ring-offset-gray-800'
+                  accounts.some((a) => a.provider === "linkedin")
+                    ? "bg-gray-600 cursor-not-allowed"
+                    : "bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:ring-offset-gray-800"
                 }`}
               >
-                {accounts.some(a => a.provider === 'linkedin') ? 'Connected' : 'Connect'}
+                {accounts.some((a) => a.provider === "linkedin")
+                  ? "Connected"
+                  : "Connect"}
               </button>
             </div>
           </div>
@@ -306,36 +319,54 @@ export default function SocialMediaPage() {
               <div className="mt-4 flex flex-col gap-2">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h4 className="text-sm font-medium text-gray-300">OAuth 2.0</h4>
-                    <p className="text-xs text-gray-400">Required for API access</p>
+                    <h4 className="text-sm font-medium text-gray-300">
+                      OAuth 2.0
+                    </h4>
+                    <p className="text-xs text-gray-400">
+                      Required for API access
+                    </p>
                   </div>
                   <button
                     onClick={handleConnectTwitter}
-                    disabled={accounts.some(a => a.provider === 'twitter')}
+                    disabled={accounts.some((a) => a.provider === "twitter")}
                     className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white ${
-                      accounts.some(a => a.provider === 'twitter')
-                        ? 'bg-gray-600 cursor-not-allowed'
-                        : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:ring-offset-gray-800'
+                      accounts.some((a) => a.provider === "twitter")
+                        ? "bg-gray-600 cursor-not-allowed"
+                        : "bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:ring-offset-gray-800"
                     }`}
                   >
-                    {accounts.some(a => a.provider === 'twitter') ? 'Connected' : 'Connect OAuth 2.0'}
+                    {accounts.some((a) => a.provider === "twitter")
+                      ? "Connected"
+                      : "Connect OAuth 2.0"}
                   </button>
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <h4 className="text-sm font-medium text-gray-300">OAuth 1.0a</h4>
-                    <p className="text-xs text-gray-400">Required for media uploads</p>
+                    <h4 className="text-sm font-medium text-gray-300">
+                      OAuth 1.0a
+                    </h4>
+                    <p className="text-xs text-gray-400">
+                      Required for media uploads
+                    </p>
                   </div>
                   <button
                     onClick={handleConnectTwitterOAuth1}
-                    disabled={accounts.some(a => a.provider === 'twitter' && a.metadata?.oauth1)}
+                    disabled={accounts.some(
+                      (a) => a.provider === "twitter" && a.metadata?.oauth1,
+                    )}
                     className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white ${
-                      accounts.some(a => a.provider === 'twitter' && a.metadata?.oauth1)
-                        ? 'bg-gray-600 cursor-not-allowed'
-                        : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:ring-offset-gray-800'
+                      accounts.some(
+                        (a) => a.provider === "twitter" && a.metadata?.oauth1,
+                      )
+                        ? "bg-gray-600 cursor-not-allowed"
+                        : "bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:ring-offset-gray-800"
                     }`}
                   >
-                    {accounts.some(a => a.provider === 'twitter' && a.metadata?.oauth1) ? 'Connected' : 'Connect OAuth 1.0a'}
+                    {accounts.some(
+                      (a) => a.provider === "twitter" && a.metadata?.oauth1,
+                    )
+                      ? "Connected"
+                      : "Connect OAuth 1.0a"}
                   </button>
                 </div>
               </div>
@@ -348,7 +379,9 @@ export default function SocialMediaPage() {
           <h2 className="text-xl font-medium text-white">Connected Accounts</h2>
           <div className="mt-4 space-y-4">
             {accounts.length === 0 ? (
-              <p className="text-gray-300 text-sm">No accounts connected yet.</p>
+              <p className="text-gray-300 text-sm">
+                No accounts connected yet.
+              </p>
             ) : (
               accounts.map((account) => (
                 <div
@@ -357,7 +390,8 @@ export default function SocialMediaPage() {
                 >
                   <div>
                     <h3 className="text-white font-medium">
-                      {account.provider.charAt(0).toUpperCase() + account.provider.slice(1)}
+                      {account.provider.charAt(0).toUpperCase() +
+                        account.provider.slice(1)}
                     </h3>
                     <p className="text-gray-300 text-sm">
                       {account.metadata?.profile?.firstName
@@ -379,4 +413,4 @@ export default function SocialMediaPage() {
       </div>
     </div>
   );
-} 
+}

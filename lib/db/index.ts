@@ -1,13 +1,13 @@
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { and, eq } from 'drizzle-orm';
-import postgres from 'postgres';
-import { user, socialAccounts } from './schema';
-import type { NewSocialAccount, SocialAccount, User } from './schema';
+import { drizzle } from "drizzle-orm/postgres-js";
+import { and, eq } from "drizzle-orm";
+import postgres from "postgres";
+import { user, socialAccounts } from "./schema";
+import type { NewSocialAccount, SocialAccount, User } from "./schema";
 
 // Create postgres client for queries
 const queryClient = postgres(process.env.POSTGRES_URL!, {
   max: 1,
-  ssl: process.env.NODE_ENV === 'production',
+  ssl: process.env.NODE_ENV === "production",
 });
 
 // Create drizzle database instance
@@ -19,36 +19,37 @@ export async function getAdminUser(email: string): Promise<User | undefined> {
     const results = await db
       .select()
       .from(user)
-      .where(and(
-        eq(user.email, email),
-        eq(user.isAdmin, true)
-      ));
+      .where(and(eq(user.email, email), eq(user.isAdmin, true)));
     return results[0];
   } catch (error) {
-    console.error('Error getting admin user:', error);
+    console.error("Error getting admin user:", error);
     throw error;
   }
 }
 
 // Helper to get user's social accounts
-export async function getUserSocialAccounts(userId: string): Promise<SocialAccount[]> {
+export async function getUserSocialAccounts(
+  userId: string,
+): Promise<SocialAccount[]> {
   try {
     return await db
       .select()
       .from(socialAccounts)
       .where(eq(socialAccounts.userId, userId));
   } catch (error) {
-    console.error('Error getting social accounts:', error);
+    console.error("Error getting social accounts:", error);
     throw error;
   }
 }
 
 // Helper to create or update social account
-export async function upsertSocialAccount(data: Omit<NewSocialAccount, 'createdAt' | 'updatedAt'>) {
+export async function upsertSocialAccount(
+  data: Omit<NewSocialAccount, "createdAt" | "updatedAt">,
+) {
   try {
     const { userId, provider, providerAccountId, ...rest } = data;
     const id = `${provider}_${providerAccountId}`;
-    
+
     return await db
       .insert(socialAccounts)
       .values({
@@ -76,7 +77,7 @@ export async function upsertSocialAccount(data: Omit<NewSocialAccount, 'createdA
         },
       });
   } catch (error) {
-    console.error('Error upserting social account:', error);
+    console.error("Error upserting social account:", error);
     throw error;
   }
-} 
+}

@@ -149,7 +149,7 @@ const components = {
 
 export default function MDXContent({ code }: MDXContentProps) {
   const Component = useMDXComponent(code);
-  
+
   try {
     return (
       <div className="prose prose-invert max-w-none">
@@ -157,7 +157,7 @@ export default function MDXContent({ code }: MDXContentProps) {
       </div>
     );
   } catch (error) {
-    console.error('Error rendering MDX content:', error);
+    console.error("Error rendering MDX content:", error);
     return <div>Error rendering content</div>;
   }
 }

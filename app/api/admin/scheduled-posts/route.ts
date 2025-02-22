@@ -1,15 +1,15 @@
-import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { db } from '@/lib/db';
-import { user, scheduledPosts, socialAccounts } from '@/lib/db/schema';
-import { eq, and, desc } from 'drizzle-orm';
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { db } from "@/lib/db";
+import { user, scheduledPosts, socialAccounts } from "@/lib/db/schema";
+import { eq, and, desc, sql } from "drizzle-orm";
 
 export async function GET(request: Request) {
   try {
     const session = await getServerSession();
 
     if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     // Get the user's ID from the database
@@ -19,19 +19,33 @@ export async function GET(request: Request) {
       .where(eq(user.email, session.user.email));
 
     if (!userResult.length) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     const userId = userResult[0].id;
 
     // Get status filter from query params
     const { searchParams } = new URL(request.url);
-    const statusFilter = searchParams.get('status');
+    const status = searchParams.get("status");
+    const platform = searchParams.get("platform");
+    
+    const conditions = {
+      status: status || undefined,
+      platform: platform || undefined,
+    };
 
     // Build query conditions
-    let conditions = [eq(scheduledPosts.userId, userId)];
-    if (statusFilter && ['scheduled', 'posted', 'failed'].includes(statusFilter)) {
-      conditions.push(eq(scheduledPosts.status, statusFilter as any));
+    let conditionsQuery = [eq(scheduledPosts.userId, userId)];
+    if (
+      conditions.status &&
+      ["scheduled", "posted", "failed"].includes(conditions.status)
+    ) {
+      conditionsQuery.push(eq(scheduledPosts.status, conditions.status as any));
+    }
+    if (conditions.platform) {
+      conditionsQuery.push(
+        sql`${scheduledPosts.metadata}->>'platform' = ${conditions.platform}`
+      );
     }
 
     // Get posts with social account information
@@ -45,19 +59,22 @@ export async function GET(request: Request) {
         metadata: scheduledPosts.metadata,
         createdAt: scheduledPosts.createdAt,
         updatedAt: scheduledPosts.updatedAt,
-        socialAccount: socialAccounts
+        socialAccount: socialAccounts,
       })
       .from(scheduledPosts)
-      .leftJoin(socialAccounts, eq(scheduledPosts.socialAccountId, socialAccounts.id))
-      .where(and(...conditions))
+      .leftJoin(
+        socialAccounts,
+        eq(scheduledPosts.socialAccountId, socialAccounts.id),
+      )
+      .where(and(...conditionsQuery))
       .orderBy(desc(scheduledPosts.scheduledFor));
 
     return NextResponse.json({ posts });
   } catch (error) {
-    console.error('Error fetching scheduled posts:', error);
+    console.error("Error fetching scheduled posts:", error);
     return NextResponse.json(
-      { error: 'Failed to fetch scheduled posts' },
-      { status: 500 }
+      { error: "Failed to fetch scheduled posts" },
+      { status: 500 },
     );
   }
-} 
+}

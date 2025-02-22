@@ -1,19 +1,27 @@
 #!/usr/bin/env node
 
-import { Command } from 'commander';
-import { db } from '@/lib/db';
-import { scheduledPosts, socialAccounts } from '@/lib/db/schema';
-import { eq, and, lte } from 'drizzle-orm';
+import { Command } from "commander";
+import { db } from "@/lib/db";
+import { scheduledPosts, socialAccounts } from "@/lib/db/schema";
+import { eq, and, lte } from "drizzle-orm";
 
 const program = new Command();
 
 program
-  .name('post-worker')
-  .description('Process scheduled social media posts')
-  .option('-d, --dry-run', 'Run in dry-run mode (no actual posts)', false)
-  .option('-l, --list', 'List scheduled posts', false)
-  .option('--url <url>', 'Base URL of the application', process.env.NEXTAUTH_URL || 'http://localhost:3000')
-  .option('--api-key <key>', 'API key for authentication', process.env.POST_WORKER_API_KEY);
+  .name("post-worker")
+  .description("Process scheduled social media posts")
+  .option("-d, --dry-run", "Run in dry-run mode (no actual posts)", false)
+  .option("-l, --list", "List scheduled posts", false)
+  .option(
+    "--url <url>",
+    "Base URL of the application",
+    process.env.NEXTAUTH_URL || "http://localhost:3000",
+  )
+  .option(
+    "--api-key <key>",
+    "API key for authentication",
+    process.env.POST_WORKER_API_KEY,
+  );
 
 program.parse();
 
@@ -25,13 +33,16 @@ async function listScheduledPosts() {
     const posts = await db
       .select({
         post: scheduledPosts,
-        account: socialAccounts
+        account: socialAccounts,
       })
       .from(scheduledPosts)
-      .leftJoin(socialAccounts, eq(scheduledPosts.socialAccountId, socialAccounts.id));
+      .leftJoin(
+        socialAccounts,
+        eq(scheduledPosts.socialAccountId, socialAccounts.id),
+      );
 
     if (posts.length === 0) {
-      console.log('No posts found.');
+      console.log("No posts found.");
       return;
     }
 
@@ -45,10 +56,10 @@ async function listScheduledPosts() {
       }
       console.log(`Content: ${post.content}`);
       console.log(`Scheduled for: ${post.scheduledFor}`);
-      console.log('---\n');
+      console.log("---\n");
     });
   } catch (error) {
-    console.error('Error listing posts:', error);
+    console.error("Error listing posts:", error);
     process.exit(1);
   }
 }
@@ -63,19 +74,21 @@ async function runPostWorker() {
 
     // Only check for API key if we're actually posting
     if (!options.apiKey && !options.dryRun) {
-      throw new Error('POST_WORKER_API_KEY environment variable is required for posting');
+      throw new Error(
+        "POST_WORKER_API_KEY environment variable is required for posting",
+      );
     }
 
     if (options.dryRun) {
-      console.log('Running in dry-run mode - no actual posts will be made');
+      console.log("Running in dry-run mode - no actual posts will be made");
     }
 
-    console.log('Running post worker...');
+    console.log("Running post worker...");
     const response = await fetch(`${options.url}/api/admin/post-worker`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'x-api-key': options.apiKey || 'dry-run',
-        'x-dry-run': options.dryRun ? '1' : '0',
+        "x-api-key": options.apiKey || "dry-run",
+        "x-dry-run": options.dryRun ? "1" : "0",
       },
     });
 
@@ -85,17 +98,22 @@ async function runPostWorker() {
       throw new Error(`API error: ${data.error}`);
     }
 
-    console.log('Post worker results:', data.results);
+    console.log("Post worker results:", data.results);
 
     // Log summary
-    const successCount = data.results.filter((r: any) => r.status === 'success').length;
-    const errorCount = data.results.filter((r: any) => r.status === 'error').length;
-    console.log(`Summary: ${successCount} posts ${options.dryRun ? 'would be' : 'were'} successful, ${errorCount} posts failed`);
-
+    const successCount = data.results.filter(
+      (r: any) => r.status === "success",
+    ).length;
+    const errorCount = data.results.filter(
+      (r: any) => r.status === "error",
+    ).length;
+    console.log(
+      `Summary: ${successCount} posts ${options.dryRun ? "would be" : "were"} successful, ${errorCount} posts failed`,
+    );
   } catch (error) {
-    console.error('Post worker error:', error);
+    console.error("Post worker error:", error);
     process.exit(1);
   }
 }
 
-runPostWorker(); 
+runPostWorker();

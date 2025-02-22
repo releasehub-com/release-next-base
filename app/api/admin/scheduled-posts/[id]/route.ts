@@ -1,18 +1,18 @@
-import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { db } from '@/lib/db';
-import { user, scheduledPosts } from '@/lib/db/schema';
-import { eq, and } from 'drizzle-orm';
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { db } from "@/lib/db";
+import { user, scheduledPosts } from "@/lib/db/schema";
+import { eq, and } from "drizzle-orm";
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     const session = await getServerSession();
 
     if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     // Get the user's ID from the database
@@ -22,7 +22,7 @@ export async function DELETE(
       .where(eq(user.email, session.user.email));
 
     if (!userResult.length) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     const userId = userResult[0].id;
@@ -33,37 +33,37 @@ export async function DELETE(
       .where(
         and(
           eq(scheduledPosts.id, params.id),
-          eq(scheduledPosts.userId, userId)
-        )
+          eq(scheduledPosts.userId, userId),
+        ),
       )
       .returning();
 
     if (!result.length) {
       return NextResponse.json(
-        { error: 'Post not found or unauthorized' },
-        { status: 404 }
+        { error: "Post not found or unauthorized" },
+        { status: 404 },
       );
     }
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error deleting scheduled post:', error);
+    console.error("Error deleting scheduled post:", error);
     return NextResponse.json(
-      { error: 'Failed to delete post' },
-      { status: 500 }
+      { error: "Failed to delete post" },
+      { status: 500 },
     );
   }
 }
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     const session = await getServerSession();
 
     if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     // Get the user's ID from the database
@@ -73,7 +73,7 @@ export async function PATCH(
       .where(eq(user.email, session.user.email));
 
     if (!userResult.length) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     const userId = userResult[0].id;
@@ -84,8 +84,8 @@ export async function PATCH(
 
     if (!content || !scheduledFor) {
       return NextResponse.json(
-        { error: 'Content and scheduledFor are required' },
-        { status: 400 }
+        { error: "Content and scheduledFor are required" },
+        { status: 400 },
       );
     }
 
@@ -93,8 +93,8 @@ export async function PATCH(
     const scheduledTime = new Date(scheduledFor);
     if (scheduledTime <= new Date()) {
       return NextResponse.json(
-        { error: 'Scheduled time must be in the future' },
-        { status: 400 }
+        { error: "Scheduled time must be in the future" },
+        { status: 400 },
       );
     }
 
@@ -109,24 +109,24 @@ export async function PATCH(
       .where(
         and(
           eq(scheduledPosts.id, params.id),
-          eq(scheduledPosts.userId, userId)
-        )
+          eq(scheduledPosts.userId, userId),
+        ),
       )
       .returning();
 
     if (!result.length) {
       return NextResponse.json(
-        { error: 'Post not found or unauthorized' },
-        { status: 404 }
+        { error: "Post not found or unauthorized" },
+        { status: 404 },
       );
     }
 
     return NextResponse.json({ post: result[0] });
   } catch (error) {
-    console.error('Error updating scheduled post:', error);
+    console.error("Error updating scheduled post:", error);
     return NextResponse.json(
-      { error: 'Failed to update scheduled post' },
-      { status: 500 }
+      { error: "Failed to update scheduled post" },
+      { status: 500 },
     );
   }
 }

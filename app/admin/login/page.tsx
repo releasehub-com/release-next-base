@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
 import { signIn, useSession } from "next-auth/react";
-import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const getErrorMessage = (error: string | null) => {
   switch (error) {
-    case 'OAuthAccountNotLinked':
-      return 'Please use the same Google account you used before.';
-    case 'AccessDenied':
-      return 'Access denied. Please make sure you are using an admin account.';
-    case 'Callback':
-      return 'There was a problem signing in. Please try again.';
+    case "OAuthAccountNotLinked":
+      return "Please use the same Google account you used before.";
+    case "AccessDenied":
+      return "Access denied. Please make sure you are using an admin account.";
+    case "Callback":
+      return "There was a problem signing in. Please try again.";
     default:
-      return error ? `Error: ${error}` : '';
+      return error ? `Error: ${error}` : "";
   }
 };
 
@@ -21,12 +21,12 @@ export default function AdminLoginPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const error = searchParams.get('error');
-  const callbackUrl = searchParams.get('callbackUrl') || '/admin';
+  const error = searchParams.get("error");
+  const callbackUrl = searchParams.get("callbackUrl") || "/admin";
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
-    if (status === 'authenticated' && session?.user?.isAdmin) {
+    if (status === "authenticated" && session?.user?.isAdmin) {
       setIsRedirecting(true);
       router.push(callbackUrl);
     }
@@ -34,15 +34,15 @@ export default function AdminLoginPage() {
 
   const handleSignIn = async () => {
     try {
-      await signIn('google', {
+      await signIn("google", {
         callbackUrl,
       });
     } catch (error) {
-      console.error('Sign in error:', error);
+      console.error("Sign in error:", error);
     }
   };
 
-  const isLoading = status === 'loading';
+  const isLoading = status === "loading";
 
   if (isLoading || isRedirecting) {
     return (
@@ -50,7 +50,7 @@ export default function AdminLoginPage() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500 mx-auto"></div>
           <p className="mt-4 text-indigo-200">
-            {isRedirecting ? 'Redirecting to admin dashboard...' : 'Loading...'}
+            {isRedirecting ? "Redirecting to admin dashboard..." : "Loading..."}
           </p>
         </div>
       </div>
@@ -69,9 +69,7 @@ export default function AdminLoginPage() {
           </p>
           {error && (
             <div className="mt-2 p-2 bg-red-900/50 border border-red-500 text-red-200 rounded">
-              <p className="text-center text-sm">
-                {getErrorMessage(error)}
-              </p>
+              <p className="text-center text-sm">{getErrorMessage(error)}</p>
             </div>
           )}
         </div>
@@ -89,4 +87,4 @@ export default function AdminLoginPage() {
       </div>
     </div>
   );
-} 
+}

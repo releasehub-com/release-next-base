@@ -6,14 +6,14 @@ import type { Adapter } from "next-auth/adapters";
 
 // Ensure NEXTAUTH_SECRET exists
 if (!process.env.NEXTAUTH_SECRET) {
-  throw new Error('NEXTAUTH_SECRET environment variable is required');
+  throw new Error("NEXTAUTH_SECRET environment variable is required");
 }
 
 declare module "next-auth" {
   interface Session {
     user: {
       isAdmin: boolean;
-    } & DefaultSession["user"]
+    } & DefaultSession["user"];
   }
 
   interface User {
@@ -37,11 +37,11 @@ declare module "@auth/core/adapters" {
 
 // List of allowed admin emails
 const ADMIN_EMAILS = [
-  'tommy@release.com',
-  'erik@release.com',
-  'david@release.com',
-  'myril@release.com',
-  'tommy@releaseapp.io'
+  "tommy@release.com",
+  "erik@release.com",
+  "david@release.com",
+  "myril@release.com",
+  "tommy@releaseapp.io",
 ];
 
 const handler = NextAuth({
@@ -61,8 +61,8 @@ const handler = NextAuth({
           access_type: "offline",
           prompt: "consent",
           response_type: "code",
-          scope: "openid email profile"
-        }
+          scope: "openid email profile",
+        },
       },
       profile(profile) {
         const isAdmin = ADMIN_EMAILS.includes(profile.email);
@@ -71,17 +71,17 @@ const handler = NextAuth({
           name: profile.name,
           email: profile.email,
           image: profile.picture,
-          isAdmin
+          isAdmin,
         };
-      }
+      },
     }),
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
       // Only allow sign in for admin emails
-      const isAllowed = ADMIN_EMAILS.includes(user.email ?? '');
+      const isAllowed = ADMIN_EMAILS.includes(user.email ?? "");
       if (!isAllowed) {
-        throw new Error('Unauthorized email');
+        throw new Error("Unauthorized email");
       }
       return true;
     },
@@ -94,7 +94,7 @@ const handler = NextAuth({
           email: user.email,
           name: user.name,
           picture: user.image,
-          sub: user.id
+          sub: user.id,
         };
       }
       // On subsequent calls, if we have an admin token, keep it
@@ -122,11 +122,11 @@ const handler = NextAuth({
     },
     async redirect({ url, baseUrl }) {
       // Handle callback after sign in
-      if (url.includes('/api/auth/callback')) {
+      if (url.includes("/api/auth/callback")) {
         return `${baseUrl}/admin`;
       }
       // Handle sign in page
-      if (url.includes('/admin/login')) {
+      if (url.includes("/admin/login")) {
         return `${baseUrl}/admin`;
       }
       // Allow relative callback URLs
@@ -138,13 +138,13 @@ const handler = NextAuth({
         return url;
       }
       return `${baseUrl}/admin`;
-    }
+    },
   },
   pages: {
-    signIn: '/admin/login',
-    error: '/admin/login',
-    signOut: '/admin/login'
-  }
+    signIn: "/admin/login",
+    error: "/admin/login",
+    signOut: "/admin/login",
+  },
 });
 
-export { handler as GET, handler as POST }; 
+export { handler as GET, handler as POST };

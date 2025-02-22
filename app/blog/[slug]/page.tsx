@@ -73,7 +73,11 @@ export default function BlogPostPage({ params }: Props) {
       <main className="min-h-screen bg-gray-950">
         <article className="mx-auto max-w-4xl px-6 py-10">
           {/* Main Image */}
-          <Suspense fallback={<div className="w-full aspect-[16/9] bg-gray-800 rounded-lg" />}>
+          <Suspense
+            fallback={
+              <div className="w-full aspect-[16/9] bg-gray-800 rounded-lg" />
+            }
+          >
             {post.mainImage && (
               <div className="mb-10 rounded-lg overflow-hidden">
                 <Image
@@ -105,7 +109,9 @@ export default function BlogPostPage({ params }: Props) {
 
           {/* Author info */}
           <div className="flex items-center mb-8">
-            <Suspense fallback={<div className="w-10 h-10 bg-gray-800 rounded-full" />}>
+            <Suspense
+              fallback={<div className="w-10 h-10 bg-gray-800 rounded-full" />}
+            >
               <Image
                 src={authorInfo.image}
                 alt={authorInfo.name}
