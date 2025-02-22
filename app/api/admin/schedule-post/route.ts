@@ -62,74 +62,88 @@ export async function POST(request: Request) {
         );
       }
 
-      // Get the user's LinkedIn account
-      const linkedInAccount = await db
-        .select()
-        .from(socialAccounts)
-        .where(
-          and(
-            eq(socialAccounts.userId, userId),
-            eq(socialAccounts.provider, 'linkedin')
+      // Process image assets based on platform
+      if (metadata.platform === 'linkedin') {
+        // Get the user's LinkedIn account
+        const linkedInAccount = await db
+          .select()
+          .from(socialAccounts)
+          .where(
+            and(
+              eq(socialAccounts.userId, userId),
+              eq(socialAccounts.provider, 'linkedin')
+            )
           )
-        )
-        .limit(1);
+          .limit(1);
 
-      if (!linkedInAccount.length) {
-        return NextResponse.json(
-          { error: 'LinkedIn account not found' },
-          { status: 404 }
-        );
-      }
+        if (!linkedInAccount.length) {
+          return NextResponse.json(
+            { error: 'LinkedIn account not found' },
+            { status: 404 }
+          );
+        }
 
-      // Fetch display URLs for each asset
-      const imageAssets = await Promise.all(
-        metadata.imageAssets.map(async (asset) => {
-          try {
-            // Extract the asset ID from the URN
-            const assetId = asset.split(':').pop();
-            const response = await fetch(`https://api.linkedin.com/v2/assets/${assetId}`, {
-              headers: {
-                'Authorization': `Bearer ${linkedInAccount[0].accessToken}`,
-                'Content-Type': 'application/json',
-                'X-Restli-Protocol-Version': '2.0.0',
-                'LinkedIn-Version': '202304'
-              },
-            });
-
-            if (!response.ok) {
-              const errorText = await response.text();
-              console.error('LinkedIn asset details error:', {
-                status: response.status,
-                statusText: response.statusText,
-                error: errorText,
-                asset,
-                assetId
+        // Fetch display URLs for LinkedIn assets
+        const imageAssets = await Promise.all(
+          metadata.imageAssets.map(async (asset) => {
+            try {
+              // Extract the asset ID from the URN
+              const assetId = asset.split(':').pop();
+              const response = await fetch(`https://api.linkedin.com/v2/assets/${assetId}`, {
+                headers: {
+                  'Authorization': `Bearer ${linkedInAccount[0].accessToken}`,
+                  'Content-Type': 'application/json',
+                  'X-Restli-Protocol-Version': '2.0.0',
+                  'LinkedIn-Version': '202304'
+                },
               });
-              throw new Error(`Failed to fetch asset details: ${errorText}`);
+
+              if (!response.ok) {
+                const errorText = await response.text();
+                console.error('LinkedIn asset details error:', {
+                  status: response.status,
+                  statusText: response.statusText,
+                  error: errorText,
+                  asset,
+                  assetId
+                });
+                throw new Error(`Failed to fetch asset details: ${errorText}`);
+              }
+
+              const data = await response.json();
+              console.log('LinkedIn asset details response:', data);
+
+              if (data.status !== 'ALLOWED') {
+                console.error('Asset not ready:', data);
+                throw new Error('Asset not ready for use');
+              }
+
+              return {
+                asset,
+                displayUrl: asset // For LinkedIn, use the URN as displayUrl
+              };
+            } catch (error) {
+              console.error('Error fetching LinkedIn asset details:', error);
+              return { asset, displayUrl: asset };
             }
-
-            const data = await response.json();
-            console.log('LinkedIn asset details response:', data);
-
-            // Only check the overall asset status
-            if (data.status !== 'ALLOWED') {
-              console.error('Asset not ready:', data);
-              throw new Error('Asset not ready for use');
-            }
-
-            // We don't need the display URL for LinkedIn posts
+          })
+        );
+        metadata.imageAssets = imageAssets;
+      } else if (metadata.platform === 'twitter') {
+        // For Twitter, preserve the displayUrl from the upload response
+        metadata.imageAssets = metadata.imageAssets.map(asset => {
+          if (typeof asset === 'string') {
+            // If it's just a string, it's probably a legacy format - construct URL
+            const cleanMediaId = asset.includes('_') ? asset.split('_')[1] : asset;
             return {
               asset,
-              status: data.status
+              displayUrl: `https://pbs.twimg.com/media/${cleanMediaId}?format=jpg&name=large`
             };
-          } catch (error) {
-            console.error('Error fetching asset details:', error);
-            return { asset, status: null };
           }
-        })
-      );
-
-      metadata.imageAssets = imageAssets;
+          // If it's already an object with displayUrl, use it as is
+          return asset;
+        });
+      }
     }
 
     // Create scheduled post

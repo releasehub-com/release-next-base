@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { scheduledPosts, socialAccounts } from '@/lib/db/schema';
 import { eq, and, lte } from 'drizzle-orm';
+import OAuth from 'oauth-1.0a';
+import crypto from 'crypto';
 
 // Helper function to simulate posting to Twitter
 async function mockPostToTwitter(content: string): Promise<void> {
@@ -14,28 +16,66 @@ async function mockPostToLinkedIn(content: string): Promise<void> {
 }
 
 // Helper function to post to Twitter
-async function postToTwitter(content: string, accessToken: string, imageAssets?: string[]): Promise<void> {
-  const body: any = { text: content };
+async function postToTwitter(content: string, accessToken: string, tokenSecret: string, imageAssets?: (string | { asset: string, displayUrl: string })[]): Promise<void> {
+  const data: any = { status: content };
 
   // Add media IDs if provided
   if (imageAssets?.length) {
-    body.media = {
-      media_ids: imageAssets
-    };
+    data.media_ids = imageAssets.map(asset => typeof asset === 'string' ? asset : asset.asset).join(',');
   }
 
-  const response = await fetch('https://api.twitter.com/2/tweets', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
+  const oauth = new OAuth({
+    consumer: {
+      key: process.env.TWITTER_API_KEY!,
+      secret: process.env.TWITTER_API_SECRET!
     },
-    body: JSON.stringify(body),
+    signature_method: 'HMAC-SHA1',
+    hash_function(base_string, key) {
+      return crypto
+        .createHmac('sha1', key)
+        .update(base_string)
+        .digest('base64');
+    },
+  });
+
+  const token = {
+    key: accessToken,
+    secret: tokenSecret
+  };
+
+  // Create request object with data as parameters
+  const request = {
+    url: 'https://api.twitter.com/1.1/statuses/update.json',
+    method: 'POST',
+    data: data
+  };
+
+  // Get authorization header
+  const authHeader = oauth.toHeader(oauth.authorize(request, token));
+
+  // Log the full request details for debugging
+  console.log('Twitter API request:', {
+    url: request.url,
+    method: request.method,
+    headers: authHeader,
+    data: data
+  });
+
+  const response = await fetch(request.url, {
+    method: request.method,
+    headers: {
+      ...authHeader,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: new URLSearchParams(data).toString()
   });
 
   if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`Twitter API error: ${error}`);
+    const error = await response.json();
+    console.log('Twitter API response headers:', Object.fromEntries(response.headers.entries()));
+    console.log('Twitter API request headers:', authHeader);
+    console.log('Twitter API request body:', data);
+    throw new Error(`Twitter API error: ${JSON.stringify(error)}`);
   }
 }
 
@@ -159,9 +199,15 @@ export async function POST(request: Request) {
         } else {
           // Actually post in normal mode
           if (account.provider === 'twitter') {
-            // Extract image assets from metadata if present
+            // Extract image assets and token secret from metadata
             const imageAssets = post.metadata?.imageAssets as string[] | undefined;
-            await postToTwitter(post.content, account.accessToken, imageAssets);
+            const tokenSecret = account.metadata?.tokenSecret;
+            
+            if (!tokenSecret) {
+              throw new Error('Twitter OAuth token secret not found');
+            }
+            
+            await postToTwitter(post.content, account.accessToken, tokenSecret, imageAssets);
           } else if (account.provider === 'linkedin') {
             // Extract image assets from metadata if present
             const imageAssets = post.metadata?.imageAssets as string[] | undefined;

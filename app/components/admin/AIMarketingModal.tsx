@@ -216,8 +216,8 @@ function ConfirmationDialog({ isOpen, onClose, onConfirm, content, platform, sch
             ))}
           </div>
         )}
-        {/* Existing URL preview card */}
-        {pageContext.url && (
+        {/* Only show URL preview if no images are attached */}
+        {pageContext.url && imageAssets.twitter.length === 0 && (
           <div className="mt-3 border border-gray-700 rounded-xl overflow-hidden bg-black/50">
             {pageContext.url.includes(process.env.NEXT_PUBLIC_BASE_URL || '') && (
               <img 
@@ -287,8 +287,8 @@ function ConfirmationDialog({ isOpen, onClose, onConfirm, content, platform, sch
             ))}
           </div>
         )}
-        {/* Existing URL preview card */}
-        {pageContext.url && (
+        {/* Only show URL preview if no images are attached */}
+        {pageContext.url && imageAssets.linkedin.length === 0 && (
           <div className="mt-4 border border-gray-200 rounded-lg overflow-hidden bg-white">
             {pageContext.url.includes(process.env.NEXT_PUBLIC_BASE_URL || '') && (
               <img 
@@ -582,7 +582,7 @@ export default function AIMarketingModal({
 
     // Process each paragraph to handle URLs, hashtags, and mentions
     const processedParagraphs = paragraphs.map(paragraph => {
-      // Handle URLs - make them blue and underlined (more precise regex)
+      // Handle URLs - make them blue and underlined
       let processed = paragraph.replace(
         /(?:^|\s)(https?:\/\/[^\s]+)(?=\s|$)/g,
         ' <span class="text-[#0a66c2] underline">$1</span>'
@@ -612,25 +612,22 @@ export default function AIMarketingModal({
             dangerouslySetInnerHTML={{ __html: paragraph }}
           />
         ))}
-        {/* Show uploaded images if any */}
+        {/* Show LinkedIn images if any */}
         {imageAssets.linkedin.length > 0 && (
           <div className={`grid ${imageAssets.linkedin.length === 1 ? '' : 'grid-cols-2'} gap-2 mt-4`}>
-            {imageAssets.linkedin.map((imageAsset, index) => {
-              const key = `preview-${imageAsset.asset}-${index}`;
-              return (
-                <div key={key} className="relative aspect-w-16 aspect-h-9">
-                  <img
-                    src={imageAsset.displayUrl}
-                    alt={`Image ${index + 1}`}
-                    className="object-cover rounded-lg w-full h-full"
-                  />
-                </div>
-              );
-            })}
+            {imageAssets.linkedin.map((imageAsset, index) => (
+              <div key={`preview-${imageAsset.asset}-${index}`} className="relative aspect-w-16 aspect-h-9">
+                <img
+                  src={imageAsset.displayUrl}
+                  alt={`Image ${index + 1}`}
+                  className="object-cover rounded-lg w-full h-full"
+                />
+              </div>
+            ))}
           </div>
         )}
-        {/* LinkedIn URL Preview Card */}
-        {pageContext.url && (
+        {/* Only show URL preview if no images are attached */}
+        {pageContext.url && imageAssets.linkedin.length === 0 && (
           <div className="mt-4 border border-gray-200 rounded-lg overflow-hidden bg-white">
             {pageContext.url.includes(process.env.NEXT_PUBLIC_BASE_URL || '') && (
               <img 
@@ -680,8 +677,22 @@ export default function AIMarketingModal({
           className="text-white whitespace-pre-wrap break-words text-[15px] leading-[20px]"
           dangerouslySetInnerHTML={{ __html: processed }}
         />
-        {/* Twitter URL Preview Card */}
-        {pageContext.url && (
+        {/* Show Twitter images if any */}
+        {imageAssets.twitter.length > 0 && (
+          <div className={`grid ${imageAssets.twitter.length === 1 ? '' : 'grid-cols-2'} gap-2 mt-4`}>
+            {imageAssets.twitter.map((imageAsset, index) => (
+              <div key={`preview-${imageAsset.asset}-${index}`} className="relative aspect-w-16 aspect-h-9">
+                <img
+                  src={imageAsset.displayUrl}
+                  alt={`Image ${index + 1}`}
+                  className="object-cover rounded-lg w-full h-full"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+        {/* Only show URL preview if no images are attached */}
+        {pageContext.url && imageAssets.twitter.length === 0 && (
           <div className="mt-3 border border-gray-700 rounded-xl overflow-hidden bg-black/50">
             {pageContext.url.includes(process.env.NEXT_PUBLIC_BASE_URL || '') && (
               <img 
@@ -780,9 +791,8 @@ export default function AIMarketingModal({
       const account = accounts.find(acc => acc.provider === selectedPlatform);
       if (!account) return;
 
-      // Extract just the asset URNs from the image assets
+      // Send the full image asset objects including displayUrl
       const platformImageAssets = imageAssets[selectedPlatform as 'linkedin' | 'twitter'] || [];
-      const assetUrns = platformImageAssets.map(img => img.asset);
 
       const response = await fetch('/api/admin/schedule-post', {
         method: 'POST',
@@ -796,7 +806,7 @@ export default function AIMarketingModal({
           metadata: {
             platform: selectedPlatform,
             pageContext,
-            imageAssets: assetUrns
+            imageAssets: platformImageAssets
           }
         }),
       });

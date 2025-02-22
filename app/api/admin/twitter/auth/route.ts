@@ -1,24 +1,29 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { v4 as uuidv4 } from 'uuid';
-import { createHash, randomBytes } from 'crypto';
+import OAuth from 'oauth-1.0a';
+import crypto from 'crypto';
 import { cookies } from 'next/headers';
 
-// Twitter OAuth 2.0 endpoints
-const TWITTER_AUTH_URL = 'https://twitter.com/i/oauth2/authorize';
+// Twitter OAuth 1.0a endpoints
+const TWITTER_REQUEST_TOKEN_URL = 'https://api.twitter.com/oauth/request_token';
+const TWITTER_AUTH_URL = 'https://api.twitter.com/oauth/authorize';
 const REDIRECT_URI = `${process.env.NEXTAUTH_URL}/api/admin/twitter/callback`;
 
-// Required scopes for posting and reading
-const SCOPES = 'tweet.read tweet.write users.read offline.access';
-
-// Generate PKCE verifier and challenge
-function generatePKCE() {
-  const verifier = randomBytes(32).toString('base64url');
-  const challenge = createHash('sha256')
-    .update(verifier)
-    .digest('base64url');
-  return { verifier, challenge };
-}
+// Create OAuth 1.0a instance
+const oauth = new OAuth({
+  consumer: {
+    key: process.env.TWITTER_API_KEY!,
+    secret: process.env.TWITTER_API_SECRET!
+  },
+  signature_method: 'HMAC-SHA1',
+  hash_function(base_string, key) {
+    return crypto
+      .createHmac('sha1', key)
+      .update(base_string)
+      .digest('base64');
+  },
+});
 
 export async function GET() {
   try {
@@ -28,30 +33,49 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    if (!process.env.TWITTER_CLIENT_ID) {
-      console.error('Twitter client ID is not configured');
+    if (!process.env.TWITTER_API_KEY || !process.env.TWITTER_API_SECRET) {
+      console.error('Twitter credentials are not configured');
       return NextResponse.json(
-        { error: 'Twitter client ID is not configured' },
+        { error: 'Twitter credentials are not configured' },
         { status: 500 }
       );
     }
 
-    // Generate state for CSRF protection
-    const state = uuidv4();
+    // Get request token
+    const requestTokenResponse = await fetch(TWITTER_REQUEST_TOKEN_URL, {
+      method: 'POST',
+      headers: {
+        ...oauth.toHeader(oauth.authorize({
+          url: TWITTER_REQUEST_TOKEN_URL,
+          method: 'POST',
+          data: {
+            oauth_callback: REDIRECT_URI
+          }
+        })),
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        oauth_callback: REDIRECT_URI
+      }).toString()
+    });
 
-    // Generate PKCE values
-    const { verifier, challenge } = generatePKCE();
+    if (!requestTokenResponse.ok) {
+      const error = await requestTokenResponse.text();
+      console.error('Twitter request token error:', error);
+      throw new Error('Failed to get Twitter request token');
+    }
 
-    // Store PKCE values in secure cookies
+    const requestTokenData = new URLSearchParams(await requestTokenResponse.text());
+    const oauthToken = requestTokenData.get('oauth_token');
+    const oauthTokenSecret = requestTokenData.get('oauth_token_secret');
+
+    if (!oauthToken || !oauthTokenSecret) {
+      throw new Error('Failed to get OAuth tokens from Twitter');
+    }
+
+    // Store token secret in a cookie
     const cookieStore = cookies();
-    cookieStore.set('twitter_state', state, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 60 * 5 // 5 minutes
-    });
-    cookieStore.set('twitter_code_verifier', verifier, {
+    cookieStore.set('twitter_oauth_token_secret', oauthTokenSecret, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
@@ -59,30 +83,17 @@ export async function GET() {
       maxAge: 60 * 5 // 5 minutes
     });
 
-    // Build the authorization URL manually to ensure proper encoding
+    // Build the authorization URL
     const authUrl = new URL(TWITTER_AUTH_URL);
-    
-    // Add required parameters with proper encoding
-    authUrl.searchParams.append('response_type', 'code');
-    authUrl.searchParams.append('client_id', process.env.TWITTER_CLIENT_ID);
-    authUrl.searchParams.append('redirect_uri', REDIRECT_URI);
-    authUrl.searchParams.append('state', state);
-    authUrl.searchParams.append('scope', SCOPES);
-    authUrl.searchParams.append('code_challenge_method', 'S256');
-    authUrl.searchParams.append('code_challenge', challenge);
+    authUrl.searchParams.append('oauth_token', oauthToken);
 
-    // Log the full URL and debug info
+    // Log debug info
     console.log('Twitter Auth URL:', authUrl.toString());
     console.log('Debug info:', {
-      clientId: process.env.TWITTER_CLIENT_ID,
       redirectUri: REDIRECT_URI,
-      scopes: SCOPES,
-      state,
-      codeChallenge: challenge,
-      fullUrl: authUrl.toString()
+      oauthToken
     });
 
-    // Return just the auth URL since we're storing PKCE values in cookies
     return NextResponse.json({ 
       authUrl: authUrl.toString(),
       redirectUri: REDIRECT_URI,

@@ -105,8 +105,8 @@ function PostPreviewModal({ post, onClose, onDelete, onEdit }: PostPreviewModalP
             ))}
           </div>
         )}
-        {/* LinkedIn URL Preview Card */}
-        {post.metadata.pageContext.url && (
+        {/* Only show URL preview if no images are attached */}
+        {post.metadata.pageContext?.url && (!post.metadata.imageAssets || post.metadata.imageAssets.length === 0) && (
           <div className="mt-4 border border-gray-200 rounded-lg overflow-hidden bg-white">
             {post.metadata.pageContext.url.includes(process.env.NEXT_PUBLIC_BASE_URL || '') && (
               <img 
@@ -169,8 +169,8 @@ function PostPreviewModal({ post, onClose, onDelete, onEdit }: PostPreviewModalP
             ))}
           </div>
         )}
-        {/* Twitter URL Preview Card */}
-        {post.metadata.pageContext.url && (
+        {/* Only show URL preview if no images are attached */}
+        {post.metadata.pageContext?.url && (!post.metadata.imageAssets || post.metadata.imageAssets.length === 0) && (
           <div className="mt-3 border border-gray-700 rounded-xl overflow-hidden bg-black/50">
             {post.metadata.pageContext.url.includes(process.env.NEXT_PUBLIC_BASE_URL || '') && (
               <img 

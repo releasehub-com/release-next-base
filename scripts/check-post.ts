@@ -7,7 +7,7 @@ async function checkPost() {
     const post = await db
       .select()
       .from(scheduledPosts)
-      .where(eq(scheduledPosts.id, '663a2463-51da-45a4-b474-2cf00baa2b7f'));
+      .where(eq(scheduledPosts.id, 'af4424ed-609b-4ce7-831b-271884a71ab8'));
     
     console.log('Post details:', JSON.stringify(post[0], null, 2));
 

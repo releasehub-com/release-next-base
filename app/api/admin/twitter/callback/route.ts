@@ -4,24 +4,51 @@ import { getServerSession } from 'next-auth';
 import { user } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
+import OAuth from 'oauth-1.0a';
+import crypto from 'crypto';
 
-const TWITTER_TOKEN_URL = 'https://api.twitter.com/2/oauth2/token';
-const TWITTER_USER_URL = 'https://api.twitter.com/2/users/me';
-const REDIRECT_URI = `${process.env.NEXTAUTH_URL}/api/admin/twitter/callback`;
+// Twitter OAuth 1.0a endpoints
+const TWITTER_ACCESS_TOKEN_URL = 'https://api.twitter.com/oauth/access_token';
+const TWITTER_VERIFY_CREDENTIALS_URL = 'https://api.twitter.com/1.1/account/verify_credentials.json';
 
-async function getTwitterTokens(code: string, codeVerifier: string): Promise<any> {
-  const response = await fetch(TWITTER_TOKEN_URL, {
+// Create OAuth 1.0a instance
+const oauth = new OAuth({
+  consumer: {
+    key: process.env.TWITTER_API_KEY!,
+    secret: process.env.TWITTER_API_SECRET!
+  },
+  signature_method: 'HMAC-SHA1',
+  hash_function(base_string, key) {
+    return crypto
+      .createHmac('sha1', key)
+      .update(base_string)
+      .digest('base64');
+  },
+});
+
+async function getTwitterTokens(oauthToken: string, oauthVerifier: string, tokenSecret: string): Promise<any> {
+  const authHeader = oauth.toHeader(oauth.authorize({
+    url: TWITTER_ACCESS_TOKEN_URL,
+    method: 'POST',
+    data: {
+      oauth_token: oauthToken,
+      oauth_verifier: oauthVerifier
+    }
+  }, {
+    key: oauthToken,
+    secret: tokenSecret
+  }));
+
+  const response = await fetch(TWITTER_ACCESS_TOKEN_URL, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': `Basic ${Buffer.from(`${process.env.TWITTER_CLIENT_ID}:${process.env.TWITTER_CLIENT_SECRET}`).toString('base64')}`,
+      ...Object.fromEntries(Object.entries(authHeader)),
+      'Content-Type': 'application/x-www-form-urlencoded'
     },
     body: new URLSearchParams({
-      grant_type: 'authorization_code',
-      code,
-      redirect_uri: REDIRECT_URI,
-      code_verifier: codeVerifier,
-    }).toString(),
+      oauth_token: oauthToken,
+      oauth_verifier: oauthVerifier
+    }).toString()
   });
 
   if (!response.ok) {
@@ -30,14 +57,26 @@ async function getTwitterTokens(code: string, codeVerifier: string): Promise<any
     throw new Error('Failed to get Twitter access token');
   }
 
-  return response.json();
+  const data = new URLSearchParams(await response.text());
+  return {
+    oauth_token: data.get('oauth_token'),
+    oauth_token_secret: data.get('oauth_token_secret'),
+    user_id: data.get('user_id'),
+    screen_name: data.get('screen_name')
+  };
 }
 
-async function getTwitterProfile(accessToken: string): Promise<any> {
-  const response = await fetch(TWITTER_USER_URL, {
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-    },
+async function getTwitterProfile(accessToken: string, tokenSecret: string): Promise<any> {
+  const authHeader = oauth.toHeader(oauth.authorize({
+    url: TWITTER_VERIFY_CREDENTIALS_URL,
+    method: 'GET'
+  }, {
+    key: accessToken,
+    secret: tokenSecret
+  }));
+
+  const response = await fetch(TWITTER_VERIFY_CREDENTIALS_URL, {
+    headers: Object.fromEntries(Object.entries(authHeader))
   });
 
   if (!response.ok) {
@@ -51,47 +90,30 @@ async function getTwitterProfile(accessToken: string): Promise<any> {
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const code = searchParams.get('code');
-  const state = searchParams.get('state');
-  const error = searchParams.get('error');
-  const errorDescription = searchParams.get('error_description');
+  const oauthToken = searchParams.get('oauth_token');
+  const oauthVerifier = searchParams.get('oauth_verifier');
+  const denied = searchParams.get('denied');
 
-  // Get stored values from cookies
+  // Get stored token secret from cookie
   const cookieStore = cookies();
-  const storedState = cookieStore.get('twitter_state')?.value;
-  const codeVerifier = cookieStore.get('twitter_code_verifier')?.value;
+  const tokenSecret = cookieStore.get('twitter_oauth_token_secret')?.value;
 
-  // Clean up cookies immediately
-  cookieStore.delete('twitter_state');
-  cookieStore.delete('twitter_code_verifier');
+  // Clean up cookies
+  cookieStore.delete('twitter_oauth_token_secret');
 
-  console.log('Callback params:', { code, state, storedState, codeVerifier, error, errorDescription });
+  console.log('Callback params:', { oauthToken, oauthVerifier, tokenSecret, denied });
 
-  if (error || errorDescription) {
-    console.error('Twitter OAuth error:', error, errorDescription);
+  if (denied) {
+    console.error('Twitter OAuth denied by user');
     return NextResponse.redirect(
-      `${process.env.NEXTAUTH_URL}/admin/social?error=twitter_auth_failed&details=${encodeURIComponent(errorDescription || '')}`
+      `${process.env.NEXTAUTH_URL}/admin/social?error=twitter_auth_denied`
     );
   }
 
-  if (!code || !state) {
-    console.error('Missing code or state');
+  if (!oauthToken || !oauthVerifier || !tokenSecret) {
+    console.error('Missing OAuth parameters');
     return NextResponse.redirect(
       `${process.env.NEXTAUTH_URL}/admin/social?error=missing_params`
-    );
-  }
-
-  if (!storedState || !codeVerifier) {
-    console.error('Missing stored state or code verifier');
-    return NextResponse.redirect(
-      `${process.env.NEXTAUTH_URL}/admin/social?error=missing_auth_data`
-    );
-  }
-
-  if (state !== storedState) {
-    console.error('State mismatch:', { state, storedState });
-    return NextResponse.redirect(
-      `${process.env.NEXTAUTH_URL}/admin/social?error=invalid_state`
     );
   }
 
@@ -120,36 +142,33 @@ export async function GET(request: Request) {
 
     const userId = userResult[0].id;
 
-    // Exchange code for tokens using the code verifier
-    console.log('Exchanging code for tokens with verifier:', codeVerifier);
-    const tokenData = await getTwitterTokens(code, codeVerifier);
+    // Exchange request token for access token
+    console.log('Exchanging tokens...');
+    const tokenData = await getTwitterTokens(oauthToken, oauthVerifier, tokenSecret);
     console.log('Twitter token data:', tokenData);
     
     // Get user's profile
-    const profile = await getTwitterProfile(tokenData.access_token);
+    const profile = await getTwitterProfile(tokenData.oauth_token, tokenData.oauth_token_secret);
     console.log('Twitter profile:', profile);
 
     // Store the connection in the database using the user's ID
     await upsertSocialAccount({
-      id: `twitter_${profile.data.id}`,
+      id: `twitter_${tokenData.user_id}`,
       userId,
       provider: 'twitter',
-      providerAccountId: profile.data.id,
-      accessToken: tokenData.access_token,
-      refreshToken: tokenData.refresh_token,
-      tokenType: tokenData.token_type,
-      scope: tokenData.scope,
-      expiresAt: tokenData.expires_in ? new Date(Date.now() + tokenData.expires_in * 1000) : undefined,
+      providerAccountId: tokenData.user_id,
+      accessToken: tokenData.oauth_token,
       metadata: {
+        tokenSecret: tokenData.oauth_token_secret,
         profile: {
-          id: profile.data.id,
-          name: profile.data.name,
-          username: profile.data.username,
+          id: tokenData.user_id,
+          name: profile.name,
+          screenName: tokenData.screen_name
         }
       }
     });
 
-    // Redirect back to the social accounts page with success message
+    // Redirect back to the social accounts page
     return NextResponse.redirect(
       `${process.env.NEXTAUTH_URL}/admin/social?success=twitter_connected`
     );
