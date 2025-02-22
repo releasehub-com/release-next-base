@@ -11,7 +11,7 @@ async function updatePost() {
         errorMessage: null,
         updatedAt: new Date()
       })
-      .where(eq(scheduledPosts.id, '4825cc10-4e37-4710-99e3-1bbb12927050'));
+      .where(eq(scheduledPosts.id, '6883ee67-217b-420f-b751-82f032ff9f99'));
     
     console.log('Post updated successfully');
   } catch (error) {

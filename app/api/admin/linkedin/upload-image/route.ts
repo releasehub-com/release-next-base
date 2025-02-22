@@ -16,7 +16,7 @@ async function registerImageUpload(accessToken: string, providerAccountId: strin
     body: JSON.stringify({
       registerUploadRequest: {
         recipes: ['urn:li:digitalmediaRecipe:feedshare-image'],
-        owner: `urn:li:member:${providerAccountId}`,
+        owner: `urn:li:person:${providerAccountId}`,
         serviceRelationships: [
           {
             relationshipType: 'OWNER',
@@ -116,6 +116,11 @@ export async function POST(request: Request) {
 
     // Upload the image
     await uploadImage(uploadUrl, buffer);
+
+    console.log('LinkedIn image upload response:', {
+      asset,
+      displayUrl
+    });
 
     return NextResponse.json({ 
       asset,

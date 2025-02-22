@@ -1,15 +1,15 @@
 {
-  "id": "2666e276-2db2-47d2-902f-dd766fde6560",
+  "id": "49fe8b4b-549d-4678-bd77-94d36bede5a5",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
   "tables": {
-    "accounts": {
-      "name": "accounts",
+    "account": {
+      "name": "account",
       "schema": "",
       "columns": {
-        "user_id": {
-          "name": "user_id",
+        "userId": {
+          "name": "userId",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -26,8 +26,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "provider_account_id": {
-          "name": "provider_account_id",
+        "providerAccountId": {
+          "name": "providerAccountId",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -77,12 +77,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "accounts_user_id_users_id_fk": {
-          "name": "accounts_user_id_users_id_fk",
-          "tableFrom": "accounts",
-          "tableTo": "users",
+        "account_userId_user_id_fk": {
+          "name": "account_userId_user_id_fk",
+          "tableFrom": "account",
+          "tableTo": "user",
           "columnsFrom": [
-            "user_id"
+            "userId"
           ],
           "columnsTo": [
             "id"
@@ -92,11 +92,11 @@
         }
       },
       "compositePrimaryKeys": {
-        "accounts_provider_provider_account_id_pk": {
-          "name": "accounts_provider_provider_account_id_pk",
+        "account_provider_providerAccountId_pk": {
+          "name": "account_provider_providerAccountId_pk",
           "columns": [
             "provider",
-            "provider_account_id"
+            "providerAccountId"
           ]
         }
       },
@@ -112,14 +112,14 @@
           "primaryKey": true,
           "notNull": true
         },
-        "user_id": {
-          "name": "user_id",
+        "userId": {
+          "name": "userId",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "social_account_id": {
-          "name": "social_account_id",
+        "socialAccountId": {
+          "name": "socialAccountId",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -130,8 +130,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "scheduled_for": {
-          "name": "scheduled_for",
+        "scheduledFor": {
+          "name": "scheduledFor",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true
@@ -143,8 +143,8 @@
           "notNull": true,
           "default": "'scheduled'"
         },
-        "error_message": {
-          "name": "error_message",
+        "errorMessage": {
+          "name": "errorMessage",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -155,15 +155,15 @@
           "primaryKey": false,
           "notNull": false
         },
-        "created_at": {
-          "name": "created_at",
+        "createdAt": {
+          "name": "createdAt",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
-        "updated_at": {
-          "name": "updated_at",
+        "updatedAt": {
+          "name": "updatedAt",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
@@ -172,12 +172,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "scheduled_posts_user_id_users_id_fk": {
-          "name": "scheduled_posts_user_id_users_id_fk",
+        "scheduled_posts_userId_user_id_fk": {
+          "name": "scheduled_posts_userId_user_id_fk",
           "tableFrom": "scheduled_posts",
-          "tableTo": "users",
+          "tableTo": "user",
           "columnsFrom": [
-            "user_id"
+            "userId"
           ],
           "columnsTo": [
             "id"
@@ -185,12 +185,12 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "scheduled_posts_social_account_id_social_accounts_id_fk": {
-          "name": "scheduled_posts_social_account_id_social_accounts_id_fk",
+        "scheduled_posts_socialAccountId_social_accounts_id_fk": {
+          "name": "scheduled_posts_socialAccountId_social_accounts_id_fk",
           "tableFrom": "scheduled_posts",
           "tableTo": "social_accounts",
           "columnsFrom": [
-            "social_account_id"
+            "socialAccountId"
           ],
           "columnsTo": [
             "id"
@@ -202,18 +202,18 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "sessions": {
-      "name": "sessions",
+    "session": {
+      "name": "session",
       "schema": "",
       "columns": {
-        "session_token": {
-          "name": "session_token",
+        "sessionToken": {
+          "name": "sessionToken",
           "type": "text",
           "primaryKey": true,
           "notNull": true
         },
-        "user_id": {
-          "name": "user_id",
+        "userId": {
+          "name": "userId",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -227,12 +227,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "sessions_user_id_users_id_fk": {
-          "name": "sessions_user_id_users_id_fk",
-          "tableFrom": "sessions",
-          "tableTo": "users",
+        "session_userId_user_id_fk": {
+          "name": "session_userId_user_id_fk",
+          "tableFrom": "session",
+          "tableTo": "user",
           "columnsFrom": [
-            "user_id"
+            "userId"
           ],
           "columnsTo": [
             "id"
@@ -254,8 +254,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "user_id": {
-          "name": "user_id",
+        "userId": {
+          "name": "userId",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -266,32 +266,32 @@
           "primaryKey": false,
           "notNull": true
         },
-        "provider_account_id": {
-          "name": "provider_account_id",
+        "providerAccountId": {
+          "name": "providerAccountId",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "access_token": {
-          "name": "access_token",
+        "accessToken": {
+          "name": "accessToken",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "refresh_token": {
-          "name": "refresh_token",
+        "refreshToken": {
+          "name": "refreshToken",
           "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "expires_at": {
-          "name": "expires_at",
+        "expiresAt": {
+          "name": "expiresAt",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false
         },
-        "token_type": {
-          "name": "token_type",
+        "tokenType": {
+          "name": "tokenType",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -302,15 +302,15 @@
           "primaryKey": false,
           "notNull": false
         },
-        "created_at": {
-          "name": "created_at",
+        "createdAt": {
+          "name": "createdAt",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
-        "updated_at": {
-          "name": "updated_at",
+        "updatedAt": {
+          "name": "updatedAt",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
@@ -325,12 +325,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "social_accounts_user_id_users_id_fk": {
-          "name": "social_accounts_user_id_users_id_fk",
+        "social_accounts_userId_user_id_fk": {
+          "name": "social_accounts_userId_user_id_fk",
           "tableFrom": "social_accounts",
-          "tableTo": "users",
+          "tableTo": "user",
           "columnsFrom": [
-            "user_id"
+            "userId"
           ],
           "columnsTo": [
             "id"
@@ -342,8 +342,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "users": {
-      "name": "users",
+    "user": {
+      "name": "user",
       "schema": "",
       "columns": {
         "id": {
@@ -364,8 +364,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "email_verified": {
-          "name": "email_verified",
+        "emailVerified": {
+          "name": "emailVerified",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false
@@ -376,22 +376,22 @@
           "primaryKey": false,
           "notNull": false
         },
-        "is_admin": {
-          "name": "is_admin",
+        "isAdmin": {
+          "name": "isAdmin",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,
           "default": false
         },
-        "created_at": {
-          "name": "created_at",
+        "createdAt": {
+          "name": "createdAt",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
-        "updated_at": {
-          "name": "updated_at",
+        "updatedAt": {
+          "name": "updatedAt",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
@@ -403,8 +403,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "verification_tokens": {
-      "name": "verification_tokens",
+    "verification_token": {
+      "name": "verification_token",
       "schema": "",
       "columns": {
         "identifier": {
@@ -429,8 +429,8 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "verification_tokens_identifier_token_pk": {
-          "name": "verification_tokens_identifier_token_pk",
+        "verification_token_identifier_token_pk": {
+          "name": "verification_token_identifier_token_pk",
           "columns": [
             "identifier",
             "token"

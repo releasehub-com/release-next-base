@@ -42,7 +42,7 @@ async function postToTwitter(content: string, accessToken: string, imageAssets?:
 // Helper function to post to LinkedIn
 async function postToLinkedIn(content: string, account: typeof socialAccounts.$inferSelect, imageAssets?: Array<string | { asset: string }>): Promise<void> {
   const body: any = {
-    author: `urn:li:member:${account.providerAccountId}`,
+    author: `urn:li:person:${account.providerAccountId}`,
     lifecycleState: 'PUBLISHED',
     specificContent: {
       'com.linkedin.ugc.ShareContent': {
@@ -82,7 +82,8 @@ async function postToLinkedIn(content: string, account: typeof socialAccounts.$i
     headers: {
       'Authorization': `Bearer ${account.accessToken}`,
       'Content-Type': 'application/json',
-      'X-Restli-Protocol-Version': '2.0.0'
+      'X-Restli-Protocol-Version': '2.0.0',
+      'LinkedIn-Version': '202304'
     },
     body: JSON.stringify(body),
   });

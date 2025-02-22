@@ -53,6 +53,8 @@ export async function POST(request: Request) {
         );
       }
 
+      console.log('Received image assets:', metadata.imageAssets);
+
       if (metadata.imageAssets.length > 9) {
         return NextResponse.json(
           { error: 'Maximum of 9 images allowed' },
@@ -83,25 +85,46 @@ export async function POST(request: Request) {
       const imageAssets = await Promise.all(
         metadata.imageAssets.map(async (asset) => {
           try {
-            const response = await fetch(`https://api.linkedin.com/v2/assets/${asset}`, {
+            // Extract the asset ID from the URN
+            const assetId = asset.split(':').pop();
+            const response = await fetch(`https://api.linkedin.com/v2/assets/${assetId}`, {
               headers: {
                 'Authorization': `Bearer ${linkedInAccount[0].accessToken}`,
+                'Content-Type': 'application/json',
                 'X-Restli-Protocol-Version': '2.0.0',
+                'LinkedIn-Version': '202304'
               },
             });
 
             if (!response.ok) {
-              throw new Error('Failed to fetch asset details');
+              const errorText = await response.text();
+              console.error('LinkedIn asset details error:', {
+                status: response.status,
+                statusText: response.statusText,
+                error: errorText,
+                asset,
+                assetId
+              });
+              throw new Error(`Failed to fetch asset details: ${errorText}`);
             }
 
             const data = await response.json();
+            console.log('LinkedIn asset details response:', data);
+
+            // Only check the overall asset status
+            if (data.status !== 'ALLOWED') {
+              console.error('Asset not ready:', data);
+              throw new Error('Asset not ready for use');
+            }
+
+            // We don't need the display URL for LinkedIn posts
             return {
               asset,
-              displayUrl: data.value.downloadUrl || data.value.mediaUrl
+              status: data.status
             };
           } catch (error) {
             console.error('Error fetching asset details:', error);
-            return { asset, displayUrl: null };
+            return { asset, status: null };
           }
         })
       );

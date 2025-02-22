@@ -12,23 +12,27 @@ if (!process.env.POSTGRES_URL) {
 }
 
 // Create postgres client for migrations
-const migrationClient = postgres(process.env.POSTGRES_URL);
-
-// Create drizzle database instance
-const db = drizzle(migrationClient);
+const sql = postgres(process.env.POSTGRES_URL, { max: 1 });
 
 // Run migrations
 async function main() {
   try {
-    await migrate(db, { migrationsFolder: 'lib/db/migrations' });
+    const db = drizzle(sql);
+    
+    console.log('Running migrations...');
+    
+    await migrate(db, {
+      migrationsFolder: 'lib/db/migrations'
+    });
+    
     console.log('Migrations completed successfully');
-    await migrationClient.end();
+    await sql.end();
     process.exit(0);
   } catch (error) {
     console.error('Error running migrations:', error);
-    await migrationClient.end();
+    await sql.end();
     process.exit(1);
   }
 }
 
-main(); 
+main();

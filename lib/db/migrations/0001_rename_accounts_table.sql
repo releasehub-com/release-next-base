@@ -1,1 +1,0 @@
-ALTER TABLE IF EXISTS accounts RENAME TO account; 

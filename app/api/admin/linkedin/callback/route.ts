@@ -6,7 +6,6 @@ import { eq } from 'drizzle-orm';
 
 const LINKEDIN_TOKEN_URL = 'https://www.linkedin.com/oauth/v2/accessToken';
 const LINKEDIN_USERINFO_URL = 'https://api.linkedin.com/v2/userinfo';
-const LINKEDIN_ME_URL = 'https://api.linkedin.com/v2/me';
 const REDIRECT_URI = `${process.env.NEXTAUTH_URL}/api/admin/linkedin/callback`;
 
 async function getLinkedInTokens(code: string): Promise<any> {
@@ -34,23 +33,38 @@ async function getLinkedInTokens(code: string): Promise<any> {
 }
 
 async function getLinkedInProfile(accessToken: string): Promise<any> {
-  const userInfoResponse = await fetch(LINKEDIN_USERINFO_URL, {
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-    },
-  });
+  try {
+    // Get user info from OIDC userinfo endpoint
+    const userInfoResponse = await fetch(LINKEDIN_USERINFO_URL, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
 
-  if (!userInfoResponse.ok) {
-    const error = await userInfoResponse.text();
-    console.error('LinkedIn profile error:', error);
-    throw new Error('Failed to get LinkedIn profile');
+    if (!userInfoResponse.ok) {
+      const error = await userInfoResponse.text();
+      console.error('LinkedIn userinfo error:', error);
+      throw new Error(`Failed to get LinkedIn user info: ${error}`);
+    }
+
+    const userInfo = await userInfoResponse.json();
+    console.log('LinkedIn userInfo:', userInfo);
+    
+    if (!userInfo.sub) {
+      console.error('LinkedIn member ID not found in response:', userInfo);
+      throw new Error('LinkedIn member ID not found in response');
+    }
+
+    return {
+      memberId: userInfo.sub,
+      firstName: userInfo.given_name || '',
+      lastName: userInfo.family_name || '',
+      email: userInfo.email || ''
+    };
+  } catch (error) {
+    console.error('Error in getLinkedInProfile:', error instanceof Error ? error.message : error);
+    throw error;
   }
-
-  const userInfo = await userInfoResponse.json();
-  return {
-    ...userInfo,
-    memberId: userInfo.sub // Use the sub claim as the member ID
-  };
 }
 
 export async function GET(request: Request) {
@@ -102,13 +116,13 @@ export async function GET(request: Request) {
     const tokenData = await getLinkedInTokens(code);
     console.log('LinkedIn token data:', tokenData);
     
-    // Get user's profile using OIDC userinfo endpoint
+    // Get user's profile
     const profile = await getLinkedInProfile(tokenData.access_token);
     console.log('LinkedIn profile:', profile);
 
     // Store the connection in the database using the user's ID
     await upsertSocialAccount({
-      id: `linkedin_${profile.sub}`,
+      id: `linkedin_${profile.memberId}`,
       userId,
       provider: 'linkedin',
       providerAccountId: profile.memberId,
@@ -118,10 +132,10 @@ export async function GET(request: Request) {
       expiresAt: tokenData.expires_in ? new Date(Date.now() + tokenData.expires_in * 1000) : undefined,
       metadata: {
         profile: {
-          id: profile.sub,
-          firstName: profile.given_name,
-          lastName: profile.family_name,
-          email: profile.email,
+          id: profile.memberId,
+          firstName: profile.firstName,
+          lastName: profile.lastName,
+          email: profile.email || session.user.email,
           memberId: profile.memberId
         }
       }
@@ -132,7 +146,7 @@ export async function GET(request: Request) {
       `${process.env.NEXTAUTH_URL}/admin/social?success=linkedin_connected`
     );
   } catch (error) {
-    console.error('Error in LinkedIn callback:', error);
+    console.error('Error in LinkedIn callback:', error instanceof Error ? error.message : error);
     return NextResponse.redirect(
       `${process.env.NEXTAUTH_URL}/admin/social?error=linkedin_connection_failed`
     );

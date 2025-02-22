@@ -39,7 +39,10 @@
     "test:metadata": "tsx scripts/test-metadata.ts",
     "process-blog": "ts-node scripts/process-blog-post.ts",
     "process-blog:dry-run": "ts-node scripts/process-blog-post.ts --dry-run",
-    "validate-blog": "ts-node scripts/validate-blog-post.ts"
+    "validate-blog": "ts-node scripts/validate-blog-post.ts",
+    "db:generate": "drizzle-kit generate:pg",
+    "db:push": "drizzle-kit push:pg",
+    "db:studio": "drizzle-kit studio"
   },
   "pnpm": {
     "overrides": {
