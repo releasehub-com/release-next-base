@@ -101,13 +101,6 @@ ENV NEXT_PUBLIC_APP_BASE_URL=$NEXT_PUBLIC_APP_BASE_URL \
     NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_APP_BASE_URL \
     NEXTAUTH_URL=$NEXT_PUBLIC_APP_BASE_URL
 
-RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nextjs && \
-    mkdir .next && \
-    mkdir -p .next/cache/images && \
-    chown -R nextjs:nodejs .next public && \
-    chmod -R 755 .next
-
 # Copy only production dependencies
 COPY --from=dev-deps /build/node_modules ./node_modules
 
@@ -121,12 +114,13 @@ COPY --from=builder /app/lib ./lib
 COPY --from=builder /app/types ./types
 COPY --from=builder /app/app ./app
 
-# Set up permissions (optimized)
-RUN chmod +x ./scripts/*.sh && \
-    chown -R nextjs:nodejs .next .contentlayer public app && \
-    chmod 755 .next .contentlayer public app && \
-    chown nextjs:nodejs . ./scripts ./lib ./types && \
-    chmod 755 . ./scripts ./lib ./types
+# Set up user, groups and permissions
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs && \
+    mkdir -p .next/cache/images && \
+    chown -R nextjs:nodejs . && \
+    chmod -R 755 . && \
+    chmod +x ./scripts/*.sh
 
 USER nextjs
 
