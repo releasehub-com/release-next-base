@@ -1,4 +1,3 @@
----
 execution_type: server
 context: gcp-production
 domain: prod.release.com
@@ -7,7 +6,8 @@ hostnames:
   - app: release-landing-new-${env_id}.${domain}
 environment_templates:
   - name: ephemeral
-  - name: permanent
+    datasets:
+      - name: landing
 resources:
   cpu:
     requests: 100m

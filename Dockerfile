@@ -41,7 +41,7 @@ RUN apt-get update && apt-get install -y build-essential python3 && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy only necessary files for build
-COPY package.json pnpm-lock.yaml .npmrc next.config.js contentlayer.config.ts tsconfig.json tsconfig.contentlayer.json middleware.ts ./
+COPY package.json pnpm-lock.yaml .npmrc next.config.js contentlayer.config.ts tsconfig.json tsconfig.contentlayer.json middleware.ts tailwind.config.ts postcss.config.mjs ./
 COPY app ./app
 COPY public ./public
 COPY lib ./lib
