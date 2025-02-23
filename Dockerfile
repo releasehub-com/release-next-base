@@ -2,84 +2,109 @@ FROM node:20-slim AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
-# work around core pack issue
-# https://github.com/nodejs/corepack/issues/616#issuecomment-2622079955
-RUN npm install -g corepack@latest && corepack enable
+# Install pnpm with exact version matching our local environment
+RUN npm install -g pnpm@9.11.0
+
 RUN apt-get update && apt-get install curl -y
 
 # Install dependencies only when needed
 FROM base AS deps
 WORKDIR /build
 # Install build dependencies for sharp
-RUN apt-get update && apt-get install -y build-essential python3
+RUN apt-get update && apt-get install -y build-essential python3 && \
+    rm -rf /var/lib/apt/lists/*
 COPY package.json pnpm-lock.yaml .npmrc ./
+RUN pnpm install --frozen-lockfile --prod
+
+# Development dependencies for building
+FROM deps AS dev-deps
 RUN pnpm install --frozen-lockfile
 
-# Rebuild the source code only when needed and upload the sourcemaps
+# Builder stage
 FROM base AS builder
 WORKDIR /app
 
-# Set all the Environment Variables, they need to be present before the build command happens
+# Set all the Environment Variables needed for build
 ARG NEXT_PUBLIC_APP_BASE_URL
 ARG DD_API_KEY
 
+# Using NEXT_PUBLIC_APP_BASE_URL for all URL-related variables since it contains the actual deployment URL
 ENV NEXT_PUBLIC_APP_BASE_URL=$NEXT_PUBLIC_APP_BASE_URL \
-    DD_API_KEY=$DD_API_KEY
+    NEXTAUTH_URL=$NEXT_PUBLIC_APP_BASE_URL \
+    NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_APP_BASE_URL \
+    NEXT_TELEMETRY_DISABLED=1 \
+    OPENAI_API_KEY="sk-dummy-key-for-build" \
+    NEXTAUTH_SECRET="dummy-secret-for-build"
 
 # Install build dependencies
-RUN apt-get update && apt-get install -y build-essential python3
+RUN apt-get update && apt-get install -y build-essential python3 && \
+    rm -rf /var/lib/apt/lists/*
 
-COPY package.json pnpm-lock.yaml .npmrc ./
-COPY . .
+# Copy only necessary files for build
+COPY package.json pnpm-lock.yaml .npmrc next.config.js contentlayer.config.ts tsconfig.json tsconfig.contentlayer.json middleware.ts ./
+COPY app ./app
+COPY public ./public
+COPY lib ./lib
+COPY types ./types
+COPY components ./components
+COPY hooks ./hooks
+COPY config ./config
+COPY docs ./docs
+COPY scripts ./scripts
 
-# Copy node_modules but rebuild sharp
-COPY --from=deps /build/node_modules ./node_modules
-RUN rm -rf node_modules/sharp
-RUN pnpm add sharp
+# Copy node_modules from dev-deps
+COPY --from=dev-deps /build/node_modules ./node_modules
 
-RUN pnpm build
-RUN pnpm update-sitemap
-
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the build.
-ENV NEXT_TELEMETRY_DISABLED 1
+RUN pnpm build && \
+    pnpm update-sitemap && \
+    rm -rf node_modules/.cache
 
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV=production
+ENV NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1 \
+    PORT=4001
+
+# These will need to be set at runtime with actual values
+ENV POSTGRES_URL="" \
+    NEXTAUTH_SECRET="" \
+    GOOGLE_CLIENT_ID="" \
+    GOOGLE_CLIENT_SECRET="" \
+    TWITTER_CLIENT_ID="" \
+    TWITTER_CLIENT_SECRET="" \
+    TWITTER_API_KEY="" \
+    TWITTER_API_SECRET="" \
+    LINKEDIN_CLIENT_ID="" \
+    LINKEDIN_CLIENT_SECRET="" \
+    OPENAI_API_KEY="" \
+    POST_WORKER_API_KEY=""
+
+# Set URL-related variables from the build arg
 ARG NEXT_PUBLIC_APP_BASE_URL
-ENV NEXT_PUBLIC_APP_BASE_URL=$NEXT_PUBLIC_APP_BASE_URL
-ENV NEXT_TELEMETRY_DISABLED=1
+ENV NEXT_PUBLIC_APP_BASE_URL=$NEXT_PUBLIC_APP_BASE_URL \
+    NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_APP_BASE_URL \
+    NEXTAUTH_URL=$NEXT_PUBLIC_APP_BASE_URL
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs && \
+    mkdir .next && \
+    mkdir -p .next/cache/images && \
+    chown -R nextjs:nodejs .next && \
+    chmod -R 755 .next
 
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
+# Copy only production dependencies
+COPY --from=deps /build/node_modules ./node_modules
 
-# Install only sharp and its dependencies
-RUN apt-get update && apt-get install -y build-essential python3
-COPY package.json pnpm-lock.yaml .npmrc ./
-COPY --from=builder /app/node_modules ./node_modules
-RUN rm -rf node_modules/sharp
-RUN pnpm add sharp
-
-# Copy necessary files for Contentlayer
-COPY --from=builder /app/.next /app/.next
-COPY --from=builder /app/.contentlayer /app/.contentlayer
+# Copy built application
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/.contentlayer ./.contentlayer
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/app /app/app
-COPY --from=builder /app/contentlayer.config.ts ./
+COPY --from=builder /app/package.json ./package.json
 
-#USER nextjs
+USER nextjs
 
 EXPOSE 4001
-ENV PORT=4001
-# ENV NODE_OPTIONS="-r dd-trace/init"
 
-WORKDIR /app
 CMD ["pnpm", "start"]
