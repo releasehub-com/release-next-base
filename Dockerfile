@@ -102,7 +102,7 @@ RUN addgroup --system --gid 1001 nodejs && \
     chmod -R 755 .next
 
 # Copy only production dependencies
-COPY --from=deps /build/node_modules ./node_modules
+COPY --from=dev-deps /build/node_modules ./node_modules
 
 # Copy built application
 COPY --from=builder /app/.next ./.next
@@ -110,6 +110,8 @@ COPY --from=builder /app/.contentlayer ./.contentlayer
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/scripts ./scripts
+COPY --from=builder /app/lib ./lib
+COPY --from=builder /app/types ./types
 
 # Set up permissions
 RUN chmod +x ./scripts/*.sh && \
