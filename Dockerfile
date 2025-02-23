@@ -68,6 +68,12 @@ ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
     PORT=4001
 
+# Install required tools for scripts
+RUN apt-get update && apt-get install -y \
+    postgresql-client \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
 # These will need to be set at runtime with actual values
 ENV POSTGRES_URL="" \
     NEXTAUTH_SECRET="" \
@@ -103,6 +109,12 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/.contentlayer ./.contentlayer
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/scripts ./scripts
+
+# Set up permissions
+RUN chmod +x ./scripts/*.sh && \
+    chown -R nextjs:nodejs . && \
+    chmod -R 755 .
 
 USER nextjs
 

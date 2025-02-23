@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Change to the app directory
 cd "$(dirname "$0")/.."
@@ -50,7 +51,10 @@ if [ "$DEBUG" -eq 1 ]; then
   echo "📝 Check the dev server logs for detailed debug output"
 else
   # Run the post worker normally
-  pnpm post-worker
+  echo "Running post worker..."
+  pnpm post-worker "$@"
+
+  echo "Post worker completed successfully"
 fi
 
 # Check the exit status
