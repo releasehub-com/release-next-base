@@ -5,8 +5,13 @@ ENV PATH="$PNPM_HOME:$PATH"
 # Install pnpm with exact version matching our local environment
 RUN npm install -g pnpm@9.11.0
 
-RUN apt-get update && apt-get install -y curl postgresql-client && \
-    rm -rf /var/lib/apt/lists/*
+# Install system dependencies including those needed for sharp
+RUN apt-get update && apt-get install -y \
+    curl \
+    postgresql-client \
+    build-essential \
+    python3 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -68,10 +73,12 @@ ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
     PORT=4001
 
-# Install required tools for scripts
+# Install required tools and libraries for runtime
 RUN apt-get update && apt-get install -y \
     postgresql-client \
     curl \
+    build-essential \
+    python3 \
     && rm -rf /var/lib/apt/lists/*
 
 # These will need to be set at runtime with actual values
@@ -98,7 +105,7 @@ RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs && \
     mkdir .next && \
     mkdir -p .next/cache/images && \
-    chown -R nextjs:nodejs .next && \
+    chown -R nextjs:nodejs .next public && \
     chmod -R 755 .next
 
 # Copy only production dependencies

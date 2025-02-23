@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
-import { db } from "@/lib/db";
-import { scheduledPosts, socialAccounts } from "@/lib/db/schema";
+import { db } from "../lib/db";
+import { scheduledPosts, socialAccounts } from "../lib/db/schema";
 import { eq, and, lte } from "drizzle-orm";
 
 const program = new Command();
