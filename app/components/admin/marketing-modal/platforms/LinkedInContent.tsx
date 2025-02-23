@@ -1,13 +1,22 @@
 "use client";
 
-import Image from "next/image";
-import type { PageContext } from "../types";
+import { useEffect, useState } from "react";
+import { PageContext } from "../types";
+import { formatSocialContent, ImageGrid, UrlPreview, shouldShowUrlPreview, getUrlPreviewContent, UrlPreviewData } from ".";
 
 interface LinkedInContentProps {
   content: string;
   imageAssets: Array<{ asset: string; displayUrl: string }>;
   pageContext: PageContext;
   isPreview?: boolean;
+}
+
+interface UrlPreviewData {
+  url: string;
+  title: string;
+  description: string;
+  isInternal: boolean;
+  ogImage?: string;
 }
 
 export function calculateLinkedInLength(text: string): number {
@@ -39,28 +48,30 @@ export function LinkedInContent({
   pageContext,
   isPreview = false,
 }: LinkedInContentProps) {
+  const [urlPreviewData, setUrlPreviewData] = useState<{
+    url: string;
+    title: string;
+    description: string;
+    isInternal: boolean;
+    ogData?: UrlPreviewData;
+  } | null>(null);
+
+  useEffect(() => {
+    if (shouldShowUrlPreview(content, imageAssets)) {
+      getUrlPreviewContent(content, pageContext).then(setUrlPreviewData);
+    }
+  }, [content, pageContext, imageAssets]);
+
   if (!content) return null;
 
   const paragraphs = content.split("\n\n").filter(Boolean);
-
-  const processedParagraphs = paragraphs.map((paragraph) => {
-    let processed = paragraph.replace(
-      /(?:^|\s)(https?:\/\/[^\s]+)(?=\s|$)/g,
-      ' <span class="text-[#0a66c2] underline">$1</span>',
-    );
-
-    processed = processed.replace(
-      /(?:^|\s)#(\w+)/g,
-      ' <span class="text-[#0a66c2]">#$1</span>',
-    );
-
-    processed = processed.replace(
-      /(?:^|\s)@(\w+)/g,
-      ' <span class="text-[#0a66c2]">@$1</span>',
-    );
-
-    return processed;
-  });
+  const processedParagraphs = paragraphs.map((paragraph) => 
+    formatSocialContent(paragraph, {
+      urlColor: "#0a66c2",
+      hashtagColor: "#0a66c2",
+      mentionColor: "#0a66c2"
+    })
+  );
 
   return (
     <div className="bg-white rounded-lg p-4 shadow-sm">
@@ -72,48 +83,15 @@ export function LinkedInContent({
             dangerouslySetInnerHTML={{ __html: paragraph }}
           />
         ))}
-        {imageAssets.length > 0 && (
-          <div
-            className={`grid ${imageAssets.length === 1 ? "" : "grid-cols-2"} gap-2 mt-4`}
-          >
-            {imageAssets.map((imageAsset, index) => (
-              <div
-                key={`preview-${imageAsset.asset}-${index}`}
-                className="relative aspect-w-16 aspect-h-9"
-              >
-                <Image
-                  src={imageAsset.displayUrl}
-                  alt={`Image ${index + 1}`}
-                  width={200}
-                  height={150}
-                  className="rounded-lg object-cover"
-                />
-              </div>
-            ))}
-          </div>
-        )}
-        {pageContext.url && imageAssets.length === 0 && (
-          <div className="mt-4 border border-gray-200 rounded-lg overflow-hidden bg-white">
-            <div className="aspect-video relative">
-              <Image
-                src="/og/og-image.png"
-                alt="Article preview"
-                fill
-                className="object-cover"
-              />
-            </div>
-            <div className="p-3">
-              <h3 className="text-[15px] font-medium text-gray-900 line-clamp-2">
-                {pageContext.title}
-              </h3>
-              <p className="text-[13px] text-gray-500 mt-1 line-clamp-2">
-                {pageContext.description}
-              </p>
-              <p className="text-[13px] text-gray-400 mt-1">
-                {new URL(pageContext.url).hostname}
-              </p>
-            </div>
-          </div>
+        <ImageGrid imageAssets={imageAssets} />
+        {shouldShowUrlPreview(content, imageAssets) && urlPreviewData && (
+          <UrlPreview
+            url={urlPreviewData.url}
+            pageContext={pageContext}
+            isInternal={urlPreviewData.isInternal}
+            isDark={false}
+            ogData={urlPreviewData.ogData}
+          />
         )}
       </div>
     </div>

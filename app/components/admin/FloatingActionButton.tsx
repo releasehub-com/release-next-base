@@ -4,34 +4,11 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import type { SocialAccount } from "@/lib/db/schema";
+import type { Platform, ModalState as MarketingModalState } from "./marketing-modal/types";
 import AIMarketingModal from "./AIMarketingModal";
 
-interface ModalState {
-  message: string;
-  conversations: {
-    twitter: Array<{ role: "user" | "assistant"; content: string }>;
-    linkedin: Array<{ role: "user" | "assistant"; content: string }>;
-  };
-  selectedPlatform: string | null;
-  preview: { twitter?: string; linkedin?: string };
-  editedPreviews: { twitter?: string; linkedin?: string };
-  isPreviewMode: boolean;
-  versions: {
-    twitter: Array<{
-      content: string;
-      timestamp: number;
-      source: "ai" | "user";
-    }>;
-    linkedin: Array<{
-      content: string;
-      timestamp: number;
-      source: "ai" | "user";
-    }>;
-  };
-  imageAssets: {
-    twitter: Array<{ asset: string; displayUrl: string }>;
-    linkedin: Array<{ asset: string; displayUrl: string }>;
-  };
+interface ModalState extends Omit<MarketingModalState, 'selectedPlatform'> {
+  selectedPlatform: Platform | null;
 }
 
 interface UserMetadata {
@@ -42,7 +19,6 @@ interface UserMetadata {
 export default function FloatingActionButton() {
   const { data: session } = useSession();
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [accounts, setAccounts] = useState<SocialAccount[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -133,7 +109,7 @@ export default function FloatingActionButton() {
               },
             ],
           },
-          selectedPlatform: accounts[0]?.provider || null,
+          selectedPlatform: (accounts[0]?.provider as Platform) || null,
           preview: {},
           editedPreviews: {},
           isPreviewMode: false,
@@ -156,7 +132,7 @@ export default function FloatingActionButton() {
     if (accounts.length > 0 && !modalState.selectedPlatform) {
       setModalState((prevState) => ({
         ...prevState,
-        selectedPlatform: accounts[0].provider,
+        selectedPlatform: accounts[0].provider as Platform,
       }));
     }
   }, [accounts, modalState.selectedPlatform]);
@@ -197,106 +173,34 @@ export default function FloatingActionButton() {
     };
   };
 
-  // Only render for admin users
-  if (!session?.user?.isAdmin) {
+  // Only render for admin users and non-admin pages
+  if (!session?.user?.isAdmin || pathname.startsWith('/admin')) {
     return null;
   }
 
   return (
     <>
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed right-0 bottom-8 z-50">
         {/* Main Button */}
         <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="bg-indigo-600 text-white rounded-full p-4 shadow-lg hover:bg-indigo-700 transition-colors"
+          onClick={() => setIsModalOpen(true)}
+          className="bg-gray-800 text-white rounded-l-xl p-4 shadow-xl hover:bg-gray-700 transition-colors flex flex-col items-center gap-3 relative group border border-r-0 border-indigo-500/50"
+          aria-label="Open AI Marketing Assistant"
         >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-            />
-          </svg>
-        </button>
-
-        {/* Expandable Menu */}
-        {isOpen && (
-          <div className="absolute bottom-full right-0 mb-2 w-64 bg-gray-800 rounded-lg shadow-xl border border-gray-700 overflow-hidden">
-            {/* Header */}
-            <div className="p-4 border-b border-gray-700">
-              <h3 className="text-lg font-medium text-white">
-                AI Marketing Assistant
-              </h3>
-              <p className="text-sm text-gray-300">
-                Create and manage social posts
-              </p>
-            </div>
-
-            {/* Connected Accounts */}
-            <div className="p-4 border-b border-gray-700">
-              <h4 className="text-sm font-medium text-gray-300 mb-2">
-                Connected Accounts
-              </h4>
-              {isLoading ? (
-                <div className="animate-pulse flex space-x-2">
-                  <div className="h-8 w-8 bg-gray-700 rounded-full"></div>
-                  <div className="h-8 w-8 bg-gray-700 rounded-full"></div>
-                </div>
-              ) : accounts.length === 0 ? (
-                <p className="text-sm text-gray-400">No accounts connected</p>
-              ) : (
-                <div className="flex space-x-2">
-                  {accounts.map((account) => {
-                    const metadata = account.metadata as UserMetadata;
-                    const username = metadata?.username;
-                    return (
-                      <div
-                        key={account.id}
-                        className="bg-gray-700 rounded-full p-2"
-                        title={`${account.provider} - ${username || account.providerAccountId}`}
-                      >
-                        {account.provider === "twitter" ? (
-                          <svg
-                            className="w-4 h-4 text-blue-400"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                          </svg>
-                        ) : (
-                          <svg
-                            className="w-4 h-4 text-blue-600"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M20.47 2H3.53a1.45 1.45 0 0 0-1.47 1.43v17.14A1.45 1.45 0 0 0 3.53 22h16.94a1.45 1.45 0 0 0 1.47-1.43V3.43A1.45 1.45 0 0 0 20.47 2ZM8.09 18.74h-3v-9h3ZM6.59 8.48a1.56 1.56 0 1 1 0-3.12 1.57 1.57 0 1 1 0 3.12Zm12.32 10.26h-3v-4.83c0-1.21-.43-2-1.52-2A1.65 1.65 0 0 0 12.85 13a2 2 0 0 0-.1.73v5h-3v-9h3V11a3 3 0 0 1 2.71-1.5c2 0 3.45 1.29 3.45 4.06Z" />
-                          </svg>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            {/* Actions */}
-            <div className="p-4">
-              <button
-                onClick={() => {
-                  setIsModalOpen(true);
-                  setIsOpen(false);
-                }}
-                disabled={accounts.length === 0}
-                className="w-full bg-indigo-600 text-white rounded-md py-2 px-4 hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
+          {/* Glow effect */}
+          <div className="absolute inset-0 rounded-l-xl bg-gradient-to-r from-indigo-500/20 via-indigo-500/10 to-transparent" />
+          <div className="absolute inset-0 rounded-l-xl shadow-[inset_0_0_15px_rgba(99,102,241,0.2)]" />
+          
+          <div className="flex flex-col gap-3 relative">
+            {isLoading ? (
+              <div className="animate-pulse flex flex-col gap-3">
+                <div className="h-7 w-7 bg-gray-700/50 rounded-full"></div>
+                <div className="h-7 w-7 bg-gray-700/50 rounded-full"></div>
+              </div>
+            ) : accounts.length === 0 ? (
+              <div className="p-1.5 rounded-full bg-gray-700/50 backdrop-blur-sm">
                 <svg
-                  className="w-5 h-5"
+                  className="w-6 h-6 text-indigo-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -305,19 +209,52 @@ export default function FloatingActionButton() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                   />
                 </svg>
-                <span>Open Assistant</span>
-              </button>
-              {accounts.length === 0 && (
-                <p className="mt-2 text-sm text-gray-400 text-center">
-                  Connect social accounts to get started
-                </p>
-              )}
-            </div>
+              </div>
+            ) : (
+              accounts.map((account) => (
+                <div
+                  key={account.id}
+                  className="p-1.5 rounded-full bg-gray-700/50 backdrop-blur-sm hover:bg-gray-700 transition-colors"
+                  title={`${account.provider} - ${(account.metadata as UserMetadata)?.username || account.providerAccountId}`}
+                >
+                  {account.provider === "twitter" ? (
+                    <svg
+                      className="w-6 h-6 text-teal-400"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                    </svg>
+                  ) : (
+                    <svg
+                      className="w-6 h-6 text-teal-500"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M20.47 2H3.53a1.45 1.45 0 0 0-1.47 1.43v17.14A1.45 1.45 0 0 0 3.53 22h16.94a1.45 1.45 0 0 0 1.47-1.43V3.43A1.45 1.45 0 0 0 20.47 2ZM8.09 18.74h-3v-9h3ZM6.59 8.48a1.56 1.56 0 1 1 0-3.12 1.57 1.57 0 1 1 0 3.12Zm12.32 10.26h-3v-4.83c0-1.21-.43-2-1.52-2A1.65 1.65 0 0 0 12.85 13a2 2 0 0 0-.1.73v5h-3v-9h3V11a3 3 0 0 1 2.71-1.5c2 0 3.45 1.29 3.45 4.06Z" />
+                    </svg>
+                  )}
+                </div>
+              ))
+            )}
           </div>
-        )}
+          <svg
+            className="w-5 h-5 text-indigo-500/70 mt-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2.5}
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </button>
       </div>
 
       <AIMarketingModal
@@ -325,10 +262,50 @@ export default function FloatingActionButton() {
         onClose={() => setIsModalOpen(false)}
         pageContext={pageContext}
         accounts={accounts}
-        // Pass modal state and update function
         modalState={modalState}
         onModalStateChange={setModalState}
       />
+
+      {/* No accounts modal */}
+      {isModalOpen && accounts.length === 0 && !isLoading && (
+        <div className="fixed inset-y-0 right-0 bg-gray-900/95 border-l border-gray-600/20 shadow-xl z-50 flex flex-col transform transition-transform duration-300 w-full md:w-[400px] backdrop-blur-sm translate-x-0">
+          <div className="flex items-center justify-between py-2 px-3 border-b border-gray-600/20 bg-gray-800/50">
+            <div className="flex items-center">
+              <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 mr-1.5" />
+              <h2 className="text-sm font-medium text-gray-100">AI Assistant</h2>
+            </div>
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="text-gray-400 hover:text-gray-300 p-1 rounded-lg hover:bg-gray-700/50"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          
+          <div className="flex-1 p-6 flex flex-col items-center justify-center text-center">
+            <div className="bg-gray-800/50 p-4 rounded-xl border border-indigo-500/20 mb-6">
+              <svg className="w-12 h-12 text-indigo-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              <h3 className="text-lg font-medium text-white mb-2">Connect Your Social Accounts</h3>
+              <p className="text-gray-400 text-sm mb-4">
+                To start creating AI-powered social media posts, you'll need to connect your Twitter and LinkedIn accounts.
+              </p>
+              <a
+                href="/admin/social"
+                className="inline-flex items-center justify-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+              >
+                Connect Accounts
+                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

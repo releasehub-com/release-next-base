@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import type { PlatformEditorProps } from "../types";
+import { useState } from "react";
 
 export function LinkedInIcon() {
   return (
@@ -45,6 +46,7 @@ export function LinkedInEditor({
   const length = calculateLinkedInLength(content);
   const feedback = getLinkedInLengthFeedback(length);
   const isOverLimit = length > 3000;
+  const [isImagesExpanded, setIsImagesExpanded] = useState(false);
 
   return (
     <div className="h-full bg-gray-800 rounded-lg p-4 flex flex-col">
@@ -77,9 +79,27 @@ export function LinkedInEditor({
       {/* Image upload UI */}
       <div className="mt-3">
         <div className="flex items-center justify-between text-xs">
-          <span className="text-gray-400">
-            Images ({imageAssets.length}/9)
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-gray-400">
+              Images ({imageAssets.length}/9)
+            </span>
+            {imageAssets.length > 0 && (
+              <button
+                onClick={() => setIsImagesExpanded(!isImagesExpanded)}
+                className="text-gray-400 hover:text-gray-300"
+              >
+                {isImagesExpanded ? (
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                )}
+              </button>
+            )}
+          </div>
           <label className="cursor-pointer px-2 py-0.5 text-xs rounded bg-gray-700 text-gray-300 hover:bg-gray-600 transition-colors">
             {isUploading ? "..." : "+ Add"}
             <input
@@ -92,7 +112,7 @@ export function LinkedInEditor({
           </label>
         </div>
 
-        {imageAssets.length > 0 && (
+        {imageAssets.length > 0 && isImagesExpanded && (
           <div className="mt-2 bg-gray-800/50 rounded-lg p-1">
             <div className="grid grid-cols-4 gap-1">
               {imageAssets.map((imageAsset, index) => (
