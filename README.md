@@ -29,12 +29,6 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
 ## Environment Variables
 
 - `NEXT_PUBLIC_APP_BASE_URL`: Required for image optimization and proper routing in ephemeral environments
@@ -131,3 +125,107 @@ For development, we recommend:
 - The worker will exit with code 1 if there's an error in the worker itself
 - Individual post failures won't cause the worker to exit with an error
 - Posts that fail can be retried by updating their status back to 'scheduled'
+
+# Adding a New Platform to the Marketing Modal
+
+This guide explains how to add a new social media platform to the marketing modal system.
+
+## Overview
+
+The marketing modal is designed to be extensible for multiple social media platforms. Currently, it supports Twitter and LinkedIn. To add a new platform, you'll need to modify several files.
+
+## Steps
+
+1. **Update Types (`app/components/admin/marketing-modal/types.ts`)**
+   - Add the new platform to the `Platform` type
+   - Update `ModalState` interface to include the new platform in conversations, preview, etc.
+   - Update `ImageAssets` and `Versions` interfaces
+   - Update `EditedPreviews` interface
+
+2. **Create Platform Components**
+   Create the following files in `app/components/admin/marketing-modal/platforms/`:
+   - `NewPlatformContent.tsx` - For rendering posts
+   - `NewPlatformEditor.tsx` - For editing posts
+   - Add the platform icon to `PlatformIcon.tsx`
+
+3. **Update Validation (`app/components/admin/marketing-modal/platforms/validation.ts`)**
+   - Add platform-specific content validation rules
+   - Update `getMaxImages` function to include the new platform's limits
+
+4. **Create Required Components**
+
+   ```typescript
+   // NewPlatformContent.tsx
+   interface NewPlatformContentProps {
+     content: string;
+     imageAssets: Array<{ asset: string; displayUrl: string }>;
+     pageContext: PageContext;
+     isPreview?: boolean;
+   }
+
+   // NewPlatformEditor.tsx
+   interface NewPlatformEditorProps extends PlatformEditorProps {
+     content: string;
+     imageAssets: Array<{ asset: string; displayUrl: string }>;
+     isUploading: boolean;
+     onContentChange: (content: string) => void;
+     onImageUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
+     onImageRemove: (index: number) => void;
+   }
+   ```
+
+5. **Update PreviewSection (`app/components/admin/marketing-modal/PreviewSection.tsx`)**
+   - Add conditional rendering for the new platform
+   - Import the new platform's components
+
+6. **Update Backend API**
+   - Add new API endpoint for image upload: `/api/admin/[platform]/upload-image`
+   - Update post scheduling logic in `/api/admin/schedule-post`
+   - Add platform-specific API handlers if needed
+
+## Example: Adding Instagram
+
+```typescript
+// types.ts
+export type Platform = "twitter" | "linkedin" | "instagram";
+
+// validation.ts
+export function validateContent(platform: Platform, content: string): boolean {
+  if (platform === "instagram") {
+    return content.length <= 2200;
+  }
+  // ... existing validation
+}
+
+export function getMaxImages(platform: Platform): number {
+  if (platform === "instagram") return 10;
+  // ... existing platforms
+}
+```
+
+## Important Considerations
+
+1. **Content Limits**
+   - Each platform has different character limits
+   - Image count and size restrictions vary
+   - Some platforms have specific formatting requirements
+
+2. **API Requirements**
+   - Ensure you have the necessary API credentials
+   - Follow platform-specific API guidelines
+   - Handle rate limiting appropriately
+
+3. **UI/UX**
+   - Maintain consistent styling with existing platforms
+   - Add appropriate platform-specific indicators
+   - Include platform-specific validation messages
+
+4. **Testing**
+   - Test content creation and editing
+   - Verify image upload functionality
+   - Ensure proper error handling
+   - Test scheduling and posting features
+
+## Need Help?
+
+For more detailed information about implementing specific platforms or troubleshooting, please refer to the platform-specific documentation or contact the development team.
