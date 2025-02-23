@@ -2,21 +2,20 @@
 
 import { useEffect, useState } from "react";
 import { PageContext } from "../types";
-import { formatSocialContent, ImageGrid, UrlPreview, shouldShowUrlPreview, getUrlPreviewContent, UrlPreviewData } from ".";
+import {
+  formatSocialContent,
+  ImageGrid,
+  UrlPreview,
+  shouldShowUrlPreview,
+  getUrlPreviewContent,
+  UrlPreviewData,
+} from ".";
 
 interface TwitterContentProps {
   content: string;
   imageAssets: Array<{ asset: string; displayUrl: string }>;
   pageContext: PageContext;
   isPreview?: boolean;
-}
-
-interface UrlPreviewData {
-  url: string;
-  title: string;
-  description: string;
-  isInternal: boolean;
-  ogImage?: string;
 }
 
 export function calculateTwitterLength(text: string): number {
@@ -59,7 +58,7 @@ export function TwitterContent({
   const processed = formatSocialContent(content, {
     urlColor: "#1d9bf0",
     hashtagColor: "#1d9bf0",
-    mentionColor: "#1d9bf0"
+    mentionColor: "#1d9bf0",
   });
 
   return (
@@ -80,4 +79,4 @@ export function TwitterContent({
       )}
     </div>
   );
-} 
+}

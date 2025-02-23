@@ -123,4 +123,4 @@ export interface AIMarketingModalProps {
   accounts: SocialAccount[];
   modalState: ModalState;
   onModalStateChange: (state: ModalState) => void;
-} 
+}

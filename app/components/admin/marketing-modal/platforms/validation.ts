@@ -14,4 +14,4 @@ export function validateContent(platform: Platform, content: string): boolean {
 
 export function getMaxImages(platform: Platform): number {
   return platform === "twitter" ? 4 : 9;
-} 
+}

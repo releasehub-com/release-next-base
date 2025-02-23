@@ -16,4 +16,4 @@ export const authOptions: NextAuthOptions = {
   },
   // Add your auth providers here
   providers: [],
-}; 
+};

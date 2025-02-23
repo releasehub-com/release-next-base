@@ -4,10 +4,13 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import type { SocialAccount } from "@/lib/db/schema";
-import type { Platform, ModalState as MarketingModalState } from "./marketing-modal/types";
+import type {
+  Platform,
+  ModalState as MarketingModalState,
+} from "./marketing-modal/types";
 import AIMarketingModal from "./AIMarketingModal";
 
-interface ModalState extends Omit<MarketingModalState, 'selectedPlatform'> {
+interface ModalState extends Omit<MarketingModalState, "selectedPlatform"> {
   selectedPlatform: Platform | null;
 }
 
@@ -174,7 +177,7 @@ export default function FloatingActionButton() {
   };
 
   // Only render for admin users and non-admin pages
-  if (!session?.user?.isAdmin || pathname.startsWith('/admin')) {
+  if (!session?.user?.isAdmin || pathname.startsWith("/admin")) {
     return null;
   }
 
@@ -190,7 +193,7 @@ export default function FloatingActionButton() {
           {/* Glow effect */}
           <div className="absolute inset-0 rounded-l-xl bg-gradient-to-r from-indigo-500/20 via-indigo-500/10 to-transparent" />
           <div className="absolute inset-0 rounded-l-xl shadow-[inset_0_0_15px_rgba(99,102,241,0.2)]" />
-          
+
           <div className="flex flex-col gap-3 relative">
             {isLoading ? (
               <div className="animate-pulse flex flex-col gap-3">
@@ -272,34 +275,69 @@ export default function FloatingActionButton() {
           <div className="flex items-center justify-between py-2 px-3 border-b border-gray-600/20 bg-gray-800/50">
             <div className="flex items-center">
               <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 mr-1.5" />
-              <h2 className="text-sm font-medium text-gray-100">AI Assistant</h2>
+              <h2 className="text-sm font-medium text-gray-100">
+                AI Assistant
+              </h2>
             </div>
             <button
               onClick={() => setIsModalOpen(false)}
               className="text-gray-400 hover:text-gray-300 p-1 rounded-lg hover:bg-gray-700/50"
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
-          
+
           <div className="flex-1 p-6 flex flex-col items-center justify-center text-center">
             <div className="bg-gray-800/50 p-4 rounded-xl border border-indigo-500/20 mb-6">
-              <svg className="w-12 h-12 text-indigo-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              <svg
+                className="w-12 h-12 text-indigo-400 mx-auto mb-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
               </svg>
-              <h3 className="text-lg font-medium text-white mb-2">Connect Your Social Accounts</h3>
+              <h3 className="text-lg font-medium text-white mb-2">
+                Connect Your Social Accounts
+              </h3>
               <p className="text-gray-400 text-sm mb-4">
-                To start creating AI-powered social media posts, you'll need to connect your Twitter and LinkedIn accounts.
+                To start creating AI-powered social media posts, you'll need to
+                connect your Twitter and LinkedIn accounts.
               </p>
               <a
                 href="/admin/social"
                 className="inline-flex items-center justify-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
               >
                 Connect Accounts
-                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                <svg
+                  className="w-4 h-4 ml-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                  />
                 </svg>
               </a>
             </div>

@@ -12,9 +12,10 @@ export function isInternalLink(url: string | null): boolean {
   if (!url) return false;
 
   // Get base URL from env or window location
-  const baseUrl = typeof window !== 'undefined' 
-    ? window.location.origin 
-    : process.env.NEXT_PUBLIC_BASE_URL || 'https://release.com';
+  const baseUrl =
+    typeof window !== "undefined"
+      ? window.location.origin
+      : process.env.NEXT_PUBLIC_BASE_URL || "https://release.com";
 
   try {
     return new URL(url).hostname === new URL(baseUrl).hostname;
@@ -23,7 +24,10 @@ export function isInternalLink(url: string | null): boolean {
   }
 }
 
-export function shouldShowUrlPreview(content: string, imageAssets: ImageAsset[]): boolean {
+export function shouldShowUrlPreview(
+  content: string,
+  imageAssets: ImageAsset[],
+): boolean {
   return imageAssets.length === 0 && !!extractFirstUrl(content);
 }
 
@@ -47,30 +51,35 @@ export interface UrlPreviewProps {
   ogData?: UrlPreviewData;
 }
 
-export function UrlPreview({ url, pageContext, isInternal, isDark = false, ogData }: UrlPreviewProps) {
+export function UrlPreview({
+  url,
+  pageContext,
+  isInternal,
+  isDark = false,
+  ogData,
+}: UrlPreviewProps) {
   const textColor = isDark ? "text-white" : "text-gray-900";
   const mutedColor = isDark ? "text-gray-400" : "text-gray-500";
   const borderColor = isDark ? "border-gray-700" : "border-gray-200";
   const bgColor = isDark ? "bg-black/50" : "bg-white";
 
   // Use ogData if available, otherwise fall back to pageContext
-  const title = isInternal ? (ogData?.title || pageContext.title) : url;
-  const description = isInternal ? (ogData?.description || pageContext.description) : '';
-  const image = isInternal ? (ogData?.ogImage || "/og/og-image.png") : undefined;
+  const title = isInternal ? ogData?.title || pageContext.title : url;
+  const description = isInternal
+    ? ogData?.description || pageContext.description
+    : "";
+  const image = isInternal ? ogData?.ogImage || "/og/og-image.png" : undefined;
   const hostname = new URL(url).hostname;
   const siteName = ogData?.siteName || hostname;
 
   return (
-    <div className={`mt-3 border ${borderColor} rounded-xl overflow-hidden ${bgColor}`}>
+    <div
+      className={`mt-3 border ${borderColor} rounded-xl overflow-hidden ${bgColor}`}
+    >
       {isInternal ? (
         <>
           <div className="aspect-video relative">
-            <Image
-              src={image}
-              alt={title}
-              fill
-              className="object-cover"
-            />
+            <Image src={image} alt={title} fill className="object-cover" />
           </div>
           <div className="p-3">
             <p className={mutedColor + " text-[13px] flex items-center gap-1"}>
@@ -95,16 +104,24 @@ export function UrlPreview({ url, pageContext, isInternal, isDark = false, ogDat
           <div className="aspect-video relative bg-gray-800">
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="p-3 rounded-full bg-gray-700">
-                <svg className={`w-6 h-6 ${mutedColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                <svg
+                  className={`w-6 h-6 ${mutedColor}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                  />
                 </svg>
               </div>
             </div>
           </div>
           <div className="p-3">
-            <p className={`text-[13px] ${mutedColor}`}>
-              {hostname}
-            </p>
+            <p className={`text-[13px] ${mutedColor}`}>{hostname}</p>
             <h3 className={`text-[15px] font-medium ${textColor} line-clamp-2`}>
               {url}
             </h3>
@@ -118,7 +135,10 @@ export function UrlPreview({ url, pageContext, isInternal, isDark = false, ogDat
   );
 }
 
-export async function getUrlPreviewContent(content: string, pageContext: PageContext): Promise<{
+export async function getUrlPreviewContent(
+  content: string,
+  pageContext: PageContext,
+): Promise<{
   url: string;
   title: string;
   description: string;
@@ -130,7 +150,9 @@ export async function getUrlPreviewContent(content: string, pageContext: PageCon
 
   if (isInternal) {
     try {
-      const response = await fetch(`/api/admin/og-data?url=${encodeURIComponent(url)}`);
+      const response = await fetch(
+        `/api/admin/og-data?url=${encodeURIComponent(url)}`,
+      );
       if (response.ok) {
         const ogData = await response.json();
         return {
@@ -147,12 +169,12 @@ export async function getUrlPreviewContent(content: string, pageContext: PageCon
             siteName: ogData.siteName,
             twitterCard: ogData.twitterCard,
             twitterSite: ogData.twitterSite,
-            twitterCreator: ogData.twitterCreator
-          }
+            twitterCreator: ogData.twitterCreator,
+          },
         };
       }
     } catch (error) {
-      console.error('Error fetching OG data:', error);
+      console.error("Error fetching OG data:", error);
     }
   }
 
@@ -160,15 +182,17 @@ export async function getUrlPreviewContent(content: string, pageContext: PageCon
   return {
     url,
     title: isInternal ? pageContext.title : url,
-    description: isInternal ? pageContext.description : '',
+    description: isInternal ? pageContext.description : "",
     isInternal,
-    ogData: isInternal ? {
-      url: pageContext.url,
-      title: pageContext.title,
-      description: pageContext.description,
-      ogImage: '/og/og-image.png',
-      type: 'website'
-    } : undefined
+    ogData: isInternal
+      ? {
+          url: pageContext.url,
+          title: pageContext.title,
+          description: pageContext.description,
+          ogImage: "/og/og-image.png",
+          type: "website",
+        }
+      : undefined,
   };
 }
 
@@ -178,7 +202,10 @@ interface FormatContentOptions {
   mentionColor: string;
 }
 
-export function formatSocialContent(content: string, options: FormatContentOptions): string {
+export function formatSocialContent(
+  content: string,
+  options: FormatContentOptions,
+): string {
   let processed = content;
 
   // Handle URLs - make them colored and underlined
@@ -230,4 +257,4 @@ export function ImageGrid({ imageAssets, className = "" }: ImageGridProps) {
       ))}
     </div>
   );
-} 
+}

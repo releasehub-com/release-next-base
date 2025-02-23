@@ -6,5 +6,5 @@ export {
   formatSocialContent,
   ImageGrid,
   UrlPreview,
-  type UrlPreviewData
-} from './utils'; 
+  type UrlPreviewData,
+} from "./utils";

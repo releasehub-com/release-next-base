@@ -4,7 +4,11 @@ import { useState, useEffect, useRef, useMemo, Fragment } from "react";
 import type { SocialAccount } from "@/lib/db/schema";
 import Image from "next/image";
 import { useSidebarStore } from "../RootWrapper";
-import type { AIMarketingModalProps, Platform, EditedPreviews } from "./marketing-modal/types";
+import type {
+  AIMarketingModalProps,
+  Platform,
+  EditedPreviews,
+} from "./marketing-modal/types";
 import { ScheduleDialog } from "./marketing-modal/ScheduleDialog";
 import { ConfirmationDialog } from "./marketing-modal/ConfirmationDialog";
 import { PreviewSection } from "./marketing-modal/PreviewSection";
@@ -92,8 +96,11 @@ export default function AIMarketingModal({
   onModalStateChange,
 }: AIMarketingModalProps) {
   const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
-  const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false);
-  const [pendingScheduleTime, setPendingScheduleTime] = useState<Date | null>(null);
+  const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] =
+    useState(false);
+  const [pendingScheduleTime, setPendingScheduleTime] = useState<Date | null>(
+    null,
+  );
   const [isGenerating, setIsGenerating] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isImagesExpanded, setIsImagesExpanded] = useState(false);
@@ -260,7 +267,8 @@ export default function AIMarketingModal({
         conversations: {
           ...conversations,
           [selectedPlatform]: [
-            ...(conversations[selectedPlatform as "twitter" | "linkedin"] || []),
+            ...(conversations[selectedPlatform as "twitter" | "linkedin"] ||
+              []),
             {
               role: "assistant" as const,
               content:
@@ -611,13 +619,17 @@ export default function AIMarketingModal({
 
   return (
     <div>
-      <div className={`fixed inset-y-0 right-0 bg-gray-900/95 border-l border-gray-600/20 shadow-xl z-50 flex flex-col transform transition-transform duration-300 w-full md:w-[400px] backdrop-blur-sm ${isOpen ? "translate-x-0" : "translate-x-full"}`}>
+      <div
+        className={`fixed inset-y-0 right-0 bg-gray-900/95 border-l border-gray-600/20 shadow-xl z-50 flex flex-col transform transition-transform duration-300 w-full md:w-[400px] backdrop-blur-sm ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+      >
         {/* Header */}
         <div className="flex items-center justify-between py-2 px-3 border-b border-gray-600/20 bg-gray-800/50">
           <div className="flex items-center gap-2">
             <div className="flex items-center">
               <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse mr-1.5" />
-              <h2 className="text-sm font-medium text-gray-100">AI Assistant</h2>
+              <h2 className="text-sm font-medium text-gray-100">
+                AI Assistant
+              </h2>
             </div>
             <div className="h-4 w-px bg-gray-600/20" />
             <div className="flex gap-1">
@@ -632,11 +644,19 @@ export default function AIMarketingModal({
                   }`}
                 >
                   {account.provider === "twitter" ? (
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <svg
+                      className="w-4 h-4"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                     </svg>
                   ) : (
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <svg
+                      className="w-4 h-4"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path d="M20.47 2H3.53a1.45 1.45 0 0 0-1.47 1.43v17.14A1.45 1.45 0 0 0 3.53 22h16.94a1.45 1.45 0 0 0 1.47-1.43V3.43A1.45 1.45 0 0 0 20.47 2ZM8.09 18.74h-3v-9h3ZM6.59 8.48a1.56 1.56 0 1 1 0-3.12 1.57 1.57 0 1 1 0 3.12Zm12.32 10.26h-3v-4.83c0-1.21-.43-2-1.52-2A1.65 1.65 0 0 0 12.85 13a2 2 0 0 0-.1.73v5h-3v-9h3V11a3 3 0 0 1 2.71-1.5c2 0 3.45 1.29 3.45 4.06Z" />
                     </svg>
                   )}
@@ -648,8 +668,18 @@ export default function AIMarketingModal({
             onClick={onClose}
             className="text-gray-400 hover:text-gray-300 p-1 rounded-lg hover:bg-gray-700/50"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -660,10 +690,12 @@ export default function AIMarketingModal({
             <>
               <PreviewSection
                 selectedPlatform={selectedPlatform}
-                editedPreviews={{
-                  twitter: editedPreviews.twitter || "",
-                  linkedin: editedPreviews.linkedin || "",
-                } as EditedPreviews}
+                editedPreviews={
+                  {
+                    twitter: editedPreviews.twitter || "",
+                    linkedin: editedPreviews.linkedin || "",
+                  } as EditedPreviews
+                }
                 versions={versions}
                 isPreviewMode={isPreviewMode}
                 imageAssets={imageAssets}
@@ -694,7 +726,9 @@ export default function AIMarketingModal({
             conversations={conversations}
             selectedPlatform={selectedPlatform}
             isGenerating={isGenerating}
-            onMessageChange={(newMessage) => updateModalState({ message: newMessage })}
+            onMessageChange={(newMessage) =>
+              updateModalState({ message: newMessage })
+            }
             onSubmit={handleSubmit}
           />
         </div>

@@ -2,21 +2,20 @@
 
 import { useEffect, useState } from "react";
 import { PageContext } from "../types";
-import { formatSocialContent, ImageGrid, UrlPreview, shouldShowUrlPreview, getUrlPreviewContent, UrlPreviewData } from ".";
+import {
+  formatSocialContent,
+  ImageGrid,
+  UrlPreview,
+  shouldShowUrlPreview,
+  getUrlPreviewContent,
+  UrlPreviewData,
+} from ".";
 
 interface LinkedInContentProps {
   content: string;
   imageAssets: Array<{ asset: string; displayUrl: string }>;
   pageContext: PageContext;
   isPreview?: boolean;
-}
-
-interface UrlPreviewData {
-  url: string;
-  title: string;
-  description: string;
-  isInternal: boolean;
-  ogImage?: string;
 }
 
 export function calculateLinkedInLength(text: string): number {
@@ -57,20 +56,24 @@ export function LinkedInContent({
   } | null>(null);
 
   useEffect(() => {
-    if (shouldShowUrlPreview(content, imageAssets)) {
-      getUrlPreviewContent(content, pageContext).then(setUrlPreviewData);
+    async function fetchUrlPreview() {
+      if (shouldShowUrlPreview(content, imageAssets)) {
+        const data = await getUrlPreviewContent(content, pageContext);
+        setUrlPreviewData(data);
+      }
     }
+    fetchUrlPreview();
   }, [content, pageContext, imageAssets]);
 
   if (!content) return null;
 
   const paragraphs = content.split("\n\n").filter(Boolean);
-  const processedParagraphs = paragraphs.map((paragraph) => 
+  const processedParagraphs = paragraphs.map((paragraph) =>
     formatSocialContent(paragraph, {
       urlColor: "#0a66c2",
       hashtagColor: "#0a66c2",
-      mentionColor: "#0a66c2"
-    })
+      mentionColor: "#0a66c2",
+    }),
   );
 
   return (
@@ -96,4 +99,4 @@ export function LinkedInContent({
       </div>
     </div>
   );
-} 
+}

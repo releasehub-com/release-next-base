@@ -21,7 +21,8 @@ export function ChatSection({
     scrollToBottom();
   }, [conversations, selectedPlatform]);
 
-  const currentConversation = conversations[selectedPlatform as "twitter" | "linkedin"] || [];
+  const currentConversation =
+    conversations[selectedPlatform as "twitter" | "linkedin"] || [];
 
   return (
     <div className="flex-[0.4] flex flex-col min-h-0">
@@ -76,8 +77,8 @@ export function ChatSection({
               isGenerating
                 ? "AI is thinking..."
                 : selectedPlatform
-                ? `Type your message for ${selectedPlatform}...`
-                : "Select a platform..."
+                  ? `Type your message for ${selectedPlatform}...`
+                  : "Select a platform..."
             }
             disabled={isGenerating}
             className="flex-1 bg-white/5 text-indigo-100 text-xs rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 disabled:opacity-50 disabled:cursor-not-allowed placeholder-indigo-300/30 border border-white/5"
@@ -99,4 +100,4 @@ export function ChatSection({
       </div>
     </div>
   );
-} 
+}

@@ -19,8 +19,11 @@ export default function AIMarketingModal({
   onModalStateChange,
 }: AIMarketingModalProps) {
   const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
-  const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false);
-  const [pendingScheduleTime, setPendingScheduleTime] = useState<Date | null>(null);
+  const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] =
+    useState(false);
+  const [pendingScheduleTime, setPendingScheduleTime] = useState<Date | null>(
+    null,
+  );
   const [isGenerating, setIsGenerating] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [lastSavedContent, setLastSavedContent] = useState<EditedPreviews>({
@@ -207,7 +210,9 @@ export default function AIMarketingModal({
     if (!selectedPlatform || !editedPreviews[selectedPlatform]) return;
 
     if (!validateContent(selectedPlatform, editedPreviews[selectedPlatform])) {
-      alert("Content is too long for the selected platform. Please shorten your message.");
+      alert(
+        "Content is too long for the selected platform. Please shorten your message.",
+      );
       return;
     }
 
@@ -338,13 +343,17 @@ export default function AIMarketingModal({
 
   return (
     <div>
-      <div className={`fixed inset-y-0 right-0 bg-gray-900/95 border-l border-gray-600/20 shadow-xl z-50 flex flex-col transform transition-transform duration-300 w-full md:w-[400px] backdrop-blur-sm ${isOpen ? "translate-x-0" : "translate-x-full"}`}>
+      <div
+        className={`fixed inset-y-0 right-0 bg-gray-900/95 border-l border-gray-600/20 shadow-xl z-50 flex flex-col transform transition-transform duration-300 w-full md:w-[400px] backdrop-blur-sm ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+      >
         {/* Header */}
         <div className="flex items-center justify-between py-2 px-3 border-b border-gray-600/20 bg-gray-800/50">
           <div className="flex items-center gap-2">
             <div className="flex items-center">
               <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse mr-1.5" />
-              <h2 className="text-sm font-medium text-gray-100">AI Assistant</h2>
+              <h2 className="text-sm font-medium text-gray-100">
+                AI Assistant
+              </h2>
             </div>
             <div className="h-4 w-px bg-gray-600/20" />
             <div className="flex gap-1">
@@ -370,8 +379,18 @@ export default function AIMarketingModal({
             onClick={onClose}
             className="text-gray-400 hover:text-gray-300 p-1 rounded-lg hover:bg-gray-700/50"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -402,7 +421,9 @@ export default function AIMarketingModal({
             conversations={conversations}
             selectedPlatform={currentPlatform}
             isGenerating={isGenerating}
-            onMessageChange={(newMessage) => updateModalState({ message: newMessage })}
+            onMessageChange={(newMessage) =>
+              updateModalState({ message: newMessage })
+            }
             onSubmit={handleSubmit}
           />
         </div>
@@ -434,4 +455,4 @@ export default function AIMarketingModal({
       )}
     </div>
   );
-} 
+}

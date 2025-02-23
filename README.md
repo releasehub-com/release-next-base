@@ -137,6 +137,7 @@ The marketing modal is designed to be extensible for multiple social media platf
 ## Steps
 
 1. **Update Types (`app/components/admin/marketing-modal/types.ts`)**
+
    - Add the new platform to the `Platform` type
    - Update `ModalState` interface to include the new platform in conversations, preview, etc.
    - Update `ImageAssets` and `Versions` interfaces
@@ -144,11 +145,13 @@ The marketing modal is designed to be extensible for multiple social media platf
 
 2. **Create Platform Components**
    Create the following files in `app/components/admin/marketing-modal/platforms/`:
+
    - `NewPlatformContent.tsx` - For rendering posts
    - `NewPlatformEditor.tsx` - For editing posts
    - Add the platform icon to `PlatformIcon.tsx`
 
 3. **Update Validation (`app/components/admin/marketing-modal/platforms/validation.ts`)**
+
    - Add platform-specific content validation rules
    - Update `getMaxImages` function to include the new platform's limits
 
@@ -175,6 +178,7 @@ The marketing modal is designed to be extensible for multiple social media platf
    ```
 
 5. **Update PreviewSection (`app/components/admin/marketing-modal/PreviewSection.tsx`)**
+
    - Add conditional rendering for the new platform
    - Import the new platform's components
 
@@ -206,16 +210,19 @@ export function getMaxImages(platform: Platform): number {
 ## Important Considerations
 
 1. **Content Limits**
+
    - Each platform has different character limits
    - Image count and size restrictions vary
    - Some platforms have specific formatting requirements
 
 2. **API Requirements**
+
    - Ensure you have the necessary API credentials
    - Follow platform-specific API guidelines
    - Handle rate limiting appropriately
 
 3. **UI/UX**
+
    - Maintain consistent styling with existing platforms
    - Add appropriate platform-specific indicators
    - Include platform-specific validation messages

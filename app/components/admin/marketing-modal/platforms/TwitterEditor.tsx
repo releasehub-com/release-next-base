@@ -6,7 +6,11 @@ import { useState } from "react";
 
 export function TwitterIcon() {
   return (
-    <svg className="w-4 h-4 mr-1 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
+    <svg
+      className="w-4 h-4 mr-1 text-blue-400"
+      fill="currentColor"
+      viewBox="0 0 24 24"
+    >
       <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
     </svg>
   );
@@ -42,7 +46,9 @@ export function TwitterEditor({
           <TwitterIcon />
           Twitter Post
         </h4>
-        <p className={`text-xs ${isOverLimit ? "text-red-400" : "text-gray-400"}`}>
+        <p
+          className={`text-xs ${isOverLimit ? "text-red-400" : "text-gray-400"}`}
+        >
           {length}/280
           {isOverLimit && <span className="ml-1">• Too long</span>}
         </p>
@@ -72,12 +78,32 @@ export function TwitterEditor({
                 className="text-gray-400 hover:text-gray-300"
               >
                 {isImagesExpanded ? (
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 ) : (
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
                   </svg>
                 )}
               </button>
@@ -138,4 +164,4 @@ export function TwitterEditor({
       </div>
     </div>
   );
-} 
+}

@@ -107,7 +107,9 @@ export default function RootLayout({
           src="//js.hs-scripts.com/8047877.js"
         />
       </head>
-      <body className={`${inter.className} bg-gray-900 overflow-hidden h-screen`}>
+      <body
+        className={`${inter.className} bg-gray-900 overflow-hidden h-screen`}
+      >
         <SessionProvider>
           <RootWrapper>
             <PathStorage />

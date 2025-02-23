@@ -21,21 +21,21 @@ export function RootWrapper({ children }: { children: React.ReactNode }) {
     const updateScrollBehavior = () => {
       const isMobile = window.innerWidth < 768;
       if (isMobile) {
-        document.body.style.overflow = isOpen ? 'hidden' : '';
+        document.body.style.overflow = isOpen ? "hidden" : "";
       }
     };
 
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       // Initial check
       updateScrollBehavior();
-      
+
       // Add resize listener
-      window.addEventListener('resize', updateScrollBehavior);
-      
+      window.addEventListener("resize", updateScrollBehavior);
+
       // Cleanup
       return () => {
-        document.body.style.overflow = '';
-        window.removeEventListener('resize', updateScrollBehavior);
+        document.body.style.overflow = "";
+        window.removeEventListener("resize", updateScrollBehavior);
       };
     }
   }, [isOpen]);
@@ -53,4 +53,4 @@ export function RootWrapper({ children }: { children: React.ReactNode }) {
 }
 
 // Export the store for other components to use
-export { useSidebarStore }; 
+export { useSidebarStore };

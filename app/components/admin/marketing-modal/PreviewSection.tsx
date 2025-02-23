@@ -4,7 +4,13 @@ import { TwitterContent } from "./platforms/TwitterContent";
 import { LinkedInContent } from "./platforms/LinkedInContent";
 import { TwitterEditor } from "./platforms/TwitterEditor";
 import { LinkedInEditor } from "./platforms/LinkedInEditor";
-import type { Platform, EditedPreviews, Versions, ImageAssets, PageContext } from "./types";
+import type {
+  Platform,
+  EditedPreviews,
+  Versions,
+  ImageAssets,
+  PageContext,
+} from "./types";
 
 interface PreviewSectionProps {
   selectedPlatform: Platform;
@@ -56,10 +62,7 @@ export function PreviewSection({
             <select
               className="bg-gray-700 text-white text-xs rounded px-1.5 py-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               onChange={(e) =>
-                onVersionSelect(
-                  selectedPlatform,
-                  parseInt(e.target.value),
-                )
+                onVersionSelect(selectedPlatform, parseInt(e.target.value))
               }
               value=""
             >
@@ -121,31 +124,33 @@ export function PreviewSection({
               content={content}
               imageAssets={imageAssets.twitter}
               isUploading={isUploading}
-              onContentChange={(content) => onPreviewEdit(selectedPlatform, content)}
+              onContentChange={(content) =>
+                onPreviewEdit(selectedPlatform, content)
+              }
               onImageUpload={onImageUpload}
               onImageRemove={(index) => onImageRemove(selectedPlatform, index)}
             />
           )
+        ) : isPreviewMode ? (
+          <LinkedInContent
+            content={content}
+            imageAssets={imageAssets.linkedin}
+            pageContext={pageContext}
+            isPreview
+          />
         ) : (
-          isPreviewMode ? (
-            <LinkedInContent
-              content={content}
-              imageAssets={imageAssets.linkedin}
-              pageContext={pageContext}
-              isPreview
-            />
-          ) : (
-            <LinkedInEditor
-              content={content}
-              imageAssets={imageAssets.linkedin}
-              isUploading={isUploading}
-              onContentChange={(content) => onPreviewEdit(selectedPlatform, content)}
-              onImageUpload={onImageUpload}
-              onImageRemove={(index) => onImageRemove(selectedPlatform, index)}
-            />
-          )
+          <LinkedInEditor
+            content={content}
+            imageAssets={imageAssets.linkedin}
+            isUploading={isUploading}
+            onContentChange={(content) =>
+              onPreviewEdit(selectedPlatform, content)
+            }
+            onImageUpload={onImageUpload}
+            onImageRemove={(index) => onImageRemove(selectedPlatform, index)}
+          />
         )}
       </div>
     </div>
   );
-} 
+}

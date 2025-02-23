@@ -3,7 +3,12 @@
 import { useState } from "react";
 import type { ScheduleDialogProps } from "./types";
 
-export function ScheduleDialog({ isOpen, onClose, onConfirm, platform }: ScheduleDialogProps) {
+export function ScheduleDialog({
+  isOpen,
+  onClose,
+  onConfirm,
+  platform,
+}: ScheduleDialogProps) {
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -104,4 +109,4 @@ export function ScheduleDialog({ isOpen, onClose, onConfirm, platform }: Schedul
       </div>
     </div>
   );
-} 
+}
