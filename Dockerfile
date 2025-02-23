@@ -5,7 +5,8 @@ ENV PATH="$PNPM_HOME:$PATH"
 # Install pnpm with exact version matching our local environment
 RUN npm install -g pnpm@9.11.0
 
-RUN apt-get update && apt-get install curl -y
+RUN apt-get update && apt-get install -y curl postgresql-client && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install dependencies only when needed
 FROM base AS deps
