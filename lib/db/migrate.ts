@@ -12,11 +12,9 @@ if (!process.env.POSTGRES_URL) {
 }
 
 // Create postgres client for migrations
-const sql = postgres(process.env.POSTGRES_URL, { 
+const sql = postgres(process.env.POSTGRES_URL, {
   max: 1,
-  options: {
-    search_path: 'public'
-  }
+  ssl: process.env.RELEASE_RANDOMNESS === "prod",
 });
 
 // Run migrations

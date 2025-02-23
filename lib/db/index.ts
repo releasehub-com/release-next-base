@@ -7,7 +7,7 @@ import type { NewSocialAccount, SocialAccount, User } from "./schema";
 // Create postgres client for queries
 const queryClient = postgres(process.env.POSTGRES_URL!, {
   max: 1,
-  ssl: process.env.RELEASE_RANDOMNESS === 'prod'
+  ssl: process.env.RELEASE_RANDOMNESS === "prod",
 });
 
 // Create drizzle database instance
