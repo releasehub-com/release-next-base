@@ -112,11 +112,14 @@ COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/lib ./lib
 COPY --from=builder /app/types ./types
+COPY --from=builder /app/app ./app
 
-# Set up permissions
+# Set up permissions (optimized)
 RUN chmod +x ./scripts/*.sh && \
-    chown -R nextjs:nodejs . && \
-    chmod -R 755 .
+    chown -R nextjs:nodejs .next .contentlayer public app && \
+    chmod 755 .next .contentlayer public app && \
+    chown nextjs:nodejs . ./scripts ./lib ./types && \
+    chmod 755 . ./scripts ./lib ./types
 
 USER nextjs
 
