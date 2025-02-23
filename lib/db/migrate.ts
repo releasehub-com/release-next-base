@@ -12,7 +12,12 @@ if (!process.env.POSTGRES_URL) {
 }
 
 // Create postgres client for migrations
-const sql = postgres(process.env.POSTGRES_URL, { max: 1 });
+const sql = postgres(process.env.POSTGRES_URL, { 
+  max: 1,
+  options: {
+    search_path: 'public'
+  }
+});
 
 // Run migrations
 async function main() {

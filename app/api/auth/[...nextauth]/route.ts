@@ -1,13 +1,22 @@
 import NextAuth, { DefaultSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import { db } from "@/lib/db";
+import postgres from "postgres";
+import { drizzle } from "drizzle-orm/postgres-js";
 import type { Adapter } from "next-auth/adapters";
 
 // Ensure NEXTAUTH_SECRET exists
 if (!process.env.NEXTAUTH_SECRET) {
   throw new Error("NEXTAUTH_SECRET environment variable is required");
 }
+
+// Create a separate client for the auth adapter with the same SSL config
+const authClient = postgres(process.env.POSTGRES_URL!, {
+  max: 1,
+  ssl: process.env.RELEASE_RANDOMNESS === 'prod'
+});
+
+const authDb = drizzle(authClient);
 
 declare module "next-auth" {
   interface Session {
@@ -45,7 +54,7 @@ const ADMIN_EMAILS = [
 ];
 
 const handler = NextAuth({
-  adapter: DrizzleAdapter(db) as Adapter,
+  adapter: DrizzleAdapter(authDb) as Adapter,
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
