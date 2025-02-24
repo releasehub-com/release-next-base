@@ -155,6 +155,21 @@ export async function getUrlPreviewContent(
       );
       if (response.ok) {
         const ogData = await response.json();
+        // Convert absolute URLs to relative paths if they're from the same domain
+        let ogImage = ogData.ogImage;
+        try {
+          const imageUrl = new URL(ogImage);
+          const baseUrl =
+            typeof window !== "undefined"
+              ? window.location.origin
+              : process.env.NEXT_PUBLIC_APP_BASE_URL;
+          if (baseUrl && imageUrl.origin === new URL(baseUrl).origin) {
+            ogImage = imageUrl.pathname;
+          }
+        } catch (e) {
+          console.warn("Error parsing image URL:", e);
+        }
+
         return {
           url,
           title: ogData.title,
@@ -164,7 +179,7 @@ export async function getUrlPreviewContent(
             url: url,
             title: ogData.title,
             description: ogData.description,
-            ogImage: ogData.ogImage,
+            ogImage: ogImage,
             type: ogData.type,
             siteName: ogData.siteName,
             twitterCard: ogData.twitterCard,

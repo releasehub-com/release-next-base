@@ -20,11 +20,13 @@ WORKDIR /build
 RUN apt-get update && apt-get install -y build-essential python3 && \
     rm -rf /var/lib/apt/lists/*
 COPY package.json pnpm-lock.yaml .npmrc ./
-RUN pnpm install --frozen-lockfile --prod
+RUN --mount=type=cache,target=/pnpm/store \
+    pnpm install --frozen-lockfile --prod --prefer-offline
 
 # Development dependencies for building
 FROM deps AS dev-deps
-RUN pnpm install --frozen-lockfile
+RUN --mount=type=cache,target=/pnpm/store \
+    pnpm install --frozen-lockfile --prefer-offline
 
 # Builder stage
 FROM base AS builder
