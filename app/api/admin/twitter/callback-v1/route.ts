@@ -211,11 +211,19 @@ export async function GET(request: Request) {
     );
     console.log("Twitter profile:", profile);
 
+    // Get existing account to preserve metadata
+    const existingAccount = await db
+      .select()
+      .from(socialAccounts)
+      .where(eq(socialAccounts.id, `twitter_${profile.id_str}`))
+      .limit(1);
+
     // Update the existing Twitter account with OAuth 1.0a credentials
     await db
       .update(socialAccounts)
       .set({
         metadata: {
+          ...existingAccount[0]?.metadata, // Preserve existing metadata
           oauth1: {
             accessToken: tokenData.oauth_token,
             tokenSecret: tokenData.oauth_token_secret,

@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { scheduledPosts, socialAccounts } from "@/lib/db/schema";
+import { scheduledPosts, socialAccounts, user } from "@/lib/db/schema";
 import { eq, and, lte } from "drizzle-orm";
 import OAuth from "oauth-1.0a";
 import crypto from "crypto";
+import {
+  sendSlackNotification,
+  createScheduledPostNotification,
+  createErrorNotification,
+} from "@/lib/slack";
 
 interface TwitterApiResponse {
   data: {
@@ -292,7 +297,7 @@ async function postToLinkedIn(
   content: string,
   account: typeof socialAccounts.$inferSelect,
   imageAssets?: Array<string | { asset: string }>,
-): Promise<void> {
+): Promise<{ id: string; postUrl: string }> {
   // If we have image assets, check their status first
   if (imageAssets?.length) {
     // Extract just the URN from the asset object if it's an object
@@ -419,6 +424,15 @@ async function postToLinkedIn(
 
   const responseData = await response.json();
   console.log("LinkedIn post successful:", { id: responseData.id });
+
+  // Extract the post ID from the URN and construct the post URL
+  const postId = responseData.id.split(":").pop();
+  const postUrl = `https://www.linkedin.com/feed/update/${postId}`;
+
+  return {
+    id: responseData.id,
+    postUrl,
+  };
 }
 
 export async function POST(request: Request) {
@@ -522,6 +536,60 @@ export async function POST(request: Request) {
     // Process each due post
     for (const { post, account } of duePosts) {
       try {
+        // Check if this is a Hacker News reminder
+        const platform =
+          (post.metadata as { platform?: string })?.platform ||
+          account?.provider ||
+          "unknown";
+        const isHNReminder =
+          platform === "hackernews" &&
+          (post.metadata as { type?: string })?.type === "reminder";
+
+        // Get user information
+        const postUser = await db
+          .select({
+            email: user.email,
+            name: user.name,
+          })
+          .from(user)
+          .where(eq(user.id, post.userId))
+          .limit(1);
+
+        if (isHNReminder) {
+          // For HN reminders, send notification and update status
+          if (!isDryRun) {
+            // Send HN reminder notification
+            await sendSlackNotification(
+              createScheduledPostNotification({
+                platform,
+                content: post.content,
+                scheduledFor: post.scheduledFor,
+                metadata: {
+                  ...(post.metadata as { url?: string; type?: string }),
+                  userEmail: postUser[0]?.email,
+                  userName: postUser[0]?.name,
+                },
+              }),
+            );
+
+            await db
+              .update(scheduledPosts)
+              .set({
+                status: "posted",
+                updatedAt: now,
+              })
+              .where(eq(scheduledPosts.id, post.id));
+          }
+
+          results.push({
+            id: post.id,
+            status: "success",
+            dryRun: isDryRun,
+          });
+          successCount++;
+          continue;
+        }
+
         if (!account) {
           throw new Error("Social account not found");
         }
@@ -541,6 +609,8 @@ export async function POST(request: Request) {
         }
 
         // Post to appropriate platform
+        let postUrl: string | undefined;
+
         if (isDryRun) {
           // Simulate posting in dry-run mode
           if (account.provider === "twitter") {
@@ -598,6 +668,12 @@ export async function POST(request: Request) {
             if (twitterResponse instanceof Error) {
               throw twitterResponse;
             }
+
+            // Get the tweet URL
+            const tweetId = twitterResponse.data?.id;
+            postUrl = tweetId
+              ? `https://twitter.com/i/web/status/${tweetId}`
+              : undefined;
           } else if (account.provider === "linkedin") {
             // Extract image assets from metadata if present
             const imageAssets = (post.metadata?.imageAssets || []) as Array<
@@ -613,7 +689,12 @@ export async function POST(request: Request) {
               });
             }
 
-            await postToLinkedIn(post.content, account, imageAssets);
+            const linkedInResponse = await postToLinkedIn(
+              post.content,
+              account,
+              imageAssets,
+            );
+            postUrl = linkedInResponse.postUrl;
           }
 
           // Update post status to posted only after successful posting
@@ -624,6 +705,23 @@ export async function POST(request: Request) {
               updatedAt: now,
             })
             .where(eq(scheduledPosts.id, post.id));
+
+          // Send success notification with post URL
+          await sendSlackNotification(
+            createScheduledPostNotification({
+              platform: String(
+                post.metadata?.platform || account?.provider || "unknown",
+              ),
+              content: post.content,
+              scheduledFor: post.scheduledFor,
+              metadata: {
+                ...(post.metadata as { url?: string; type?: string }),
+                userEmail: postUser[0]?.email,
+                userName: postUser[0]?.name,
+                postUrl,
+              },
+            }),
+          );
 
           results.push({
             id: post.id,
@@ -665,6 +763,27 @@ export async function POST(request: Request) {
               updatedAt: now,
             })
             .where(eq(scheduledPosts.id, post.id));
+
+          // Send error notification
+          await sendSlackNotification(
+            createErrorNotification({
+              platform: String(
+                post.metadata?.platform || account?.provider || "unknown",
+              ),
+              content: post.content,
+              errorMessage:
+                error instanceof Error ? error.message : "Unknown error",
+              scheduledFor: post.scheduledFor,
+              metadata: {
+                ...(post.metadata as {
+                  url?: string;
+                  type?: string;
+                  userEmail?: string;
+                  userName?: string;
+                }),
+              },
+            }),
+          );
         }
 
         results.push({

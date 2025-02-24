@@ -21,6 +21,7 @@ export const user = pgTable("user", {
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
   isAdmin: boolean("isAdmin").default(false).notNull(),
+  timezone: text("timezone").default("America/Los_Angeles").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
@@ -91,15 +92,12 @@ export const scheduledPosts = pgTable("scheduled_posts", {
   userId: text("userId")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-  socialAccountId: text("socialAccountId")
-    .notNull()
-    .references(() => socialAccounts.id, { onDelete: "cascade" }),
+  socialAccountId: text("socialAccountId").references(() => socialAccounts.id, {
+    onDelete: "cascade",
+  }),
   content: text("content").notNull(),
   scheduledFor: timestamp("scheduledFor", { mode: "date" }).notNull(),
-  status: text("status")
-    .$type<"scheduled" | "posted" | "failed">()
-    .notNull()
-    .default("scheduled"),
+  status: text("status").notNull().default("scheduled"),
   errorMessage: text("errorMessage"),
   metadata: jsonb("metadata").$type<JsonObject>(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),

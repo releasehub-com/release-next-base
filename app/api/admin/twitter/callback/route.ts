@@ -161,6 +161,9 @@ export async function GET(request: Request) {
           name: profile.data.name,
           username: profile.data.username,
         },
+        oauth2: {
+          codeVerifier,
+        },
       },
     });
 

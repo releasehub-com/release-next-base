@@ -38,6 +38,9 @@ importers:
       "@types/mdx":
         specifier: ^2.0.13
         version: 2.0.13
+      "@types/react-datepicker":
+        specifier: ^7.0.0
+        version: 7.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@types/uuid":
         specifier: ^10.0.0
         version: 10.0.0
@@ -89,6 +92,9 @@ importers:
       lucide-react:
         specifier: ^0.446.0
         version: 0.446.0(react@18.3.1)
+      nanoid:
+        specifier: ^5.1.2
+        version: 5.1.2
       next:
         specifier: 14.2.13
         version: 14.2.13(@babel/core@7.26.9)(@opentelemetry/api@1.8.0)(@playwright/test@1.50.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -125,6 +131,9 @@ importers:
       react-calendly:
         specifier: ^4.3.1
         version: 4.3.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-datepicker:
+        specifier: ^8.1.0
+        version: 8.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-dom:
         specifier: ^18
         version: 18.3.1(react@18.3.1)
@@ -2103,6 +2112,42 @@ packages:
         integrity: sha512-cEee/Z+I12mZcFJshKcCqC8tuX5hG3s+d+9nZ3LabqKF1vKdF41B92pJVCBggjAGORAeOzyyDDKrZwIkLffeOQ==,
       }
 
+  "@floating-ui/core@1.6.9":
+    resolution:
+      {
+        integrity: sha512-uMXCuQ3BItDUbAMhIXw7UPXRfAlOAvZzdK9BWpE60MCn+Svt3aLn9jsPTi/WNGlRUu2uI0v5S7JiIUsbsvh3fw==,
+      }
+
+  "@floating-ui/dom@1.6.13":
+    resolution:
+      {
+        integrity: sha512-umqzocjDgNRGTuO7Q8CU32dkHkECqI8ZdMZ5Swb6QAM0t5rnlrN3lGo1hdpscRd3WS8T6DKYK4ephgIH9iRh3w==,
+      }
+
+  "@floating-ui/react-dom@2.1.2":
+    resolution:
+      {
+        integrity: sha512-06okr5cgPzMNBy+Ycse2A6udMi4bqwW/zgBF/rwjcNqWkyr82Mcg8b0vjX8OJpZFy/FKjJmw6wV7t44kK6kW7A==,
+      }
+    peerDependencies:
+      react: ">=16.8.0"
+      react-dom: ">=16.8.0"
+
+  "@floating-ui/react@0.27.4":
+    resolution:
+      {
+        integrity: sha512-05mXdkUiVh8NCEcYKQ2C9SV9IkZ9k/dFtYmaEIN2riLv80UHoXylgBM76cgPJYfLJM3dJz7UE5MOVH0FypMd2Q==,
+      }
+    peerDependencies:
+      react: ">=17.0.0"
+      react-dom: ">=17.0.0"
+
+  "@floating-ui/utils@0.2.9":
+    resolution:
+      {
+        integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==,
+      }
+
   "@grpc/grpc-js@1.12.6":
     resolution:
       {
@@ -3551,6 +3596,13 @@ packages:
         integrity: sha512-gNMvNH49DJ7OJYv+KAKn0Xp45p8PLl6zo2YnvDIbTd4J6MER2BmWN49TG7n9LvkyihINxeKW8+3bfS2yDC9dzQ==,
       }
 
+  "@types/react-datepicker@7.0.0":
+    resolution:
+      {
+        integrity: sha512-4tWwOUq589tozyQPBVEqGNng5DaZkomx5IVNuur868yYdgjH6RaL373/HKiVt1IDoNNXYiTGspm1F7kjrarM8Q==,
+      }
+    deprecated: This is a stub types definition. react-datepicker provides its own type definitions, so you do not need this installed.
+
   "@types/react-dom@18.3.5":
     resolution:
       {
@@ -4595,6 +4647,12 @@ packages:
         integrity: sha512-BS8PfmtDGnrgYdOonGZQdLZslWIeCGFP9tpan0hi1Co2Zr2NKADsvGYA8XxuG/4UWgJ6Cjtv+YJnB6MM69QGlQ==,
       }
     engines: { node: ">= 0.4" }
+
+  date-fns@4.1.0:
+    resolution:
+      {
+        integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==,
+      }
 
   dc-polyfill@0.1.6:
     resolution:
@@ -7743,6 +7801,14 @@ packages:
     engines: { node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1 }
     hasBin: true
 
+  nanoid@5.1.2:
+    resolution:
+      {
+        integrity: sha512-b+CiXQCNMUGe0Ri64S9SXFcP9hogjAJ2Rd6GdVxhPLRm7mhGaM7VgOvCAJ1ZshfHbqVDI3uqTI5C8/GaKuLI7g==,
+      }
+    engines: { node: ^18 || >=20 }
+    hasBin: true
+
   natural-compare@1.4.0:
     resolution:
       {
@@ -8635,6 +8701,15 @@ packages:
       react: ">=16.8.0"
       react-dom: ">=16.8.0"
 
+  react-datepicker@8.1.0:
+    resolution:
+      {
+        integrity: sha512-11gIOrBGK1MOvl4+wxGv4YxTqXf+uoRPtKstYhb/P1cBdRdOP1sL26VE31apmDnvw8wSYfJe9AWwWbKqmM9tzw==,
+      }
+    peerDependencies:
+      react: ^16.9.0 || ^17 || ^18 || ^19 || ^19.0.0-rc
+      react-dom: ^16.9.0 || ^17 || ^18 || ^19 || ^19.0.0-rc
+
   react-dom@18.3.1:
     resolution:
       {
@@ -9462,6 +9537,12 @@ packages:
     resolution:
       {
         integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==,
+      }
+
+  tabbable@6.2.0:
+    resolution:
+      {
+        integrity: sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==,
       }
 
   tailwind-merge@2.6.0:
@@ -11518,6 +11599,31 @@ snapshots:
 
   "@fal-works/esbuild-plugin-global-externals@2.1.2": {}
 
+  "@floating-ui/core@1.6.9":
+    dependencies:
+      "@floating-ui/utils": 0.2.9
+
+  "@floating-ui/dom@1.6.13":
+    dependencies:
+      "@floating-ui/core": 1.6.9
+      "@floating-ui/utils": 0.2.9
+
+  "@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)":
+    dependencies:
+      "@floating-ui/dom": 1.6.13
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
+  "@floating-ui/react@0.27.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)":
+    dependencies:
+      "@floating-ui/react-dom": 2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      "@floating-ui/utils": 0.2.9
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      tabbable: 6.2.0
+
+  "@floating-ui/utils@0.2.9": {}
+
   "@grpc/grpc-js@1.12.6":
     dependencies:
       "@grpc/proto-loader": 0.7.13
@@ -12617,6 +12723,13 @@ snapshots:
 
   "@types/prop-types@15.7.14": {}
 
+  "@types/react-datepicker@7.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)":
+    dependencies:
+      react-datepicker: 8.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+    transitivePeerDependencies:
+      - react
+      - react-dom
+
   "@types/react-dom@18.3.5(@types/react@18.3.18)":
     dependencies:
       "@types/react": 18.3.18
@@ -13292,6 +13405,8 @@ snapshots:
       call-bound: 1.0.3
       es-errors: 1.3.0
       is-data-view: 1.0.2
+
+  date-fns@4.1.0: {}
 
   dc-polyfill@0.1.6: {}
 
@@ -16001,6 +16116,8 @@ snapshots:
 
   nanoid@3.3.8: {}
 
+  nanoid@5.1.2: {}
+
   natural-compare@1.4.0: {}
 
   next-auth@4.24.11(@auth/core@0.37.4)(next@14.2.13(@babel/core@7.26.9)(@opentelemetry/api@1.8.0)(@playwright/test@1.50.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
@@ -16526,6 +16643,14 @@ snapshots:
 
   react-calendly@4.3.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
+  react-datepicker@8.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      "@floating-ui/react": 0.27.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      clsx: 2.1.1
+      date-fns: 4.1.0
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
@@ -17129,6 +17254,8 @@ snapshots:
       picocolors: 1.1.1
 
   symbol-tree@3.2.4: {}
+
+  tabbable@6.2.0: {}
 
   tailwind-merge@2.6.0: {}
 

@@ -74,10 +74,10 @@ Requirements:
 - No explanations or commentary
 - No markdown formatting
 - No "Here's a post" or similar prefixes
-- Include "${pageContext.url}" as the URL for any call to action
+- Replace any URL placeholders like [YourArticleLinkHere] or [URL] with "${pageContext.url}"
 - For LinkedIn: Only plain text with line breaks
 - For Twitter: Plain text, max 280 characters
-- Always include the URL in the post`;
+- Always include "${pageContext.url}" as the URL for any call to action`;
 
       const platformPreview = await openai.chat.completions.create({
         model: "gpt-4-turbo-preview",
@@ -93,13 +93,17 @@ ${
 - Plain text only
 - Include relevant hashtags
 - Always include "${pageContext.url}" in the post
-- Place URL where it makes most sense (typically at end)`
+- Place URL where it makes most sense (typically at end)
+- NEVER use placeholders like [YourArticleLinkHere] or [URL] - always use the actual URL "${pageContext.url}"
+- Do not include any text in square brackets []`
     : `- Plain text only
 - Use line breaks for paragraphs
 - No markdown or bullet points
 - Always include "${pageContext.url}" in the post
 - Place URL where it makes most sense (typically after the main content)
-- Include relevant hashtags at the end`
+- Include relevant hashtags at the end
+- NEVER use placeholders like [YourArticleLinkHere] or [URL] - always use the actual URL "${pageContext.url}"
+- Do not include any text in square brackets []`
 }`,
           },
           {
@@ -167,106 +171,147 @@ export async function POST(request: Request) {
       );
     }
 
-    const body = await request.json();
-    const { message, pageContext, platforms, conversation } = body as {
-      message: string;
-      pageContext: PageContext;
-      platforms: string[];
-      conversation: Message[];
-    };
+    const {
+      message,
+      pageContext,
+      platforms,
+      conversation,
+      generateDistinctContent,
+    } = await request.json();
 
     // Validate required fields
-    if (!message || !pageContext || !platforms || !conversation) {
+    if (!message) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "Message is required" },
+        { status: 400 },
+      );
+    }
+    if (!platforms || !Array.isArray(platforms) || platforms.length === 0) {
+      return NextResponse.json(
+        { error: "Valid platforms array is required" },
+        { status: 400 },
+      );
+    }
+    if (!pageContext || !pageContext.title) {
+      return NextResponse.json(
+        { error: "Page context with title is required" },
         { status: 400 },
       );
     }
 
-    // Analyze user intent
-    const intent = await analyzeUserIntent(message);
+    const previews: Record<string, string> = {};
 
-    // Build system message with context and platform-specific instructions
-    const systemMessage = `You are an AI marketing assistant helping to create social media posts. 
-You have access to the following page context:
+    for (const platform of platforms) {
+      try {
+        let systemPrompt = "";
+        let userPrompt = message;
 
-Title: ${pageContext.title}
-Description: ${pageContext.description}
-URL: ${pageContext.url}
-${pageContext.content ? `Content: ${pageContext.content.substring(0, 500)}...` : ""}
+        if (platform === "twitter") {
+          systemPrompt = `You are a social media expert specializing in Twitter. Your task is to help create engaging tweets that drive traffic and engagement.
 
-Your task is to help create engaging social media posts optimized for ${platforms[0]}.
+Key requirements:
+1. Keep tweets within 280 characters
+2. Focus on clarity, impact, and call-to-action
+3. ALWAYS use the exact URL "${pageContext.url}" - never use placeholders like [link], [url], or similar
+4. Place the URL naturally in the tweet, typically at the end
+5. Include relevant hashtags after the URL
 
-Platform-specific formatting guidelines:
+Example format:
+"Your engaging tweet content ${pageContext.url} #Hashtag1 #Hashtag2"`;
+        } else if (platform === "linkedin") {
+          systemPrompt = `You are a social media expert specializing in LinkedIn. Your task is to help create professional and engaging LinkedIn posts that resonate with a business audience. Focus on value proposition, industry insights, and professional tone.`;
+        } else if (platform === "hackernews") {
+          systemPrompt = `You are an expert at crafting Hacker News titles that resonate with the HN community. Your task is to help create titles that are:
+1. Factual and accurate - no clickbait or sensationalism
+2. Concise but descriptive
+3. Technical when appropriate
+4. Focused on what's intellectually interesting
+5. Written in HN's characteristic direct style
 
-For Twitter:
-- Maximum 280 characters
-- Use plain text only (no markdown)
-- URLs are automatically shortened
-- Hashtags using # (use strategically, not excessively)
-- @mentions for relevant accounts
-- Emojis are supported
-- Line breaks are supported (use sparingly)
-- No bullet points or other formatting
+The current title will be provided. Help improve it while maintaining accuracy and HN's posting guidelines.
 
-For LinkedIn:
-- Plain text only (no markdown)
-- URLs are automatically linked
-- Hashtags using # (use professionally, typically at the end)
-- @mentions for companies/people
-- Emojis are supported (use professionally)
-- Line breaks for paragraphs (double line break)
-- No bullet points or other formatting
-- Keep paragraphs concise for readability
+IMPORTANT: Respond with ONLY the suggested title. No explanations or additional text.`;
+          userPrompt = `Current title: "${pageContext.title}"
+User request: ${message}
 
-When responding:
-1. Provide your suggestions and ideas in a conversational way
-2. When generating a post, provide it in exactly the format it would appear on the platform
-3. Do not use any markdown formatting
-4. Focus on the specific features and limitations of the selected platform
-5. If the user has edited a previous version, maintain their style while improving the content
+Remember to respond with ONLY the suggested title.`;
+        }
 
-Remember: Generate content exactly as it would appear on the platform - no markdown, no special formatting beyond what the platform natively supports.`;
+        const messages = [
+          { role: "system", content: systemPrompt },
+          ...conversation.map((msg: { role: string; content: string }) => ({
+            role: msg.role,
+            content: msg.content,
+          })),
+          { role: "user", content: userPrompt },
+        ];
 
-    // Prepare conversation history
-    const messages = [
-      { role: "system", content: systemMessage },
-      ...conversation.map((msg) => ({
-        role: msg.role,
-        content: msg.content,
-      })),
-    ];
+        const response = await openai.chat.completions.create({
+          model: "gpt-4-turbo-preview",
+          messages,
+          temperature: 0.7,
+          max_tokens: platform === "hackernews" ? 100 : 500,
+        });
 
-    // Call OpenAI API for main response
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4-turbo-preview",
-      messages: messages as Message[],
-      temperature: 0.7,
-      max_tokens: 1000,
-    });
+        let content = response.choices[0].message.content || "";
 
-    // Extract response
-    const aiResponse = completion.choices[0].message.content || "";
+        // Clean up any remaining placeholders or formatting
+        content = content
+          .replace(
+            /^(Here['']s|This is|I['']ve created|Here is|Suggested title:|Title:|Draft:|New title:)[^:]*/i,
+            "",
+          )
+          .replace(/^[:\s-]+/, "")
+          .replace(/^["'\s\n]+/, "")
+          .replace(/["'\s\n]+$/, "")
+          .replace(/\[link\]/gi, pageContext.url)
+          .replace(/\[url\]/gi, pageContext.url)
+          .replace(/\[.*?link.*?\]/gi, pageContext.url)
+          .trim();
 
-    // Generate platform-specific previews only if we're creating/editing a post
-    let previews: Record<string, string> = {};
-    if (intent.isGeneratingPost || intent.isEditing) {
-      previews = await generatePlatformPreviews(
-        platforms,
-        pageContext,
-        aiResponse,
-      );
+        // Ensure URL is included if it's not already
+        if (!content.includes(pageContext.url)) {
+          content =
+            platform === "twitter"
+              ? `${content.replace(/\s+#/g, ` ${pageContext.url} #`)}` // Insert URL before hashtags
+              : `${content}\n\nLearn more: ${pageContext.url}`;
+        }
+
+        previews[platform] = content;
+
+        if (!generateDistinctContent) {
+          // Use the first generated content for all platforms
+          const firstContent = Object.values(previews)[0];
+          platforms.forEach((p) => {
+            previews[p] = firstContent;
+          });
+          break;
+        }
+      } catch (error) {
+        console.error(`Error generating content for ${platform}:`, error);
+        throw new Error(
+          `Failed to generate content for ${platform}: ${error instanceof Error ? error.message : "Unknown error"}`,
+        );
+      }
     }
 
     return NextResponse.json({
-      response: aiResponse,
       previews,
-      intent,
+      response:
+        conversation.length > 0
+          ? previews[platforms[0]]
+          : "Generated content for all platforms.",
+      intent: { isGeneratingPost: true, isEditing: false, isAnalyzing: false },
     });
   } catch (error) {
     console.error("Error generating content:", error);
     return NextResponse.json(
-      { error: "Failed to generate content" },
+      {
+        error:
+          error instanceof Error ? error.message : "Failed to generate content",
+        response:
+          "Sorry, I encountered an error while generating content. Please try again.",
+      },
       { status: 500 },
     );
   }

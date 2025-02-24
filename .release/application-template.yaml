@@ -38,10 +38,9 @@ services:
     image: postgres:15-alpine
     volumes:
       - type: persistent
-        name: db-data
+        name: postgres-data
         mount_path: "/var/lib/postgresql/data"
-        storage:
-          size: 10Gi
+        size: 10Gi
     ports:
       - type: node_port
         target_port: "5432"

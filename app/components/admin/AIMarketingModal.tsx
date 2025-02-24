@@ -21,10 +21,11 @@ interface ModalState {
   conversations: {
     twitter: Array<{ role: "user" | "assistant"; content: string }>;
     linkedin: Array<{ role: "user" | "assistant"; content: string }>;
+    hackernews?: Array<{ role: "user" | "assistant"; content: string }>;
   };
   selectedPlatform: string | null;
   preview: { twitter?: string; linkedin?: string };
-  editedPreviews: { twitter?: string; linkedin?: string };
+  editedPreviews: { twitter?: string; linkedin?: string; hackernews?: string };
   isPreviewMode: boolean;
   versions: {
     twitter: Array<{
@@ -42,6 +43,7 @@ interface ModalState {
     twitter: Array<{ asset: string; displayUrl: string }>;
     linkedin: Array<{ asset: string; displayUrl: string }>;
   };
+  hnTitle?: string;
 }
 
 type MessageRole = "user" | "assistant";
@@ -104,12 +106,11 @@ export default function AIMarketingModal({
   const [isGenerating, setIsGenerating] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isImagesExpanded, setIsImagesExpanded] = useState(false);
-  const [lastSavedContent, setLastSavedContent] = useState<{
-    twitter?: string;
-    linkedin?: string;
-  }>({
+  const [isHNMode, setIsHNMode] = useState(false);
+  const [lastSavedContent, setLastSavedContent] = useState<EditedPreviews>({
     twitter: modalState.editedPreviews.twitter || "",
     linkedin: modalState.editedPreviews.linkedin || "",
+    hackernews: modalState.editedPreviews.hackernews || "",
   });
 
   const {
@@ -121,7 +122,10 @@ export default function AIMarketingModal({
     isPreviewMode,
     versions,
     imageAssets = { twitter: [], linkedin: [] },
+    hnTitle,
   } = modalState;
+
+  const currentPlatform = selectedPlatform as Platform | null;
 
   const currentConversation = useMemo(() => {
     return conversations[selectedPlatform as "twitter" | "linkedin"] || [];
@@ -144,16 +148,18 @@ export default function AIMarketingModal({
     });
   };
 
-  const handlePlatformSelect = (platform: string) => {
+  const handlePlatformSelect = (platform: Platform) => {
+    setIsHNMode(platform === "hackernews");
     updateModalState({
-      selectedPlatform: platform as Platform,
+      selectedPlatform: platform,
+      editedPreviews: {
+        ...editedPreviews,
+        [platform]: editedPreviews[platform] || "",
+      },
     });
   };
 
-  const handlePreviewEdit = (
-    platform: "twitter" | "linkedin",
-    content: string,
-  ) => {
+  const handlePreviewEdit = (platform: Platform, content: string) => {
     updateModalState({
       editedPreviews: {
         ...editedPreviews,
@@ -282,11 +288,10 @@ export default function AIMarketingModal({
     setIsGenerating(false);
   };
 
-  const handleVersionSelect = (
-    platform: "twitter" | "linkedin",
-    versionIndex: number,
-  ) => {
-    const selectedVersion = versions[platform][versionIndex];
+  const handleVersionSelect = (platform: Platform, versionIndex: number) => {
+    const selectedVersion = versions[platform]?.[versionIndex];
+    if (!selectedVersion) return;
+
     updateModalState({
       editedPreviews: {
         ...editedPreviews,
@@ -308,6 +313,81 @@ export default function AIMarketingModal({
       }));
     }
   }, [selectedPlatform, editedPreviews]);
+
+  const handleHNSubmit = async () => {
+    if (!message.trim() || isGenerating) return;
+
+    try {
+      setIsGenerating(true);
+
+      const newConversation = [
+        ...(modalState.conversations.hackernews || []),
+        { role: "user" as const, content: message },
+      ];
+
+      updateModalState({
+        conversations: {
+          ...conversations,
+          hackernews: newConversation,
+        },
+        message: "",
+      });
+
+      const response = await fetch("/api/admin/ai/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message,
+          pageContext,
+          platforms: ["hackernews"],
+          conversation: newConversation,
+          generateDistinctContent: true,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to generate title");
+      }
+
+      updateModalState({
+        conversations: {
+          ...conversations,
+          hackernews: [
+            ...newConversation,
+            { role: "assistant" as const, content: data.response },
+          ],
+        },
+        message: "",
+        editedPreviews: {
+          ...editedPreviews,
+          hackernews: data.previews?.hackernews || "",
+        },
+        hnTitle: data.previews?.hackernews || modalState.hnTitle,
+      });
+    } catch (error) {
+      console.error("Error generating HN title:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "An unknown error occurred";
+      updateModalState({
+        conversations: {
+          ...conversations,
+          hackernews: [
+            ...(modalState.conversations.hackernews || []),
+            {
+              role: "assistant" as const,
+              content: `Sorry, I encountered an error while generating the title: ${errorMessage}. Please try again.`,
+            },
+          ],
+        },
+        message: "",
+      });
+    }
+    setIsGenerating(false);
+  };
 
   const renderLinkedInContent = (content: string) => {
     if (!content) return null;
@@ -482,18 +562,26 @@ export default function AIMarketingModal({
   const handleSchedulePost = async (scheduledFor: Date) => {
     if (!selectedPlatform || !editedPreviews[selectedPlatform]) return;
 
-    if (
-      selectedPlatform === "twitter" &&
-      editedPreviews.twitter &&
-      calculateTwitterLength(editedPreviews.twitter) > 280
-    ) {
-      alert("Tweet is too long. Please shorten your message.");
+    if (!validateContent(selectedPlatform, editedPreviews[selectedPlatform])) {
+      alert(
+        "Content is too long for the selected platform. Please shorten your message.",
+      );
       return;
     }
 
-    setPendingScheduleTime(scheduledFor);
-    setIsScheduleDialogOpen(false);
+    // For immediate posts ("Post Now"), add a small buffer to avoid validation issues
+    const isImmediate = scheduledFor.getTime() <= Date.now();
+    const adjustedScheduledFor = isImmediate
+      ? new Date(Date.now() + 5000)
+      : scheduledFor;
+
+    // Show confirmation dialog
+    setPendingScheduleTime(adjustedScheduledFor);
     setIsConfirmationDialogOpen(true);
+    setIsScheduleDialogOpen(false);
+    return;
+
+    // Note: The actual posting logic is now handled in handleConfirmPost
   };
 
   const handleImageUpload = async (
@@ -568,6 +656,33 @@ export default function AIMarketingModal({
       return;
 
     try {
+      if (selectedPlatform === "hackernews") {
+        // Schedule HN reminder
+        const response = await fetch("/api/admin/schedule-hn-reminder", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            title: editedPreviews[selectedPlatform],
+            url: pageContext.url,
+            scheduledFor: pendingScheduleTime.toISOString(),
+          }),
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || "Failed to schedule reminder");
+        }
+
+        alert("Hacker News reminder scheduled successfully!");
+        setIsConfirmationDialogOpen(false);
+        setPendingScheduleTime(null);
+        return;
+      }
+
+      // Handle Twitter/LinkedIn posts
       const account = accounts.find((acc) => acc.provider === selectedPlatform);
       if (!account) return;
 
@@ -609,6 +724,13 @@ export default function AIMarketingModal({
     }
   };
 
+  const handlePostNow = () => {
+    // Use current time plus 5 seconds for immediate posts to avoid validation issues
+    const scheduledFor = new Date(Date.now() + 5000);
+    handleSchedulePost(scheduledFor);
+    onClose();
+  };
+
   const setIsSidebarOpen = useSidebarStore((state) => state.setIsOpen);
 
   useEffect(() => {
@@ -633,38 +755,43 @@ export default function AIMarketingModal({
             </div>
             <div className="h-4 w-px bg-gray-600/20" />
             <div className="flex gap-1">
-              {accounts.map((account) => (
-                <button
-                  key={account.id}
-                  onClick={() => handlePlatformSelect(account.provider)}
-                  className={`p-1 rounded flex items-center ${
-                    selectedPlatform === account.provider
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-700/50 text-gray-300 hover:bg-gray-700"
-                  }`}
-                >
-                  {account.provider === "twitter" ? (
-                    <svg
-                      className="w-4 h-4"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                    </svg>
-                  ) : (
-                    <svg
-                      className="w-4 h-4"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M20.47 2H3.53a1.45 1.45 0 0 0-1.47 1.43v17.14A1.45 1.45 0 0 0 3.53 22h16.94a1.45 1.45 0 0 0 1.47-1.43V3.43A1.45 1.45 0 0 0 20.47 2ZM8.09 18.74h-3v-9h3ZM6.59 8.48a1.56 1.56 0 1 1 0-3.12 1.57 1.57 0 1 1 0 3.12Zm12.32 10.26h-3v-4.83c0-1.21-.43-2-1.52-2A1.65 1.65 0 0 0 12.85 13a2 2 0 0 0-.1.73v5h-3v-9h3V11a3 3 0 0 1 2.71-1.5c2 0 3.45 1.29 3.45 4.06Z" />
-                    </svg>
-                  )}
-                </button>
-              ))}
+              {accounts.map((account) => {
+                const platform = account.provider as Platform;
+                return (
+                  <button
+                    key={account.id}
+                    type="button"
+                    onClick={() => {
+                      handlePlatformSelect(platform);
+                    }}
+                    className={`p-1 rounded flex items-center ${
+                      selectedPlatform === platform && !isHNMode
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-700/50 text-gray-300 hover:bg-gray-700"
+                    }`}
+                  >
+                    <PlatformIcon platform={platform} />
+                  </button>
+                );
+              })}
+              <button
+                type="button"
+                onClick={() => {
+                  handlePlatformSelect("hackernews");
+                }}
+                className={`p-1 rounded flex items-center ${
+                  selectedPlatform === "hackernews"
+                    ? "bg-orange-600 text-white"
+                    : "bg-gray-700/50 text-orange-500 hover:bg-gray-700"
+                }`}
+                title="Generate Hacker News Title"
+              >
+                <PlatformIcon platform="hackernews" />
+              </button>
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
             className="text-gray-400 hover:text-gray-300 p-1 rounded-lg hover:bg-gray-700/50"
           >
@@ -686,16 +813,11 @@ export default function AIMarketingModal({
 
         {/* Main content area */}
         <div className="flex flex-col flex-1 overflow-hidden">
-          {selectedPlatform && (
+          {isHNMode ? (
             <>
               <PreviewSection
-                selectedPlatform={selectedPlatform}
-                editedPreviews={
-                  {
-                    twitter: editedPreviews.twitter || "",
-                    linkedin: editedPreviews.linkedin || "",
-                  } as EditedPreviews
-                }
+                selectedPlatform="hackernews"
+                editedPreviews={editedPreviews}
                 versions={versions}
                 isPreviewMode={isPreviewMode}
                 imageAssets={imageAssets}
@@ -709,28 +831,52 @@ export default function AIMarketingModal({
                 onImageUpload={handleImageUpload}
                 onImageRemove={handleRemoveImage}
               />
-
-              {/* Visual separator */}
-              <div className="py-4 px-3">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent blur-[1px]" />
-                  <div className="relative h-px bg-gradient-to-r from-transparent via-indigo-500/60 to-transparent" />
-                  <div className="relative h-px mt-[2px] bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
-                </div>
-              </div>
+              <ChatSection
+                message={message}
+                conversations={{
+                  ...conversations,
+                  current: conversations.hackernews || [],
+                }}
+                selectedPlatform="hackernews"
+                isGenerating={isGenerating}
+                onMessageChange={(newMessage) =>
+                  updateModalState({ message: newMessage })
+                }
+                onSubmit={handleHNSubmit}
+              />
+            </>
+          ) : (
+            <>
+              {selectedPlatform && (
+                <PreviewSection
+                  selectedPlatform={selectedPlatform}
+                  editedPreviews={editedPreviews}
+                  versions={versions}
+                  isPreviewMode={isPreviewMode}
+                  imageAssets={imageAssets}
+                  pageContext={pageContext}
+                  onPreviewEdit={handlePreviewEdit}
+                  onVersionSelect={handleVersionSelect}
+                  onSaveVersion={handleSaveVersion}
+                  onTogglePreviewMode={togglePreviewMode}
+                  onSchedule={() => setIsScheduleDialogOpen(true)}
+                  isUploading={isUploading}
+                  onImageUpload={handleImageUpload}
+                  onImageRemove={handleRemoveImage}
+                />
+              )}
+              <ChatSection
+                message={message}
+                conversations={conversations}
+                selectedPlatform={selectedPlatform}
+                isGenerating={isGenerating}
+                onMessageChange={(newMessage) =>
+                  updateModalState({ message: newMessage })
+                }
+                onSubmit={handleSubmit}
+              />
             </>
           )}
-
-          <ChatSection
-            message={message}
-            conversations={conversations}
-            selectedPlatform={selectedPlatform}
-            isGenerating={isGenerating}
-            onMessageChange={(newMessage) =>
-              updateModalState({ message: newMessage })
-            }
-            onSubmit={handleSubmit}
-          />
         </div>
       </div>
 

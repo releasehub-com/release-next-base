@@ -95,7 +95,8 @@ ENV POSTGRES_URL="" \
     LINKEDIN_CLIENT_ID="" \
     LINKEDIN_CLIENT_SECRET="" \
     OPENAI_API_KEY="" \
-    POST_WORKER_API_KEY=""
+    POST_WORKER_API_KEY="" \
+    SLACK_WEBHOOK_URL=""
 
 # Set URL-related variables from the build arg
 ARG NEXT_PUBLIC_APP_BASE_URL

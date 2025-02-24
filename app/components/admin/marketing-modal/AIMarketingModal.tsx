@@ -9,6 +9,7 @@ import { PreviewSection } from "./PreviewSection";
 import { ChatSection } from "./ChatSection";
 import { PlatformIcon } from "./platforms/PlatformIcon";
 import { validateContent } from "./platforms/validation";
+import { useSession } from "next-auth/react";
 
 export default function AIMarketingModal({
   isOpen,
@@ -18,6 +19,7 @@ export default function AIMarketingModal({
   modalState,
   onModalStateChange,
 }: AIMarketingModalProps) {
+  const { data: session } = useSession();
   const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
   const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] =
     useState(false);
@@ -29,6 +31,7 @@ export default function AIMarketingModal({
   const [lastSavedContent, setLastSavedContent] = useState<EditedPreviews>({
     twitter: modalState.editedPreviews.twitter || "",
     linkedin: modalState.editedPreviews.linkedin || "",
+    hackernews: modalState.editedPreviews.hackernews || "",
   });
 
   const {
@@ -209,16 +212,42 @@ export default function AIMarketingModal({
   const handleSchedulePost = async (scheduledFor: Date) => {
     if (!selectedPlatform || !editedPreviews[selectedPlatform]) return;
 
-    if (!validateContent(selectedPlatform, editedPreviews[selectedPlatform])) {
-      alert(
-        "Content is too long for the selected platform. Please shorten your message.",
-      );
-      return;
-    }
+    // Convert local time to UTC for storage
+    const scheduledForUTC = new Date(scheduledFor.toISOString());
 
-    setPendingScheduleTime(scheduledFor);
-    setIsScheduleDialogOpen(false);
-    setIsConfirmationDialogOpen(true);
+    const content = editedPreviews[selectedPlatform];
+    const socialAccountId = accounts.find(
+      (a) => a.provider === selectedPlatform,
+    )?.id;
+
+    try {
+      const response = await fetch("/api/admin/schedule-post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          content,
+          socialAccountId,
+          scheduledFor: scheduledForUTC,
+          imageAssets: imageAssets[selectedPlatform],
+          metadata: {
+            platform: selectedPlatform,
+            imageAssets: imageAssets[selectedPlatform],
+            scheduledInTimezone:
+              session?.user?.timezone || "America/Los_Angeles",
+            userEmail: session?.user?.email,
+            userName: session?.user?.name,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to schedule post");
+      }
+
+      onClose();
+    } catch (error) {
+      console.error("Error scheduling post:", error);
+    }
   };
 
   const handleImageUpload = async (

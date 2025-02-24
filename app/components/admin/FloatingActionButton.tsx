@@ -49,14 +49,25 @@ export default function FloatingActionButton() {
           content: `Hi! I'm your AI marketing assistant. I can help you create LinkedIn posts about this page.\n\nLet me know what kind of post you'd like to create.`,
         },
       ],
+      hackernews: [
+        {
+          role: "assistant",
+          content: `Hi! I'm your AI marketing assistant. I can help you create a Hacker News title for this page.\n\nLet me know what kind of title you'd like to create.`,
+        },
+      ],
     },
     selectedPlatform: null,
     preview: {},
-    editedPreviews: {},
+    editedPreviews: {
+      twitter: "",
+      linkedin: "",
+      hackernews: "",
+    },
     isPreviewMode: false,
     versions: {
       twitter: [],
       linkedin: [],
+      hackernews: [],
     },
     imageAssets: {
       twitter: [],
@@ -111,14 +122,25 @@ export default function FloatingActionButton() {
                 content: `Hi! I'm your AI marketing assistant. I can help you create LinkedIn posts about this page:\n\n${newContext.title}\n\nLet me know what kind of post you'd like to create.`,
               },
             ],
+            hackernews: [
+              {
+                role: "assistant",
+                content: `Hi! I'm your AI marketing assistant. I can help you create a Hacker News title for this page:\n\n${newContext.title}\n\nLet me know what kind of title you'd like to create.`,
+              },
+            ],
           },
           selectedPlatform: (accounts[0]?.provider as Platform) || null,
           preview: {},
-          editedPreviews: {},
+          editedPreviews: {
+            twitter: "",
+            linkedin: "",
+            hackernews: "",
+          },
           isPreviewMode: false,
           versions: {
             twitter: [],
             linkedin: [],
+            hackernews: [],
           },
           imageAssets: {
             twitter: [],

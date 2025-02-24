@@ -7,13 +7,15 @@ if (!process.env.POSTGRES_URL) {
   throw new Error("POSTGRES_URL environment variable is required");
 }
 
+// @ts-ignore drizzle-kit types are incorrect for postgres driver
 export default {
   schema: "./lib/db/schema.ts",
   out: "./lib/db/migrations",
-  breakpoints: true,
-  // @ts-ignore
   driver: "pg",
+  dialect: "postgresql",
   dbCredentials: {
-    connectionString: process.env.POSTGRES_URL,
-  } as any,
-} satisfies Config;
+    connectionString:
+      process.env.POSTGRES_URL ||
+      "postgres://postgres:postgres@localhost:5432/release_landing",
+  },
+};

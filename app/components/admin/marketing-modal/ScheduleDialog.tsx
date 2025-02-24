@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { useSession } from "next-auth/react";
 import type { ScheduleDialogProps } from "./types";
 
 export function ScheduleDialog({
@@ -9,34 +12,37 @@ export function ScheduleDialog({
   onConfirm,
   platform,
 }: ScheduleDialogProps) {
-  const [selectedDate, setSelectedDate] = useState<string>("");
-  const [selectedTime, setSelectedTime] = useState<string>("");
+  const { data: session } = useSession();
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [error, setError] = useState<string>("");
 
   const handleSchedule = () => {
-    if (!selectedDate || !selectedTime) {
-      setError("Please select both date and time");
+    if (!selectedDate) {
+      setError("Please select a date and time");
       return;
     }
 
-    const scheduledDateTime = new Date(`${selectedDate}T${selectedTime}`);
-    if (scheduledDateTime <= new Date()) {
+    if (selectedDate <= new Date()) {
       setError("Selected time must be in the future");
       return;
     }
 
-    onConfirm(scheduledDateTime);
+    onConfirm(selectedDate);
     onClose();
   };
 
   const handlePostNow = () => {
-    // Schedule for 1 minute in the future to pass validation
-    const scheduledFor = new Date(Date.now() + 60000);
+    // Use current time plus 5 seconds for immediate posts
+    const scheduledFor = new Date(Date.now() + 5000);
     onConfirm(scheduledFor);
     onClose();
   };
 
   if (!isOpen) return null;
+
+  const userTimezone = session?.user?.timezone || "America/Los_Angeles";
+  const minDate = new Date();
+  minDate.setMinutes(minDate.getMinutes() + 1); // Minimum 1 minute in the future
 
   return (
     <div className="fixed inset-0 z-[60] overflow-y-auto">
@@ -60,31 +66,28 @@ export function ScheduleDialog({
 
           <div className="border-t border-gray-700 pt-6">
             <h4 className="text-sm font-medium text-gray-300 mb-4">
-              Schedule for later
+              Schedule for later ({userTimezone})
             </h4>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
-                  Date
-                </label>
-                <input
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
+                <DatePicker
+                  selected={selectedDate}
+                  onChange={(date: Date) => {
+                    setSelectedDate(date);
+                    setError("");
+                  }}
+                  showTimeSelect
+                  timeFormat="h:mm aa"
+                  timeIntervals={15}
+                  dateFormat="MMMM d, yyyy h:mm aa"
+                  minDate={minDate}
+                  placeholderText="Select date and time"
                   className="w-full bg-gray-700 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  min={new Date().toISOString().split("T")[0]}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
-                  Time
-                </label>
-                <input
-                  type="time"
-                  value={selectedTime}
-                  onChange={(e) => setSelectedTime(e.target.value)}
-                  className="w-full bg-gray-700 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  calendarClassName="bg-gray-800 border-gray-700 text-white"
+                  popperClassName="react-datepicker-popper"
+                  timeCaption="Time"
+                  wrapperClassName="w-full"
+                  showPopperArrow={false}
                 />
               </div>
             </div>
@@ -98,7 +101,7 @@ export function ScheduleDialog({
               </button>
               <button
                 onClick={handleSchedule}
-                disabled={!selectedDate || !selectedTime}
+                disabled={!selectedDate}
                 className="px-4 py-2 text-sm rounded-md bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Schedule

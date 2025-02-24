@@ -3,7 +3,7 @@
 import { Platform } from "../types";
 
 interface PlatformIconProps {
-  platform: Platform;
+  platform: Platform | "hackernews";
   className?: string;
 }
 
@@ -15,6 +15,14 @@ export function PlatformIcon({
     return (
       <svg className={className} fill="currentColor" viewBox="0 0 24 24">
         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+      </svg>
+    );
+  }
+
+  if (platform === "hackernews") {
+    return (
+      <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+        <path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z" />
       </svg>
     );
   }

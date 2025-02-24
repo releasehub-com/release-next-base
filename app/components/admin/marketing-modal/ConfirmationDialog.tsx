@@ -3,6 +3,7 @@
 import type { ConfirmationDialogProps } from "./types";
 import { TwitterContent } from "./platforms/TwitterContent";
 import { LinkedInContent } from "./platforms/LinkedInContent";
+import { HackerNewsContent } from "./platforms/HackerNewsContent";
 
 export function ConfirmationDialog({
   isOpen,
@@ -21,6 +22,14 @@ export function ConfirmationDialog({
     dateStyle: "medium",
     timeStyle: "short",
   });
+
+  const handleConfirm = () => {
+    // Add 5 seconds to the scheduled time for immediate posts to avoid validation issues
+    const adjustedTime = isScheduled
+      ? scheduledTime
+      : new Date(Date.now() + 5000);
+    onConfirm(adjustedTime);
+  };
 
   return (
     <div className="fixed inset-0 z-[60] overflow-y-auto">
@@ -63,14 +72,20 @@ export function ConfirmationDialog({
                 pageContext={pageContext}
                 isPreview
               />
-            ) : (
+            ) : platform === "linkedin" ? (
               <LinkedInContent
                 content={content}
                 imageAssets={imageAssets.linkedin || []}
                 pageContext={pageContext}
                 isPreview
               />
-            )}
+            ) : platform === "hackernews" ? (
+              <HackerNewsContent
+                content={content}
+                pageContext={pageContext}
+                isPreview
+              />
+            ) : null}
 
             <div className="text-sm text-gray-300">
               {isScheduled
@@ -86,7 +101,7 @@ export function ConfirmationDialog({
                 Cancel
               </button>
               <button
-                onClick={onConfirm}
+                onClick={handleConfirm}
                 className="px-4 py-2 text-sm rounded-md bg-indigo-600 text-white hover:bg-indigo-700"
               >
                 {isScheduled ? "Schedule" : "Post Now"}

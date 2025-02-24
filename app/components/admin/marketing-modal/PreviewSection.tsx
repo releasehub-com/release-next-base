@@ -4,6 +4,8 @@ import { TwitterContent } from "./platforms/TwitterContent";
 import { LinkedInContent } from "./platforms/LinkedInContent";
 import { TwitterEditor } from "./platforms/TwitterEditor";
 import { LinkedInEditor } from "./platforms/LinkedInEditor";
+import { HackerNewsContent } from "./platforms/HackerNewsContent";
+import { HackerNewsEditor } from "./platforms/HackerNewsEditor";
 import type {
   Platform,
   EditedPreviews,
@@ -45,7 +47,7 @@ export function PreviewSection({
   onImageUpload,
   onImageRemove,
 }: PreviewSectionProps) {
-  const content = editedPreviews[selectedPlatform];
+  const content = editedPreviews[selectedPlatform] || "";
   const platformVersions = versions[selectedPlatform] || [];
 
   return (
@@ -93,9 +95,15 @@ export function PreviewSection({
                 <div className="flex items-center space-x-1.5">
                   <button
                     onClick={onSchedule}
-                    className="px-2 py-0.5 text-xs rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                    className={`px-2 py-0.5 text-xs rounded text-white transition-colors ${
+                      selectedPlatform === "hackernews"
+                        ? "bg-orange-600 hover:bg-orange-700"
+                        : "bg-blue-600 hover:bg-blue-700"
+                    }`}
                   >
-                    Schedule
+                    {selectedPlatform === "hackernews"
+                      ? "Schedule Reminder"
+                      : "Schedule"}
                   </button>
                 </div>
               )}
@@ -129,6 +137,21 @@ export function PreviewSection({
               }
               onImageUpload={onImageUpload}
               onImageRemove={(index) => onImageRemove(selectedPlatform, index)}
+            />
+          )
+        ) : selectedPlatform === "hackernews" ? (
+          isPreviewMode ? (
+            <HackerNewsContent
+              content={content}
+              pageContext={pageContext}
+              isPreview
+            />
+          ) : (
+            <HackerNewsEditor
+              content={content}
+              onContentChange={(content) =>
+                onPreviewEdit(selectedPlatform, content)
+              }
             />
           )
         ) : isPreviewMode ? (

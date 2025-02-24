@@ -1,17 +1,35 @@
 import type { SocialAccount } from "@/lib/db/schema";
 
 export type MessageRole = "user" | "assistant";
-export type Platform = "twitter" | "linkedin";
+
+export type Message = {
+  role: MessageRole;
+  content: string;
+};
+
+export type Platform = "twitter" | "linkedin" | "hackernews";
+
+export type Conversations = {
+  twitter: Array<Message>;
+  linkedin: Array<Message>;
+  hackernews: Array<Message>;
+  current?: Array<Message>;
+};
 
 export interface ModalState {
   message: string;
   conversations: {
     twitter: Array<{ role: MessageRole; content: string }>;
     linkedin: Array<{ role: MessageRole; content: string }>;
+    hackernews: Array<{ role: MessageRole; content: string }>;
   };
   selectedPlatform: Platform | null;
-  preview: { twitter?: string; linkedin?: string };
-  editedPreviews: { twitter?: string; linkedin?: string };
+  preview: {
+    twitter?: string;
+    linkedin?: string;
+    hackernews?: string;
+  };
+  editedPreviews: EditedPreviews;
   isPreviewMode: boolean;
   versions: {
     twitter: Array<{
@@ -24,11 +42,17 @@ export interface ModalState {
       timestamp: number;
       source: "ai" | "user";
     }>;
+    hackernews: Array<{
+      content: string;
+      timestamp: number;
+      source: "ai" | "user";
+    }>;
   };
   imageAssets: {
     twitter: Array<{ asset: string; displayUrl: string }>;
     linkedin: Array<{ asset: string; displayUrl: string }>;
   };
+  hnTitle?: string;
 }
 
 export interface PageContext {
@@ -56,11 +80,13 @@ export interface Version {
 export interface Versions {
   twitter: Version[];
   linkedin: Version[];
+  hackernews: Version[];
 }
 
 export interface EditedPreviews {
   twitter: string;
   linkedin: string;
+  hackernews: string;
 }
 
 export interface PreviewSectionProps {
@@ -70,6 +96,14 @@ export interface PreviewSectionProps {
   isPreviewMode: boolean;
   imageAssets: ImageAssets;
   pageContext: PageContext;
+  onPreviewEdit: (platform: Platform, content: string) => void;
+  onVersionSelect: (platform: Platform, versionIndex: number) => void;
+  onSaveVersion: (platform: Platform) => void;
+  onTogglePreviewMode: () => void;
+  onSchedule: () => void;
+  isUploading: boolean;
+  onImageUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onImageRemove: (platform: Platform, index: number) => void;
 }
 
 export interface PlatformContentProps {
@@ -91,12 +125,15 @@ export interface PlatformEditorProps {
 export interface ConfirmationDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: (scheduledTime: Date) => void | Promise<void>;
   content: string;
   platform: Platform;
   scheduledTime: Date;
   pageContext: PageContext;
-  imageAssets: ImageAssets;
+  imageAssets: {
+    twitter?: ImageAsset[];
+    linkedin?: ImageAsset[];
+  };
 }
 
 export interface ScheduleDialogProps {
@@ -109,7 +146,7 @@ export interface ScheduleDialogProps {
 
 export interface ChatSectionProps {
   message: string;
-  conversations: ModalState["conversations"];
+  conversations: Conversations;
   selectedPlatform: Platform | null;
   isGenerating: boolean;
   onMessageChange: (message: string) => void;
