@@ -53,14 +53,14 @@ export async function GET() {
 
     // Store code verifier in a cookie
     const cookieStore = cookies();
-    
+
     // Clear any existing Twitter cookies to prevent session reuse
     cookieStore.delete("twitter_oauth_token");
     cookieStore.delete("twitter_oauth_token_secret");
     cookieStore.delete("twitter_state_v1");
     cookieStore.delete("twitter_oauth_token_secret_v1");
     cookieStore.delete("twitter_code_verifier");
-    
+
     // Set new code verifier
     cookieStore.set("twitter_code_verifier", verifier, {
       httpOnly: true,
@@ -79,10 +79,10 @@ export async function GET() {
     authUrl.searchParams.append("state", state);
     authUrl.searchParams.append("code_challenge", challenge);
     authUrl.searchParams.append("code_challenge_method", "S256");
-    
+
     // Force Twitter to show the account selection screen
     authUrl.searchParams.append("force_login", "true");
-    
+
     // Add a timestamp to prevent caching
     authUrl.searchParams.append("_", Date.now().toString());
 

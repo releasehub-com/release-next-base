@@ -1,5 +1,5 @@
 import type { Platform } from "../types";
-import type { PageContext } from "../types";
+import type { PageContext, ModalState } from "../types";
 
 interface AIResponse {
   response: string;
@@ -31,12 +31,16 @@ interface ModalStateUpdates {
 
 // Platform-specific prompt generators
 export const platformPrompts = {
-  hackernews: (message: string, currentPreview: string = "", pageContext?: PageContext) => {
+  hackernews: (
+    message: string,
+    currentPreview: string = "",
+    pageContext?: PageContext,
+  ) => {
     console.log("\n=== HackerNews Prompt Generation ===");
     console.log("Input message:", message);
     console.log("Current preview:", currentPreview);
     console.log("Page context:", pageContext);
-    
+
     const prompt = `${message}\n\nPlease generate a Hacker News title for this article. Your response must be in exactly this format:
 1. First line: A clear, concise title (max 80 characters, no URLs)
 2. One blank line
@@ -61,7 +65,11 @@ Do not include any other text or formatting.`;
   twitter: (message: string, currentPreview: string = "") =>
     `${message}${currentPreview ? `\n\nCurrent Twitter post:\n${currentPreview}` : ""}`,
 
-  linkedin: (message: string, currentPreview: string = "", pageContext?: PageContext) => {
+  linkedin: (
+    message: string,
+    currentPreview: string = "",
+    pageContext?: PageContext,
+  ) => {
     const prompt = `${message}\n\nPlease generate a LinkedIn post for this article. Your response must be ONLY the post content, with no additional formatting, explanations, or context.
 
 Current article URL: ${pageContext?.url || ""}
@@ -79,39 +87,39 @@ export const platformProcessors = {
   hackernews: {
     processAIResponse: (
       data: AIResponse,
-      currentState: any,
-      pageContext: PageContext
+      currentState: ModalState,
+      pageContext: PageContext,
     ): Partial<ModalStateUpdates> => {
       console.log("\n=== HackerNews AI Response Processing ===");
       console.log("Full data object:", data);
       console.log("Current state:", {
         editedPreviews: currentState.editedPreviews,
         preview: currentState.preview,
-        hackernewsUrl: currentState.hackernewsUrl
+        hackernewsUrl: currentState.hackernewsUrl,
       });
       console.log("Page context:", pageContext);
-      
+
       // For HackerNews, we want to use data.response as it contains both title and URL
       const content = data.response || data.previews?.hackernews;
       console.log("\nProcessing content:", content);
-      
+
       if (!content) {
         console.log("No content found in response or previews");
         return {};
       }
-      
+
       // Split on the exact "Learn more: " format first
       const parts = content.split("\n\nLearn more: ");
       console.log("\nSplit result:", parts);
-      
+
       if (parts.length === 2) {
         const title = parts[0].trim();
         const url = parts[1].trim();
-        
+
         console.log("\nExact format match found:");
         console.log("Title:", title);
         console.log("URL:", url);
-        
+
         const updates = {
           editedPreviews: {
             ...currentState.editedPreviews,
@@ -127,21 +135,21 @@ export const platformProcessors = {
               {
                 content: `${title}\n\nLearn more: ${url}`,
                 timestamp: Date.now(),
-                source: "ai"
+                source: "ai" as "ai" | "user",
               },
               ...currentState.versions.hackernews,
             ],
           },
           hackernewsUrl: url,
         };
-        
+
         console.log("\nReturning updates:", updates);
         console.log("=== End Processing ===\n");
         return updates;
       }
-      
+
       console.log("\nExact format not found, trying alternatives...");
-      
+
       // Fallback to other formats if the exact format isn't found
       const learnMoreFormats = [
         "\nLearn more: ",
@@ -150,17 +158,17 @@ export const platformProcessors = {
         "\n\nRead more: ",
         "\nRead more: ",
         "Read more: ",
-        "Read More: "
+        "Read More: ",
       ];
-      
+
       for (const format of learnMoreFormats) {
         console.log("\nTrying format:", format);
         if (content.includes(format)) {
           console.log("Format found in content");
-          const [title, url] = content.split(format).map(s => s.trim());
+          const [title, url] = content.split(format).map((s) => s.trim());
           console.log("Split result - Title:", title);
           console.log("Split result - URL:", url);
-          
+
           if (title && url) {
             const updates = {
               editedPreviews: {
@@ -177,15 +185,18 @@ export const platformProcessors = {
                   {
                     content: `${title}\n\nLearn more: ${url}`,
                     timestamp: Date.now(),
-                    source: "ai"
+                    source: "ai" as "ai" | "user",
                   },
                   ...currentState.versions.hackernews,
                 ],
               },
               hackernewsUrl: url,
             };
-            
-            console.log("\nReturning updates from alternative format:", updates);
+
+            console.log(
+              "\nReturning updates from alternative format:",
+              updates,
+            );
             console.log("=== End Processing ===\n");
             return updates;
           }
@@ -193,14 +204,14 @@ export const platformProcessors = {
       }
 
       console.log("\nNo format matched, using fallback...");
-      
+
       // If we still haven't found a URL, use the first line as title and pageContext URL
-      const firstLine = content.split('\n')[0].trim();
+      const firstLine = content.split("\n")[0].trim();
       const url = pageContext?.url || "";
-      
+
       console.log("Fallback title:", firstLine);
       console.log("Fallback URL:", url);
-      
+
       const fallbackUpdates = {
         editedPreviews: {
           ...currentState.editedPreviews,
@@ -216,14 +227,14 @@ export const platformProcessors = {
             {
               content: `${firstLine}\n\nLearn more: ${url}`,
               timestamp: Date.now(),
-              source: "ai"
+              source: "ai" as "ai" | "user",
             },
             ...currentState.versions.hackernews,
           ],
         },
         hackernewsUrl: url,
       };
-      
+
       console.log("\nReturning fallback updates:", fallbackUpdates);
       console.log("=== End Processing ===\n");
       return fallbackUpdates;
@@ -231,7 +242,7 @@ export const platformProcessors = {
 
     processVersionSelect: (
       versionContent: string,
-      currentState: any
+      currentState: ModalState,
     ): Partial<ModalStateUpdates> => {
       const learnMoreFormats = [
         "\n\nLearn more: ",
@@ -241,12 +252,12 @@ export const platformProcessors = {
         "\n\nRead more: ",
         "\nRead more: ",
         "Read more: ",
-        "Read More: "
+        "Read More: ",
       ];
-      
+
       let title = versionContent;
       let url = "";
-      
+
       for (const format of learnMoreFormats) {
         if (versionContent.includes(format)) {
           const parts = versionContent.split(format);
@@ -271,7 +282,8 @@ export const platformProcessors = {
   twitter: {
     processAIResponse: (
       data: AIResponse,
-      currentState: any
+      currentState: ModalState,
+      pageContext: PageContext,
     ): Partial<ModalStateUpdates> => {
       const content = data.previews.twitter;
       if (!content) return {};
@@ -297,7 +309,7 @@ export const platformProcessors = {
 
     processVersionSelect: (
       versionContent: string,
-      currentState: any
+      currentState: ModalState,
     ): Partial<ModalStateUpdates> => ({
       editedPreviews: {
         ...currentState.editedPreviews,
@@ -309,7 +321,8 @@ export const platformProcessors = {
   linkedin: {
     processAIResponse: (
       data: AIResponse,
-      currentState: any
+      currentState: ModalState,
+      pageContext: PageContext,
     ): Partial<ModalStateUpdates> => {
       // Get content from either the response or previews
       const content = data.response || data.previews?.linkedin;
@@ -317,7 +330,10 @@ export const platformProcessors = {
 
       // Clean up the content to remove any AI formatting or explanations
       const cleanContent = content
-        .replace(/^(Here['']s|This is|I['']ve created|Here is|Draft for|Post for|LinkedIn post:|Post:|Content:)[^:]*/i, "")
+        .replace(
+          /^(Here['']s|This is|I['']ve created|Here is|Draft for|Post for|LinkedIn post:|Post:|Content:)[^:]*/i,
+          "",
+        )
         .replace(/^[:\s-]+/, "")
         .replace(/^["'\s\n]+/, "")
         .replace(/["'\s\n]+$/, "")
@@ -344,12 +360,19 @@ export const platformProcessors = {
 
     processVersionSelect: (
       versionContent: string,
-      currentState: any
+      currentState: ModalState,
     ): Partial<ModalStateUpdates> => ({
       editedPreviews: {
         ...currentState.editedPreviews,
         linkedin: versionContent,
       },
     }),
+
+    processHackernewsUrlChange: (
+      url: string,
+      currentState: ModalState,
+    ): Partial<ModalStateUpdates> => ({
+      hackernewsUrl: url,
+    }),
   },
-}; 
+};

@@ -96,7 +96,7 @@ export async function PATCH(
     // Validate that the scheduled time is in the future
     const scheduledTime = new Date(scheduledFor);
     const currentTime = new Date();
-    
+
     console.log("Date comparison:", {
       scheduledTime: scheduledTime.toISOString(),
       currentTime: currentTime.toISOString(),
@@ -104,21 +104,22 @@ export async function PATCH(
       currentTimeMs: currentTime.getTime(),
       difference: scheduledTime.getTime() - currentTime.getTime(),
       isInFuture: scheduledTime.getTime() > currentTime.getTime(),
-      serverTimezone: "UTC" // Server always uses UTC
+      serverTimezone: "UTC", // Server always uses UTC
     });
-    
+
     // Add a small buffer (5 minutes) to account for processing time
     const bufferTime = 5 * 60 * 1000; // 5 minutes in milliseconds
     if (scheduledTime.getTime() <= currentTime.getTime() + bufferTime) {
       return NextResponse.json(
-        { 
+        {
           error: "Scheduled time must be at least 5 minutes in the future",
           details: {
             scheduledTime: scheduledTime.toISOString(),
             currentTime: currentTime.toISOString(),
             difference: scheduledTime.getTime() - currentTime.getTime(),
-            message: "Please schedule the post at least 5 minutes in the future."
-          }
+            message:
+              "Please schedule the post at least 5 minutes in the future.",
+          },
         },
         { status: 400 },
       );
@@ -151,7 +152,7 @@ export async function PATCH(
     }
 
     // Update the post if it belongs to the user and has the correct status
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       content,
       scheduledFor: scheduledTime,
       updatedAt: new Date(),
@@ -162,7 +163,7 @@ export async function PATCH(
       // Ensure metadata is properly formatted
       try {
         console.log("Received metadata:", JSON.stringify(metadata, null, 2));
-        
+
         // Validate that required fields are present
         if (!metadata.platform) {
           return NextResponse.json(
@@ -170,23 +171,30 @@ export async function PATCH(
             { status: 400 },
           );
         }
-        
+
         // Merge with existing metadata to preserve any fields not included in the update
-        const existingMetadata = existingPost[0].metadata as Record<string, any> || {};
-        console.log("Existing metadata:", JSON.stringify(existingMetadata, null, 2));
-        
+        const existingMetadata =
+          (existingPost[0].metadata as Record<string, unknown>) || {};
+        console.log(
+          "Existing metadata:",
+          JSON.stringify(existingMetadata, null, 2),
+        );
+
         const pageContext = {
-          ...(existingMetadata.pageContext || {}),
-          ...(metadata.pageContext || {}),
+          ...((existingMetadata.pageContext as Record<string, unknown>) || {}),
+          ...((metadata.pageContext as Record<string, unknown>) || {}),
         };
-        
+
         updateData.metadata = {
           ...existingMetadata,
           ...metadata,
           pageContext,
         };
-        
-        console.log("Final metadata:", JSON.stringify(updateData.metadata, null, 2));
+
+        console.log(
+          "Final metadata:",
+          JSON.stringify(updateData.metadata, null, 2),
+        );
       } catch (metadataError) {
         console.error("Error processing metadata:", metadataError);
         return NextResponse.json(

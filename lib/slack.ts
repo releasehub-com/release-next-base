@@ -52,6 +52,7 @@ export async function sendSlackNotification(message: SlackMessage) {
   }
 
   try {
+    console.log("📨 Sending Slack notification...");
     const response = await fetch(webhookUrl, {
       method: "POST",
       headers: {
@@ -65,8 +66,10 @@ export async function sendSlackNotification(message: SlackMessage) {
         `Failed to send Slack notification: ${response.statusText}`,
       );
     }
+
+    console.log("✅ Slack notification sent successfully!");
   } catch (error) {
-    console.error("Error sending Slack notification:", error);
+    console.error("❌ Error sending Slack notification:", error);
   }
 }
 
@@ -178,6 +181,10 @@ export function createErrorNotification(error: {
   const timezone = error.metadata?.timezone || "America/Los_Angeles";
   const localTime = getLocalTime(error.scheduledFor, timezone);
   const formattedError = formatErrorMessage(error.errorMessage);
+  const platformName =
+    error.platform.toLowerCase() === "twitter"
+      ? "X (Twitter)"
+      : error.platform.charAt(0).toUpperCase() + error.platform.slice(1);
 
   return {
     blocks: [
@@ -185,7 +192,7 @@ export function createErrorNotification(error: {
         type: "header",
         text: {
           type: "plain_text",
-          text: `${emoji} Posting Error on ${error.platform}`,
+          text: `${emoji} Posting Error on ${platformName}`,
           emoji: true,
         },
       },
@@ -331,12 +338,17 @@ export function createScheduledPostNotification(post: {
   }
 
   // For Twitter and LinkedIn posts
+  const platformName =
+    post.platform.toLowerCase() === "twitter"
+      ? "X (Twitter)"
+      : post.platform.charAt(0).toUpperCase() + post.platform.slice(1);
+
   const blocks: SlackBlock[] = [
     {
       type: "header",
       text: {
         type: "plain_text",
-        text: `${emoji} ${post.platform} Post Published`,
+        text: `${emoji} ${platformName} Post Published`,
         emoji: true,
       },
     },

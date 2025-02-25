@@ -54,4 +54,4 @@ export interface ScheduledPost {
   createdAt: string;
   updatedAt: string;
   user: User;
-} 
+}

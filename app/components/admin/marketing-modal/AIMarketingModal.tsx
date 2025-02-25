@@ -20,7 +20,10 @@ export default function AIMarketingModal({
   modalState,
   onModalStateChange,
 }: AIMarketingModalProps) {
-  console.log('🚀 AIMarketingModal render', { isOpen, accountsLength: accounts.length });
+  console.log("🚀 AIMarketingModal render", {
+    isOpen,
+    accountsLength: accounts.length,
+  });
   const { data: session } = useSession();
   const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
   const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] =
@@ -51,7 +54,7 @@ export default function AIMarketingModal({
   const currentPlatform = selectedPlatform as Platform | null;
 
   const updateModalState = (updates: Partial<typeof modalState>) => {
-    console.log('updateModalState called with:', updates);
+    console.log("updateModalState called with:", updates);
     onModalStateChange({
       ...modalState,
       ...updates,
@@ -75,12 +78,12 @@ export default function AIMarketingModal({
         "\n\nRead more: ",
         "\nRead more: ",
         "Read more: ",
-        "Read More: "
+        "Read More: ",
       ];
-      
+
       let title = content;
       let url = modalState.hackernewsUrl || "";
-      
+
       for (const format of learnMoreFormats) {
         if (content.includes(format)) {
           const parts = content.split(format);
@@ -139,38 +142,41 @@ export default function AIMarketingModal({
   };
 
   const handleSubmit = async () => {
-    debugger; // This will break when submit is called
-    console.log('=== Submit Handler ===');
-    console.log('Starting submission with:', {
+    console.log("=== Submit Handler ===");
+    console.log("Starting submission with:", {
       message: modalState.message,
       isGenerating,
-      selectedPlatform: modalState.selectedPlatform
+      selectedPlatform: modalState.selectedPlatform,
     });
 
     if (!message.trim() || isGenerating || !selectedPlatform) {
-      console.log('handleSubmit early return:', {
+      console.log("handleSubmit early return:", {
         hasMessage: !!message.trim(),
         isGenerating,
-        selectedPlatform
+        selectedPlatform,
       });
       return;
     }
 
     try {
-      console.log('Setting isGenerating to true');
+      console.log("Setting isGenerating to true");
       setIsGenerating(true);
-      console.log('Creating new conversation');
+      console.log("Creating new conversation");
       const newConversation = [
         ...(conversations[selectedPlatform] || []),
         { role: "user" as const, content: message },
       ];
 
-      console.log('Getting current preview');
+      console.log("Getting current preview");
       const currentPreview = editedPreviews[selectedPlatform];
-      console.log('Getting context with preview');
-      const contextWithPreview = platformPrompts[selectedPlatform](message, currentPreview, pageContext);
+      console.log("Getting context with preview");
+      const contextWithPreview = platformPrompts[selectedPlatform](
+        message,
+        currentPreview,
+        pageContext,
+      );
 
-      console.log('Making API call');
+      console.log("Making API call");
       const response = await fetch("/api/admin/ai/generate", {
         method: "POST",
         headers: {
@@ -185,9 +191,9 @@ export default function AIMarketingModal({
         }),
       });
 
-      console.log('Got API response');
+      console.log("Got API response");
       const data = await response.json();
-      console.log('API response data:', data);
+      console.log("API response data:", data);
 
       // First update conversations
       const updates: Partial<typeof modalState> = {
@@ -202,35 +208,34 @@ export default function AIMarketingModal({
       };
 
       if (data.intent.isGeneratingPost || data.intent.isEditing) {
-        console.group('🔄 Processing Updates');
-        console.log('Current modal state:', modalState);
-        const platformUpdates = platformProcessors[selectedPlatform].processAIResponse(
-          data,
-          modalState,
-          pageContext
-        );
-        console.log('Platform updates:', platformUpdates);
+        console.group("🔄 Processing Updates");
+        console.log("Current modal state:", modalState);
+        const platformUpdates = platformProcessors[
+          selectedPlatform
+        ].processAIResponse(data, modalState, pageContext);
+        console.log("Platform updates:", platformUpdates);
         Object.assign(updates, platformUpdates);
         console.groupEnd();
-      } else if (selectedPlatform === "hackernews" && data.previews?.hackernews) {
+      } else if (
+        selectedPlatform === "hackernews" &&
+        data.previews?.hackernews
+      ) {
         // Always process HackerNews responses if we have preview content
-        const platformUpdates = platformProcessors[selectedPlatform].processAIResponse(
-          data,
-          modalState,
-          pageContext
-        );
+        const platformUpdates = platformProcessors[
+          selectedPlatform
+        ].processAIResponse(data, modalState, pageContext);
         Object.assign(updates, platformUpdates);
       }
 
-      console.log('📝 Final updates:', updates);
+      console.log("📝 Final updates:", updates);
       console.groupEnd();
 
       updateModalState(updates);
     } catch (error) {
-      console.group('❌ Error');
-      console.error('Error details:', error);
+      console.group("❌ Error");
+      console.error("Error details:", error);
       console.groupEnd();
-      
+
       updateModalState({
         conversations: {
           ...conversations,
@@ -254,9 +259,9 @@ export default function AIMarketingModal({
     const selectedVersion = versions[platform][versionIndex];
     const updates = platformProcessors[platform].processVersionSelect(
       selectedVersion.content,
-      modalState
+      modalState,
     );
-    
+
     updateModalState(updates);
     setLastSavedContent({
       ...lastSavedContent,
@@ -364,7 +369,9 @@ export default function AIMarketingModal({
         }
       } else {
         // Regular social media post
-        const account = accounts.find((acc) => acc.provider === selectedPlatform);
+        const account = accounts.find(
+          (acc) => acc.provider === selectedPlatform,
+        );
         if (!account) throw new Error("No connected account found");
 
         const platformImageAssets = imageAssets[selectedPlatform] || [];
@@ -383,7 +390,8 @@ export default function AIMarketingModal({
               platform: selectedPlatform,
               pageContext,
               imageAssets: platformImageAssets,
-              scheduledInTimezone: session?.user?.timezone || "America/Los_Angeles",
+              scheduledInTimezone:
+                session?.user?.timezone || "America/Los_Angeles",
               userEmail: session?.user?.email,
               userName: session?.user?.name,
             },
@@ -415,24 +423,24 @@ export default function AIMarketingModal({
   // Move initial render logging into an effect that runs on every render
   useEffect(() => {
     const mountTime = Date.now();
-    
-    console.log('=== AIMarketingModal Mount ===', {
+
+    console.log("=== AIMarketingModal Mount ===", {
       mountTime,
       isOpen,
-      selectedPlatform: modalState.selectedPlatform
+      selectedPlatform: modalState.selectedPlatform,
     });
 
     // Set sidebar state
     setIsSidebarOpen(isOpen);
-    
+
     return () => {
-      console.log('=== AIMarketingModal Unmount ===', {
+      console.log("=== AIMarketingModal Unmount ===", {
         mountDuration: Date.now() - mountTime,
         isOpen,
-        selectedPlatform: modalState.selectedPlatform
+        selectedPlatform: modalState.selectedPlatform,
       });
     };
-  }, [isOpen, setIsSidebarOpen]); // Only depend on isOpen and setIsSidebarOpen
+  }, [isOpen, setIsSidebarOpen, modalState.selectedPlatform]);
 
   // Keep this effect separate as it handles content syncing
   useEffect(() => {
@@ -446,20 +454,20 @@ export default function AIMarketingModal({
 
   // Modal open state logging
   useEffect(() => {
-    console.log('=== Modal State Change ===');
-    console.log('isOpen:', isOpen);
-    console.log('selectedPlatform:', modalState.selectedPlatform);
+    console.log("=== Modal State Change ===");
+    console.log("isOpen:", isOpen);
+    console.log("selectedPlatform:", modalState.selectedPlatform);
   }, [isOpen, modalState.selectedPlatform]);
 
   if (!isOpen) {
-    console.log('=== Modal Render Skip ===');
-    console.log('Modal not open, returning null');
+    console.log("=== Modal Render Skip ===");
+    console.log("Modal not open, returning null");
     return null;
   }
 
-  console.log('=== Modal Render ===');
-  console.log('About to render modal content, isOpen:', isOpen);
-  
+  console.log("=== Modal Render ===");
+  console.log("About to render modal content, isOpen:", isOpen);
+
   return (
     <div className="z-50">
       {/* Modal */}
@@ -537,9 +545,11 @@ export default function AIMarketingModal({
               onPreviewEdit={handlePreviewEdit}
               onVersionSelect={handleVersionSelect}
               onSaveVersion={handleSaveVersion}
-              onTogglePreviewMode={() => updateModalState({
-                isPreviewMode: !isPreviewMode,
-              })}
+              onTogglePreviewMode={() =>
+                updateModalState({
+                  isPreviewMode: !isPreviewMode,
+                })
+              }
               onSchedule={() => setIsScheduleDialogOpen(true)}
               isUploading={isUploading}
               onImageUpload={handleImageUpload}

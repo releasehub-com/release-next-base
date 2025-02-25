@@ -80,14 +80,14 @@ export async function GET() {
 
     // Store token secret and state in cookies
     const cookieStore = cookies();
-    
+
     // Clear any existing Twitter cookies to prevent session reuse
     cookieStore.delete("twitter_oauth_token");
     cookieStore.delete("twitter_oauth_token_secret");
     cookieStore.delete("twitter_state_v1");
     cookieStore.delete("twitter_oauth_token_secret_v1");
     cookieStore.delete("twitter_code_verifier");
-    
+
     // Set new token secret and state
     cookieStore.set("twitter_oauth_token_secret_v1", oauthTokenSecret, {
       httpOnly: true,
@@ -107,10 +107,10 @@ export async function GET() {
     // Build the authorization URL
     const authUrl = new URL(TWITTER_AUTH_URL);
     authUrl.searchParams.append("oauth_token", oauthToken);
-    
+
     // Add force_login parameter to ensure the user is prompted to log in
     authUrl.searchParams.append("force_login", "true");
-    
+
     // Add a random parameter to prevent caching
     authUrl.searchParams.append("_", Date.now().toString());
 

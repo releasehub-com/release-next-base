@@ -132,13 +132,28 @@ function UserFilter({ users, selectedUsers, onUserChange }: UserFilterProps) {
                 />
                 <div className="flex items-center space-x-2">
                   {user.image ? (
-                    <Image
-                      src={user.image}
-                      alt={user.name}
-                      width={24}
-                      height={24}
-                      className="rounded-full"
-                    />
+                    <div className="relative w-6 h-6">
+                      <Image
+                        src={user.image}
+                        alt={user.name}
+                        width={24}
+                        height={24}
+                        className="rounded-full"
+                        unoptimized
+                        onError={(e) => {
+                          // When image fails to load, replace with fallback
+                          e.currentTarget.style.display = "none";
+                          e.currentTarget.parentElement
+                            .querySelector(".fallback-avatar")
+                            ?.classList.remove("hidden");
+                        }}
+                      />
+                      <div className="fallback-avatar hidden w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center absolute top-0 left-0">
+                        <span className="text-xs text-white">
+                          {user.name.charAt(0)}
+                        </span>
+                      </div>
+                    </div>
                   ) : (
                     <div className="w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center">
                       <span className="text-xs text-white">
@@ -186,6 +201,9 @@ interface ListViewProps {
 }
 
 function ListView({ posts, onSelectPost, onDelete }: ListViewProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage, setPostsPerPage] = useState(10);
+
   const sortedPosts = useMemo(() => {
     return [...posts].sort((a, b) => {
       return (
@@ -194,10 +212,58 @@ function ListView({ posts, onSelectPost, onDelete }: ListViewProps) {
     });
   }, [posts]);
 
+  // Calculate pagination
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = sortedPosts.slice(indexOfFirstPost, indexOfLastPost);
+  const totalPages = Math.ceil(sortedPosts.length / postsPerPage);
+
+  // Add state for delete confirmation
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [postToDelete, setPostToDelete] = useState<string | null>(null);
+
+  // Handle delete click
+  const handleDeleteClick = (postId: string) => {
+    setPostToDelete(postId);
+    setShowDeleteConfirm(true);
+    setDeleteConfirmText("");
+  };
+
+  // Handle confirm delete
+  const handleConfirmDelete = () => {
+    if (deleteConfirmText === "DELETE" && postToDelete) {
+      onDelete(postToDelete);
+      setShowDeleteConfirm(false);
+      setPostToDelete(null);
+      setDeleteConfirmText("");
+    }
+  };
+
+  // Handle cancel delete
+  const handleCancelDelete = () => {
+    setShowDeleteConfirm(false);
+    setPostToDelete(null);
+    setDeleteConfirmText("");
+  };
+
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Handle posts per page change
+  const handlePostsPerPageChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    setPostsPerPage(Number(e.target.value));
+    setCurrentPage(1); // Reset to first page when changing items per page
+  };
+
   return (
     <div className="bg-gray-800 rounded-lg overflow-hidden">
       <div className="divide-y divide-gray-700">
-        {sortedPosts.map((post) => (
+        {currentPosts.map((post) => (
           <div
             key={post.id}
             className="p-4 hover:bg-gray-700/50 flex items-start justify-between gap-4"
@@ -205,13 +271,28 @@ function ListView({ posts, onSelectPost, onDelete }: ListViewProps) {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
                 {post.user.image ? (
-                  <Image
-                    src={post.user.image}
-                    alt={post.user.name}
-                    width={24}
-                    height={24}
-                    className="rounded-full"
-                  />
+                  <div className="relative w-6 h-6">
+                    <Image
+                      src={post.user.image}
+                      alt={post.user.name}
+                      width={24}
+                      height={24}
+                      className="rounded-full"
+                      unoptimized
+                      onError={(e) => {
+                        // When image fails to load, replace with fallback
+                        e.currentTarget.style.display = "none";
+                        e.currentTarget.parentElement
+                          .querySelector(".fallback-avatar")
+                          ?.classList.remove("hidden");
+                      }}
+                    />
+                    <div className="fallback-avatar hidden w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center absolute top-0 left-0">
+                      <span className="text-xs text-white">
+                        {post.user.name.charAt(0)}
+                      </span>
+                    </div>
+                  </div>
                 ) : (
                   <div className="w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center">
                     <span className="text-xs text-white">
@@ -231,6 +312,27 @@ function ListView({ posts, onSelectPost, onDelete }: ListViewProps) {
                   )}`}
                 >
                   {post.status}
+                  {post.status === "failed" && post.errorMessage && (
+                    <span className="relative group">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        className="w-3.5 h-3.5 ml-1 inline-block"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <div className="absolute left-0 top-full mt-1 w-64 p-2 bg-gray-900 text-xs text-red-200 rounded shadow-lg border border-red-500/30 opacity-0 group-hover:opacity-100 transition-opacity z-[100] pointer-events-none">
+                        <div className="absolute top-[-6px] left-4 w-3 h-3 bg-gray-900 border-l border-t border-red-500/30 transform rotate-45"></div>
+                        <p className="font-medium text-red-300 mb-1">Error:</p>
+                        <p>{post.errorMessage}</p>
+                      </div>
+                    </span>
+                  )}
                 </span>
               </div>
               <div className="text-sm text-gray-300 mb-2">{post.content}</div>
@@ -245,16 +347,66 @@ function ListView({ posts, onSelectPost, onDelete }: ListViewProps) {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => onSelectPost(post)}
-                className="text-gray-400 hover:text-white"
+                className="p-1.5 rounded-full hover:bg-gray-700 text-gray-400 hover:text-white transition-colors"
+                title="View Post"
               >
-                View
+                {post.status === "posted" ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                    />
+                  </svg>
+                )}
               </button>
               {canDeletePost(post.status) && (
                 <button
-                  onClick={() => onDelete(post.id)}
-                  className="text-red-400 hover:text-red-300"
+                  onClick={() => handleDeleteClick(post.id)}
+                  className="p-1.5 rounded-full hover:bg-red-900/30 text-red-400 hover:text-red-300 transition-colors"
+                  title="Delete Post"
                 >
-                  Delete
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                    />
+                  </svg>
                 </button>
               )}
             </div>
@@ -264,6 +416,212 @@ function ListView({ posts, onSelectPost, onDelete }: ListViewProps) {
           <div className="p-8 text-center text-gray-400">No posts found</div>
         )}
       </div>
+
+      {/* Pagination controls */}
+      {sortedPosts.length > 0 && (
+        <div className="bg-gray-800 border-t border-gray-700 p-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-400">
+              Showing {indexOfFirstPost + 1}-
+              {Math.min(indexOfLastPost, sortedPosts.length)} of{" "}
+              {sortedPosts.length} posts
+            </span>
+            <select
+              value={postsPerPage}
+              onChange={handlePostsPerPageChange}
+              className="bg-gray-700 text-white rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            >
+              <option value={5}>5 per page</option>
+              <option value={10}>10 per page</option>
+              <option value={25}>25 per page</option>
+              <option value={50}>50 per page</option>
+            </select>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => handlePageChange(1)}
+              disabled={currentPage === 1}
+              className="p-1 rounded-md bg-gray-700 text-gray-300 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="First page"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M15.79 14.77a.75.75 0 01-1.06.02l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 111.04 1.08L11.832 10l3.938 3.71a.75.75 0 01.02 1.06zm-6 0a.75.75 0 01-1.06.02l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 111.04 1.08L5.832 10l3.938 3.71a.75.75 0 01.02 1.06z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="p-1 rounded-md bg-gray-700 text-gray-300 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Previous page"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
+
+            {/* Page numbers */}
+            <div className="flex items-center">
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                // Show pages around current page
+                let pageNum;
+                if (totalPages <= 5) {
+                  pageNum = i + 1;
+                } else if (currentPage <= 3) {
+                  pageNum = i + 1;
+                } else if (currentPage >= totalPages - 2) {
+                  pageNum = totalPages - 4 + i;
+                } else {
+                  pageNum = currentPage - 2 + i;
+                }
+
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => handlePageChange(pageNum)}
+                    className={`w-8 h-8 flex items-center justify-center rounded-md text-sm ${
+                      currentPage === pageNum
+                        ? "bg-indigo-600 text-white"
+                        : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+            </div>
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="p-1 rounded-md bg-gray-700 text-gray-300 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Next page"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
+            <button
+              onClick={() => handlePageChange(totalPages)}
+              disabled={currentPage === totalPages}
+              className="p-1 rounded-md bg-gray-700 text-gray-300 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Last page"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4.21 14.77a.75.75 0 01.02-1.06L8.168 10 4.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02zm6 0a.75.75 0 01.02-1.06L14.168 10 10.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* No posts message */}
+      {sortedPosts.length === 0 && (
+        <div className="p-8 text-center">
+          <p className="text-gray-400">No posts found matching your filters.</p>
+        </div>
+      )}
+
+      {/* Delete confirmation dialog */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-[60] bg-black/70 flex items-center justify-center">
+          <div className="bg-gray-900 rounded-lg shadow-xl w-full max-w-md p-6">
+            <div className="flex items-start mb-4">
+              <div className="flex-shrink-0 bg-red-900/30 rounded-full p-2 mr-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6 text-red-400"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-white">
+                  Delete Post
+                </h3>
+                <p className="text-gray-300 mt-2">
+                  Are you sure you want to delete this post? This action cannot
+                  be undone.
+                </p>
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <p className="text-sm text-gray-300 mb-2">
+                Type <span className="font-bold text-red-400">DELETE</span> to
+                confirm:
+              </p>
+              <input
+                type="text"
+                value={deleteConfirmText}
+                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                placeholder="Type DELETE to confirm"
+              />
+            </div>
+
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={handleCancelDelete}
+                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-md"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                disabled={deleteConfirmText !== "DELETE"}
+                className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -338,10 +696,6 @@ export default function ScheduledPostsPageClient({
       return;
     }
 
-    if (!confirm("Are you sure you want to delete this scheduled post?")) {
-      return;
-    }
-
     try {
       const response = await fetch(`/api/admin/scheduled-posts/${postId}`, {
         method: "DELETE",
@@ -393,16 +747,16 @@ export default function ScheduledPostsPageClient({
       setPosts(
         posts.map((p) =>
           p.id === post.id
-            ? { 
-                ...p, 
-                content, 
+            ? {
+                ...p,
+                content,
                 scheduledFor: scheduledFor.toISOString(),
                 metadata: post.metadata,
               }
             : p,
         ),
       );
-      
+
       // Close the edit modal
       setSelectedPost(null);
     } catch (error) {
@@ -574,13 +928,28 @@ export default function ScheduledPostsPageClient({
                             >
                               <div className="flex items-center space-x-1">
                                 {post.user.image ? (
-                                  <Image
-                                    src={post.user.image}
-                                    alt={post.user.name}
-                                    width={24}
-                                    height={24}
-                                    className="rounded-full"
-                                  />
+                                  <div className="relative w-4 h-4">
+                                    <Image
+                                      src={post.user.image}
+                                      alt={post.user.name}
+                                      width={24}
+                                      height={24}
+                                      className="rounded-full"
+                                      unoptimized
+                                      onError={(e) => {
+                                        // When image fails to load, replace with fallback
+                                        e.currentTarget.style.display = "none";
+                                        e.currentTarget.parentElement
+                                          .querySelector(".fallback-avatar")
+                                          ?.classList.remove("hidden");
+                                      }}
+                                    />
+                                    <div className="fallback-avatar hidden w-4 h-4 rounded-full bg-gray-600 flex items-center justify-center absolute top-0 left-0">
+                                      <span className="text-[8px] text-white">
+                                        {post.user.name.charAt(0)}
+                                      </span>
+                                    </div>
+                                  </div>
                                 ) : (
                                   <div className="w-4 h-4 rounded-full bg-gray-600 flex items-center justify-center">
                                     <span className="text-[8px] text-white">
@@ -600,6 +969,30 @@ export default function ScheduledPostsPageClient({
                                   [],
                                   { hour: "2-digit", minute: "2-digit" },
                                 )}
+                                {post.status === "failed" &&
+                                  post.errorMessage && (
+                                    <span className="relative group">
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                        className="w-3 h-3 ml-0.5 inline-block"
+                                      >
+                                        <path
+                                          fillRule="evenodd"
+                                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
+                                          clipRule="evenodd"
+                                        />
+                                      </svg>
+                                      <div className="absolute left-0 top-full mt-1 w-64 p-2 bg-gray-900 text-xs text-red-200 rounded shadow-lg border border-red-500/30 opacity-0 group-hover:opacity-100 transition-opacity z-[100] pointer-events-none">
+                                        <div className="absolute top-[-6px] left-4 w-3 h-3 bg-gray-900 border-l border-t border-red-500/30 transform rotate-45"></div>
+                                        <p className="font-medium text-red-300 mb-1">
+                                          Error:
+                                        </p>
+                                        <p>{post.errorMessage}</p>
+                                      </div>
+                                    </span>
+                                  )}
                               </span>
                             </button>
                           ))}
