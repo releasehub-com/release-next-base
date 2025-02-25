@@ -8,7 +8,7 @@ import type {
   Platform,
   ModalState as MarketingModalState,
 } from "./marketing-modal/types";
-import AIMarketingModal from "./AIMarketingModal";
+import AIMarketingModal from "./marketing-modal/AIMarketingModal";
 
 interface ModalState extends Omit<MarketingModalState, "selectedPlatform"> {
   selectedPlatform: Platform | null;
@@ -74,6 +74,11 @@ export default function FloatingActionButton() {
       linkedin: [],
     },
   });
+
+  // Add effect to track modal state
+  useEffect(() => {
+    console.log('isModalOpen changed to:', isModalOpen);
+  }, [isModalOpen]);
 
   useEffect(() => {
     if (session?.user?.isAdmin) {
@@ -203,12 +208,23 @@ export default function FloatingActionButton() {
     return null;
   }
 
+  // Debug logging
+  console.log('Rendering AIMarketingModal with props:', {
+    isOpen: isModalOpen,
+    accountsLength: accounts.length,
+    pageContext,
+    modalState
+  });
+
   return (
     <>
-      <div className="fixed right-0 bottom-8 z-50">
+      <div className={`fixed right-0 bottom-8 z-50 ${isModalOpen ? 'hidden' : ''}`}>
         {/* Main Button */}
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            console.log('Button clicked, setting isModalOpen to true');
+            setIsModalOpen(true);
+          }}
           className="bg-gray-800 text-white rounded-l-xl p-4 shadow-xl hover:bg-gray-700 transition-colors flex flex-col items-center gap-3 relative group border border-r-0 border-indigo-500/50"
           aria-label="Open AI Marketing Assistant"
         >
@@ -284,7 +300,10 @@ export default function FloatingActionButton() {
 
       <AIMarketingModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          console.log('Modal closing, setting isModalOpen to false');
+          setIsModalOpen(false);
+        }}
         pageContext={pageContext}
         accounts={accounts}
         modalState={modalState}

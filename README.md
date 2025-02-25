@@ -79,7 +79,7 @@ pnpm test-post -p linkedin -c "This is a test LinkedIn post"
 
 Note: Both Twitter and LinkedIn do not provide sandbox environments for testing. However:
 
-- Twitter offers a [Developer Environment](https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api) that can be used for testing
+- Twitter offers a [Developer Environment](https://developer.x.com/en/docs/twitter-api/getting-started/about-twitter-api) that can be used for testing
 - LinkedIn provides a [Development Mode](https://www.linkedin.com/developers/apps) for applications
 
 For development, we recommend:

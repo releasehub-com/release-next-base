@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { db } from "@/lib/db";
 import { socialAccounts, user } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { cookies } from "next/headers";
 
 export async function GET() {
   try {
@@ -61,7 +62,25 @@ export async function DELETE(request: Request) {
       );
     }
 
+    // Get the account before deleting to check the provider
+    const account = await db
+      .select()
+      .from(socialAccounts)
+      .where(eq(socialAccounts.id, accountId))
+      .limit(1);
+
     await db.delete(socialAccounts).where(eq(socialAccounts.id, accountId));
+
+    // Clear OAuth-related cookies
+    const cookieStore = cookies();
+    if (account[0]?.provider === "twitter") {
+      cookieStore.delete("twitter_code_verifier");
+      cookieStore.delete("twitter_oauth_token");
+      cookieStore.delete("twitter_oauth_token_secret");
+      cookieStore.delete("twitter_state_v1");
+      cookieStore.delete("twitter_oauth_token_secret_v1");
+    }
+    // Note: LinkedIn doesn't use cookies for OAuth state management
 
     return NextResponse.json({ success: true });
   } catch (error) {

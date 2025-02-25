@@ -672,7 +672,7 @@ export async function POST(request: Request) {
             // Get the tweet URL
             const tweetId = twitterResponse.data?.id;
             postUrl = tweetId
-              ? `https://twitter.com/i/web/status/${tweetId}`
+              ? `https://x.com/i/web/status/${tweetId}`
               : undefined;
           } else if (account.provider === "linkedin") {
             // Extract image assets from metadata if present

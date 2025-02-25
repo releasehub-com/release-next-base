@@ -13,35 +13,11 @@ import Image from "next/image";
 import { PlatformIcon } from "../../components/admin/marketing-modal/platforms/PlatformIcon";
 import type { Platform } from "../../components/admin/marketing-modal/types";
 import { EditPostModal } from "../../components/admin/scheduled/EditPostModal";
+import { Post, ScheduledPost } from "../../components/admin/scheduled/types";
 
 interface ImageAsset {
   asset: string;
   displayUrl: string;
-}
-
-interface ScheduledPost {
-  id: string;
-  content: string;
-  scheduledFor: string;
-  status: "scheduled" | "posted" | "failed";
-  errorMessage?: string;
-  metadata: {
-    platform: string;
-    pageContext: {
-      title: string;
-      url: string;
-      description?: string;
-    };
-    imageAssets?: ImageAsset[];
-  };
-  createdAt: string;
-  updatedAt: string;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    image?: string;
-  };
 }
 
 function canDeletePost(status: ScheduledPost["status"]) {
@@ -57,6 +33,7 @@ interface PostPreviewModalProps {
   onClose: () => void;
   onDelete: (postId: string) => void;
   onEdit: (post: ScheduledPost) => void;
+  onSave: (updatedPost: Post) => void;
 }
 
 function getStatusBadgeClass(status: ScheduledPost["status"]) {
@@ -291,146 +268,6 @@ function ListView({ posts, onSelectPost, onDelete }: ListViewProps) {
   );
 }
 
-function PostPreviewModal({
-  post,
-  onClose,
-  onDelete,
-  onEdit,
-}: PostPreviewModalProps) {
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full mx-4">
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              {post.user.image ? (
-                <Image
-                  src={post.user.image}
-                  alt={post.user.name}
-                  width={32}
-                  height={32}
-                  className="rounded-full"
-                />
-              ) : (
-                <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center">
-                  <span className="text-sm text-white">
-                    {post.user.name.charAt(0)}
-                  </span>
-                </div>
-              )}
-              <div>
-                <div className="text-sm font-medium text-white">
-                  {post.user.name}
-                </div>
-                <div className="text-xs text-gray-400">{post.user.email}</div>
-              </div>
-            </div>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-white"
-            >
-              Close
-            </button>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <div className="text-sm text-gray-400 mb-1">Platform</div>
-              <div className="flex items-center gap-2">
-                <PlatformIcon
-                  platform={post.metadata.platform as Platform}
-                  className="w-5 h-5"
-                />
-                <span className="text-white capitalize">
-                  {post.metadata.platform}
-                </span>
-              </div>
-            </div>
-
-            <div>
-              <div className="text-sm text-gray-400 mb-1">Status</div>
-              <span
-                className={`px-2 py-1 rounded-full text-sm ${getStatusBadgeClass(
-                  post.status,
-                )}`}
-              >
-                {post.status}
-              </span>
-            </div>
-
-            <div>
-              <div className="text-sm text-gray-400 mb-1">Scheduled For</div>
-              <div className="text-white">
-                {new Date(post.scheduledFor).toLocaleString(undefined, {
-                  dateStyle: "full",
-                  timeStyle: "short",
-                })}
-              </div>
-            </div>
-
-            <div>
-              <div className="text-sm text-gray-400 mb-1">Content</div>
-              <div className="bg-gray-900 rounded-lg p-4 text-white">
-                {post.content}
-              </div>
-            </div>
-
-            {post.metadata.imageAssets &&
-              post.metadata.imageAssets.length > 0 && (
-                <div>
-                  <div className="text-sm text-gray-400 mb-1">Images</div>
-                  <div className="grid grid-cols-2 gap-2">
-                    {post.metadata.imageAssets.map((asset, index) => (
-                      <div
-                        key={index}
-                        className="relative aspect-video bg-gray-900 rounded-lg overflow-hidden"
-                      >
-                        <Image
-                          src={asset.displayUrl}
-                          alt={`Image ${index + 1}`}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-            {post.errorMessage && (
-              <div>
-                <div className="text-sm text-red-400 mb-1">Error</div>
-                <div className="bg-red-900/50 border border-red-500/50 rounded-lg p-4 text-red-200">
-                  {post.errorMessage}
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="mt-6 flex justify-end gap-3">
-            {canDeletePost(post.status) && (
-              <button
-                onClick={() => onDelete(post.id)}
-                className="px-4 py-2 text-sm font-medium text-red-400 hover:text-red-300"
-              >
-                Delete
-              </button>
-            )}
-            {canEditPost(post.status) && (
-              <button
-                onClick={() => onEdit(post)}
-                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-500"
-              >
-                Edit
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function ScheduledPostsPageClient({
   initialPosts,
 }: ScheduledPostsPageProps) {
@@ -441,7 +278,6 @@ export default function ScheduledPostsPageClient({
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedPost, setSelectedPost] = useState<ScheduledPost | null>(null);
   const [view, setView] = useState<"calendar" | "list">("calendar");
-  const [editingPost, setEditingPost] = useState<ScheduledPost | null>(null);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<
     ScheduledPost["status"] | "all"
@@ -545,6 +381,7 @@ export default function ScheduledPostsPageClient({
         body: JSON.stringify({
           content,
           scheduledFor: scheduledFor.toISOString(),
+          metadata: post.metadata,
         }),
       });
 
@@ -556,10 +393,18 @@ export default function ScheduledPostsPageClient({
       setPosts(
         posts.map((p) =>
           p.id === post.id
-            ? { ...p, content, scheduledFor: scheduledFor.toISOString() }
+            ? { 
+                ...p, 
+                content, 
+                scheduledFor: scheduledFor.toISOString(),
+                metadata: post.metadata,
+              }
             : p,
         ),
       );
+      
+      // Close the edit modal
+      setSelectedPost(null);
     } catch (error) {
       console.error("Error updating post:", error);
       throw new Error("Failed to save changes. Please try again.");
@@ -776,22 +621,11 @@ export default function ScheduledPostsPageClient({
       </div>
 
       {selectedPost && (
-        <PostPreviewModal
+        <EditPostModal
           post={selectedPost}
           onClose={() => setSelectedPost(null)}
-          onDelete={handleDelete}
-          onEdit={(post) => {
-            setEditingPost(post);
-            setSelectedPost(null);
-          }}
-        />
-      )}
-
-      {editingPost && (
-        <EditPostModal
-          post={editingPost}
-          onClose={() => setEditingPost(null)}
           onSave={handleSaveEdit}
+          onDelete={handleDelete}
         />
       )}
     </div>

@@ -52,6 +52,7 @@ export interface ModalState {
     twitter: Array<{ asset: string; displayUrl: string }>;
     linkedin: Array<{ asset: string; displayUrl: string }>;
   };
+  hackernewsUrl?: string;
   hnTitle?: string;
 }
 

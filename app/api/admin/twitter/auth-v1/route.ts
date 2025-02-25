@@ -9,7 +9,7 @@ import crypto from "crypto";
 
 // Twitter OAuth 1.0a endpoints
 const TWITTER_REQUEST_TOKEN_URL = "https://api.twitter.com/oauth/request_token";
-const TWITTER_AUTH_URL = "https://api.twitter.com/oauth/authorize";
+const TWITTER_AUTH_URL = "https://x.com/oauth/authorize";
 const REDIRECT_URI = `${process.env.NEXTAUTH_URL}/api/admin/twitter/callback-v1`;
 
 export async function GET() {
@@ -80,6 +80,15 @@ export async function GET() {
 
     // Store token secret and state in cookies
     const cookieStore = cookies();
+    
+    // Clear any existing Twitter cookies to prevent session reuse
+    cookieStore.delete("twitter_oauth_token");
+    cookieStore.delete("twitter_oauth_token_secret");
+    cookieStore.delete("twitter_state_v1");
+    cookieStore.delete("twitter_oauth_token_secret_v1");
+    cookieStore.delete("twitter_code_verifier");
+    
+    // Set new token secret and state
     cookieStore.set("twitter_oauth_token_secret_v1", oauthTokenSecret, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -98,6 +107,12 @@ export async function GET() {
     // Build the authorization URL
     const authUrl = new URL(TWITTER_AUTH_URL);
     authUrl.searchParams.append("oauth_token", oauthToken);
+    
+    // Add force_login parameter to ensure the user is prompted to log in
+    authUrl.searchParams.append("force_login", "true");
+    
+    // Add a random parameter to prevent caching
+    authUrl.searchParams.append("_", Date.now().toString());
 
     // Log debug info
     console.log("Twitter OAuth 1.0a Auth URL:", authUrl.toString());

@@ -222,7 +222,7 @@ async function postToTwitter(
   }
 
   const tweetId = responseData.data.id;
-  const postUrl = `https://twitter.com/i/web/status/${tweetId}`;
+  const postUrl = `https://x.com/i/web/status/${tweetId}`;
 
   verboseLog("✅ Tweet posted successfully:", { tweetId, postUrl });
   return { id: tweetId, postUrl };

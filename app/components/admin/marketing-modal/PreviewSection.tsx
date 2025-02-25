@@ -29,6 +29,8 @@ interface PreviewSectionProps {
   isUploading: boolean;
   onImageUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onImageRemove: (platform: Platform, index: number) => void;
+  hackernewsUrl?: string;
+  onHackernewsUrlChange?: (url: string) => void;
 }
 
 export function PreviewSection({
@@ -46,6 +48,8 @@ export function PreviewSection({
   isUploading,
   onImageUpload,
   onImageRemove,
+  hackernewsUrl,
+  onHackernewsUrlChange,
 }: PreviewSectionProps) {
   const content = editedPreviews[selectedPlatform] || "";
   const platformVersions = versions[selectedPlatform] || [];
@@ -143,7 +147,10 @@ export function PreviewSection({
           isPreviewMode ? (
             <HackerNewsContent
               content={content}
-              pageContext={pageContext}
+              pageContext={{
+                ...pageContext,
+                url: hackernewsUrl || pageContext.url,
+              }}
               isPreview
             />
           ) : (
@@ -152,6 +159,8 @@ export function PreviewSection({
               onContentChange={(content) =>
                 onPreviewEdit(selectedPlatform, content)
               }
+              url={hackernewsUrl}
+              onUrlChange={onHackernewsUrlChange}
             />
           )
         ) : isPreviewMode ? (

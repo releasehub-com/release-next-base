@@ -134,7 +134,7 @@ export default function CompanyContent() {
               imageUrl="/images/team/tommy-mcclung.jpg"
               socialLinks={{
                 linkedin: "https://www.linkedin.com/in/tmcclung/",
-                twitter: "https://twitter.com/tommymcclung",
+                twitter: "https://x.com/tommymcclung",
               }}
             />
             <TeamMember

@@ -84,7 +84,7 @@ export async function PATCH(
 
     // Get the request body
     const body = await request.json();
-    const { content, scheduledFor } = body;
+    const { content, scheduledFor, metadata } = body;
 
     if (!content || !scheduledFor) {
       return NextResponse.json(
@@ -95,9 +95,31 @@ export async function PATCH(
 
     // Validate that the scheduled time is in the future
     const scheduledTime = new Date(scheduledFor);
-    if (scheduledTime <= new Date()) {
+    const currentTime = new Date();
+    
+    console.log("Date comparison:", {
+      scheduledTime: scheduledTime.toISOString(),
+      currentTime: currentTime.toISOString(),
+      scheduledTimeMs: scheduledTime.getTime(),
+      currentTimeMs: currentTime.getTime(),
+      difference: scheduledTime.getTime() - currentTime.getTime(),
+      isInFuture: scheduledTime.getTime() > currentTime.getTime(),
+      serverTimezone: "UTC" // Server always uses UTC
+    });
+    
+    // Add a small buffer (5 minutes) to account for processing time
+    const bufferTime = 5 * 60 * 1000; // 5 minutes in milliseconds
+    if (scheduledTime.getTime() <= currentTime.getTime() + bufferTime) {
       return NextResponse.json(
-        { error: "Scheduled time must be in the future" },
+        { 
+          error: "Scheduled time must be at least 5 minutes in the future",
+          details: {
+            scheduledTime: scheduledTime.toISOString(),
+            currentTime: currentTime.toISOString(),
+            difference: scheduledTime.getTime() - currentTime.getTime(),
+            message: "Please schedule the post at least 5 minutes in the future."
+          }
+        },
         { status: 400 },
       );
     }
@@ -129,13 +151,54 @@ export async function PATCH(
     }
 
     // Update the post if it belongs to the user and has the correct status
+    const updateData: any = {
+      content,
+      scheduledFor: scheduledTime,
+      updatedAt: new Date(),
+    };
+
+    // Include metadata in the update if provided
+    if (metadata) {
+      // Ensure metadata is properly formatted
+      try {
+        console.log("Received metadata:", JSON.stringify(metadata, null, 2));
+        
+        // Validate that required fields are present
+        if (!metadata.platform) {
+          return NextResponse.json(
+            { error: "Metadata must include a platform" },
+            { status: 400 },
+          );
+        }
+        
+        // Merge with existing metadata to preserve any fields not included in the update
+        const existingMetadata = existingPost[0].metadata as Record<string, any> || {};
+        console.log("Existing metadata:", JSON.stringify(existingMetadata, null, 2));
+        
+        const pageContext = {
+          ...(existingMetadata.pageContext || {}),
+          ...(metadata.pageContext || {}),
+        };
+        
+        updateData.metadata = {
+          ...existingMetadata,
+          ...metadata,
+          pageContext,
+        };
+        
+        console.log("Final metadata:", JSON.stringify(updateData.metadata, null, 2));
+      } catch (metadataError) {
+        console.error("Error processing metadata:", metadataError);
+        return NextResponse.json(
+          { error: "Invalid metadata format" },
+          { status: 400 },
+        );
+      }
+    }
+
     const result = await db
       .update(scheduledPosts)
-      .set({
-        content,
-        scheduledFor: scheduledTime,
-        updatedAt: new Date(),
-      })
+      .set(updateData)
       .where(
         and(
           eq(scheduledPosts.id, params.id),

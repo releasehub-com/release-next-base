@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import OAuth from "oauth-1.0a";
 import crypto from "crypto";
+import { upsertSocialAccount } from "@/lib/db";
 
 const TWITTER_ACCESS_TOKEN_URL = "https://api.twitter.com/oauth/access_token";
 const TWITTER_VERIFY_CREDENTIALS_URL =
@@ -211,27 +212,30 @@ export async function GET(request: Request) {
     );
     console.log("Twitter profile:", profile);
 
-    // Get existing account to preserve metadata
-    const existingAccount = await db
-      .select()
-      .from(socialAccounts)
-      .where(eq(socialAccounts.id, `twitter_${profile.id_str}`))
-      .limit(1);
-
-    // Update the existing Twitter account with OAuth 1.0a credentials
-    await db
-      .update(socialAccounts)
-      .set({
-        metadata: {
-          ...existingAccount[0]?.metadata, // Preserve existing metadata
-          oauth1: {
-            accessToken: tokenData.oauth_token,
-            tokenSecret: tokenData.oauth_token_secret,
-          },
+    // Use upsertSocialAccount to create or update the account
+    await upsertSocialAccount({
+      id: `twitter_${profile.id_str}`,
+      userId,
+      provider: "twitter",
+      providerAccountId: profile.id_str,
+      accessToken: tokenData.oauth_token,
+      refreshToken: null,
+      expiresAt: null,
+      tokenType: "oauth1",
+      scope: "",
+      metadata: {
+        username: profile.screen_name,
+        profile: {
+          id: profile.id_str,
+          name: profile.name,
+          username: profile.screen_name,
         },
-        updatedAt: new Date(),
-      })
-      .where(eq(socialAccounts.id, `twitter_${profile.id_str}`));
+        oauth1: {
+          accessToken: tokenData.oauth_token,
+          tokenSecret: tokenData.oauth_token_secret,
+        },
+      },
+    });
 
     return NextResponse.redirect(
       `${process.env.NEXTAUTH_URL}/admin/social?success=twitter_v1_connected`,
