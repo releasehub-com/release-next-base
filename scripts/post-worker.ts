@@ -64,7 +64,27 @@ function formatDateWithTz(date: Date, timezone: string): string {
 async function listScheduledPosts() {
   try {
     verboseLog("📋 Fetching all scheduled posts...");
+
+    // Debug the database schema
+    verboseLog("🔍 Database schema check:");
+    verboseLog("  - scheduledPosts table:", scheduledPosts);
+    verboseLog("  - socialAccounts table:", socialAccounts);
+    verboseLog("  - user table:", user);
+
+    // Test a simple query first
+    try {
+      verboseLog("🔍 Testing simple query...");
+      const testQuery = await db.select().from(scheduledPosts).limit(1);
+      verboseLog("✅ Simple query successful, found posts:", testQuery.length);
+    } catch (queryError) {
+      verboseLog("❌ Simple query error:", queryError);
+      throw new Error(
+        `Simple query failed: ${queryError.message || queryError}`,
+      );
+    }
+
     // Find all posts, including failed ones
+    verboseLog("🔍 Running full query with joins...");
     const posts = await db
       .select({
         post: scheduledPosts,
@@ -202,10 +222,37 @@ async function postToTwitter(
 
   let responseData;
   try {
+    // Check if the response is HTML (which would indicate an error)
+    if (
+      responseText.trim().startsWith("<html") ||
+      responseText.trim().startsWith("<!DOCTYPE html")
+    ) {
+      verboseLog(
+        "❌ Received HTML response instead of JSON:",
+        responseText.substring(0, 200) + "...",
+      );
+      throw new Error(
+        `Twitter API returned HTML instead of JSON. This usually indicates an authentication issue or network problem.`,
+      );
+    }
+
     responseData = JSON.parse(responseText);
   } catch (e) {
     verboseLog("Failed to parse response as JSON:", e);
-    throw new Error(`Twitter API returned invalid JSON: ${responseText}`);
+
+    // Provide more detailed error information
+    if (
+      responseText.trim().startsWith("<html") ||
+      responseText.trim().startsWith("<!DOCTYPE html")
+    ) {
+      throw new Error(
+        `Twitter API returned HTML instead of JSON. This usually indicates an authentication issue or network problem.`,
+      );
+    } else {
+      throw new Error(
+        `Twitter API returned invalid JSON: ${responseText.substring(0, 100)}...`,
+      );
+    }
   }
 
   if (!response.ok) {
@@ -256,12 +303,38 @@ async function postToLinkedIn(
         );
 
         if (!statusResponse.ok) {
+          const errorText = await statusResponse.text();
+          verboseLog("❌ LinkedIn image status check error:", errorText);
+
+          // Check if the response is HTML
+          if (
+            errorText.trim().startsWith("<html") ||
+            errorText.trim().startsWith("<!DOCTYPE html")
+          ) {
+            throw new Error(
+              `LinkedIn API returned HTML instead of JSON when checking image status. This usually indicates an authentication issue or network problem. Status: ${statusResponse.status}`,
+            );
+          }
+
           throw new Error(
-            `Failed to check LinkedIn image status: ${statusResponse.status}`,
+            `Failed to check LinkedIn image status: ${statusResponse.status}. Response: ${errorText.substring(0, 100)}...`,
           );
         }
 
-        const status = await statusResponse.json();
+        let status;
+        try {
+          status = await statusResponse.json();
+        } catch (e) {
+          verboseLog(
+            "Failed to parse LinkedIn image status response as JSON:",
+            e,
+          );
+          const errorText = await statusResponse.text();
+          throw new Error(
+            `LinkedIn API returned invalid JSON for image status. Response: ${errorText.substring(0, 100)}...`,
+          );
+        }
+
         if (status.status === "ALLOWED") {
           isReady = true;
         } else {
@@ -316,10 +389,46 @@ async function postToLinkedIn(
   });
 
   if (!response.ok) {
-    throw new Error(`LinkedIn API error: ${response.status}`);
+    // Get the response text to provide better error information
+    const errorText = await response.text();
+    verboseLog("❌ LinkedIn API error response:", errorText);
+
+    // Check if the response is HTML (which would indicate an error)
+    if (
+      errorText.trim().startsWith("<html") ||
+      errorText.trim().startsWith("<!DOCTYPE html")
+    ) {
+      throw new Error(
+        `LinkedIn API returned HTML instead of JSON. This usually indicates an authentication issue or network problem. Status: ${response.status}`,
+      );
+    }
+
+    // Try to parse as JSON for more detailed error info
+    try {
+      const errorData = JSON.parse(errorText);
+      throw new Error(
+        `LinkedIn API error: ${errorData.message || errorData.error || JSON.stringify(errorData)}`,
+      );
+    } catch (e) {
+      // If parsing fails, return the status and a snippet of the error text
+      throw new Error(
+        `LinkedIn API error: ${response.status}. Response: ${errorText.substring(0, 100)}...`,
+      );
+    }
   }
 
-  const responseData = await response.json();
+  // Parse the response as JSON
+  let responseData;
+  try {
+    responseData = await response.json();
+  } catch (e) {
+    verboseLog("Failed to parse LinkedIn response as JSON:", e);
+    const errorText = await response.text();
+    throw new Error(
+      `LinkedIn API returned invalid JSON. Response: ${errorText.substring(0, 100)}...`,
+    );
+  }
+
   const postId = responseData.id.split(":").pop();
   const postUrl = `https://www.linkedin.com/feed/update/${postId}`;
 
@@ -553,6 +662,42 @@ async function runPostWorker() {
 
     // Debug database connection
     verboseLog("📊 Database URL:", process.env.POSTGRES_URL);
+
+    // Debug environment variables
+    verboseLog("🔑 Environment variables check:");
+    verboseLog(
+      "  - POST_WORKER_API_KEY exists:",
+      !!process.env.POST_WORKER_API_KEY,
+    );
+    verboseLog(
+      "  - TWITTER_CLIENT_ID exists:",
+      !!process.env.TWITTER_CLIENT_ID,
+    );
+    verboseLog(
+      "  - TWITTER_CLIENT_SECRET exists:",
+      !!process.env.TWITTER_CLIENT_SECRET,
+    );
+    verboseLog(
+      "  - SLACK_WEBHOOK_URL exists:",
+      !!process.env.SLACK_WEBHOOK_URL,
+    );
+    verboseLog("  - NEXTAUTH_URL exists:", !!process.env.NEXTAUTH_URL);
+    verboseLog(
+      "  - RELEASE_RANDOMNESS exists:",
+      !!process.env.RELEASE_RANDOMNESS,
+    );
+
+    // Test database connection
+    try {
+      verboseLog("🔍 Testing database connection...");
+      const testQuery = await db.execute(sql`SELECT 1 as test`);
+      verboseLog("✅ Database connection successful:", testQuery);
+    } catch (dbError) {
+      verboseLog("❌ Database connection error:", dbError);
+      throw new Error(
+        `Database connection failed: ${dbError.message || dbError}`,
+      );
+    }
 
     // If we're just listing posts, do that and return
     if (options.list) {
