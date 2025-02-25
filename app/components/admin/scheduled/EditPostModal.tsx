@@ -14,6 +14,7 @@ import { TwitterContent } from "../marketing-modal/platforms/TwitterContent";
 import { LinkedInContent } from "../marketing-modal/platforms/LinkedInContent";
 import { HackerNewsContent } from "../marketing-modal/platforms/HackerNewsContent";
 import Image from "next/image";
+import { RetryDialog } from "./RetryDialog";
 
 interface ImageAsset {
   asset: string;
@@ -51,7 +52,7 @@ interface EditPostModalProps {
     scheduledFor: Date,
   ) => Promise<void>;
   onDelete?: (postId: string) => void;
-  onRetry?: (postId: string) => void;
+  onRetry?: (postId: string, newScheduledTime: Date) => void;
 }
 
 export function EditPostModal({
@@ -63,7 +64,9 @@ export function EditPostModal({
 }: EditPostModalProps) {
   const [content, setContent] = useState(post.content);
   const [url, setUrl] = useState(post.metadata.pageContext?.url || "");
-  const [scheduledFor, setScheduledFor] = useState(new Date(post.scheduledFor));
+  const [scheduledFor, setScheduledFor] = useState<Date>(
+    new Date(post.scheduledFor),
+  );
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [imageAssets, setImageAssets] = useState<ImageAsset[]>(
@@ -75,6 +78,7 @@ export function EditPostModal({
   // Add state for delete confirmation dialog
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [isRetryDialogOpen, setIsRetryDialogOpen] = useState(false);
 
   // Check if post can be edited
   const canEdit = post.status === "scheduled" || post.status === "failed";
@@ -210,6 +214,19 @@ export function EditPostModal({
   const handleCancelDelete = () => {
     setShowDeleteConfirm(false);
     setDeleteConfirmText("");
+  };
+
+  const handleRetryClick = () => {
+    setIsRetryDialogOpen(true);
+  };
+
+  const handleRetry = (newScheduledTime: Date) => {
+    if (onRetry) {
+      // We'll need to update the API to accept a new scheduled time
+      onRetry(post.id, newScheduledTime);
+      setIsRetryDialogOpen(false);
+      onClose();
+    }
   };
 
   const renderEditor = () => {
@@ -416,6 +433,18 @@ export function EditPostModal({
                         })}
                       </p>
                     </div>
+                  ) : post.status === "failed" ? (
+                    <div>
+                      <label className="text-sm font-medium text-gray-200 block">
+                        Originally Scheduled For:
+                      </label>
+                      <p className="text-xs text-red-300">
+                        {new Date(post.scheduledFor).toLocaleString(undefined, {
+                          dateStyle: "medium",
+                          timeStyle: "short",
+                        })}
+                      </p>
+                    </div>
                   ) : (
                     <>
                       <div>
@@ -517,44 +546,9 @@ export function EditPostModal({
           <div className="bg-gray-800 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
             {canEdit ? (
               <>
-                <button
-                  onClick={handleSave}
-                  disabled={isSaving}
-                  className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 sm:ml-3 sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSaving ? (
-                    <>
-                      <svg
-                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        />
-                      </svg>
-                      Saving...
-                    </>
-                  ) : (
-                    "Save Changes"
-                  )}
-                </button>
-                {post.status === "failed" && onRetry && (
+                {post.status === "failed" && onRetry ? (
                   <button
-                    onClick={() => {
-                      onRetry(post.id);
-                      onClose();
-                    }}
+                    onClick={handleRetryClick}
                     className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-auto"
                   >
                     <svg
@@ -572,6 +566,39 @@ export function EditPostModal({
                       />
                     </svg>
                     Retry Post
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleSave}
+                    disabled={isSaving}
+                    className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 sm:ml-3 sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSaving ? (
+                      <>
+                        <svg
+                          className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          />
+                        </svg>
+                        Saving...
+                      </>
+                    ) : (
+                      "Save Changes"
+                    )}
                   </button>
                 )}
               </>
@@ -694,6 +721,16 @@ export function EditPostModal({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Retry Dialog */}
+      {isRetryDialogOpen && (
+        <RetryDialog
+          isOpen={isRetryDialogOpen}
+          onClose={() => setIsRetryDialogOpen(false)}
+          onRetry={handleRetry}
+          originalScheduledFor={new Date(post.scheduledFor)}
+        />
       )}
     </div>
   );

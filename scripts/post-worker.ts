@@ -263,9 +263,37 @@ async function postToTwitter(
       error: responseData,
       requestBody: JSON.stringify(requestData, null, 2),
     });
-    throw new Error(
-      `Twitter API error: ${responseData.detail || responseData.errors?.[0]?.message || response.statusText}`,
-    );
+
+    // Check for specific error types
+    let errorMessage = "Twitter API error";
+
+    // Check for permission errors
+    if (response.status === 403) {
+      if (responseData.errors?.some((e: any) => e.code === 220)) {
+        errorMessage =
+          "Twitter API credentials are no longer valid. Please reconnect your Twitter account.";
+      } else if (responseData.errors?.some((e: any) => e.code === 187)) {
+        errorMessage =
+          "Twitter API duplicate content error. Please modify your content and try again.";
+      } else if (responseData.errors?.some((e: any) => e.code === 186)) {
+        errorMessage =
+          "Twitter API content too long. Please shorten your content and try again.";
+      } else if (
+        responseData.errors?.some((e: any) => e.message?.includes("permission"))
+      ) {
+        errorMessage =
+          "Twitter API permission denied. Please check your account permissions and ensure you've granted write access.";
+      } else {
+        errorMessage = `Twitter API permission error: ${responseData.detail || responseData.errors?.[0]?.message || response.statusText}`;
+      }
+    } else if (response.status === 401) {
+      errorMessage =
+        "Twitter API authentication failed. Please reconnect your Twitter account.";
+    } else {
+      errorMessage = `Twitter API error: ${responseData.detail || responseData.errors?.[0]?.message || response.statusText}`;
+    }
+
+    throw new Error(errorMessage);
   }
 
   const tweetId = responseData.data.id;
@@ -625,27 +653,54 @@ async function processScheduledPosts() {
         "unknown";
 
       verboseLog("📨 Sending failure notification...");
-      // Send failure notification with user's timezone
-      await sendSlackNotification(
-        createErrorNotification({
-          platform,
-          content: post.content,
-          errorMessage:
-            error instanceof Error ? error.message : "Unknown error",
-          scheduledFor: post.scheduledFor,
-          metadata: {
-            ...(post.metadata as {
-              url?: string;
-              type?: string;
-              userEmail?: string;
-              userName?: string;
-            }),
-            userEmail: user?.email,
-            userName: user?.name,
-            timezone: userTz,
-          },
-        }),
+
+      // Create the error notification
+      const errorNotification = createErrorNotification({
+        platform,
+        content: post.content,
+        errorMessage: error instanceof Error ? error.message : "Unknown error",
+        scheduledFor: post.scheduledFor,
+        metadata: {
+          ...(post.metadata as {
+            url?: string;
+            type?: string;
+            userEmail?: string;
+            userName?: string;
+          }),
+          userEmail: user?.email,
+          userName: user?.name,
+          timezone: userTz,
+        },
+      });
+
+      // Log the notification for debugging
+      verboseLog(
+        "Error notification payload:",
+        JSON.stringify(errorNotification, null, 2),
       );
+
+      // Send the notification with better error handling
+      try {
+        await sendSlackNotification(errorNotification);
+        verboseLog("✅ Error notification sent to Slack successfully");
+      } catch (slackError) {
+        console.error(
+          "❌ Failed to send error notification to Slack:",
+          slackError,
+        );
+        // Try a simplified notification as fallback
+        try {
+          await sendSlackNotification({
+            text: `❌ Error posting to ${platform}: ${error instanceof Error ? error.message : "Unknown error"} for user ${user?.email || "unknown"}`,
+          });
+          verboseLog("✅ Simplified error notification sent to Slack");
+        } catch (fallbackError) {
+          console.error(
+            "❌ Failed to send simplified error notification to Slack:",
+            fallbackError,
+          );
+        }
+      }
     }
   }
 }

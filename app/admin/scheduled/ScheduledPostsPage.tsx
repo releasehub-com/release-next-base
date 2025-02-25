@@ -788,11 +788,27 @@ export default function ScheduledPostsPageClient({
     }
   };
 
-  const handleRetry = async (postId: string) => {
+  const handleRetry = async (postId: string, newScheduledTime?: Date) => {
     try {
-      const response = await fetch(`/api/admin/scheduled-posts/${postId}`, {
+      // Prepare request body if a new scheduled time is provided
+      const requestOptions: RequestInit = {
         method: "PUT",
-      });
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      // If a new scheduled time is provided, include it in the request body
+      if (newScheduledTime) {
+        requestOptions.body = JSON.stringify({
+          scheduledFor: newScheduledTime.toISOString(),
+        });
+      }
+
+      const response = await fetch(
+        `/api/admin/scheduled-posts/${postId}`,
+        requestOptions,
+      );
 
       if (!response.ok) {
         throw new Error("Failed to retry post");
@@ -809,6 +825,7 @@ export default function ScheduledPostsPageClient({
                 status: "scheduled",
                 errorMessage: null,
                 updatedAt: post.updatedAt,
+                scheduledFor: post.scheduledFor || p.scheduledFor, // Use new scheduled time if provided
               }
             : p,
         ),

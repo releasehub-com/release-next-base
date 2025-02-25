@@ -279,14 +279,56 @@ export async function PUT(
       );
     }
 
+    // Check if a new scheduled time is provided in the request body
+    let newScheduledTime: Date | undefined;
+    const updateData: Record<string, unknown> = {
+      status: "scheduled",
+      errorMessage: null,
+      updatedAt: new Date(),
+    };
+
+    // Try to parse the request body for a new scheduled time
+    try {
+      const body = await request.json();
+      if (body.scheduledFor) {
+        // Validate that the scheduled time is in the future
+        const scheduledTime = new Date(body.scheduledFor);
+        const currentTime = new Date();
+
+        // Add a small buffer (5 minutes) to account for processing time
+        const bufferTime = 5 * 60 * 1000; // 5 minutes in milliseconds
+        if (scheduledTime.getTime() <= currentTime.getTime() + bufferTime) {
+          return NextResponse.json(
+            {
+              error: "Scheduled time must be at least 5 minutes in the future",
+              details: {
+                scheduledTime: scheduledTime.toISOString(),
+                currentTime: currentTime.toISOString(),
+                difference: scheduledTime.getTime() - currentTime.getTime(),
+                message:
+                  "Please schedule the post at least 5 minutes in the future.",
+              },
+            },
+            { status: 400 },
+          );
+        }
+
+        // Add the new scheduled time to the update data
+        updateData.scheduledFor = scheduledTime;
+      }
+    } catch (error) {
+      // If there's an error parsing the body or no body is provided,
+      // just continue with the default update (status change only)
+      console.log(
+        "No new scheduled time provided or error parsing body:",
+        error,
+      );
+    }
+
     // Reset the post status to scheduled and clear error message
     const result = await db
       .update(scheduledPosts)
-      .set({
-        status: "scheduled",
-        errorMessage: null,
-        updatedAt: new Date(),
-      })
+      .set(updateData)
       .where(eq(scheduledPosts.id, params.id))
       .returning();
 

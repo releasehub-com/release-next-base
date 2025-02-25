@@ -212,18 +212,39 @@ export async function GET(request: Request) {
     );
     console.log("Twitter profile:", profile);
 
-    // Use upsertSocialAccount to create or update the account
-    await upsertSocialAccount({
-      id: `twitter_${profile.id_str}`,
-      userId,
-      provider: "twitter",
-      providerAccountId: profile.id_str,
-      accessToken: tokenData.oauth_token,
-      refreshToken: null,
-      expiresAt: null,
-      tokenType: "oauth1",
-      scope: "",
-      metadata: {
+    // Check if an account with this ID already exists
+    const accountId = `twitter_${profile.id_str}`;
+    const existingAccount = await db
+      .select()
+      .from(socialAccounts)
+      .where(eq(socialAccounts.id, accountId))
+      .limit(1);
+
+    // Prepare the OAuth 1.0a metadata
+    const oauth1Metadata = {
+      username: profile.screen_name,
+      profile: {
+        id: profile.id_str,
+        name: profile.name,
+        username: profile.screen_name,
+      },
+      oauth1: {
+        accessToken: tokenData.oauth_token,
+        tokenSecret: tokenData.oauth_token_secret,
+      },
+    };
+
+    // If account exists, merge metadata to preserve OAuth 2.0 credentials
+    if (existingAccount.length > 0) {
+      console.log("Existing account found, merging metadata");
+      const existing = existingAccount[0];
+
+      // Get existing metadata
+      const existingMetadata = existing.metadata || {};
+
+      // Create merged metadata, preserving OAuth 2.0 data if it exists
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mergedMetadata: Record<string, any> = {
         username: profile.screen_name,
         profile: {
           id: profile.id_str,
@@ -234,8 +255,46 @@ export async function GET(request: Request) {
           accessToken: tokenData.oauth_token,
           tokenSecret: tokenData.oauth_token_secret,
         },
-      },
-    });
+      };
+
+      // Preserve OAuth 2.0 data if it exists
+      if (existingMetadata && typeof existingMetadata === "object") {
+        if (existingMetadata.oauth2) {
+          mergedMetadata.oauth2 = existingMetadata.oauth2;
+        }
+      }
+
+      console.log("Merged metadata:", mergedMetadata);
+
+      // Use existing tokenType and scope if they exist (to preserve OAuth 2.0 scopes)
+      await upsertSocialAccount({
+        id: accountId,
+        userId,
+        provider: "twitter",
+        providerAccountId: profile.id_str,
+        accessToken: tokenData.oauth_token,
+        refreshToken: existing.refreshToken,
+        expiresAt: existing.expiresAt,
+        tokenType: existing.tokenType || "oauth1", // Preserve OAuth 2.0 token type if it exists
+        scope: existing.scope || "", // Preserve OAuth 2.0 scopes if they exist
+        metadata: mergedMetadata,
+      });
+    } else {
+      // New account, just use OAuth 1.0a data
+      console.log("Creating new account with OAuth 1.0a credentials");
+      await upsertSocialAccount({
+        id: accountId,
+        userId,
+        provider: "twitter",
+        providerAccountId: profile.id_str,
+        accessToken: tokenData.oauth_token,
+        refreshToken: null,
+        expiresAt: null,
+        tokenType: "oauth1",
+        scope: "",
+        metadata: oauth1Metadata,
+      });
+    }
 
     return NextResponse.redirect(
       `${process.env.NEXTAUTH_URL}/admin/social?success=twitter_v1_connected`,

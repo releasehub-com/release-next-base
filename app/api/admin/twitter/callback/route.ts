@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { upsertSocialAccount, db } from "@/lib/db";
 import { getServerSession } from "next-auth";
-import { user } from "@/lib/db/schema";
+import { user, socialAccounts } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 
@@ -23,6 +23,24 @@ interface TwitterUserResponse {
     name: string;
     username: string;
   };
+}
+
+// Define a type for Twitter metadata
+interface TwitterMetadata {
+  profile: {
+    id: string;
+    name: string;
+    username: string;
+  };
+  oauth2?: {
+    codeVerifier: string;
+  };
+  oauth1?: {
+    accessToken: string;
+    tokenSecret: string;
+  };
+  username?: string;
+  [key: string]: unknown;
 }
 
 async function getTwitterTokens(
@@ -142,20 +160,36 @@ export async function GET(request: Request) {
     const profile = await getTwitterProfile(tokenData.access_token);
     console.log("Twitter profile:", profile);
 
-    // Store the connection in the database using the user's ID
-    await upsertSocialAccount({
-      id: `twitter_${profile.data.id}`,
-      userId,
-      provider: "twitter",
-      providerAccountId: profile.data.id,
-      accessToken: tokenData.access_token,
-      refreshToken: tokenData.refresh_token,
-      expiresAt: tokenData.expires_in
-        ? new Date(Date.now() + tokenData.expires_in * 1000)
-        : null,
-      tokenType: tokenData.token_type,
-      scope: tokenData.scope,
-      metadata: {
+    // Prepare OAuth 2.0 metadata
+    const oauth2Metadata = {
+      profile: {
+        id: profile.data.id,
+        name: profile.data.name,
+        username: profile.data.username,
+      },
+      oauth2: {
+        codeVerifier,
+      },
+    };
+
+    // Check if an account with this ID already exists
+    const accountId = `twitter_${profile.data.id}`;
+    const existingAccount = await db
+      .select()
+      .from(socialAccounts)
+      .where(eq(socialAccounts.id, accountId))
+      .limit(1);
+
+    if (existingAccount.length > 0) {
+      console.log("Existing account found, merging metadata");
+      const existing = existingAccount[0];
+
+      // Get existing metadata
+      const existingMetadata = existing.metadata || {};
+
+      // Create merged metadata, preserving OAuth 1.0a data if it exists
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mergedMetadata: Record<string, any> = {
         profile: {
           id: profile.data.id,
           name: profile.data.name,
@@ -164,8 +198,53 @@ export async function GET(request: Request) {
         oauth2: {
           codeVerifier,
         },
-      },
-    });
+      };
+
+      // Preserve OAuth 1.0a data if it exists
+      if (existingMetadata && typeof existingMetadata === "object") {
+        if (existingMetadata.oauth1) {
+          mergedMetadata.oauth1 = existingMetadata.oauth1;
+        }
+        if (existingMetadata.username) {
+          mergedMetadata.username = existingMetadata.username;
+        }
+      }
+
+      console.log("Merged metadata:", mergedMetadata);
+
+      // Update the account with OAuth 2.0 credentials while preserving OAuth 1.0a data
+      await upsertSocialAccount({
+        id: accountId,
+        userId,
+        provider: "twitter",
+        providerAccountId: profile.data.id,
+        accessToken: tokenData.access_token,
+        refreshToken: tokenData.refresh_token,
+        expiresAt: tokenData.expires_in
+          ? new Date(Date.now() + tokenData.expires_in * 1000)
+          : null,
+        tokenType: tokenData.token_type,
+        scope: tokenData.scope,
+        metadata: mergedMetadata,
+      });
+    } else {
+      // New account, just use OAuth 2.0 data
+      console.log("Creating new account with OAuth 2.0 credentials");
+      await upsertSocialAccount({
+        id: accountId,
+        userId,
+        provider: "twitter",
+        providerAccountId: profile.data.id,
+        accessToken: tokenData.access_token,
+        refreshToken: tokenData.refresh_token,
+        expiresAt: tokenData.expires_in
+          ? new Date(Date.now() + tokenData.expires_in * 1000)
+          : null,
+        tokenType: tokenData.token_type,
+        scope: tokenData.scope,
+        metadata: oauth2Metadata,
+      });
+    }
 
     // Redirect back to the social accounts page
     return NextResponse.redirect(
