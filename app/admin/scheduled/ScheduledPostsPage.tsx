@@ -327,7 +327,7 @@ function ListView({ posts, onSelectPost, onDelete, onRetry }: ListViewProps) {
                           clipRule="evenodd"
                         />
                       </svg>
-                      <div className="absolute left-0 top-full mt-1 w-64 p-2 bg-gray-900 text-xs text-red-200 rounded shadow-lg border border-red-500/30 opacity-0 group-hover:opacity-100 transition-opacity z-[100] pointer-events-none">
+                      <div className="absolute left-0 top-full mt-1 w-96 max-w-[24rem] p-2 bg-gray-900 text-xs text-red-200 rounded shadow-lg border border-red-500/30 opacity-0 group-hover:opacity-100 transition-opacity z-[100] pointer-events-none whitespace-normal break-words">
                         <div className="absolute top-[-6px] left-4 w-3 h-3 bg-gray-900 border-l border-t border-red-500/30 transform rotate-45"></div>
                         <p className="font-medium text-red-300 mb-1">Error:</p>
                         <p>{post.errorMessage}</p>
@@ -1057,7 +1057,7 @@ export default function ScheduledPostsPageClient({
                                           clipRule="evenodd"
                                         />
                                       </svg>
-                                      <div className="absolute left-0 top-full mt-1 w-64 p-2 bg-gray-900 text-xs text-red-200 rounded shadow-lg border border-red-500/30 opacity-0 group-hover:opacity-100 transition-opacity z-[100] pointer-events-none">
+                                      <div className="absolute left-0 top-full mt-1 w-96 max-w-[24rem] p-2 bg-gray-900 text-xs text-red-200 rounded shadow-lg border border-red-500/30 opacity-0 group-hover:opacity-100 transition-opacity z-[100] pointer-events-none whitespace-normal break-words">
                                         <div className="absolute top-[-6px] left-4 w-3 h-3 bg-gray-900 border-l border-t border-red-500/30 transform rotate-45"></div>
                                         <p className="font-medium text-red-300 mb-1">
                                           Error:

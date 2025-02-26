@@ -494,6 +494,43 @@ async function postToLinkedIn(
     }
   }
 
+  // Extract URL from content if present
+  const urlRegex = /https?:\/\/[^\s]+/g;
+  const urls = content.match(urlRegex) || [];
+  const hasUrl = urls.length > 0;
+  const url = urls[0] || null;
+
+  // Determine the appropriate media configuration
+  let mediaConfig = {};
+  let shareMediaCategory = "NONE";
+
+  if (imageAssets?.length) {
+    // If we have image assets, use them
+    shareMediaCategory = "IMAGE";
+    mediaConfig = {
+      media: imageAssets.map((asset) => ({
+        status: "READY",
+        description: { text: "Image" },
+        media: asset.asset,
+        title: { text: "Image" },
+      })),
+    };
+  } else if (hasUrl) {
+    // If we have a URL but no images, use the URL for OpenGraph preview
+    shareMediaCategory = "ARTICLE";
+    mediaConfig = {
+      media: [
+        {
+          status: "READY",
+          originalUrl: url,
+        },
+      ],
+    };
+
+    // Log that we're using a URL preview
+    verboseLog("🔗 Using URL preview for LinkedIn post:", url);
+  }
+
   const body = {
     author: `urn:li:person:${account.providerAccountId}`,
     lifecycleState: "PUBLISHED",
@@ -502,23 +539,19 @@ async function postToLinkedIn(
         shareCommentary: {
           text: content,
         },
-        shareMediaCategory: imageAssets?.length ? "IMAGE" : "NONE",
-        ...(imageAssets?.length
-          ? {
-              media: imageAssets.map((asset) => ({
-                status: "READY",
-                description: { text: "Image" },
-                media: asset.asset,
-                title: { text: "Image" },
-              })),
-            }
-          : {}),
+        shareMediaCategory,
+        ...mediaConfig,
       },
     },
     visibility: {
       "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC",
     },
   };
+
+  verboseLog(
+    "📤 Sending LinkedIn post with body:",
+    JSON.stringify(body, null, 2),
+  );
 
   const response = await fetch("https://api.linkedin.com/v2/ugcPosts", {
     method: "POST",

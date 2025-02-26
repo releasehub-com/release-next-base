@@ -89,13 +89,18 @@ interface LinkedInShareContent {
   shareCommentary: {
     text: string;
   };
-  shareMediaCategory: "IMAGE" | "NONE";
-  media?: Array<{
-    status: "READY";
-    description: { text: string };
-    media: string;
-    title: { text: string };
-  }>;
+  shareMediaCategory: "IMAGE" | "NONE" | "ARTICLE";
+  media?:
+    | Array<{
+        status: "READY";
+        description: { text: string };
+        media: string;
+        title: { text: string };
+      }>
+    | Array<{
+        status: "READY";
+        originalUrl: string;
+      }>;
 }
 
 interface LinkedInPostBody {
@@ -207,8 +212,13 @@ async function postToTwitter(
       }
     }
 
-    // Fallback to account.accessToken if it's a bearer token
-    if (!oauth2Token && account.tokenType?.toLowerCase() === "bearer") {
+    // Only fallback to account.accessToken if we're sure it's not an OAuth 1.0a token
+    // OAuth 1.0a tokens typically don't have a dash in them and are stored in metadata.oauth1
+    if (
+      !oauth2Token &&
+      account.tokenType?.toLowerCase() === "bearer" &&
+      !(metadata?.oauth1?.accessToken === account.accessToken)
+    ) {
       oauth2Token = account.accessToken;
       console.log("Using OAuth 2.0 token from account.accessToken");
     }
@@ -429,6 +439,48 @@ async function postToLinkedIn(
     }
   }
 
+  // Extract URL from content if present
+  const urlRegex = /https?:\/\/[^\s]+/g;
+  const urls = content.match(urlRegex) || [];
+  const hasUrl = urls.length > 0;
+  const url = urls[0] || null;
+
+  // Determine the appropriate media configuration
+  let shareMediaCategory: "IMAGE" | "NONE" | "ARTICLE" = "NONE";
+  let mediaConfig = {};
+
+  if (imageAssets?.length) {
+    // If we have image assets, use them
+    shareMediaCategory = "IMAGE";
+
+    // Extract just the URN from the asset object if it's an object
+    const assetUrns = imageAssets.map((asset) =>
+      typeof asset === "string" ? asset : asset.asset,
+    );
+
+    mediaConfig = {
+      media: assetUrns.map((urn) => ({
+        status: "READY",
+        description: { text: "Image" },
+        media: urn,
+        title: { text: "Image" },
+      })),
+    };
+  } else if (hasUrl) {
+    // If we have a URL but no images, use the URL for OpenGraph preview
+    shareMediaCategory = "ARTICLE";
+    mediaConfig = {
+      media: [
+        {
+          status: "READY",
+          originalUrl: url,
+        },
+      ],
+    };
+
+    console.log("Using URL preview for LinkedIn post:", url);
+  }
+
   const body: LinkedInPostBody = {
     author: `urn:li:person:${account.providerAccountId}`,
     lifecycleState: "PUBLISHED",
@@ -437,7 +489,8 @@ async function postToLinkedIn(
         shareCommentary: {
           text: content,
         },
-        shareMediaCategory: imageAssets?.length ? "IMAGE" : "NONE",
+        shareMediaCategory,
+        ...mediaConfig,
       },
     },
     visibility: {
@@ -445,30 +498,11 @@ async function postToLinkedIn(
     },
   };
 
-  // Add images if provided and not empty
-  if (imageAssets?.length) {
-    // Extract just the URN from the asset object if it's an object
-    const assetUrns = imageAssets.map((asset) =>
-      typeof asset === "string" ? asset : asset.asset,
-    );
-
-    body.specificContent["com.linkedin.ugc.ShareContent"].media = assetUrns.map(
-      (urn) => ({
-        status: "READY",
-        description: {
-          text: "Image",
-        },
-        media: urn,
-        title: {
-          text: "Image",
-        },
-      }),
-    );
-  }
-
   console.log("Posting to LinkedIn:", {
     postId: content.substring(0, 20) + "...",
     hasMedia: !!imageAssets?.length,
+    hasUrlPreview: hasUrl && !imageAssets?.length,
+    body: JSON.stringify(body),
   });
 
   const response = await fetch("https://api.linkedin.com/v2/ugcPosts", {

@@ -272,7 +272,10 @@ export async function GET(request: Request) {
         userId,
         provider: "twitter",
         providerAccountId: profile.id_str,
-        accessToken: tokenData.oauth_token,
+        accessToken:
+          existing.tokenType === "bearer"
+            ? existing.accessToken
+            : tokenData.oauth_token,
         refreshToken: existing.refreshToken,
         expiresAt: existing.expiresAt,
         tokenType: existing.tokenType || "oauth1", // Preserve OAuth 2.0 token type if it exists
