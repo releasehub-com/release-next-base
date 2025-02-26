@@ -189,14 +189,59 @@ async function postToTwitter(
     throw new Error("Twitter OAuth 2.0 access token not found");
   }
 
+  // Check if we have media to upload and OAuth 1.0a credentials
+  let mediaIds: string[] = [];
+  if (imageAssets?.length) {
+    // We need OAuth 1.0a credentials for media uploads
+    const metadata = account.metadata as Record<string, any>;
+    const oauth1Creds = metadata?.oauth1;
+    
+    if (!oauth1Creds?.accessToken || !oauth1Creds?.tokenSecret) {
+      throw new Error("Twitter OAuth 1.0a credentials required for media uploads. Please connect your account with OAuth 1.0a.");
+    }
+
+    verboseLog(`📷 Uploading ${imageAssets.length} images using OAuth 1.0a...`);
+    
+    // Create OAuth 1.0a instance
+    const oauth = new OAuth({
+      consumer: {
+        key: process.env.TWITTER_API_KEY!,
+        secret: process.env.TWITTER_API_SECRET!,
+      },
+      signature_method: "HMAC-SHA1",
+      hash_function(baseString: string, key: string) {
+        return crypto.createHmac("sha1", key).update(baseString).digest("base64");
+      },
+    });
+
+    // Upload each image
+    for (const imageAsset of imageAssets) {
+      try {
+        const mediaId = await uploadTwitterMedia(
+          imageAsset,
+          oauth,
+          {
+            accessToken: oauth1Creds.accessToken,
+            tokenSecret: oauth1Creds.tokenSecret,
+          }
+        );
+        mediaIds.push(mediaId);
+        verboseLog(`✅ Successfully uploaded image: ${mediaId}`);
+      } catch (error) {
+        verboseLog(`❌ Failed to upload image: ${error}`);
+        throw new Error(`Failed to upload image: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }
+  }
+
   // Format the request data for v2 API
   const requestData: TwitterRequestData = {
     text: content,
   };
 
-  if (imageAssets?.length) {
+  if (mediaIds.length > 0) {
     requestData.media = {
-      media_ids: imageAssets.map((asset) => asset.asset),
+      media_ids: mediaIds,
     };
   }
 
@@ -206,7 +251,7 @@ async function postToTwitter(
     JSON.stringify(requestData, null, 2),
   );
 
-  // Make the API request with OAuth 2.0
+  // Make the API request with OAuth 2.0 User Context
   const response = await fetch("https://api.twitter.com/2/tweets", {
     method: "POST",
     headers: {
@@ -267,29 +312,32 @@ async function postToTwitter(
     // Check for specific error types
     let errorMessage = "Twitter API error";
 
+    // Check for authentication errors
+    if (response.status === 401) {
+      errorMessage = "Twitter API authentication failed. Please reconnect your Twitter account.";
+    }
     // Check for permission errors
-    if (response.status === 403) {
+    else if (response.status === 403) {
       if (responseData.errors?.some((e: any) => e.code === 220)) {
-        errorMessage =
-          "Twitter API credentials are no longer valid. Please reconnect your Twitter account.";
+        errorMessage = "Twitter API credentials are no longer valid. Please reconnect your Twitter account.";
       } else if (responseData.errors?.some((e: any) => e.code === 187)) {
-        errorMessage =
-          "Twitter API duplicate content error. Please modify your content and try again.";
+        errorMessage = "Twitter API duplicate content error. Please modify your content and try again.";
       } else if (responseData.errors?.some((e: any) => e.code === 186)) {
-        errorMessage =
-          "Twitter API content too long. Please shorten your content and try again.";
-      } else if (
-        responseData.errors?.some((e: any) => e.message?.includes("permission"))
-      ) {
-        errorMessage =
-          "Twitter API permission denied. Please check your account permissions and ensure you've granted write access.";
+        errorMessage = "Twitter API content too long. Please shorten your content and try again.";
+      } else if (responseData.errors?.some((e: any) => e.message?.includes("permission"))) {
+        errorMessage = "Twitter API permission denied. Please check your account permissions and ensure you've granted write access.";
+      } else if (responseData.errors?.some((e: any) => e.message?.includes("OAuth"))) {
+        errorMessage = "Twitter API OAuth error: " + (responseData.errors?.[0]?.message || "Authentication type not supported for this endpoint. Please ensure your account has both OAuth 1.0a and OAuth 2.0 connected.");
       } else {
         errorMessage = `Twitter API permission error: ${responseData.detail || responseData.errors?.[0]?.message || response.statusText}`;
       }
-    } else if (response.status === 401) {
-      errorMessage =
-        "Twitter API authentication failed. Please reconnect your Twitter account.";
-    } else {
+    } 
+    // Rate limit errors
+    else if (response.status === 429) {
+      errorMessage = "Twitter API rate limit exceeded. Please try again later.";
+    }
+    // Other errors
+    else {
       errorMessage = `Twitter API error: ${responseData.detail || responseData.errors?.[0]?.message || response.statusText}`;
     }
 
