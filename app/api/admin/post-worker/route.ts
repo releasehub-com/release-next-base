@@ -9,6 +9,9 @@ import {
   createScheduledPostNotification,
   createErrorNotification,
 } from "@/lib/slack";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { z } from "zod";
 
 interface TwitterApiResponse {
   data: {
@@ -117,6 +120,34 @@ interface ErrorDetail {
   name?: string;
 }
 
+// Define a type for Twitter metadata
+interface TwitterMetadata {
+  profile?: {
+    id: string;
+    name: string;
+    username: string;
+  };
+  oauth2?: {
+    codeVerifier?: string;
+    access_token?: string;
+    refresh_token?: string;
+    expires_in?: number;
+    token_type?: string;
+    scope?: string;
+  };
+  oauth1?: {
+    accessToken: string;
+    tokenSecret: string;
+  };
+  username?: string;
+  access_token?: string;
+  token_type?: string;
+  expires_in?: number;
+  refresh_token?: string;
+  scope?: string;
+  [key: string]: unknown;
+}
+
 // Helper function to simulate posting to Twitter
 async function mockPostToTwitter(content: string): Promise<void> {
   console.log("MOCK: Would post to Twitter:", content);
@@ -145,21 +176,59 @@ async function postToTwitter(
   imageAssets?: (string | { asset: string; displayUrl: string })[],
 ): Promise<TwitterResponse> {
   try {
-    // Validate access token
-    if (!account.accessToken) {
-      throw new Error("Twitter access token is missing");
-    }
-
     const isDebug = true; // Enable debug for this function
 
+    // Get OAuth 2.0 access token - first check metadata for oauth2.access_token
+    let oauth2Token: string | undefined;
+    const metadata = account.metadata as TwitterMetadata | undefined;
+
     if (isDebug) {
-      console.log("🔑 Twitter token info:", {
-        tokenExists: !!account.accessToken,
-        tokenLength: account.accessToken.length,
-        accountId: account.providerAccountId,
-        refreshTokenExists: !!account.refreshToken,
+      console.log("🔑 Twitter account details:", {
+        id: account.id,
+        provider: account.provider,
         tokenType: account.tokenType,
+        hasAccessToken: !!account.accessToken,
+        hasRefreshToken: !!account.refreshToken,
       });
+
+      console.log("Full account metadata:", JSON.stringify(metadata, null, 2));
+    }
+
+    if (metadata) {
+      // Check for token in metadata.oauth2.access_token (preferred location)
+      if (metadata.oauth2?.access_token) {
+        oauth2Token = metadata.oauth2.access_token;
+        console.log("Using OAuth 2.0 token from metadata.oauth2.access_token");
+      }
+      // Fallback to metadata.access_token
+      else if (metadata.access_token) {
+        oauth2Token = metadata.access_token;
+        console.log("Using OAuth 2.0 token from metadata.access_token");
+      }
+    }
+
+    // Fallback to account.accessToken if it's a bearer token
+    if (!oauth2Token && account.tokenType?.toLowerCase() === "bearer") {
+      oauth2Token = account.accessToken;
+      console.log("Using OAuth 2.0 token from account.accessToken");
+    }
+
+    if (!oauth2Token) {
+      console.log(
+        "No OAuth 2.0 token found. Available metadata keys:",
+        metadata ? Object.keys(metadata) : "none",
+      );
+      throw new Error(
+        "Twitter OAuth 2.0 access token not found. Please reconnect your Twitter account with OAuth 2.0.",
+      );
+    }
+
+    if (isDebug) {
+      console.log(
+        "Using OAuth 2.0 token:",
+        oauth2Token.substring(0, 10) + "...",
+      );
+      console.log("Token type:", account.tokenType);
     }
 
     // Format the request body according to Twitter v2 API
@@ -238,14 +307,14 @@ async function postToTwitter(
         .where(eq(socialAccounts.id, account.id));
 
       // Update the token for the current request
-      account.accessToken = refreshData.access_token;
+      oauth2Token = refreshData.access_token;
     }
 
     // Make the API request with OAuth 2.0 Bearer token
     const response = await fetch("https://api.twitter.com/2/tweets", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${account.accessToken}`,
+        Authorization: `Bearer ${oauth2Token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(requestBody),

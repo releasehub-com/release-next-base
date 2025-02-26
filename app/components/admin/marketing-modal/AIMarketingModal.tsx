@@ -585,6 +585,9 @@ export default function AIMarketingModal({
           scheduledTime={pendingScheduleTime}
           pageContext={pageContext}
           imageAssets={imageAssets}
+          hackernewsUrl={
+            currentPlatform === "hackernews" ? hackernewsUrl : undefined
+          }
         />
       )}
 

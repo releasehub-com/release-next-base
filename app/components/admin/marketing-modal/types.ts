@@ -135,6 +135,7 @@ export interface ConfirmationDialogProps {
     twitter?: ImageAsset[];
     linkedin?: ImageAsset[];
   };
+  hackernewsUrl?: string;
 }
 
 export interface ScheduleDialogProps {

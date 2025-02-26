@@ -184,25 +184,57 @@ async function postToTwitter(
     metadata: account.metadata,
   });
 
-  // Get OAuth 2.0 access token
-  const accessToken = account.accessToken;
-  if (!accessToken) {
-    throw new Error("Twitter OAuth 2.0 access token not found");
+  // Get OAuth 2.0 access token - first check metadata for oauth2.access_token
+  let oauth2Token: string | undefined;
+  const metadata = account.metadata as Record<string, any> | undefined;
+
+  verboseLog("Full account metadata:", JSON.stringify(metadata, null, 2));
+
+  if (metadata) {
+    // Check for token in metadata.oauth2.access_token (preferred location)
+    if (metadata.oauth2?.access_token) {
+      oauth2Token = metadata.oauth2.access_token;
+      verboseLog("Using OAuth 2.0 token from metadata.oauth2.access_token");
+    }
+    // Fallback to metadata.access_token
+    else if (metadata.access_token) {
+      oauth2Token = metadata.access_token;
+      verboseLog("Using OAuth 2.0 token from metadata.access_token");
+    }
   }
+
+  // Fallback to account.accessToken if it's a bearer token
+  if (!oauth2Token && account.tokenType?.toLowerCase() === "bearer") {
+    oauth2Token = account.accessToken;
+    verboseLog("Using OAuth 2.0 token from account.accessToken");
+  }
+
+  if (!oauth2Token) {
+    verboseLog(
+      "No OAuth 2.0 token found. Available metadata keys:",
+      metadata ? Object.keys(metadata) : "none",
+    );
+    throw new Error(
+      "Twitter OAuth 2.0 access token not found. Please reconnect your Twitter account with OAuth 2.0.",
+    );
+  }
+
+  verboseLog("Using OAuth 2.0 token:", oauth2Token.substring(0, 10) + "...");
 
   // Check if we have media to upload and OAuth 1.0a credentials
   let mediaIds: string[] = [];
   if (imageAssets?.length) {
     // We need OAuth 1.0a credentials for media uploads
-    const metadata = account.metadata as Record<string, any>;
     const oauth1Creds = metadata?.oauth1;
-    
+
     if (!oauth1Creds?.accessToken || !oauth1Creds?.tokenSecret) {
-      throw new Error("Twitter OAuth 1.0a credentials required for media uploads. Please connect your account with OAuth 1.0a.");
+      throw new Error(
+        "Twitter OAuth 1.0a credentials required for media uploads. Please connect your account with OAuth 1.0a.",
+      );
     }
 
     verboseLog(`📷 Uploading ${imageAssets.length} images using OAuth 1.0a...`);
-    
+
     // Create OAuth 1.0a instance
     const oauth = new OAuth({
       consumer: {
@@ -211,26 +243,27 @@ async function postToTwitter(
       },
       signature_method: "HMAC-SHA1",
       hash_function(baseString: string, key: string) {
-        return crypto.createHmac("sha1", key).update(baseString).digest("base64");
+        return crypto
+          .createHmac("sha1", key)
+          .update(baseString)
+          .digest("base64");
       },
     });
 
     // Upload each image
     for (const imageAsset of imageAssets) {
       try {
-        const mediaId = await uploadTwitterMedia(
-          imageAsset,
-          oauth,
-          {
-            accessToken: oauth1Creds.accessToken,
-            tokenSecret: oauth1Creds.tokenSecret,
-          }
-        );
+        const mediaId = await uploadTwitterMedia(imageAsset, oauth, {
+          accessToken: oauth1Creds.accessToken,
+          tokenSecret: oauth1Creds.tokenSecret,
+        });
         mediaIds.push(mediaId);
         verboseLog(`✅ Successfully uploaded image: ${mediaId}`);
       } catch (error) {
         verboseLog(`❌ Failed to upload image: ${error}`);
-        throw new Error(`Failed to upload image: ${error instanceof Error ? error.message : String(error)}`);
+        throw new Error(
+          `Failed to upload image: ${error instanceof Error ? error.message : String(error)}`,
+        );
       }
     }
   }
@@ -256,9 +289,12 @@ async function postToTwitter(
   // The token_type should be included in the Authorization header
   // For OAuth 2.0 User Context, it should be "Bearer" followed by the token
   const tokenType = account.tokenType || "Bearer";
-  const authHeader = `${tokenType} ${accessToken}`;
-  
-  verboseLog("🔑 Using authorization header:", `${tokenType} ${accessToken.substring(0, 10)}...`);
+  const authHeader = `${tokenType} ${oauth2Token}`;
+
+  verboseLog(
+    "🔑 Using authorization header:",
+    `${tokenType} ${oauth2Token.substring(0, 10)}...`,
+  );
 
   const response = await fetch("https://api.twitter.com/2/tweets", {
     method: "POST",
@@ -322,26 +358,43 @@ async function postToTwitter(
 
     // Check for authentication errors
     if (response.status === 401) {
-      errorMessage = "Twitter API authentication failed. Please reconnect your Twitter account.";
+      errorMessage =
+        "Twitter API authentication failed. Please reconnect your Twitter account.";
     }
     // Check for permission errors
     else if (response.status === 403) {
       if (responseData.errors?.some((e: any) => e.code === 220)) {
-        errorMessage = "Twitter API credentials are no longer valid. Please reconnect your Twitter account.";
+        errorMessage =
+          "Twitter API credentials are no longer valid. Please reconnect your Twitter account.";
       } else if (responseData.errors?.some((e: any) => e.code === 187)) {
-        errorMessage = "Twitter API duplicate content error. Please modify your content and try again.";
+        errorMessage =
+          "Twitter API duplicate content error. Please modify your content and try again.";
       } else if (responseData.errors?.some((e: any) => e.code === 186)) {
-        errorMessage = "Twitter API content too long. Please shorten your content and try again.";
-      } else if (responseData.errors?.some((e: any) => e.message?.includes("permission"))) {
-        errorMessage = "Twitter API permission denied. Please check your account permissions and ensure you've granted write access.";
-      } else if (responseData.errors?.some((e: any) => e.message?.includes("OAuth"))) {
-        errorMessage = "Twitter API OAuth error: " + (responseData.errors?.[0]?.message || "Authentication type not supported for this endpoint. Please ensure your account has both OAuth 1.0a and OAuth 2.0 connected with the correct scopes.");
-      } else if (responseData.errors?.some((e: any) => e.message?.includes("Authenticating with OAuth 2.0 Application-Only"))) {
-        errorMessage = "Twitter API requires OAuth 2.0 User Context authentication. Please reconnect your Twitter account with OAuth 2.0 and ensure you've granted the 'tweet.write' scope.";
+        errorMessage =
+          "Twitter API content too long. Please shorten your content and try again.";
+      } else if (
+        responseData.errors?.some((e: any) => e.message?.includes("permission"))
+      ) {
+        errorMessage =
+          "Twitter API permission denied. Please check your account permissions and ensure you've granted write access.";
+      } else if (
+        responseData.errors?.some((e: any) => e.message?.includes("OAuth"))
+      ) {
+        errorMessage =
+          "Twitter API OAuth error: " +
+          (responseData.errors?.[0]?.message ||
+            "Authentication type not supported for this endpoint. Please ensure your account has both OAuth 1.0a and OAuth 2.0 connected with the correct scopes.");
+      } else if (
+        responseData.errors?.some((e: any) =>
+          e.message?.includes("Authenticating with OAuth 2.0 Application-Only"),
+        )
+      ) {
+        errorMessage =
+          "Twitter API requires OAuth 2.0 User Context authentication. Please reconnect your Twitter account with OAuth 2.0 and ensure you've granted the 'tweet.write' scope.";
       } else {
         errorMessage = `Twitter API permission error: ${responseData.detail || responseData.errors?.[0]?.message || response.statusText}`;
       }
-    } 
+    }
     // Rate limit errors
     else if (response.status === 429) {
       errorMessage = "Twitter API rate limit exceeded. Please try again later.";

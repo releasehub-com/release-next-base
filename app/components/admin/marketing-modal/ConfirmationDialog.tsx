@@ -14,6 +14,7 @@ export function ConfirmationDialog({
   scheduledTime,
   pageContext,
   imageAssets,
+  hackernewsUrl,
 }: ConfirmationDialogProps) {
   if (!isOpen) return null;
 
@@ -82,7 +83,10 @@ export function ConfirmationDialog({
             ) : platform === "hackernews" ? (
               <HackerNewsContent
                 content={content}
-                pageContext={pageContext}
+                pageContext={{
+                  ...pageContext,
+                  url: hackernewsUrl || pageContext.url,
+                }}
                 isPreview
               />
             ) : null}

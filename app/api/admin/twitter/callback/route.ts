@@ -169,6 +169,11 @@ export async function GET(request: Request) {
       },
       oauth2: {
         codeVerifier,
+        access_token: tokenData.access_token,
+        refresh_token: tokenData.refresh_token,
+        expires_in: tokenData.expires_in,
+        token_type: tokenData.token_type,
+        scope: tokenData.scope,
       },
     };
 
@@ -197,6 +202,11 @@ export async function GET(request: Request) {
         },
         oauth2: {
           codeVerifier,
+          access_token: tokenData.access_token,
+          refresh_token: tokenData.refresh_token,
+          expires_in: tokenData.expires_in,
+          token_type: tokenData.token_type,
+          scope: tokenData.scope,
         },
       };
 

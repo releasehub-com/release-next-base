@@ -21,6 +21,8 @@
     "test-slack:debug": "bash scripts/run-test-slack.sh --debug",
     "test-slack:local-debug": "bash scripts/run-test-slack.sh --local --debug",
     "test-post": "tsx scripts/test-post.ts",
+    "test-twitter": "bash scripts/run-test-twitter.sh",
+    "test-twitter:debug": "bash scripts/run-test-twitter.sh --debug-auth",
     "import-blogs": "ts-node scripts/import-blog-posts.ts",
     "update-og-images": "ts-node scripts/update-blog-og-images.ts",
     "enhance-seo": "ts-node scripts/enhance-blog-seo.ts",
