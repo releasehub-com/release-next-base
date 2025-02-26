@@ -180,6 +180,7 @@ async function postToTwitter(
     hasRefresh: !!account.refreshToken,
     expiresAt: account.expiresAt,
     tokenType: account.tokenType,
+    scope: account.scope,
     metadata: account.metadata,
   });
 
@@ -252,10 +253,17 @@ async function postToTwitter(
   );
 
   // Make the API request with OAuth 2.0 User Context
+  // The token_type should be included in the Authorization header
+  // For OAuth 2.0 User Context, it should be "Bearer" followed by the token
+  const tokenType = account.tokenType || "Bearer";
+  const authHeader = `${tokenType} ${accessToken}`;
+  
+  verboseLog("🔑 Using authorization header:", `${tokenType} ${accessToken.substring(0, 10)}...`);
+
   const response = await fetch("https://api.twitter.com/2/tweets", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: authHeader,
       "Content-Type": "application/json",
       "User-Agent": "Release Social Poster",
     },
@@ -327,7 +335,9 @@ async function postToTwitter(
       } else if (responseData.errors?.some((e: any) => e.message?.includes("permission"))) {
         errorMessage = "Twitter API permission denied. Please check your account permissions and ensure you've granted write access.";
       } else if (responseData.errors?.some((e: any) => e.message?.includes("OAuth"))) {
-        errorMessage = "Twitter API OAuth error: " + (responseData.errors?.[0]?.message || "Authentication type not supported for this endpoint. Please ensure your account has both OAuth 1.0a and OAuth 2.0 connected.");
+        errorMessage = "Twitter API OAuth error: " + (responseData.errors?.[0]?.message || "Authentication type not supported for this endpoint. Please ensure your account has both OAuth 1.0a and OAuth 2.0 connected with the correct scopes.");
+      } else if (responseData.errors?.some((e: any) => e.message?.includes("Authenticating with OAuth 2.0 Application-Only"))) {
+        errorMessage = "Twitter API requires OAuth 2.0 User Context authentication. Please reconnect your Twitter account with OAuth 2.0 and ensure you've granted the 'tweet.write' scope.";
       } else {
         errorMessage = `Twitter API permission error: ${responseData.detail || responseData.errors?.[0]?.message || response.statusText}`;
       }
@@ -348,7 +358,11 @@ async function postToTwitter(
   const postUrl = `https://x.com/i/web/status/${tweetId}`;
 
   verboseLog("✅ Tweet posted successfully:", { tweetId, postUrl });
-  return { id: tweetId, postUrl };
+
+  return {
+    id: tweetId,
+    postUrl,
+  };
 }
 
 // Helper function to post to LinkedIn
