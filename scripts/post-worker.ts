@@ -41,7 +41,7 @@ const sql_client = postgres(
   process.env.POSTGRES_URL ||
     "postgres://postgres:postgres@localhost:5432/release_landing",
   {
-    ssl: process.env.RELEASE_RANDOMNESS === "prod",
+    // SSL is disabled as our database doesn't support it
   },
 );
 
