@@ -33,7 +33,29 @@ else
   echo "Database $DB_NAME already exists."
 fi
 
-# Run the migration
+# Run all migrations in order
 echo "Running migrations..."
-psql $POSTGRES_URL -f lib/db/migrations/0002_add_user_timezone.sql 
-echo "Migrations completed successfully." 
+
+# Check if the user table exists
+if ! psql $POSTGRES_URL -c "SELECT to_regclass('public.user');" | grep -q user; then
+  echo "Initial schema does not exist. Running initial migration..."
+  psql $POSTGRES_URL -f lib/db/migrations/0000_polite_pete_wisdom.sql
+  echo "Initial schema created successfully."
+fi
+
+# Check if the socialAccountId column is nullable
+NULLABLE_CHECK=$(psql $POSTGRES_URL -t -c "SELECT is_nullable FROM information_schema.columns WHERE table_name = 'scheduled_posts' AND column_name = 'socialAccountId';")
+if [[ $NULLABLE_CHECK == *"NO"* ]]; then
+  echo "Running migration 0001: Make socialAccountId nullable..."
+  psql $POSTGRES_URL -f lib/db/migrations/0001_nullable_social_account.sql
+  echo "Migration 0001 completed successfully."
+fi
+
+# Check if the timezone column exists in the user table
+if ! psql $POSTGRES_URL -c "SELECT column_name FROM information_schema.columns WHERE table_name = 'user' AND column_name = 'timezone';" | grep -q timezone; then
+  echo "Running migration 0002: Add user timezone..."
+  psql $POSTGRES_URL -f lib/db/migrations/0002_add_user_timezone.sql
+  echo "Migration 0002 completed successfully."
+fi
+
+echo "All migrations completed successfully." 
