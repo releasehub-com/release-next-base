@@ -15,7 +15,7 @@ if (!process.env.NEXTAUTH_SECRET) {
 // Create a separate client for the auth adapter with the same SSL config
 const authClient = postgres(process.env.POSTGRES_URL!, {
   max: 1,
-  ssl: process.env.RELEASE_RANDOMNESS === "prod",
+  // SSL is disabled as our database doesn't support it
 });
 
 const authDb = drizzle(authClient);
