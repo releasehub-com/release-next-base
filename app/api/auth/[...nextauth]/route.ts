@@ -58,6 +58,7 @@ const ADMIN_EMAILS = [
   "david@release.com",
   "myril@release.com",
   "tommy@releaseapp.io",
+  "jay@release.com",
 ];
 
 const handler = NextAuth({
