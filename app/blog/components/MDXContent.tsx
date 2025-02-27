@@ -1,3 +1,5 @@
+"use client";
+
 import { useMDXComponent } from "next-contentlayer/hooks";
 import Image from "next/image";
 import CallToAction from "@/components/blog/CallToAction";
@@ -11,18 +13,20 @@ interface MDXContentProps {
 
 const components = {
   img: ({ src, alt, ...props }: ComponentProps<"img">) => {
-    if (!src) return <div>Missing image source</div>;
+    if (!src) return null;
 
+    // Wrap in a div that's styled as a block element to prevent nesting in p tags
     return (
-      <div className="relative w-full aspect-[16/9] my-8">
+      <span className="block relative w-full aspect-[16/9] my-8">
         <Image
           src={src}
           alt={alt || ""}
           fill
           className="object-contain rounded-lg"
           unoptimized={src.endsWith(".svg")}
+          priority={true}
         />
-      </div>
+      </span>
     );
   },
   h1: (props: HTMLAttributes<HTMLHeadingElement>) => (
@@ -145,9 +149,15 @@ const components = {
 
 export default function MDXContent({ code }: MDXContentProps) {
   const Component = useMDXComponent(code);
-  return (
-    <div className="prose prose-invert max-w-none">
-      <Component components={components} />
-    </div>
-  );
+
+  try {
+    return (
+      <div className="prose prose-invert max-w-none">
+        <Component components={components} />
+      </div>
+    );
+  } catch (error) {
+    console.error("Error rendering MDX content:", error);
+    return <div>Error rendering content</div>;
+  }
 }

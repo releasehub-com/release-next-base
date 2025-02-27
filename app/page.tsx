@@ -5,7 +5,7 @@ import VersionPageWrapper from "@/components/shared/layout/VersionPageWrapper";
 
 export default function HomePage() {
   return (
-    <VersionPageWrapper>
+    <VersionPageWrapper includeLayout={true}>
       <HomeContent />
     </VersionPageWrapper>
   );

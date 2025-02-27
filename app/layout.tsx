@@ -4,6 +4,9 @@ import "./globals.css";
 import Script from "next/script";
 import PathStorage from "./components/PathStorage";
 import "highlight.js/styles/github-dark.css";
+import { SessionProvider } from "./components/SessionProvider";
+import FloatingActionButton from "./components/admin/FloatingActionButton";
+import { RootWrapper } from "./components/RootWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -104,9 +107,16 @@ export default function RootLayout({
           src="//js.hs-scripts.com/8047877.js"
         />
       </head>
-      <body className={`${inter.className} bg-gray-900`}>
-        <PathStorage />
-        {children}
+      <body
+        className={`${inter.className} bg-gray-900 overflow-hidden h-screen`}
+      >
+        <SessionProvider>
+          <RootWrapper>
+            <PathStorage />
+            {children}
+            <FloatingActionButton />
+          </RootWrapper>
+        </SessionProvider>
       </body>
     </html>
   );

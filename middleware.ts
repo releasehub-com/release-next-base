@@ -1,87 +1,111 @@
+import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import {
-  VERSIONS,
-  getVersionFromPath,
-  isValidVersion,
-  getVersionPath,
-  getCanonicalVersion,
-  DEFAULT_VERSION,
-} from "@/config/versions";
 
-// Get all landing paths from the versions config
-const LANDING_PATHS = Object.values(VERSIONS).map(
-  (v) => v.path,
-) as readonly string[];
+// List of paths that should not have the admin layout
+const NO_ADMIN_LAYOUT_PATHS = ["/admin/login"];
 
-// Type guard to check if a path is a landing path
-function isLandingPath(path: string): path is (typeof LANDING_PATHS)[number] {
-  return LANDING_PATHS.includes(path);
+// List of paths that should be publicly accessible
+const PUBLIC_PATHS = [
+  "/admin/login",
+  "/api/auth/callback/google",
+  "/api/auth/signin/google",
+  "/api/auth/signin",
+  "/api/auth/session",
+  "/api/auth/csrf",
+  "/api/auth/providers",
+];
+
+// Middleware function that runs before withAuth
+function addHeaders(request: Request) {
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-url", request.url);
+
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
 }
 
-export function middleware(request: NextRequest) {
-  // Create base response
-  const response = NextResponse.next();
+export default withAuth(
+  function middleware(req) {
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.set("x-url", req.url);
 
-  // Add security headers to all responses
-  response.headers.set(
-    "Strict-Transport-Security",
-    "max-age=31536000; includeSubDomains",
-  );
-  response.headers.set("X-Content-Type-Options", "nosniff");
-  // Allow framing only from same origin
-  response.headers.set("X-Frame-Options", "SAMEORIGIN");
+    // Set a header to indicate whether to show admin layout
+    requestHeaders.set(
+      "x-show-admin-layout",
+      !NO_ADMIN_LAYOUT_PATHS.includes(req.nextUrl.pathname) ? "1" : "0",
+    );
 
-  // Handle version parameter redirects first
-  const version = request.nextUrl.searchParams.get("version");
+    const token = req.nextauth.token;
+    const path = req.nextUrl.pathname;
 
-  // Handle root path with version resolution
-  if (request.nextUrl.pathname === "/") {
-    // If there's a version parameter, redirect to its landing page
-    if (version && isValidVersion(version)) {
-      const canonicalVersion = getCanonicalVersion(version);
-      const redirectPath = getVersionPath(canonicalVersion);
-
-      const url = request.nextUrl.clone();
-      url.pathname = redirectPath;
-      url.searchParams.delete("version");
-      return NextResponse.redirect(url);
+    // Always allow auth-related paths
+    if (path.startsWith("/api/auth/")) {
+      return NextResponse.next({
+        request: {
+          headers: requestHeaders,
+        },
+      });
     }
 
-    // Otherwise, check for stored version in cookie
-    const storedVersion = request.cookies.get("landing_version")?.value;
-    if (storedVersion && isValidVersion(storedVersion)) {
-      const canonicalVersion = getCanonicalVersion(storedVersion);
-      const redirectPath = getVersionPath(canonicalVersion);
-
-      const url = request.nextUrl.clone();
-      url.pathname = redirectPath;
-      return NextResponse.redirect(url);
+    // If we have a valid admin token
+    if (token?.isAdmin) {
+      // Redirect from login to admin if already authenticated
+      if (path === "/admin/login") {
+        return NextResponse.redirect(new URL("/admin", req.url));
+      }
+      // Allow access to all admin routes
+      return NextResponse.next({
+        request: {
+          headers: requestHeaders,
+        },
+      });
     }
 
-    // If no stored version, redirect to default version's landing page
-    const defaultPath = getVersionPath(DEFAULT_VERSION);
-    if (defaultPath !== "/") {
-      const url = request.nextUrl.clone();
-      url.pathname = defaultPath;
-      return NextResponse.redirect(url);
+    // If not authenticated or not admin
+    if (path.startsWith("/admin") && path !== "/admin/login") {
+      // Store the original URL as the callback URL
+      const callbackUrl = encodeURIComponent(req.url);
+      return NextResponse.redirect(
+        new URL(`/admin/login?callbackUrl=${callbackUrl}`, req.url),
+      );
     }
-  }
 
-  // Handle landing pages
-  if (isLandingPath(request.nextUrl.pathname)) {
-    const version = getVersionFromPath(request.nextUrl.pathname);
-    response.cookies.set("landing_version", version, {
-      path: "/",
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
+    // For all other cases, continue with added headers
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
     });
-    return response;
-  }
+  },
+  {
+    callbacks: {
+      authorized: ({ token, req }) => {
+        const path = req.nextUrl.pathname;
 
-  return response;
-}
+        // Always allow auth-related paths
+        if (path.startsWith("/api/auth/")) {
+          return true;
+        }
+
+        // Allow access to login page
+        if (path === "/admin/login") {
+          return true;
+        }
+
+        // For admin routes, require admin token
+        if (path.startsWith("/admin")) {
+          return Boolean(token?.isAdmin);
+        }
+
+        return true;
+      },
+    },
+  },
+);
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/admin/:path*"],
 };

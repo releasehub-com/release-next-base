@@ -1,0 +1,61 @@
+execution_type: server
+context: gcp-production
+domain: prod.release.com
+repo_name: releasehub-com/release-landing-new
+hostnames:
+  - app: release-landing-new-${env_id}.${domain}
+environment_templates:
+  - name: ephemeral
+    datasets:
+      - name: landing
+resources:
+  cpu:
+    requests: 100m
+  memory:
+    limits: 1Gi
+    requests: 100Mi
+  replicas: 1
+services:
+  - name: app
+    image: releasehub-com/release-landing-new/app
+    build:
+      context: "."
+      args:
+        - NEXT_PUBLIC_APP_BASE_URL=${envs.APP_INGRESS_URL}
+        - NEXT_PUBLIC_APP_HOSTNAME=${envs.APP_INGRESS_HOST}
+    has_repo: true
+    depends_on:
+      - db
+    args:
+      - pnpm
+      - start
+    ports:
+      - type: node_port
+        target_port: "4001"
+        port: "4001"
+        loadbalancer: false
+  - name: db
+    image: postgres:15-alpine
+    volumes:
+      - type: persistent
+        name: postgres-data
+        mount_path: "/var/lib/postgresql/data"
+        size: 10Gi
+    ports:
+      - type: node_port
+        target_port: "5432"
+        port: "5432"
+workflows:
+  - name: setup
+    order_from:
+      - services.db
+      - services.app
+  - name: patch
+    order_from:
+      - services.db
+      - services.app
+  - name: teardown
+    parallelize:
+      - step: remove-environment
+        tasks:
+          - release.remove_environment
