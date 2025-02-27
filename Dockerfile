@@ -83,6 +83,12 @@ RUN apt-get update && apt-get install -y \
     python3 \
     && rm -rf /var/lib/apt/lists/*
 
+# Set URL-related variables from the build arg first
+ARG NEXT_PUBLIC_APP_BASE_URL
+ENV NEXT_PUBLIC_APP_BASE_URL=$NEXT_PUBLIC_APP_BASE_URL \
+    NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_APP_BASE_URL \
+    NEXTAUTH_URL=$NEXT_PUBLIC_APP_BASE_URL
+
 # These will need to be set at runtime with actual values
 ENV POSTGRES_URL="" \
     NEXTAUTH_SECRET="" \
@@ -97,12 +103,6 @@ ENV POSTGRES_URL="" \
     OPENAI_API_KEY="" \
     POST_WORKER_API_KEY="" \
     SLACK_WEBHOOK_URL=""
-
-# Set URL-related variables from the build arg
-ARG NEXT_PUBLIC_APP_BASE_URL
-ENV NEXT_PUBLIC_APP_BASE_URL=$NEXT_PUBLIC_APP_BASE_URL \
-    NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_APP_BASE_URL \
-    NEXTAUTH_URL=$NEXT_PUBLIC_APP_BASE_URL
 
 # Copy only production dependencies
 COPY --from=dev-deps /build/node_modules ./node_modules
