@@ -106,6 +106,13 @@ export default function RootLayout({
           strategy="afterInteractive"
           src="//js.hs-scripts.com/8047877.js"
         />
+        <Script
+          id="pixel-js"
+          src="https://cdn.jsdelivr.net/gh/MRRVAULT/enrichlead-pixel@refs/heads/main/pixel.min.js"
+          data-pid="px_wlqyapd28a"
+          data-version="062024"
+          strategy="afterInteractive"
+        />
       </head>
       <body
         className={`${inter.className} bg-gray-900 overflow-hidden h-screen`}
