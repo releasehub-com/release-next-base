@@ -1,0 +1,211 @@
+---
+title: Configuring a 5-Minute Timeout in CloudFront → ALB Ingress → Nginx Ingress
+summary: >-
+  Learn how to properly configure 5-minute timeouts across CloudFront, AWS Application Load Balancer (ALB), and Nginx Ingress in Kubernetes to support long-running requests like AI/ML workloads.
+publishDate: "Thu Jun 20 2024 10:00:00 GMT+0000 (Coordinated Universal Time)"
+author: release-team
+readingTime: 5
+categories: &ref_0
+  - aws
+  - kubernetes
+  - infrastructure
+  - platform-engineering
+mainImage: /blog-images/timeout-configuration.jpg
+imageAlt: Diagram showing CloudFront, ALB, and Nginx Ingress timeout configuration
+showCTA: true
+ctaCopy: >-
+  Struggling with platform infrastructure configuration? Release makes infrastructure management easier with pre-configured best practices.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=configuring-5-minute-timeout-cloudfront-alb-nginx-ingress
+relatedPosts:
+  - ""
+ogImage: /blog-images/timeout-configuration.jpg
+excerpt: >-
+  Learn how to properly configure 5-minute timeouts across CloudFront, AWS Application Load Balancer (ALB), and Nginx Ingress in Kubernetes to support long-running requests like AI/ML workloads.
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+# Configuring a 5-Minute Timeout in CloudFront → ALB Ingress → Nginx Ingress
+
+When dealing with AWS CloudFront in front of an ALB (Application Load Balancer) ingress and Nginx ingress in Kubernetes (EKS), it's important to ensure that timeouts are properly configured at each layer. This guide walks you through setting a 5-minute (300-second) timeout across all these components.
+
+## Why You Might Need Longer Timeouts
+
+Long-running requests can arise from various scenarios. For instance:
+
+- **Generative AI/LLMs**: When using Large Language Models (LLMs) or other AI-driven services, certain requests—such as generating lengthy or complex responses—can take longer than the default 30–60 seconds typically allowed by services like CloudFront.
+- **Complex Data Processing**: Some back-end services (e.g., heavy data analytics or image/video rendering) may need extended processing time before sending a response.
+- **Large File Uploads**: Users uploading big files (e.g., media files, large datasets) could be disconnected prematurely if timeouts are set too short.
+- **Transactional Workflows**: Certain operations (like multi-step or synchronous workflows) might require more time to complete, especially if they involve external system calls.
+
+Supporting these use cases without error requires ensuring that all layers—CloudFront, ALB Ingress, and Nginx Ingress—are configured to accommodate extended timeouts. However, as discussed below, there are trade-offs to increasing your timeout limits.
+
+## Understanding Timeouts in the Stack
+
+Each layer in this architecture has its own timeout settings:
+
+- **CloudFront**: The origin response timeout (how long it waits for a response from ALB).
+- **ALB Ingress**: The idle timeout (how long it keeps the connection open to the backend).
+- **Nginx Ingress**: The proxy and upstream timeouts (how long it waits for the application).
+
+By default, these timeouts may be shorter than 5 minutes, leading to premature request failures.
+
+## 1. Configure CloudFront Timeout
+
+CloudFront has an origin response timeout, which determines how long CloudFront waits for a response from your origin (ALB). The default timeout is 30 seconds, and the configurable range is 1 to 60 seconds. However, AWS allows increasing this limit up to 10 minutes (600 seconds) through a quota increase request.
+
+### Why Does AWS Require a Support Request for Longer Timeouts?
+
+AWS enforces a limit on CloudFront's origin response timeout to prevent excessive resource consumption and unintended performance degradation. By requiring a support request, AWS ensures that:
+
+- Users deliberately configure longer timeouts instead of inadvertently misconfiguring them.
+- CloudFront does not hold unnecessary connections open, which could degrade performance for other users.
+- Security risks are mitigated, as long-lived connections can be exploited by attackers.
+- Best practices are followed, ensuring that customers implement alternative solutions such as asynchronous processing instead of relying on long-running requests.
+
+This policy helps AWS maintain network stability and resource efficiency across all CloudFront users.
+
+### Steps to Increase CloudFront Timeout to 5 Minutes
+
+**Option 1: Default Console Settings (Up to 60 Seconds, Not 5 Minutes)**
+
+1. Open the AWS CloudFront console.
+2. Navigate to Distributions → Select your distribution.
+3. Under Behaviors, find the relevant path and click Edit.
+4. Update:
+   - Origin Response Timeout: Set to 60 seconds (which is not sufficient for a full 5-minute timeout but is the maximum allowed without AWS approval). If you need a longer timeout, proceed to Option 2.
+   - Keep-alive Timeout: Keep it at 60 seconds (default).
+5. Save the changes and deploy the distribution.
+
+**Option 2: Request a Quota Increase for Longer Timeouts (300 Seconds)**
+
+To extend the timeout beyond 60 seconds, follow these steps:
+
+1. Sign in to the AWS Support Center.
+2. Choose Create Case.
+3. Under Regarding, select Service Limit Increase.
+4. For Limit Type, choose CloudFront Web Distribution.
+5. Select the Region, and for Limit, select Origin Response Timeout.
+6. Enter 300 seconds as the new timeout value.
+7. Provide a justification for the increase (e.g., long-running requests for file uploads or data processing).
+8. Submit the request and wait for AWS approval.
+
+Once AWS approves the quota increase, update your CloudFront settings to use the new timeout.
+
+### Terraform Configuration for CloudFront Timeout
+
+If you manage CloudFront using Terraform, update your configuration as follows:
+
+```hcl
+resource "aws_cloudfront_distribution" "example" {
+  origin {
+    domain_name = aws_lb.example.dns_name
+    origin_id   = "ALBOrigin"
+
+    custom_origin_config {
+      http_port                = 80
+      https_port               = 443
+      origin_protocol_policy   = "https-only"
+      origin_ssl_protocols     = ["TLSv1.2"]
+      origin_keepalive_timeout = 60
+      origin_read_timeout      = 300  # Set to 5 minutes (after AWS approval)
+    }
+  }
+}
+```
+
+## 2. Configure ALB Ingress Timeout
+
+The ALB has an idle timeout setting that controls how long the load balancer keeps a connection open when no data is being sent or received. To match our 5-minute timeout goal:
+
+1. Navigate to the EC2 console → Load Balancers.
+2. Select your ALB and go to the Attributes tab.
+3. Click Edit and update the idle timeout to 300 seconds (5 minutes).
+4. Save the changes.
+
+Using Terraform:
+
+```hcl
+resource "aws_lb" "example" {
+  name               = "example-alb"
+  internal           = false
+  load_balancer_type = "application"
+  
+  idle_timeout = 300  # 5 minutes in seconds
+  
+  # Other configurations...
+}
+```
+
+## 3. Configure Kubernetes ALB Ingress Controller
+
+If you're using the AWS Load Balancer Controller for Kubernetes, you need to configure the ALB settings through annotations in your Ingress resource:
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: example-ingress
+  annotations:
+    alb.ingress.kubernetes.io/load-balancer-attributes: idle_timeout.timeout_seconds=300
+spec:
+  # Your ingress configuration...
+```
+
+## 4. Configure Nginx Ingress Timeout
+
+Finally, configure the Nginx Ingress Controller to use a 5-minute timeout for requests:
+
+Update your Nginx Ingress configuration using ConfigMap:
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-configuration
+  namespace: ingress-nginx
+data:
+  proxy-connect-timeout: "300"
+  proxy-read-timeout: "300"
+  proxy-send-timeout: "300"
+  proxy-body-size: "0"  # Unlimited size for uploads
+```
+
+Or use annotations on your Ingress resource:
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: example-app
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0m"
+spec:
+  # Your ingress configuration...
+```
+
+## Pitfalls of a 5-Minute Timeout
+
+While a long timeout can help with slow responses, it comes with several risks:
+
+- **Increased Resource Consumption**: Keeping connections open for 5 minutes consumes CPU, memory, and network resources, reducing system efficiency.
+- **Delayed Error Handling**: Users may experience long delays before receiving an error, making debugging and failure recovery slower.
+- **Security Risks**: Extended timeouts increase exposure to potential attacks, such as session hijacking or CSRF vulnerabilities.
+- **Poor User Experience**: Long wait times lead to frustration if users don't see progress indicators or alternative solutions.
+- **Reduced Throughput**: Systems processing fewer requests per second due to long-held connections may struggle under high load.
+
+To mitigate these issues, consider:
+
+- Using asynchronous processing where possible.
+- Implementing progress updates to improve UX.
+- Setting appropriate failover mechanisms rather than indefinitely waiting on a slow backend.
+
+## Conclusion
+
+By updating CloudFront, ALB, and Nginx Ingress timeouts, you ensure that long-running requests—like those from Large Language Models or high-volume data processing—aren't prematurely terminated. However, it's essential to strike a balance between allowing more time for legitimate requests and maintaining overall performance, security, and user experience.
+
+Properly configured timeouts across your entire stack can make the difference between a reliable system and one that frustrates users with intermittent failures. Take the time to align these settings with your application's actual needs. 
