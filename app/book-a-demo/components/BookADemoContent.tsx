@@ -351,20 +351,13 @@ export default function BookADemoContent() {
   // Get content based on version
   const content = getVersionContent(version);
 
-  // Prepare Calendly prefill data
-  const calendlyPrefill = {
-    customAnswers: {
-      a1: version,
-      a2: versionParam || version,
-      a3: "book_a_demo_page",
-    },
-  };
-
   // Prepare UTM parameters for Calendly URL
   const calendlyUrl = new URL("https://calendly.com/release-tommy/book-a-demo");
   calendlyUrl.searchParams.set("utm_source", `${version}_landing`);
   calendlyUrl.searchParams.set("utm_medium", "website");
   calendlyUrl.searchParams.set("utm_campaign", "book_demo");
+  // Suppress GDPR banner and cookie consent
+  calendlyUrl.searchParams.set("hide_gdpr_banner", "1");
 
   return (
     <>
@@ -419,16 +412,16 @@ export default function BookADemoContent() {
                 <InlineWidget
                   url={calendlyUrl.toString()}
                   styles={{
-                    height: "700px",
+                    height: "1400px",
                     minWidth: "320px",
                   }}
-                  prefill={calendlyPrefill}
                   pageSettings={{
                     backgroundColor: "1f2937",
                     hideEventTypeDetails: true,
                     hideLandingPageDetails: false,
                     primaryColor: "00bb93",
                     textColor: "ffffff",
+                    hideGdprBanner: true,
                   }}
                 />
               </div>

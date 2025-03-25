@@ -42,7 +42,7 @@ const sql_client = postgres(
     "postgres://postgres:postgres@localhost:5432/release_landing",
   {
     // SSL is disabled as our database doesn't support it
-    ssl: false
+    ssl: false,
   },
 );
 
