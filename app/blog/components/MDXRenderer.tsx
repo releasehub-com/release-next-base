@@ -55,15 +55,15 @@ const components: MDXComponents = {
     <code className="bg-gray-800 px-1 py-0.5 rounded" {...props} />
   ),
   ul: (props) => (
-    <ul className="list-disc list-inside text-gray-300 mb-4 ml-4" {...props} />
+    <ul className="list-disc list-outside text-gray-300 mb-4 ml-6" {...props} />
   ),
   ol: (props) => (
     <ol
-      className="list-decimal list-inside text-gray-300 mb-4 ml-4"
+      className="list-decimal list-outside text-gray-300 mb-4 ml-6"
       {...props}
     />
   ),
-  li: (props) => <li className="mb-2" {...props} />,
+  li: (props) => <li className="text-gray-300 mb-3 pl-1" {...props} />,
   CallToAction: ({ copy, link }) => <CallToAction copy={copy} link={link} />,
 };
 

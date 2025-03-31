@@ -97,6 +97,20 @@ const config: Config = {
             "code::after": {
               content: '""',
             },
+            "ul > li": {
+              position: "relative",
+              paddingLeft: "0",
+              "& > strong:first-child": {
+                display: "inline",
+              }
+            },
+            "ol > li": {
+              position: "relative",
+              paddingLeft: "0",
+              "& > strong:first-child": {
+                display: "inline",
+              }
+            },
           },
         },
       },

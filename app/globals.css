@@ -118,3 +118,26 @@
 .react-datepicker-popper {
   @apply z-[70] !important;
 }
+
+/* Blog post list styling fixes */
+.prose li strong {
+  display: inline !important;
+}
+
+.prose ul li::marker,
+.prose ol li::marker {
+  color: #888;
+}
+
+/* Ensure bullet points don't create extra space */
+.prose ul li {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+/* Ensure direct children of list items don't create new lines */
+.prose ul li > *:first-child,
+.prose ol li > *:first-child {
+  margin-top: 0;
+  display: inline;
+}

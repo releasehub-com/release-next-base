@@ -92,18 +92,18 @@ const components = {
   ),
   ul: (props: HTMLAttributes<HTMLUListElement>) => (
     <ul
-      className="list-disc list-inside text-gray-300 mb-4 ml-4 space-y-2"
+      className="list-disc list-outside text-gray-300 mb-4 ml-6"
       {...props}
     />
   ),
   ol: (props: HTMLAttributes<HTMLOListElement>) => (
     <ol
-      className="list-decimal list-inside text-gray-300 mb-4 ml-4 space-y-2"
+      className="list-decimal list-outside text-gray-300 mb-4 ml-6"
       {...props}
     />
   ),
   li: (props: HTMLAttributes<HTMLLIElement>) => (
-    <li className="text-gray-300" {...props} />
+    <li className="text-gray-300 mb-3 pl-1" {...props} />
   ),
   table: (props: HTMLAttributes<HTMLTableElement>) => (
     <div className="overflow-x-auto mb-4">
