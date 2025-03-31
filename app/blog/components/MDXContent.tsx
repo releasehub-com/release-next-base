@@ -91,10 +91,7 @@ const components = {
     />
   ),
   ul: (props: HTMLAttributes<HTMLUListElement>) => (
-    <ul
-      className="list-disc list-outside text-gray-300 mb-4 ml-6"
-      {...props}
-    />
+    <ul className="list-disc list-outside text-gray-300 mb-4 ml-6" {...props} />
   ),
   ol: (props: HTMLAttributes<HTMLOListElement>) => (
     <ol

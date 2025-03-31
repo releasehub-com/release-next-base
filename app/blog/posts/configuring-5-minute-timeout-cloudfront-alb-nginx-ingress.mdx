@@ -131,9 +131,9 @@ resource "aws_lb" "example" {
   name               = "example-alb"
   internal           = false
   load_balancer_type = "application"
-  
+
   idle_timeout = 300  # 5 minutes in seconds
-  
+
   # Other configurations...
 }
 ```
@@ -169,7 +169,7 @@ data:
   proxy-connect-timeout: "300"
   proxy-read-timeout: "300"
   proxy-send-timeout: "300"
-  proxy-body-size: "0"  # Unlimited size for uploads
+  proxy-body-size: "0" # Unlimited size for uploads
 ```
 
 Or use annotations on your Ingress resource:
@@ -208,4 +208,4 @@ To mitigate these issues, consider:
 
 By updating CloudFront, ALB, and Nginx Ingress timeouts, you ensure that long-running requests—like those from Large Language Models or high-volume data processing—aren't prematurely terminated. However, it's essential to strike a balance between allowing more time for legitimate requests and maintaining overall performance, security, and user experience.
 
-Properly configured timeouts across your entire stack can make the difference between a reliable system and one that frustrates users with intermittent failures. Take the time to align these settings with your application's actual needs. 
+Properly configured timeouts across your entire stack can make the difference between a reliable system and one that frustrates users with intermittent failures. Take the time to align these settings with your application's actual needs.

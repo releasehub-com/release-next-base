@@ -102,14 +102,14 @@ const config: Config = {
               paddingLeft: "0",
               "& > strong:first-child": {
                 display: "inline",
-              }
+              },
             },
             "ol > li": {
               position: "relative",
               paddingLeft: "0",
               "& > strong:first-child": {
                 display: "inline",
-              }
+              },
             },
           },
         },
