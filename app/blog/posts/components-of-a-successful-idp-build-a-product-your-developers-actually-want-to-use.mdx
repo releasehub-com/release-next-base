@@ -1,0 +1,139 @@
+---
+title: >-
+  Components of a Successful IDP: Build a Product Your Developers Actually Want
+  to Use
+summary: >-
+  Learn about different qualities and components of successful IDPs, and explore
+  some ways IDPs could fail.
+publishDate: "Wed Aug 16 2023 16:18:56 GMT+0000 (Coordinated Universal Time)"
+author: sylvia-fronczak
+readingTime: 10
+categories: &ref_0
+  - platform-engineering
+  - product
+mainImage: /blog-images/dbc2f9c040038b3d718491e42e3fa3ab.jpg
+imageAlt: "Photo Credit: Dan Cristian Paduree"
+showCTA: true
+ctaCopy: >-
+  Build self-service solutions with automated environments using Release's
+  platform for streamlined workflows and faster deployments.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=components-of-a-successful-idp-build-a-product-your-developers-actually-want-to-use
+relatedPosts:
+  - ""
+ogImage: /blog-images/dbc2f9c040038b3d718491e42e3fa3ab.jpg
+excerpt: >-
+  Learn about different qualities and components of successful IDPs, and explore
+  some ways IDPs could fail.
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+After reading about the [Internal Developer Platforms (IDPs) and why you should build one](https://release.com/blog/what-is-an-internal-developer-platform-and-why-should-i-have-one), you might be seeing certain benefits your organization could use. At this point, you might already be considering the first moves towards implementing an IDP. After all, an internal developer platform that provides automated self-service solutions for developers to simplify and standardize software practices, infrastructure, environments, and operations sounds like a dream come true. But what specifically should an IDP do? What functionality should it cover? And how can you ensure that teams adopt the IDP and that it provides real benefits?
+
+In this post, we’ll cover different qualities and components of a successful IDP, and share some ways in which IDPs can fail. Let’s dig in!
+
+### Qualities of successful IDPs
+
+Before you roll up your sleeves and start building your IDP, consider a set of qualities a successful IDP needs to solve for. These are the high level objectives an IDP addresses, without accomplishing these can easily become yet another tool gathering dust on the shelf. When building an IDP keep these three qualities at the top of your mind:
+
+1.  IDPs provide self-service solutions
+2.  IDPs automate processes
+3.  IDPs enforce guardrails and standards
+
+#### **1\. IDPs Provide Self-Service Solutions**
+
+First, let’s consider self-service. Successful IDPs enable developers to access resources without tying up resources and people in other groups.
+
+The IDP should empower teams and developers to solve their own problems when it makes sense for the developer based on their timelines and needs.
+
+Of course, there’s a caveat with this as too much empowerment can lead to failure. For full self-service, this could mean that you give your development teams access to everything, allowing full self-service all the time. But that’s not going to go well.
+
+If you were to just provide access to everything, development teams would need to learn the ins and outs of infrastructure, tooling, governance, and multiple standards to self-service everything they need. Sure, they’d be able to self-service. But they wouldn’t have time to ship features. And they would end up re-learning similar tools and remaking similar mistakes that other teams or developers already made.
+
+For IDPs, we do need to provide self-service functionality. But **the surface area of the necessary knowledge for that self-service ability should be as small as possible.** That way, developers can focus on creating a product with their development tools, and not tinkering with infrastructure.
+
+So how do we make that surface area small? Through automation and standards. In the next section, let’s consider automation.
+
+‍
+
+![](/blog-images/941d45aab99ced30f672f083a86f9cae.png)
+
+#### **2\. IDPs Automate Processes**
+
+When you read the word _automation_, you may think you can skip this section. Let’s hold up a second, though.
+
+You may say, “Sure, I know what automation is. I create scripts that build and deploy apps, for example.”
+
+Yes, [CI/CD pipelines](https://prod.releasehub.com/blog/11-continuous-deployment-tools-and-how-to-choose-one) are oftentimes the first thing that comes to mind when we think about automation and the development process, which is essential. But we should consider automation outside of the basics.
+
+The successful IDP is a product built for developers. It can provide solutions for all stages of a developer’s work, from the day they start at your company to the day they leave. And it involves automated self-service solutions that ideally do not require ticket queues, manual approvals, or reliance on other teams to complete the request.
+
+Let’s talk about approvals for a minute. In some cases, we do need manual approvals, and that’s OK for limited and special use cases. But the majority of the time, approvals don’t provide a lot of value. Consider access requests. If you need to manually approve every single request for access to your code repository, deployment tools, and monitoring solutions, then you will waste time. What developers on your team don’t need access to those tools—or can work without them? Probably all of them need some access.
+
+You may say these approvals are needed for auditing and validation. But are there better ways to get what you need? If every developer is given required access automatically as part of their first day’s onboarding, as part of the standard automated process, then can that fulfill your requirements? Alternatively, can you implement automations that verify that developers have access to the proper resources, that they’ve taken the required training, and that automate attestation of need to access those resources? When solving for compliance or auditing requirements, there are different ways to automate based on your specific needs.
+
+Frequently, we automate parts of a process while not always automating the most significant [bottlenecks](https://release.com/blog/increase-developer-velocity-by-removing-environment-bottlenecks). For example, if you’ve automated a request process to provision new databases but do not automate standard configuration, you’ve saved only a few minutes of someone’s time. Or if you pull reports frequently to verify that databases continue to conform to standards or don’t have unused capacity, then there is still room for improvement.
+
+When you consider automation, do not just consider automating the simple button clicks or simple scripting. Think about how your whole development process works and where the time and effort is spent. And then iterate. Once you’ve improved one part of the process, continuously re-evaluate how your automations can further improve the whole processes.
+
+#### **3\. IDPs Enforce Guardrails and Standards**
+
+OK, after the two previous sections, you may know where this is going.
+
+With a successful IDP, your self-service tools and automation conform to the standards and practices that your subject matter experts have determined work best.
+
+Now, in some cases, we do need to provide more freedom to developers to work outside of the normal guardrails or standards. And these standards should not limit your development teams to current use cases, as needs change. To provide flexibility for niche use cases, consider how you can enforce these guardrails while providing workarounds or approved exceptions.
+
+However, consider the ways that IDPs can standardize not just tools like CI/CD, but basic provisioning, configuration, monitoring, and more.
+
+Keeping the Qualities in mind, let’s look at the specific Components you should consider.  
+
+![](/blog-images/094b8afc10a92ab374e4c478f504025c.png)
+
+### Components of successful IDPs
+
+The components that make up successful IDPs vary and don’t all need to be used at the same time. In fact, when getting started, you should never attempt to use this as a checklist, assuming your IDP will be successful when you’ve added all the components.
+
+Additionally, not all components need to be part of a central IDP deployment. They can involve other tools and bits of automation that work to improve the efficiency of your development teams, but function outside of the central IDP deployment.
+
+When you’re planning what to tackle first, consider which components of an IDP will provide your organization with the most value.
+
+Some components are necessary for all organizations, like code repositories, IDEs and CI/CD. Without them you’re missing the basics that all teams that write code need.
+
+Other components should be present, but not all orgs have automated them or added any integrations into the developer workflow to make them worthwhile just yet. This includes items like automated security scanning, typically integrated through your CI/CD pipeline.
+
+And then there are items specific to certain industries. For example, not every organization needs full integration with compliance and regulatory features.
+
+Finally, not all of these components need to be integrated through an IDP from the start. You can build upon and expand as the value becomes clear. But once you have a number of these components that need to work together, incorporating them and integrating them into your IDP will simplify the development workflow. These integrations can remove unnecessary cognitive load of configuring and context-switching for your dev team and allow them to focus on more valuable tasks.
+
+IDP components can include but are not limited to:
+
+1.  **Code repositories:** OK, so there are some of these components that are non-negotiable. And our repositories, like git, are # 1.
+2.  **Infrastructure:** This can include building, orchestrating, configuration management, [environment management](https://prod.releasehub.com/blog/a-simple-guide-to-software-environments), and monitoring of the infrastructure used by your development team.
+3.  **Development tools:** This includes IDEs, plugins, and extensions as well as stand-alone tools. A good IDP can integrate with other tools through plugins and extensions, all built out as part of the IDP.
+4.  **CI/CD:** As this is one of the basic tools IDPs use, consider ways to supercharge this functionality. In addition to the usual CI/CD functionality, can you automate changelogs, notify operations of deployments, and track failures and rollbacks?
+5.  **Automated testing:** In addition to automating unit tests, integration tests, and others, a successful IDP will drive advanced test features like flaky test detection, load testing, and even chaos engineering.
+6.  **Security:** The basics of security could involve static analysis tools in your CI/CD pipeline, [secrets management](https://release.com/blog/kubernetes-secrets-management-a-practical-guide), or live monitoring of security threats.
+7.  **Monitoring/observability:** Monitoring and observability provide your teams with the ability to ensure your code actually does what it is meant to do. It also can help teams not only identify problems (through monitoring alerts around availability or critical functionality) but also help find the root causes. We can also think about more than just a link from our IDP to our monitoring solutions, but integrations with our CI/CD tools to identify where problems occur and when the problems were introduced.
+8.  **Project management and collaboration tools:** When you’re looking at the IDP, do not just consider purely developer-focused tools. How can your IDP integrate your deployment processes with your project management and notifications?
+9.  **Compliance and governance tools and workflows:** We talked a bit about this when discussing access requests earlier. Consider what other manual processes and reporting could be automated and integrated into your IDP. And don’t think of this as just automating a report. Consider what can be done to remove the need for reports and manual intervention.
+10. **Workflow automation:** Workflow automation is a bit of a catchall for tools that automate workflows. Once you’ve covered the basic components, you can begin to automate processes like creating new services, upgrading systems, or creating changelogs and API versions. Since the IDP centers around improving developer workflows, you’ll need to look outside of the basic components and find new ways to reduce toil.
+
+### Common Failures of IDPs
+
+So, if an IDP covers all or a majority of the key components, why do many still fail to provide value? Why do they struggle with adoption?
+
+Well, several things can go wrong. We’ll cover just four of them.
+
+First, the IDP may be **focused on niche activities and processes and not the 80% of functionality that most developers need**. For example, if you’re in a monolithic environment, automating project initiation for microservices obviously won’t add much value. On the other hand, if your [team struggles with getting fast feedback, slow velocity, or environment bottlenecks for testing](https://prod.releasehub.com/blog/improve-developer-velocity-with-ephemeral-environments), then spinning up [ephemeral environments](https://release.com/ephemeral-environments) might be worth your time.
+
+Second, **to understand your developers, you must consider _all_ of your developers**. Do not consider just the strongest, newest, or loudest developers. Interview a wide sample of your teams and consider their entire processes, so that you build a truly user-centric product.
+
+Third, sometimes **in an effort to remove security risks, companies will remove flexibility or functionality that the development team relies on**. For example, in an attempt to automate environment provisioning, an IDP may lock down security on configuration that developers used to have access to. This may be the right move, but you have to have a way to adjust to specific use cases. There should be guardrails while still making it possible to work outside of those guardrails when necessary.
+
+And finally, perhaps you **haven’t considered or built a rollout strategy**. You will need to consider how to onboard teams, get feedback, and quickly adjust and pivot based on that feedback and data. You can’t just build it and assume everyone will start using the tools and integrations available. It will take time and effort.
+
+### Summary
+
+When considering your future IDP or finding the next component your IDP should cover, consider the 80% of the functionality that your development teams need frequently. Add automated, standardized, self-serve functionality that addresses the majority of development workflows. And make sure you have enough of a feedback loop to ensure you’re building the right platform and improving the development cycle. In our next chapter we will look at the Build vs Buy question. Stay tuned!

@@ -1,0 +1,1 @@
+ALTER TABLE "scheduled_posts" ALTER COLUMN "socialAccountId" DROP NOT NULL; 

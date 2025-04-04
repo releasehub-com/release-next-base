@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
   :root {
     --background: 222.2 84% 4.9%;
@@ -9,36 +9,36 @@
 
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
- 
+
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
- 
+
     --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
     --primary-light: 210 40% 90%;
- 
+
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
     --secondary-light: 217.2 32.6% 25%;
- 
+
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
- 
+
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
- 
+
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
     --destructive-light: 0 62.8% 40%;
- 
+
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
- 
+
     --radius: 0.5rem;
   }
 }
- 
+
 @layer base {
   * {
     @apply border-border;
@@ -46,4 +46,98 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* React DatePicker Dark Mode Styles */
+.react-datepicker {
+  @apply bg-gray-800 border-gray-700 text-white !important;
+}
+
+.react-datepicker__header {
+  @apply bg-gray-900 border-gray-700 !important;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name,
+.react-datepicker__time-name {
+  @apply text-white !important;
+}
+
+.react-datepicker__day {
+  @apply text-white hover:bg-gray-700 !important;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  @apply bg-indigo-600 hover:bg-indigo-700 !important;
+}
+
+.react-datepicker__day--disabled {
+  @apply text-gray-500 hover:bg-transparent !important;
+}
+
+.react-datepicker__time-container,
+.react-datepicker__time-box {
+  @apply bg-gray-800 border-gray-700 !important;
+}
+
+.react-datepicker__time-list-item {
+  @apply text-white hover:bg-gray-700 !important;
+}
+
+.react-datepicker__time-list-item--selected {
+  @apply bg-indigo-600 hover:bg-indigo-700 !important;
+}
+
+.react-datepicker__time-container
+  .react-datepicker__time
+  .react-datepicker__time-box
+  ul.react-datepicker__time-list
+  li.react-datepicker__time-list-item--disabled {
+  @apply text-gray-500 hover:bg-transparent !important;
+}
+
+.react-datepicker__header--time {
+  @apply bg-gray-800 border-gray-700 !important;
+}
+
+.react-datepicker-time__header {
+  @apply text-white font-medium !important;
+}
+
+.react-datepicker__time-container .react-datepicker__time {
+  @apply bg-gray-800 !important;
+}
+
+.react-datepicker__time-container
+  .react-datepicker__time
+  .react-datepicker__time-box {
+  @apply border-gray-700 !important;
+}
+
+.react-datepicker-popper {
+  @apply z-[70] !important;
+}
+
+/* Blog post list styling fixes */
+.prose li strong {
+  display: inline !important;
+}
+
+.prose ul li::marker,
+.prose ol li::marker {
+  color: #888;
+}
+
+/* Ensure bullet points don't create extra space */
+.prose ul li {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+/* Ensure direct children of list items don't create new lines */
+.prose ul li > *:first-child,
+.prose ol li > *:first-child {
+  margin-top: 0;
+  display: inline;
 }

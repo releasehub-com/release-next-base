@@ -1,0 +1,99 @@
+---
+title: A Simple Guide to Software Environments
+summary: >-
+  Learn about tools to scope and limit instances of your software as it
+  progresses from development to a finished product.
+publishDate: "Tue Apr 11 2023 21:10:39 GMT+0000 (Coordinated Universal Time)"
+author: alexander-fridman
+readingTime: 5
+categories: &ref_0
+  - platform-engineering
+  - product
+mainImage: /blog-images/b3927fc80db8ab1869298638402348e7.png
+imageAlt: A Simple Guide to Software Environments
+showCTA: true
+ctaCopy: >-
+  Empower developers to streamline software environments from local to
+  production with Release's on-demand, full-stack environments.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=a-simple-guide-to-software-environments
+relatedPosts:
+  - ""
+ogImage: /blog-images/b3927fc80db8ab1869298638402348e7.png
+excerpt: >-
+  Learn about tools to scope and limit instances of your software as it
+  progresses from development to a finished product.
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+### Introduction
+
+Building software is hard. It takes a lot of time and effort and it’s a somewhat cumbersome process. Software development passes through various stages in the product lifecycle before it reaches the end user. A spec must be defined, developers have to code the product, QA has to test it, and DevOps engineers have to deploy it. During this process, the code passes through several environments, from the developers’ local PC to containers in the cloud. 
+
+### What Are Software Environments
+
+Software environments are tools to scope and limit instances of your software as it progresses from development to a customer facing product. Each environment contains the following: 
+
+- Copy of your software code
+- Copy of the database tables you use with (possibly) environment-specific data
+- Internal network so the different microservices your code uses can communicate with each other and with external services
+- Global values (environment variables)
+- Access control to limit who can view the application and make changes to it in the specific environment
+- Infrastructure to support it (servers and such)
+- Testing software to test the code
+
+Let's elaborate by giving specific examples of different environments. 
+
+![A computer sits on a window sillDescription automatically generated with medium confidence](/blog-images/1897df55a97102dba7c22d77ec9fd988.jpeg)
+
+### Local Environment
+
+The local environment is where a developer writes software code. They may be writing the whole application or just a specific feature for the application. The developer usually has a local database that works with the application code, and sometimes access to external microservices needed by the code. In other scenarios, where direct access from the developer’s laptop to external services is not possible, we use software mocks instead. When the app runs locally on the developer’s laptop, performance of the app in terms of CPU and RAM is low, compared with running it on a dedicated server or in other environments. In addition, there’s no access control for this environment. Anyone who can access the laptop has access to the application. On the other hand, it's the simplest and most immediate way to develop and test code. 
+
+### Development Environment
+
+The development environment is where multiple developers upload their code to. It’s meant to be the first place where other stakeholders can test the code and the application’s different features. Developers merge the code and run a CI/CD pipeline here. The [CI/CD pipeline](https://en.wikipedia.org/wiki/CI/CD) usually consists of the following steps: 
+
+- Changes to the database (database migrations)
+- Static code analysis
+- Vulnerability scanning
+- Deployment to the development environment of the end artifact (JAR in Java or a binary)
+
+In addition, this environment has more robust and thorough tests than those a developer runs on their laptop (e.g., integration tests). Developers apply the latest updates to the application in the development environment. Because it’s constantly being updated, the application is not stable in the development environment. It has a dedicated URL, environment variables, and better performance than versions run on individual developers’ local PCs. Usually all the developers on the team have access to this the development environment and to its database, which are not accessible outside of the organization (to clients, for instance). 
+
+### Staging Environment
+
+The staging environment is the next environment the software passes through before it’s made accessible to end users. The staging environment should be very similar to the production environment, mirroring it as accurately as possible, because its purpose is to be the last checkpoint before making the latest software publicly available. It should run on the same infrastructure, have the same database content, and the same environment variables (or as similar as possible) to those in the production environment. 
+
+![](/blog-images/d163f05b3191007407e8aa9e95e7728d.png)
+
+Traditionally, the CI/CD pipeline that runs in the staging environment involves the most extensive testing of all the environments. All stakeholders in the organization have access to view this environment, but only a handful of key employees have direct access to modify it (IT team, DevOps, senior developers). It's a stable environment and after the code passes the tests, it will be deployed to production. However, recently companies started shifting testing to the left and conducting robust testing earlier in the cycle. 
+
+### Production Environment
+
+The production environment runs the code that serves end users — your customers. It's a stable environment with powerful infrastructure that can handle spikes in demand and has extensive monitoring and logging. Unlike in other environments, down time here results in an immediate service outage. To protect the infrastructure, environment variables, database, and code, access to the production environment is usually restricted to only system administrators. Because automatic tests can reduce performance and change the database, no tests are run in the production environment. 
+
+### Customer Demo / Customer Specific Environment
+
+It sometimes happens that you want to create a version of your software specific to a certain client or to demonstrate a certain feature before it’s available to customers. This happens in the [customer demo environment](https://release.com/blog/great-saas-sales-demos). It has all the bells and whistles of the production environment, but it might have a superset or subset of features from the production environment and a client-specific GUI or dedicated access control, relevant to one client only. 
+
+### Environment Pain Points
+
+Provisioning environments is difficult and time consuming. Provisioning new environments requires servers, a deployment mechanism, design of CI/CD pipelines, database servers, access control definitions and so forth. In addition, every environment consumes significant resources to maintain it. For instance, the IT team needs to make sure that connectivity works as expected, make snapshots of the database, edit the list of stakeholders who have access to each environment, and so on. 
+
+![A person holding a cigaretteDescription automatically generated with low confidence](/blog-images/b84ab91f3b3c2644c684fc86f02766c0.jpeg)
+
+### Easing Pain Points
+
+Recently, new products that provide [environments as a service (EaaS)](https://release.com/blog/environments-as-a-service-eaas-top-3-benefits) appeared on the market to address those pain points. They provide an unlimited number of automated environments with the click of a button, centralized management of environments, and a lower overhead for making changes to existing environments. 
+
+### Increased Velocity
+
+In addition to simplifying and speeding up environment deployment, EaaS solutions facilitate increased velocity of the R&D process as a whole because developers can spend less time in each environment and can push more code to production faster. For example, they don’t have to pause pushing code for monthly maintenance. Basically, EaaS is another building block every organization should have in their DevOps tool belt to allow the R&D department to deliver more without requiring additional resources. 
+
+![](/blog-images/94d763d02b3c630507739be73eeb7155.png)
+
+### Conclusion
+
+Environments are an integral part of software development. As software progresses from development to production, it goes through different environments along the way, each with its own purpose. Per its purpose, each environment offers a certain level of performance, access control, code version, and database content. Provisioning and managing environments manually is time consuming and resource intensive. So are creating VMs or containers, setting up networking, adding SSL certificates, providing access control and so forth. EaaS tools have emerged to solve those issues. They provide environment provisioning with a click, an unlimited number of environments, central management, and more. [Eliminating the bottleneck of environment management](https://release.com/blog/increase-developer-velocity-by-removing-environment-bottlenecks) will allow every R&D team to increase development velocity and produce more with the same amount of resources.

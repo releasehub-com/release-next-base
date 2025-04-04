@@ -1,0 +1,59 @@
+---
+title: "Awesome-release: Tons of Working Release Examples Running in Hosted Kubernetes"
+summary: >-
+  I Need/Want/Love Examples I know that when I try out a new product, if it’s
+  hard to see what it does quickly I usually
+publishDate: "Wed Feb 03 2021 05:02:01 GMT+0000 (Coordinated Universal Time)"
+author: tommy-mcclung
+readingTime: 2
+categories: &ref_0
+  - kubernetes
+  - platform-engineering
+mainImage: /blog-images/b4025551da748296b172cbcc181dfe6f.jpg
+imageAlt: A man driving a boat
+showCTA: true
+ctaCopy: >-
+  Simplify environment setup with Release's managed Kubernetes clusters for
+  seamless deployment of working examples. Try now!
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=awesome-release-docker-compose-examples-working-in-release-and-kubernetes
+relatedPosts:
+  - ""
+ogImage: /blog-images/b4025551da748296b172cbcc181dfe6f.jpg
+excerpt: >-
+  I Need/Want/Love Examples I know that when I try out a new product, if it’s
+  hard to see what it does quickly I usually
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+### I Need/Want/Love Examples
+
+I know that when I try out a new product, if it’s hard to see what it does quickly I usually move on. This is a shame because I’m sure there are products out there that I could have benefited from but it was just too difficult to get something up and running.
+
+Release is the easiest way to create environments from any code change, Pull Request or the click of a button. We deploy your environments in a Kubernetes cluster that’s completely managed for you. _But in order to see how Release can change how you build software, you have to get your application running in Release._ Most of the time this is pretty straightforward, but there is definitely a setup curve to get over before you can see our product in full form.
+
+The best technical products I’ve used always have a TON of great examples. Stripe is definitely the king of this idea… we were just recently integrating their checkout feature into Release and [their examples repo](https://github.com/stripe-samples) is a model for how this can be done. It made our integration with Stripe so much easier than digging through docs to figure this all out.
+
+I think examples are highly under-done, especially with highly technical products. I’m pretty sure I know why (especially after this project): it’s hard to spend the time and energy building out examples when you have features to build. But at Release, examples are a first class citizen and we believe will make getting up and running with Release easier.
+
+### awesome-compose is awesome
+
+As we started building and testing Release, we came across this fantastic repository, [https://github.com/docker/awesome-compose](https://github.com/docker/awesome-compose), that has community created applications known to work with docker-compose.
+
+Since Release can easily use a docker-compose file to create blueprints for environments, this was a perfect way for us to test out Release and make sure all the various ways docker-compose files are used are supported in the platform. Enter awesome-release.
+
+### awesome-release is awesome++
+
+We put together an _awesome_ organization in Github with a ton of repositories that just work in Release that are derived from awesome-compose.
+
+[https://github.com/awesome-release](https://github.com/awesome-release) is chock full of amazing projects that just work. The great part about all of these projects is that they show the range of how making simple applications to complex applications can be run and environments created within Release.
+
+So if you’re getting started and need a project that will just work out of the box, I highly recommend forking or copying any of these repos and use it to create an app in Release. Every repository in _awesome-release_ just works.
+
+We’ve made modifications to some of the awesome-compose repos that needed slight tweaks. In each README we’ve described what we did to make the project work. Most of these things are minor adjustments that enable the project to run in a hosted Kubernetes environment vs being run locally via docker-compose.
+
+[Click here to signup for Release and give it a shot!](https://releasehub.com/)
+
+Please let us know if there is an example you’d like to see and we’ll put it together for you. Just send us an email at [support@release.com](mailto:support@release.com) and we’ll add it to the list.
+**Have fun and happy Releasing!**

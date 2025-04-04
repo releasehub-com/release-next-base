@@ -1,0 +1,145 @@
+---
+title: How to Delete Hundreds or Thousands of Route53 DNS Entries
+summary: >-
+  How do Delete Hundreds, or Possibly Thousands of Route53 DNS Entries Quickly
+  and Easily
+publishDate: "Wed Feb 03 2021 05:21:12 GMT+0000 (Coordinated Universal Time)"
+author: regis-wilson
+readingTime: 6
+categories: &ref_0
+  - platform-engineering
+  - product
+mainImage: /blog-images/a40c6571d6ad435527d1213a49721a90.jpg
+imageAlt: Hundreds of bright candy representing Route53 DNS Entries
+showCTA: true
+ctaCopy: >-
+  Simplify DNS management with Release: automate bulk Route53 operations and
+  streamline environment setup effortlessly.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=how-to-delete-hundreds-or-thousands-of-route53-dns-entries
+relatedPosts:
+  - ""
+ogImage: /blog-images/a40c6571d6ad435527d1213a49721a90.jpg
+excerpt: >-
+  How do Delete Hundreds, or Possibly Thousands of Route53 DNS Entries Quickly
+  and Easily
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+### How to Delete Hundreds (or Thousands) of Route53 Entries Quickly on the Command Line
+
+### Overview
+
+At Release, we make Staging environments easy by quickly creating and updating environments to run, test, and share your application code in full fledged, isolated environments. In previous versions of our product, we were able to quickly roll out new environments and features by creating tons of AWS Route53 DNS entries for each new application and environment. Unfortunately, that meant that we were quickly creating over 5,000 Route53 entries.
+
+The maximum number of Route53 entries you can have by default in one hosted zone is 10,000, so we needed to fix this before we ran out. Luckily, we added new features to create smart wildcard entries and a routing system to drastically reduce the number of entries we needed to create for ourselves and our customers.
+
+But then we were stuck with a legacy of over 5,000 entries that needed to be deleted (carefully!) in a reasonable timeframe and preferably automatically, rather than by hand. This article will show you how we accomplished the task and how this relatively obscure and niche problem (we hope!) can be solved relatively quickly and painlessly.
+
+### Investigation
+
+The initial approach is to simply come up with a command-line query to list Route53 entries and then parse them one by one to delete them. Unfortunately, the documentation quickly shows this to be the wrong method, since Route53 entry “upserts” (additions or changes) or “deletes” (as you would expect) need to be batched and uploaded in a transaction. There is no simple “delete one Route53 entry” command on the CLI as of the time of this writing. In point of fact, this naive approach is actually not a good way to do this type of bulk update anyway. Route53 will correctly handle each batch of operations as a transaction; so that if one entry fails to update or delete for some reason, the whole batch will be rolled back to preserve the integrity of your records.
+
+I therefore started with one of my favourite Stack Overflow answers that I turn to way more often than I should: [How to Export Route53 Zone File](https://stackoverflow.com/a/48498598). This was one of those copy-paste answers I would blindly use when approaching a Route53 use-case and it happily contained enough of a starting solution to building out the entire point of this blog post.
+
+### A Slight Tangent on JQ
+
+[JQ](https://stedolan.github.io/jq/) is a [JSON query language](https://stackoverflow.com/a/56114895) and is billed as “[sed](https://en.wikipedia.org/wiki/Sed) for JSON”. For me, jq has always been a bit opaque and I usually just copy-paste whatever a Stack Overflow answer has provided. In the case of the problem presented in this blog post, I needed to really dive in and learn about the power jq offers to help me solve this problem. It is, indeed, part of the core solution the above Stack Overflow answer is based on.
+
+The first thing to note is that jq can be used to extract, transform, output, rollup, and filter JSON objects or text in a programmatic fashion. In this way, I have started changing my pitch to be that jq is “[awk](https://en.wikipedia.org/wiki/AWK) for JSON”. I have found jq syntax and structure to be a bit difficult to test or grasp, so I was delighted to find [jq Play](https://jqplay.org/), an online resource for testing and visualising jq syntax and test inputs. I will use the screenshots from jq play to display my steps as we go along.
+
+#### Step 1, Gather Test Data
+
+The first step, as exactly described above in Stack Overflow, is to run the AWS CLI to output a JSON list of all of your Route53 entries (in our case, over 5,000+!!!). Take a few lines of the first part of the output to play with. You can grab a few entries by limiting the --max-items option in the list-resource-record-sets command. Take those and paste them into the jq play screen on the left, then select “.” as the operator to output everything. You can follow along with this [snippet](https://jqplay.org/s/0EWB_zhjvG). Here is what it looks like initially:
+
+![](/blog-images/d9b85c1e4277baadf503ebec1565f804.png)
+
+This is a good starting point but we need to first start with unwrapping the outer layer of the “ResourceRecords” key to find the list of entries as [follows](https://jqplay.org/s/PM3uM757DE) (turn on the “Compact View” to make it easier to understand and see more of what’s happening:
+
+![](/blog-images/8e36c46777593174cef0867a6c03390b.png)
+
+#### Step 2, Filter Records
+
+Now we need to filter out records so that only the “AliasTarget -> DNSName” keys matching a particular endpoint get deleted. That is relatively easy to do by filtering results with the pipe (“|”) character and using the “Select” operator as [follows](https://jqplay.org/s/cKEL8vTJHr):
+
+![](/blog-images/8059997113e53a00e0f627bd481eb3bb.png)
+
+Keep in mind that in practice, we will be filtering way more than 2 records from 4 records, but this is just a test before we run the full solution. Also, keep in mind that you could use any number of filters and selector operators (for example on the “Type” field) to choose which entries to act upon. The world is your oyster!
+
+Which is a silly saying, of course. If the world is your oyster, then that is a salty, squishy, goey, messy, muscly world. And where is the pearl in your world? Some hard round misshapen thing rolling around in your bedroom so you can’t sleep comfortably? I suppose it’s better than sand everywhere, but really. “The world is your oyster”?
+
+#### Step 3, Manipulate Rows for Delete
+
+The next step is to manipulate the rows we’re filtering/selecting to create the individual records that will become the batch delete operation. To do this, we will need to construct the output record form for each individual delete action using the schema that Route53 is going to expect. In this case, we extract several fields from each record and wrap them inside an “Action: DELETE” key as [follows](https://jqplay.org/s/hsZ65XuciY):
+
+![](/blog-images/1b31c9ae6788a3eeae8ce3da27bed79f.png)
+
+Notice how the JSON in the right hand pane is looking like the output that we will be able to pipe back into an AWS CLI call to delete entries. We’re coming along nicely!
+
+Also keep in mind that you could extend this example to manipulate entries in any way you like, for example, changing record types, or bulk-changing TTLs or some other field.
+
+Notice how the outputs are newline-separated? This initially confused me, but you can easily create a list or map by wrapping the whole query inside either square brackets (for a list) or curly brackets for a map:
+
+![](/blog-images/d20d696ffc43a5907c4edc33838c3613.png)
+
+#### Step 4, Mind the Max Batch Size
+
+We’re almost done, but since we’re deleting multiple hundreds (thousands, actually) of records, we want to set a batch size that is reasonable and that Route53 will accept. According to the documentation, the maximum batch size is 1000. I arbitrarily chose a batch size of 100 that is more reasonable and manageable for the CLI, so layer on the \_nwise() operator as [follows](https://jqplay.org/s/uu649cb-BM):
+
+![](/blog-images/d5376d45a40fa7c9a2a0caa01234e4fd.png)
+
+Keep in mind that in this example, I’m playing with 4 records, filtered to 2, and then batched into sizes of 1. In reality, we’re going to apply this to 5,000+ records, filtered to ~4,000 records, and batched at 100. The question you will want to ask yourself is, “How many records do I want to hassle with (possibly manually) if something explodes in the middle? Or if some intervention is required in a batch to add/remove/massage form one or more batches?” I settled on about 100.
+
+Hopefully you’re not as crazy as I am and in a similar predicament. You should be smart enough to avoid this situation in the first place. But if you are as crazy as I am, welcome to the club; we’re very sympathetic to your problems around here. I also really appreciate you reading all the way through to this spot, you crazy, wonderful, patient soul.
+
+#### Step 5, Wrap It Up
+
+Each batch is ready to be delivered on one line as shown above, however, before we’re done we need to add a “Changes” key at the top level for Route53 to accept. This is easy to accomplish by just piping the results into a map with one key and using the period (“.”) to select “everything” as [follows](https://jqplay.org/s/lYveGGoUwC):
+
+![](/blog-images/871187d03e4505b812bc462a9a0d1a5e.png)
+
+#### Step 6, Apply
+
+Now we are ready to actually apply the records and see how much damage we can do! Take the entire output of your records with this kind of query:
+
+```yaml
+aws route53 list-resource-record-sets \
+--hosted-zone-id ${hostedzoneid} \
+--max-items 10000 \
+--output json
+```
+
+And pipe it into the handy command line options provided at the bottom of your screen in the jq player application:
+
+```yaml
+
+jq --compact-output '[.ResourceRecordSets[] |
+  select(.AliasTarget.DNSName == "something.us-west-2.elb.amazonaws.com.") |
+  {Action: "DELETE", ResourceRecordSet: {Name: .Name, Type: .Type, AliasTarget: .AliasTarget}}] |
+  _nwise(1) |
+  {Changes: .}'
+  
+```
+
+And use split to create a bunch of individual files:
+
+```yaml
+split -l 1
+```
+
+Then loop over all your files to apply them in Route53:
+
+```yaml
+for file in x*; do
+aws route53 change-resource-record-sets \
+--hosted-zone-id=${hostedzoneid} \
+--cange-batch=file://${file}
+done
+```
+
+#### Step 7, Profit
+
+I hope you enjoyed this exploration and how quickly you can manipulate JSON data with jq to produce a fast, efficient, and automated method of clearing out a bunch of old Route53 entries in your zones!
+
+hero image: [Sharon McCutcheon via Unsplash.com](https://unsplash.com/photos/1wz7cN1XTmk)‍

@@ -1,0 +1,925 @@
+import { NextResponse } from "next/server";
+import { db } from "@/lib/db";
+import { scheduledPosts, socialAccounts, user } from "@/lib/db/schema";
+import { eq, and, lte } from "drizzle-orm";
+import OAuth from "oauth-1.0a";
+import crypto from "crypto";
+import {
+  sendSlackNotification,
+  createScheduledPostNotification,
+  createErrorNotification,
+} from "@/lib/slack";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { z } from "zod";
+
+interface TwitterApiResponse {
+  data: {
+    text: string;
+    id: string;
+    edit_history_tweet_ids: string[];
+  };
+}
+
+interface TwitterErrorResponse {
+  error: {
+    message: string;
+    code: number;
+  };
+}
+
+interface TwitterResponse {
+  data?: {
+    text: string;
+    id: string;
+    edit_history_tweet_ids: string[];
+  };
+  error?: {
+    message: string;
+    code: number;
+  };
+}
+
+interface WorkerResponse {
+  success: boolean;
+  message: string;
+  data?: unknown;
+}
+
+interface TwitterRequestBody {
+  text: string;
+  media?: {
+    media_ids: string[];
+  };
+}
+
+interface DebugInfo {
+  currentTime: {
+    iso: string;
+    pst: string;
+    utc: string;
+  };
+  allScheduledPosts?: {
+    count: number;
+    posts: Array<{
+      id: string;
+      scheduledFor: string;
+      status: string;
+      platform: string;
+      accountId: string;
+      provider: string;
+    }>;
+  };
+  duePosts?: {
+    count: number;
+    posts: Array<{
+      id: string;
+      scheduledFor: string;
+      platform: string;
+      accountId: string;
+      provider: string;
+      hasAccessToken: boolean;
+      contentLength: number;
+      hasImages: boolean;
+    }>;
+  };
+}
+
+interface LinkedInShareContent {
+  shareCommentary: {
+    text: string;
+  };
+  shareMediaCategory: "IMAGE" | "NONE" | "ARTICLE";
+  media?:
+    | Array<{
+        status: "READY";
+        description: { text: string };
+        media: string;
+        title: { text: string };
+      }>
+    | Array<{
+        status: "READY";
+        originalUrl: string;
+      }>;
+}
+
+interface LinkedInPostBody {
+  author: string;
+  lifecycleState: "PUBLISHED";
+  specificContent: {
+    "com.linkedin.ugc.ShareContent": LinkedInShareContent;
+  };
+  visibility: {
+    "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC";
+  };
+}
+
+interface ImageAsset {
+  asset: string;
+  displayUrl: string;
+}
+
+interface ErrorDetail {
+  message: string;
+  stack?: string;
+  name?: string;
+}
+
+// Define a type for Twitter metadata
+interface TwitterMetadata {
+  profile?: {
+    id: string;
+    name: string;
+    username: string;
+  };
+  oauth2?: {
+    codeVerifier?: string;
+    access_token?: string;
+    refresh_token?: string;
+    expires_in?: number;
+    token_type?: string;
+    scope?: string;
+  };
+  oauth1?: {
+    accessToken: string;
+    tokenSecret: string;
+  };
+  username?: string;
+  access_token?: string;
+  token_type?: string;
+  expires_in?: number;
+  refresh_token?: string;
+  scope?: string;
+  [key: string]: unknown;
+}
+
+// Helper function to simulate posting to Twitter
+async function mockPostToTwitter(content: string): Promise<void> {
+  console.log("MOCK: Would post to Twitter:", content);
+}
+
+// Helper function to simulate posting to LinkedIn
+async function mockPostToLinkedIn(content: string): Promise<void> {
+  console.log("MOCK: Would post to LinkedIn:", content);
+}
+
+function isImageAsset(asset: unknown): asset is ImageAsset {
+  return (
+    typeof asset === "object" &&
+    asset !== null &&
+    "asset" in asset &&
+    "displayUrl" in asset &&
+    typeof (asset as ImageAsset).asset === "string" &&
+    typeof (asset as ImageAsset).displayUrl === "string"
+  );
+}
+
+// Helper function to post to Twitter
+async function postToTwitter(
+  content: string,
+  account: typeof socialAccounts.$inferSelect,
+  imageAssets?: (string | { asset: string; displayUrl: string })[],
+): Promise<TwitterResponse> {
+  try {
+    const isDebug = true; // Enable debug for this function
+
+    // Get OAuth 2.0 access token - first check metadata for oauth2.access_token
+    let oauth2Token: string | undefined;
+    const metadata = account.metadata as TwitterMetadata | undefined;
+
+    if (isDebug) {
+      console.log("🔑 Twitter account details:", {
+        id: account.id,
+        provider: account.provider,
+        tokenType: account.tokenType,
+        hasAccessToken: !!account.accessToken,
+        hasRefreshToken: !!account.refreshToken,
+      });
+
+      console.log("Full account metadata:", JSON.stringify(metadata, null, 2));
+    }
+
+    if (metadata) {
+      // Check for token in metadata.oauth2.access_token (preferred location)
+      if (metadata.oauth2?.access_token) {
+        oauth2Token = metadata.oauth2.access_token;
+        console.log("Using OAuth 2.0 token from metadata.oauth2.access_token");
+      }
+      // Fallback to metadata.access_token
+      else if (metadata.access_token) {
+        oauth2Token = metadata.access_token;
+        console.log("Using OAuth 2.0 token from metadata.access_token");
+      }
+    }
+
+    // Only fallback to account.accessToken if we're sure it's not an OAuth 1.0a token
+    // OAuth 1.0a tokens typically don't have a dash in them and are stored in metadata.oauth1
+    if (
+      !oauth2Token &&
+      account.tokenType?.toLowerCase() === "bearer" &&
+      !(metadata?.oauth1?.accessToken === account.accessToken)
+    ) {
+      oauth2Token = account.accessToken;
+      console.log("Using OAuth 2.0 token from account.accessToken");
+    }
+
+    if (!oauth2Token) {
+      console.log(
+        "No OAuth 2.0 token found. Available metadata keys:",
+        metadata ? Object.keys(metadata) : "none",
+      );
+      throw new Error(
+        "Twitter OAuth 2.0 access token not found. Please reconnect your Twitter account with OAuth 2.0.",
+      );
+    }
+
+    if (isDebug) {
+      console.log(
+        "Using OAuth 2.0 token:",
+        oauth2Token.substring(0, 10) + "...",
+      );
+      console.log("Token type:", account.tokenType);
+    }
+
+    // Format the request body according to Twitter v2 API
+    const requestBody: TwitterRequestBody = {
+      text: content,
+    };
+
+    // Add media IDs if provided - format according to v2 API spec
+    if (imageAssets?.length) {
+      requestBody.media = {
+        media_ids: imageAssets.map((asset) =>
+          typeof asset === "string" ? asset : asset.asset,
+        ),
+      };
+    }
+
+    if (isDebug) {
+      console.log("📝 Twitter request body:", {
+        contentLength: content.length,
+        mediaCount: imageAssets?.length || 0,
+        mediaIds: requestBody.media?.media_ids,
+      });
+    }
+
+    // Check if token needs refresh
+    const now = Math.floor(Date.now() / 1000);
+    if (
+      account.expiresAt &&
+      now >= new Date(account.expiresAt).getTime() / 1000
+    ) {
+      if (isDebug) {
+        console.log("🔄 Token expired, attempting refresh...");
+      }
+
+      if (!account.refreshToken) {
+        throw new Error("Refresh token is missing");
+      }
+
+      const refreshResponse = await fetch(
+        "https://api.twitter.com/2/oauth2/token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Authorization: `Basic ${Buffer.from(`${process.env.TWITTER_CLIENT_ID}:${process.env.TWITTER_CLIENT_SECRET}`).toString("base64")}`,
+          },
+          body: new URLSearchParams({
+            grant_type: "refresh_token",
+            refresh_token: account.refreshToken,
+          }).toString(),
+        },
+      );
+
+      if (!refreshResponse.ok) {
+        console.error("Failed to refresh token:", await refreshResponse.text());
+        throw new Error(
+          "Twitter authentication failed. Please reconnect your Twitter account.",
+        );
+      }
+
+      const refreshData = await refreshResponse.json();
+
+      if (isDebug) {
+        console.log("🔑 Refresh successful, updating token...");
+      }
+
+      // Update the account with new tokens
+      await db
+        .update(socialAccounts)
+        .set({
+          accessToken: refreshData.access_token,
+          refreshToken: refreshData.refresh_token,
+          expiresAt: new Date(Date.now() + refreshData.expires_in * 1000),
+          updatedAt: new Date(),
+        })
+        .where(eq(socialAccounts.id, account.id));
+
+      // Update the token for the current request
+      oauth2Token = refreshData.access_token;
+    }
+
+    // Make the API request with OAuth 2.0 Bearer token
+    const response = await fetch("https://api.twitter.com/2/tweets", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${oauth2Token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    const responseData = await response.json();
+
+    if (isDebug) {
+      console.log("✨ Twitter API response:", {
+        status: response.status,
+        ok: response.ok,
+        data: responseData,
+      });
+    }
+
+    if (!response.ok) {
+      console.error("Twitter API error:", {
+        status: response.status,
+        error: responseData.detail || responseData.message,
+        code: responseData.status,
+      });
+
+      // Handle specific error cases
+      if (response.status === 401) {
+        throw new Error(
+          "Twitter authentication failed. Please reconnect your Twitter account.",
+        );
+      } else if (response.status === 403) {
+        throw new Error(
+          "Twitter API permission denied. Please check your account permissions.",
+        );
+      } else if (responseData.errors?.[0]?.message) {
+        throw new Error(`Twitter API error: ${responseData.errors[0].message}`);
+      } else {
+        throw new Error(responseData.detail || "Failed to post to Twitter");
+      }
+    }
+
+    console.log("Twitter post successful:", { id: responseData.data?.id });
+    return responseData as TwitterResponse;
+  } catch (error) {
+    console.error("Twitter posting error:", error);
+    throw error;
+  }
+}
+
+// Helper function to post to LinkedIn
+async function postToLinkedIn(
+  content: string,
+  account: typeof socialAccounts.$inferSelect,
+  imageAssets?: Array<string | { asset: string }>,
+): Promise<{ id: string; postUrl: string }> {
+  // If we have image assets, check their status first
+  if (imageAssets?.length) {
+    // Extract just the URN from the asset object if it's an object
+    const assetUrns = imageAssets.map((asset) =>
+      typeof asset === "string" ? asset : asset.asset,
+    );
+
+    // Check status of each image and wait for them to be ready
+    for (const urn of assetUrns) {
+      let isReady = false;
+      let attempts = 0;
+      const maxAttempts = 20; // Increased from 10 to 20 attempts
+
+      while (!isReady && attempts < maxAttempts) {
+        // Extract just the asset ID from the URN (everything after the last colon)
+        const assetId = urn.split(":").pop();
+
+        const statusResponse = await fetch(
+          `https://api.linkedin.com/v2/assets/${assetId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${account.accessToken}`,
+              "X-Restli-Protocol-Version": "2.0.0",
+              "LinkedIn-Version": "202304",
+            },
+          },
+        );
+
+        if (!statusResponse.ok) {
+          const errorText = await statusResponse.text();
+          console.error("LinkedIn asset status check error:", {
+            status: statusResponse.status,
+            assetId,
+          });
+          throw new Error(
+            `Failed to check LinkedIn image status: ${statusResponse.status}`,
+          );
+        }
+
+        const status = await statusResponse.json();
+        console.log("LinkedIn asset status check:", {
+          assetId,
+          status: status.status,
+        });
+
+        if (status.status === "ALLOWED") {
+          isReady = true;
+        } else {
+          attempts++;
+          // Wait longer between attempts (2 seconds instead of 1)
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
+      }
+
+      if (!isReady) {
+        throw new Error(
+          `LinkedIn image ${urn} not ready after ${maxAttempts} attempts`,
+        );
+      }
+    }
+  }
+
+  // Extract URL from content if present
+  const urlRegex = /https?:\/\/[^\s]+/g;
+  const urls = content.match(urlRegex) || [];
+  const hasUrl = urls.length > 0;
+  const url = urls[0] || null;
+
+  // Determine the appropriate media configuration
+  let shareMediaCategory: "IMAGE" | "NONE" | "ARTICLE" = "NONE";
+  let mediaConfig = {};
+
+  if (imageAssets?.length) {
+    // If we have image assets, use them
+    shareMediaCategory = "IMAGE";
+
+    // Extract just the URN from the asset object if it's an object
+    const assetUrns = imageAssets.map((asset) =>
+      typeof asset === "string" ? asset : asset.asset,
+    );
+
+    mediaConfig = {
+      media: assetUrns.map((urn) => ({
+        status: "READY",
+        description: { text: "Image" },
+        media: urn,
+        title: { text: "Image" },
+      })),
+    };
+  } else if (hasUrl) {
+    // If we have a URL but no images, use the URL for OpenGraph preview
+    shareMediaCategory = "ARTICLE";
+    mediaConfig = {
+      media: [
+        {
+          status: "READY",
+          originalUrl: url,
+        },
+      ],
+    };
+
+    console.log("Using URL preview for LinkedIn post:", url);
+  }
+
+  const body: LinkedInPostBody = {
+    author: `urn:li:person:${account.providerAccountId}`,
+    lifecycleState: "PUBLISHED",
+    specificContent: {
+      "com.linkedin.ugc.ShareContent": {
+        shareCommentary: {
+          text: content,
+        },
+        shareMediaCategory,
+        ...mediaConfig,
+      },
+    },
+    visibility: {
+      "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC",
+    },
+  };
+
+  console.log("Posting to LinkedIn:", {
+    postId: content.substring(0, 20) + "...",
+    hasMedia: !!imageAssets?.length,
+    hasUrlPreview: hasUrl && !imageAssets?.length,
+    body: JSON.stringify(body),
+  });
+
+  const response = await fetch("https://api.linkedin.com/v2/ugcPosts", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${account.accessToken}`,
+      "Content-Type": "application/json",
+      "X-Restli-Protocol-Version": "2.0.0",
+      "LinkedIn-Version": "202304",
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    console.error("LinkedIn API error:", {
+      status: response.status,
+      error: error.substring(0, 100) + "...",
+    });
+    throw new Error(`LinkedIn API error: ${response.status}`);
+  }
+
+  const responseData = await response.json();
+  console.log("LinkedIn post successful:", { id: responseData.id });
+
+  // Extract the post ID from the URN and construct the post URL
+  const postId = responseData.id.split(":").pop();
+  const postUrl = `https://www.linkedin.com/feed/update/${postId}`;
+
+  return {
+    id: responseData.id,
+    postUrl,
+  };
+}
+
+export async function POST(request: Request) {
+  try {
+    // Get API key and debug flags from headers
+    const apiKey = request.headers.get("x-api-key");
+    const isDryRun = request.headers.get("x-dry-run") === "1";
+    const isDebug = request.headers.get("x-debug") === "1";
+
+    if (apiKey !== process.env.POST_WORKER_API_KEY && !isDryRun) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Find posts that are scheduled and due
+    const now = new Date();
+    const debugInfo: DebugInfo = {
+      currentTime: {
+        iso: now.toISOString(),
+        pst: now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }),
+        utc: now.toUTCString(),
+      },
+    };
+
+    if (isDebug) {
+      debugInfo.currentTime = {
+        iso: now.toISOString(),
+        pst: now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }),
+        utc: now.toUTCString(),
+      };
+    }
+
+    // Query for all scheduled posts first to see what's in the database
+    const allScheduledPosts = await db
+      .select({
+        post: scheduledPosts,
+        account: socialAccounts,
+      })
+      .from(scheduledPosts)
+      .leftJoin(
+        socialAccounts,
+        eq(scheduledPosts.socialAccountId, socialAccounts.id),
+      )
+      .where(eq(scheduledPosts.status, "scheduled"));
+
+    if (isDebug) {
+      debugInfo.allScheduledPosts = {
+        count: allScheduledPosts.length,
+        posts: allScheduledPosts.map(({ post, account }) => ({
+          id: post.id,
+          scheduledFor: new Date(post.scheduledFor).toLocaleString("en-US", {
+            timeZone: "America/Los_Angeles",
+          }),
+          status: post.status,
+          platform: String(post.metadata?.platform || ""),
+          accountId: account?.id || "",
+          provider: account?.provider || "",
+        })),
+      };
+    }
+
+    const duePosts = await db
+      .select({
+        post: scheduledPosts,
+        account: socialAccounts,
+      })
+      .from(scheduledPosts)
+      .leftJoin(
+        socialAccounts,
+        eq(scheduledPosts.socialAccountId, socialAccounts.id),
+      )
+      .where(
+        and(
+          eq(scheduledPosts.status, "scheduled"),
+          lte(scheduledPosts.scheduledFor, now),
+        ),
+      );
+
+    if (isDebug) {
+      debugInfo.duePosts = {
+        count: duePosts.length,
+        posts: duePosts.map(({ post, account }) => ({
+          id: post.id,
+          scheduledFor: new Date(post.scheduledFor).toLocaleString("en-US", {
+            timeZone: "America/Los_Angeles",
+          }),
+          platform: String(post.metadata?.platform || ""),
+          accountId: account?.id || "",
+          provider: account?.provider || "",
+          hasAccessToken: !!account?.accessToken,
+          contentLength: post.content.length,
+          hasImages: !!(post.metadata?.imageAssets as unknown as ImageAsset[])
+            ?.length,
+        })),
+      };
+    }
+
+    const results = [];
+    let successCount = 0;
+    let failureCount = 0;
+
+    // Process each due post
+    for (const { post, account } of duePosts) {
+      try {
+        // Check if this is a Hacker News reminder
+        const platform =
+          (post.metadata as { platform?: string })?.platform ||
+          account?.provider ||
+          "unknown";
+        const isHNReminder =
+          platform === "hackernews" &&
+          (post.metadata as { type?: string })?.type === "reminder";
+
+        // Get user information
+        const postUser = await db
+          .select({
+            email: user.email,
+            name: user.name,
+          })
+          .from(user)
+          .where(eq(user.id, post.userId))
+          .limit(1);
+
+        if (isHNReminder) {
+          // For HN reminders, send notification and update status
+          if (!isDryRun) {
+            // Send HN reminder notification
+            await sendSlackNotification(
+              createScheduledPostNotification({
+                platform,
+                content: post.content,
+                scheduledFor: post.scheduledFor,
+                metadata: {
+                  ...(post.metadata as { url?: string; type?: string }),
+                  userEmail: postUser[0]?.email,
+                  userName: postUser[0]?.name,
+                },
+              }),
+            );
+
+            await db
+              .update(scheduledPosts)
+              .set({
+                status: "posted",
+                updatedAt: now,
+              })
+              .where(eq(scheduledPosts.id, post.id));
+          }
+
+          results.push({
+            id: post.id,
+            status: "success",
+            dryRun: isDryRun,
+          });
+          successCount++;
+          continue;
+        }
+
+        if (!account) {
+          throw new Error("Social account not found");
+        }
+
+        if (isDebug) {
+          console.log(`\n🔄 Processing post ${post.id}:`, {
+            platform: post.metadata?.platform,
+            accountId: account.id,
+            provider: account.provider,
+            scheduledFor: new Date(post.scheduledFor).toLocaleString(),
+            contentLength: post.content.length,
+            hasAccessToken: !!account.accessToken,
+            tokenLength: account.accessToken?.length,
+            hasRefreshToken: !!account.refreshToken,
+            imageCount: (post.metadata?.imageAssets as unknown[])?.length || 0,
+          });
+        }
+
+        // Post to appropriate platform
+        let postUrl: string | undefined;
+
+        if (isDryRun) {
+          // Simulate posting in dry-run mode
+          if (account.provider === "twitter") {
+            await mockPostToTwitter(post.content);
+          } else if (account.provider === "linkedin") {
+            await mockPostToLinkedIn(post.content);
+          }
+
+          // In dry-run mode, just add success result without updating database
+          results.push({
+            id: post.id,
+            status: "success",
+            dryRun: true,
+          });
+          successCount++;
+        } else {
+          // Actually post in normal mode
+          if (account.provider === "twitter") {
+            // Extract image assets from metadata
+            const rawAssets = (post.metadata?.imageAssets || []) as unknown[];
+            const imageAssets = rawAssets.map((asset) => {
+              if (typeof asset === "string") {
+                return { asset, displayUrl: asset };
+              }
+              if (isImageAsset(asset)) {
+                return asset;
+              }
+              throw new Error("Invalid image asset format");
+            });
+
+            if (isDebug) {
+              console.log("🐦 Twitter post attempt:", {
+                postId: post.id,
+                contentPreview: post.content.substring(0, 50) + "...",
+                imageCount: imageAssets.length,
+                imageAssets: imageAssets,
+              });
+            }
+
+            const twitterResponse = await postToTwitter(
+              post.content,
+              account,
+              imageAssets,
+            );
+
+            if (isDebug) {
+              console.log("🐦 Twitter API response:", {
+                postId: post.id,
+                success: !!(twitterResponse as TwitterResponse).data,
+                data: (twitterResponse as TwitterResponse).data,
+                errors: (twitterResponse as TwitterResponse).error,
+              });
+            }
+
+            if (twitterResponse instanceof Error) {
+              throw twitterResponse;
+            }
+
+            // Get the tweet URL
+            const tweetId = twitterResponse.data?.id;
+            postUrl = tweetId
+              ? `https://x.com/i/web/status/${tweetId}`
+              : undefined;
+          } else if (account.provider === "linkedin") {
+            // Extract image assets from metadata if present
+            const imageAssets = (post.metadata?.imageAssets || []) as Array<
+              string | { asset: string }
+            >;
+
+            if (isDebug) {
+              console.log("💼 LinkedIn post attempt:", {
+                postId: post.id,
+                contentPreview: post.content.substring(0, 50) + "...",
+                imageCount: imageAssets.length,
+                imageAssets: imageAssets,
+              });
+            }
+
+            const linkedInResponse = await postToLinkedIn(
+              post.content,
+              account,
+              imageAssets,
+            );
+            postUrl = linkedInResponse.postUrl;
+          }
+
+          // Update post status to posted only after successful posting
+          await db
+            .update(scheduledPosts)
+            .set({
+              status: "posted",
+              updatedAt: now,
+            })
+            .where(eq(scheduledPosts.id, post.id));
+
+          // Send success notification with post URL
+          await sendSlackNotification(
+            createScheduledPostNotification({
+              platform: String(
+                post.metadata?.platform || account?.provider || "unknown",
+              ),
+              content: post.content,
+              scheduledFor: post.scheduledFor,
+              metadata: {
+                ...(post.metadata as { url?: string; type?: string }),
+                userEmail: postUser[0]?.email,
+                userName: postUser[0]?.name,
+                postUrl,
+              },
+            }),
+          );
+
+          results.push({
+            id: post.id,
+            status: "success",
+            dryRun: false,
+          });
+          successCount++;
+        }
+      } catch (error) {
+        failureCount++;
+        if (isDebug) {
+          console.error(`❌ Error posting ${post.id}:`, {
+            error:
+              error instanceof Error
+                ? ({
+                    message: error.message,
+                    stack: error.stack,
+                    name: error.name,
+                  } as ErrorDetail)
+                : error,
+            post: {
+              id: post.id,
+              platform: post.metadata?.platform,
+              scheduledFor: new Date(post.scheduledFor).toLocaleString(),
+            },
+          });
+        } else {
+          console.error(`Error posting ${post.id}:`, error);
+        }
+
+        // Only update status to failed when not in dry-run mode
+        if (!isDryRun) {
+          await db
+            .update(scheduledPosts)
+            .set({
+              status: "failed",
+              errorMessage:
+                error instanceof Error ? error.message : "Unknown error",
+              updatedAt: now,
+            })
+            .where(eq(scheduledPosts.id, post.id));
+
+          // Send error notification
+          await sendSlackNotification(
+            createErrorNotification({
+              platform: String(
+                post.metadata?.platform || account?.provider || "unknown",
+              ),
+              content: post.content,
+              errorMessage:
+                error instanceof Error ? error.message : "Unknown error",
+              scheduledFor: post.scheduledFor,
+              metadata: {
+                ...(post.metadata as {
+                  url?: string;
+                  type?: string;
+                  userEmail?: string;
+                  userName?: string;
+                }),
+              },
+            }),
+          );
+        }
+
+        results.push({
+          id: post.id,
+          status: "error",
+          error: error instanceof Error ? error.message : "Unknown error",
+          dryRun: isDryRun,
+        });
+      }
+    }
+
+    if (isDebug) {
+      console.log("\n📊 Summary:", {
+        total: duePosts.length,
+        successful: successCount,
+        failed: failureCount,
+        results,
+      });
+    } else {
+      console.log(
+        `Summary: ${successCount} posts were successful, ${failureCount} posts failed`,
+      );
+    }
+
+    return NextResponse.json({
+      results,
+      debug: isDebug ? debugInfo : undefined,
+    });
+  } catch (error) {
+    console.error("Worker error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
+  }
+}

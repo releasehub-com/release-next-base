@@ -1,0 +1,54 @@
+---
+title: "Chipper Cash cuts testing time from ~24 hours to about 5 min"
+description: "Chipper Cash brings in Release to cut developer downtime and increase efficiencies and collaboration."
+publishDate: "2024-02-29T22:13:29.000Z"
+logo: "/case-study-images/f8772922b3983f5b3216f0163e47a845.svg"
+thumbnail: "/case-study-images/0e8d782eca236713ec2b35ac0dc01d20.svg"
+---
+
+#### About the Company
+
+Chipper Cash is a financial technology company serving more than five million people across the African continent. In 2018, Chipper Cash revolutionized intra-Africa money transfers with the introduction of fee-free personal payments—providing a frictionless way to send and receive money cross-border—immediately offering financial inclusivity to millions.
+
+Since then, Chipper Cash has increased its product suite, introducing services across personal investments and digital business transactions, and expanded its reach into the UK and US.
+
+Led by Ugandan and Ghanian co-founders Ham Serunjogi and Maijid Moujaled, Chipper Cash is focused on its mission to unlock global opportunities and connect Africa.
+
+#### Key Release Technologies Used
+
+Ephemeral Environments
+
+App Imports 
+
+#### Challenge
+
+Chipper Cash has a remote-first philosophy, meaning the company has a global cohort of team members based across the world. For Chipper Cash’s population of engineers, it was critical to have quick and easy access to tools and systems that help combat complexities around collaboration and learning is critical. 
+
+To aid this, Chipper Cash wanted to set up local (or isolated environments) builds that would emulate the backend, so developers could test changes. Think about it this way- if you’re developing a feature or trying to test a bug, it can be difficult and time intensive, as there are many moving pieces to the backend of an application. ChipperCash found the engineers only had two options: ship a massive image at once (which can cause major outages), or make changes quickly, which introduces risk.
+
+Neither option was proving suitable. Based on demands within the fintech industry, Chipper Cash needs to make changes quickly without risk of breaking other developers’ work. Additionally, Chipper Cash needed a responsive tool that was also natively integrated with their source code.
+
+#### Pre-Release
+
+Before Release, Chipper Cash hosted their staging environment, or as they refer to it, their sandbox environment, in Heroku. However, a single staging environment meant dozens of developers were waiting in line to test changes. This became increasingly problematic as they added more engineers to their team, resulting in more pull requests, and unmanageable operational overhead.
+
+‍  
+They found teams still had to diligently follow a set of rules and test changes in the staging environment, which led to a backlog of test requirements. This bottleneck caused multi day delays of feature releases, while their engineering team continued to scale. They realized engineers were being slowed down as they waited in line to test changes for solutions that ultimately didn’t meet their needs. If they had the ability to test earlier in the development process, they recognized they would have saved dozens of development hours building ill-fitting solutions.
+
+#### A New Solution
+
+Release allowed Chipper Cash to alleviate the difficulties—the undifferentiated lift and time required to build and maintain these environments. As a mobile app that uses 90% Javascript, each engineer now has their own isolated test environment to work asynchronously, hosted in their own AWS account. It has become fast and easy to do a pull request, go to the environment, test some features, and push code through continuous integration pipelines leveraging Release. With Release, Chipper Cash has cut testing time from **_~24 hours to about 5 minutes._** The team also has the ability within their own dashboards to view pull requests from other engineers and get a visual snapshot of the code that is being pushed out daily. This has increased teamwork and collaboration.  
+
+#### What’s Next
+
+Chipper Cash has been most excited about Release’s cross-functional collaboration and continues to expand. There has been a steady flow of teams leveraging these environments to view changes before they are pushed to production. The short-term goal is to increase collaboration as well as migrate all sandbox environments to Release. As the integration continues, developers are no longer limited by bottlenecks and Chipper Cash can release new features to customers faster.
+
+#### A word from the client
+
+> The communication between our own departments using the software and the Integration Engineers at Release has created a collaborative environment for us to be successful in our testing. Release has helped cut our testing time from days to minutes and provided insight to how we can optimize internally. It has enabled us to involve more teams to review feature updates and increase synergy within our company.
+
+###### Wendy Whitsett
+
+###### Software Engineer • Chipper Cash
+
+<CaseStudyCTA />

@@ -1,0 +1,202 @@
+---
+title: 10 Kubernetes Namespace Best Practices to Start Following
+summary: >-
+  This post will discuss how you can use kubernetes namespace to achieve even
+  more efficiency by following best practices.
+publishDate: "Mon Sep 19 2022 18:53:42 GMT+0000 (Coordinated Universal Time)"
+author: marion-newman
+readingTime: 5
+categories: &ref_0
+  - kubernetes
+  - platform-engineering
+mainImage: /blog-images/b90c46ea0d9d01c1c904f3758308d591.jpg
+imageAlt: a person writing on a book
+showCTA: true
+ctaCopy: >-
+  Improve Kubernetes efficiency with Release's on-demand environments, following
+  best practices for resource segregation and allocation.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=10-kubernetes-namespace-best-practices-to-start-following
+relatedPosts:
+  - ""
+ogImage: /blog-images/b90c46ea0d9d01c1c904f3758308d591.jpg
+excerpt: >-
+  This post will discuss how you can use kubernetes namespace to achieve even
+  more efficiency by following best practices.
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+Namespaces are the most efficient resource segregation and allocation method in the Kubernetes cluster.
+
+This post will discuss how you can use namespaces to improve efficiency by following best practices.
+
+![](/blog-images/0960ec04f74ef2c8f6a971e6d156cbf7.png)
+
+### What are Namespaces in Kubernetes, and Why are They Important?
+
+Before moving to best practices, let’s briefly look into what namespaces are and why you should use them.
+
+Suppose you want to use a single cluster as both your performance and dev clusters in order to save cost on computational resources. To do this in Kubernetes, you can use namespaces to segregate [pod](https://release.com/blog/kubernetes-pod-a-beginners-guide-to-an-essential-resource) services while running them on a single cluster.
+
+The namespace system is not new to computing; almost all programming languages use namespaces. Wherever you have encountered namespaces, the fundamental purpose is the same: They are used for logical grouping.
+
+Namespaces are a feature of the Linux kernel, and containers use namespaces extensively. Each container has its own storage namespace and network namespace for the segregation and allocation of resources.
+
+The [Kubernetes namespace](https://release.com/blog/kubernetes-namespaces-the-ultimate-guide) refers to virtual clusters that are backed by the same physical cluster. This option is designed for use in environments with multiple users spread across multiple work teams or projects.
+
+### Types of Kubernetes Namespaces
+
+These are the four initial namespaces that Kubernetes starts with:
+
+- **"default"—**The default namespace set by the system. It's intended for objects that don't specify any of the namespaces.
+- **"kube-system"—**This namespace is assigned to resources that are created by the Kubernetes system.
+- **"kube-public"—**This namespace is created by the system and is visible to all users, even users that aren't authenticated. Usually, this namespace is focused on the internal use of the platform cluster in situations where some of the resources need to be publicly visible and readable for the entire cluster.
+- ‍**"kube-node-lease "—**This namespace holds lease objects associated with each node. These leases allow the kubelet to send heartbeats so that you can determine node availability.
+
+In addition to these four namespaces, you can create custom namespaces.
+
+### Naming Convention of Kubernetes Namespaces
+
+Namespaces in Kubernetes follow the same naming convention as other objects created in Kubernetes.
+
+You can create a name with a maximum length of 253 characters using only alphanumeric characters and hyphens. Names cannot start with a hyphen and the alpha characters can only be lowercase.
+
+### 10 Kubernetes Namespace Best Practices
+
+Let's take a look at 10 Kubernetes namespace best practices so that you can get the most out of this feature.
+
+It's important to note that the actual utility of these practices depends on your particular needs and the nature of the project.
+
+#### 1\. Use Convenient and Scalable Names
+
+Naming is at the root of programming and is one of its basic building blocks. Names should be meaningful and provide context. Therefore, it’s recommended to use names that are expressive and scalable.
+
+For example, if you're working on a streaming application, you can name the namespace "stream". For the different development environments, you can scale this name by adding a suffix, for example, "stream-dev" for the development environment, "stream-test" for testing, and "stream-prod" for production.
+
+#### 2\. Attach Labels to Namespaces
+
+Labels in Kubernetes are not just a way to distinguish resources, but they're also a major source of metadata that can be used to log, analyze, and audit resources.
+
+Though it’s considered a best practice to use labels throughout Kubernetes, using them in a namespace is essential when you have a large team. Here is an example:
+
+```yaml
+kubectl create namespace namespace_name
+kubectl label namespaces namespace_name labelname=value --overwrite=true
+```
+
+#### 3\. Use RBAC to Allocate Resources
+
+Using role-based access control (RBAC), you can authorize and limit users’ access to certain resources. You can manage access locally within a cluster and globally to the entire cluster.
+
+To use RBAC for a specific namespace, you can use the _Role_ resource type while the _ClusterRole_ resource type can be used globally.
+
+Using RBAC helps you to secure clusters and manage resources by defining permissions based on roles.
+
+#### 4\. Use _ResourceQuota_ and _LimitRange_
+
+The namespaces in a cluster don't all need the same resources. Giving all namespaces equal resources can compromise the performance of key namespaces. Use a resource quota to limit the resource usage of particular namespaces.
+
+Use Kubernetes _ResourceQuota_ to control the number of resources that can be created in a namespace and _LimitRange_ to restrict the consumption of resources by pods.
+
+Here's an example of how to use _ResourceQuota_:
+
+```yaml
+
+apiVersion: v1
+      kind: ResourceQuota
+      name: default-resourcequota
+      synchronize: true
+      namespace: stream
+      data:
+        spec:
+          hard:
+            requests.cpu: '4'
+            requests.memory: ‘16Gi’
+            limits.cpu: '4'
+            limits.memory: ‘16Gi’
+
+```
+
+And here's an example of how to use _LimitRange_:
+
+```yaml
+
+apiVersion: v1
+      kind: LimitRange
+      name: default-limitrange
+      synchronize: true
+      namespace: stream
+      data:
+        spec:
+          limits:
+          - default:
+              cpu: 500m
+              memory: 1Gi
+            defaultRequest:
+              cpu: 200m
+              memory: 256Mi
+
+```
+
+![](/blog-images/8129568b7e7e6ef40c342ba8bd48df8a.png)
+
+#### 5\. Use a NetworkPolicy
+
+Kubernetes allows different pods across clusters to communicate. To secure the pods and only allow the desired traffic to pods from selected sources, it's necessary to use a NetworkPolicy for each namespace along with a CNI plugin to restrict communications.
+
+Using a NetworkPolicy will allow you to deny ingress, egress, or any unwanted traffic coming into pods through the namespace.  
+
+Here's an example of how to use a NetworkPolicy:
+
+```yaml
+
+apiVersion: networking.k8s.io/v1
+      kind: NetworkPolicy
+      name: default-deny
+      namespace: stream
+      synchronize: true
+      data:
+        spec:
+          # select all pods in the Namespace
+          podSelector: {}
+          # deny selected or all traffic
+          policyTypes:
+          - Ingress
+          - Egress
+
+```
+
+#### 6\. Don’t Create Too Many Namespaces
+
+Even though there's no restriction on how many namespaces you can create and how many namespaces Kubernetes can handle, it's best to avoid creating too many namespaces.
+
+Creating namespaces without any definite function can become difficult to manage and too many namespaces can affect the efficient consumption of resources.
+
+#### 7\. Don’t Shy Away From Creating a Cluster
+
+Namespaces are used to create virtual clusters to segregate resources and reduce costs. However, it's important to understand that as your team grows, the better FinOps approach is to create additional clusters rather than creating namespaces so that you don't to compromise on performance.
+
+#### 8\. Don’t Use the Default Namespace
+
+All objects created without a specified namespace are placed in the Kubernetes "default" namespace. If you use the "default" namespace, it can become difficult to segregate objects in it or implement RBAC and NetworkPolicies.
+
+#### 9\. Have an Idea of What’s Inside
+
+For better management of the Kubernetes cluster, it's important to understand which objects and resources are located in namespaces. This includes objects such as pods, replication controllers managed by the Kubernetes controller manager, and others.
+
+However, some elements are responsible for representing these resources are found outside Kubernetes namespaces. Additionally, low-level resources, such as persistent volumes and nodes, aren't found within namespaces. Services like [Release](https://release.com/) use dynamic provisioning in Kubernetes to provide on-demand environments that reduce the management overhead required to create persistent volumes.
+
+![](/blog-images/3a54975116f4f4b2a7d02a6c569e61f4.png)
+
+#### 10\. Sync Secrets
+
+Secrets in Kubernetes often need to exist in multiple namespaces in a cluster so pods can access them. Registry credentials, for example, need to exist in all namespaces in a cluster. If you have many namespaces, managing registry credentials manually can be tricky.
+
+Syncing secrets allows you to copy "regcred" to all new namespaces when they are created and pushes updates to the copied secrets.
+
+### Conclusion
+
+The use of namespaces in Kubernetes is a convenient way to organize and manage resources. If you know how to use namespaces effectively, it can make a significant difference in the performance of your Kubernetes workflows and help you enhance the operability of your clusters while saving on cost.
+
+‍

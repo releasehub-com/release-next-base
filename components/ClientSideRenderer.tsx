@@ -1,52 +1,111 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
-import dynamic from 'next/dynamic'
+console.log("ClientSideRenderer - File loaded");
 
-const LandingPage = dynamic(() => import('@/components/LandingPage'), { ssr: false })
-const GitLabLandingPage = dynamic(() => import('@/components/GitLabLandingPage'), { ssr: false })
-const KubernetesLandingPage = dynamic(() => import('@/components/KubernetesLandingPage'), { ssr: false })
-const ReplicatedLandingPage = dynamic(() => import('@/components/ReplicatedLandingPage').then(mod => mod.ReleaseVsReplicated), { ssr: false })
+import React, { useState, useEffect } from "react";
+import { useSearchParams, usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
+import { useVersion } from "@/lib/version/VersionContext";
+import LandingWrapper from "@/components/shared/layout/LandingWrapper";
 
-export default function ClientSideRenderer({ initialVersion }: { initialVersion: string }) {
-  const [version, setVersion] = useState(initialVersion)
-  const [isLoading, setIsLoading] = useState(true)
-  const searchParams = useSearchParams()
+const EphemeralContent = dynamic(
+  () =>
+    import("@/app/ephemeral-environments-platform/components/EphemeralContent"),
+  { ssr: false },
+);
+
+const KubernetesContent = dynamic(
+  () => import("@/app/kubernetes-management/components/KubernetesContent"),
+  { ssr: false },
+);
+
+const CloudDevContent = dynamic(
+  () =>
+    import("@/app/cloud-development-environments/components/CloudDevContent"),
+  { ssr: false },
+);
+
+const ReplicatedContent = dynamic(
+  () => import("@/app/replicated/components/ReplicatedContent"),
+  { ssr: false },
+);
+
+const GitLabContent = dynamic(
+  () => import("@/app/gitlab/components/GitLabContent"),
+  { ssr: false },
+);
+
+const PaasContent = dynamic(
+  () => import("@/app/platform-as-a-service/components/PaasContent"),
+  { ssr: false },
+);
+
+const AIPipelineContent = dynamic(
+  () =>
+    import(
+      "@/app/ai-ready-infrastructure-pipeline/components/AIPipelineContent"
+    ),
+  { ssr: false },
+);
+
+export default function ClientSideRenderer() {
+  console.log("ClientSideRenderer - Component mounting");
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [componentsLoaded, setComponentsLoaded] = useState(false);
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { version } = useVersion();
 
   useEffect(() => {
-    const urlVersion = searchParams.get('version')
-    if (urlVersion) {
-      setVersion(urlVersion)
-      localStorage.setItem('landing_version', urlVersion)
-    } else {
-      const storedVersion = localStorage.getItem('landing_version')
-      if (storedVersion) {
-        setVersion(storedVersion)
-      }
-    }
-    
-    // Pre-load all components
-    Promise.all([
-      import('@/components/LandingPage'),
-      import('@/components/GitLabLandingPage'),
-      import('@/components/KubernetesLandingPage'),
-      import('@/components/ReplicatedLandingPage')
-    ]).then(() => {
-      setIsLoading(false)
-    })
-  }, [searchParams])
+    async function initializeComponent() {
+      // Load components
+      console.log("ClientSideRenderer - Loading components...");
+      await Promise.all([
+        import(
+          "@/app/ephemeral-environments-platform/components/EphemeralContent"
+        ),
+        import("@/app/kubernetes-management/components/KubernetesContent"),
+        import(
+          "@/app/cloud-development-environments/components/CloudDevContent"
+        ),
+        import("@/app/replicated/components/ReplicatedContent"),
+        import("@/app/gitlab/components/GitLabContent"),
+        import("@/app/platform-as-a-service/components/PaasContent"),
+        import(
+          "@/app/ai-ready-infrastructure-pipeline/components/AIPipelineContent"
+        ),
+      ]);
 
-  if (isLoading) {
-    return <div className="min-h-screen bg-gray-900" />
+      console.log("ClientSideRenderer - Components loaded");
+      setComponentsLoaded(true);
+      setIsLoading(false);
+    }
+
+    initializeComponent();
+  }, []);
+
+  if (isLoading || !version || !componentsLoaded) {
+    console.log("ClientSideRenderer - In loading state:", {
+      isLoading,
+      version,
+      componentsLoaded,
+    });
+    return <div className="min-h-screen bg-gray-900" />;
   }
 
+  console.log("ClientSideRenderer - Rendering with version:", version);
   return (
-    <div className="fade-in">
-      {version === 'gitlab' && <GitLabLandingPage />}
-      {(version === 'kubernetes' || version === 'k8s') && <KubernetesLandingPage />}
-      {version === 'replicated' && <ReplicatedLandingPage />}
-      {(version !== 'gitlab' && version !== 'kubernetes' && version !== 'k8s' && version !== 'replicated') && <LandingPage />}
-    </div>
-  )
+    <LandingWrapper
+      initialVersion={version}
+      LandingPage={EphemeralContent}
+      GitLabLandingPage={GitLabContent}
+      KubernetesLandingPage={KubernetesContent}
+      ReplicatedLandingPage={ReplicatedContent}
+      EphemeralLanding={EphemeralContent}
+      CloudDevLanding={CloudDevContent}
+      CloudLanding={PaasContent}
+      AIPipelineLanding={AIPipelineContent}
+    />
+  );
 }

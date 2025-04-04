@@ -1,0 +1,67 @@
+---
+title: "Pre-production ephemeral environments and sales demo environments with Simon Data"
+description: "Simon Data is the enterprise customer data platform that empowers brands to deliver data-driven, personalized customer experiences everywhere."
+publishDate: "2024-02-29T22:13:29.000Z"
+logo: "/case-study-images/e1ef7dd360ebb603b27b35968823d9f0.svg"
+thumbnail: "/case-study-images/aa0280aeda0fddfd89bb866da41852cc.png"
+---
+
+#### About the client
+
+Simon Data is the enterprise customer data platform that empowers brands to deliver data-driven, personalized customer experiences everywhere. Simon is a marketing platform with a diverse technology ecosystem that spans many technologies within AWS.
+
+#### Release Technologies used:
+
+- Preview Environments with every Pull Request for User Acceptance Testing
+- On-Demand Sales Demo Environments for reproducible and consistent sales demos across industry verticals.
+- Instant Datasets for instantly loading appropriate data into sales and preview environments.
+
+#### Problem
+
+Simon Data was an early partner of Release with a handful of unique problems that needed to be solved in the environment ecosystem. First, Simon needed a better way to create environments for code reviews and product acceptance tests for their frontend web development team. In addition, Simon’s product is tricky to demo because each customer has specific data needs that required a special setup in a standalone environment such that the appropriate data could be loaded into the environment for the appropriate industry vertical (healthcare, automotive, etc…). 
+
+Product acceptance testing and code reviews were done in one of two ways prior to Release. Simon started by adopting the ‘test in production’ philosophy by releasing changes behind feature flags. They had a shared staging environment as well, but it was never kept up to date and maintained, so it consistently fell behind and wasn’t used frequently. As the Simon team grew and product and design teams became a part of the development process for their B2B product, ‘test in production’ became less desirable. Features that weren’t ready for customers and tested comprehensively were being released, which caused a lot of frustration and rework.
+
+Sales demos were also a problem for Simon as there was only a single demo environment that had to be reloaded for each demo with the appropriate data for the specific industry of the target customer. This process was error prone and tedious to manage.
+
+Simon’s technology ecosystem was incredibly diverse across many of the technologies with AWS and their DevOps team managing a ton of complexity. Building out a better way to manage environments was a project they wanted to do but they were spending most of their time keeping up with the demands of the organization and couldn’t spare the cycles to fix their environment ecosystem.
+
+#### How was this solved before
+
+Prior to Release, Simon had an in-house team build a staging environment where code reviews and product acceptance testing could be performed. but they only had one available to the growing development team. This staging environment was manually created and maintained which meant it regularly fell behind the most up-to-date technologies being used in their production environment. 
+
+There was only one sales demo environment which also suffered from lagging behind the most current features and technologies. In addition, this environment had to be refreshed for each customer with the appropriate data. A single employee in sales operations was capable of loading the appropriate data and the process was manual.
+
+In the past, the typical solution to building out a pre-product environment ecosystem for a company like Simon Data would be to simply try and re-create the production environment manually. You’d end up with another shared environment that all the developers used but you’d quickly realize that it, being a shared resource, became a bottleneck. Now they would face having two bottlenecks that had to be maintained.
+
+Other solutions would be to spend 6-12 months building out a more automated environment ecosystem in house with a dedicated DevOps team. However, this is a large investment and requires continual maintenance on a system that doesn’t add direct value to the business. Ongoing monitoring, maintenance, and support for new features would be a recurring cost for this in-house solution.
+
+#### A new solution
+
+Simon Data needed a better solution that could solve all their pre-production environment problems in a fast, cost effective, and streamlined manner. Because Release supports complex, multi-service applications within AWS we were able to replicate their complex environments. In addition, Simon Data is a data business, so environments needed the appropriate data to accurately test features and demonstrate value in their demo environments.
+
+We were able to provide Simon Data with an Environments as a Service solution. They used Release to create ephemeral staging environments for every Pull Request so code reviews and product acceptance testing could be done prior to releasing to production. This has resulted in higher quality solutions delivered to customers because Product Managers and stakeholders can see solutions much earlier in the development process than with testing in prod or shared staging environments. Simon has happier customers with better solutions and less “oops” moments or products that miss the mark.
+
+They are also creating on-demand Sales Demo environments with Release Instant Datasets. With Instant Datasets, Simon automatically loads industry specific data into demo environments to provide high quality and relevant demos for their potential customers. For each demo, they can choose the type of data they’d like to share with the customer and click a button to create a demo environment with relevant data for the demo. Over time they will be able to adapt their demos to any industry with a workflow for the sales teams which can easily add relevant data to the Instant Dataset library. This has resulted in much better and more relevant demos that have directly led to new Simon Data customers.
+
+#### What’s next
+
+As Simon’s business is rapidly evolving so are their needs to streamline development and deployments. More and more services are being developed at Simon and their needs for quickly deploying services grows. In the future, Simon will leverage Release for production deployments of appropriate services that are best delivered via Kubernetes.  
+
+We are also working towards expanding the types of data available in Release Instant Datasets to include services such as Redshift, a highly critical data element for Simon’s products and environments.
+
+The streamlining of deployments across a common environment management platform will reduce costs of operations and improve quality by reducing errors experienced by Simon’s customers. 
+
+An additional area of focus we’re exploring are on-premise (on-cloud) deployments of our software into Simon’s customer accounts where security and privacy are crucial.
+
+Lastly, we’re also working towards helping Simon build out a joyful developer experience that makes developing against a complex technology ecosystem simple and easy for Simon’s many developers. 
+
+#### A word from the client
+
+> Release has been a fantastic partner that’s solved problems for our developers, product managers and sales operations teams that we just simply didn’t have the time or money to address. We’ve been able to focus on our core, value added code while Release has helped us deliver higher quality software, faster, even with our unique and complex technology ecosystem.
+
+###### Jason Davis
+
+###### CEO • Simon Data
+
+<CaseStudyCTA />

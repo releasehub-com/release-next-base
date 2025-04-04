@@ -1,0 +1,77 @@
+---
+title: "Code to Cloud simplified: how Release uses AI to make deployment easier  "
+summary: >-
+  Getting your code into the cloud can be a challenge, especially when there is
+  no Dockerfile to help with configuration.
+publishDate: "Thu Apr 20 2023 18:06:33 GMT+0000 (Coordinated Universal Time)"
+author: erik-landerholm
+readingTime: 3
+categories: &ref_0
+  - ai
+  - kubernetes
+  - platform-engineering
+mainImage: /blog-images/5c008c46a8e48c9fb0a3a6846cd4f95f.jpg
+imageAlt: Release + Chat GTP4
+showCTA: true
+ctaCopy: >-
+  Simplify deployment with AI like Release does. Try Release.com for streamlined
+  environment management.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=code-to-cloud-simplified-how-release-uses-ai-to-make-deployment-easier
+relatedPosts:
+  - ""
+ogImage: /blog-images/5c008c46a8e48c9fb0a3a6846cd4f95f.jpg
+excerpt: >-
+  Getting your code into the cloud can be a challenge, especially when there is
+  no Dockerfile to help with configuration.
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+Getting your code into the cloud can be a challenge, especially when there is no Dockerfile to help with configuration. With our latest AI project, Release is here to solve this problem once and for all!
+
+While the cloud brought some parity between big companies’ infrastructure and the rest of us, it also created unnecessary complexity. Release was founded to make it easier for companies to virtualize their environments and utilize the cloud to its full potential, all while being as easy as Heroku.
+
+At Release, we tackled the problem of organizing and configuring applications with a combination of software and people, making it easy to transition from code to cloud. Our newest AI project makes it even easier for our customers to get their modern apps, utilizing [Kubernetes](https://docs.release.com/guides-and-examples/advanced-guides/kubernetes), [Terraform](https://docs.release.com/guides-and-examples/advanced-guides/infrastructure/terraform), [Helm](https://docs.release.com/reference-documentation/helm), Pulumi, and more in the cloud. Without requiring expertise in every cloud and native service involved. **You code, and Release makes it run!**
+
+How does Release use AI to accomplish this feat? The answer is generative AI + iteration! With GPT-4’s help, Release automatically dockerizes your application and runs it in the cloud!
+
+### How does it work?  
+
+![](/blog-images/bd169793166fe036ccc12c00466eea9f.png)
+
+_Figure 1. High level diagram showing how GPT-4 is utilized to dockerize and deploy your application with Release_
+
+Here's how it works: Typically, we need some basic configuration from your repository in order to get your application running in AWS and/or GCP. We start with Dockerfiles and Docker Compose files which ultimately are translated into k8s manifests that can run in EKS and/or GKE. Now, with the help of AI, Release is able to generate and test the Docker files for your repository; point Release at your repository and it fills in the missing pieces. 
+
+Release goes through an iterative process to generate and test the requisite files. It presents the output to the user so they can make any changes, and then tests the files again. Through this process you end up with requisite artifacts (Dockerfile, docker-compose.yml and .dockerignore) and Release gets your software up and running in the cloud!
+
+The steps are straightforward: 
+
+1.  Associate your repository with Release
+2.  Release will interrogate your repository and generate three files  
+    a. Dockerfile, .dockerignore, and a docker-compose.yml
+
+![](/blog-images/f67a743a9e94b2e4070d98404bb48170.gif)
+
+_Figure 2. Release auto-generating docker artifacts from repository interrogation + AI_ 3. Release runs a build and tests your generated files  
+ a. If the build fails, you can see the logs and make changes and try again
+
+![](/blog-images/8beb1b9c4a3d8400e0183395466b3107.gif)
+
+_Figure 3. Shows a build error being automatically corrected by Release based on the errors in the docker build. The package list was missing “shared-mime-info”.  Release noticed this and regenerated a Docker file, this time including “shared-mime-info”._ 4. Once the build is working, Release deploys your application into your EKS/GKE cluster
+
+![](/blog-images/7a61ac7e9f28cc3aa8848e995c7e041c.png)
+
+_Figure 4. Once the build passes a deployment kicks off automatically and we now have a fully working environment, in the cloud without having to create any docker files, k8s manifests, terraforms, etc.  
+_ 5. Now you can instantly create ephemeral, production, and cloud development environments. And even deploy your software into your customer’s VPCs with [Release Delivery](https://release.com/blog/release-delivery-helps-saas-companies-meet-the-needs-of-their-enterprise-customers)! 
+
+### What’s next?
+
+This is just the beginning of our code to cloud dream! We have plenty of things left to do:
+
+- We will continue to optimize our prompts and repository interrogation. We are using Rails applications as a proof of concept, but we will add support for all the major frameworks and improve the file generation through prompt optimization. 
+- We have an iterative loop for creating a successful build, but it currently requires manual approval to start the next iteration. We believe there is room to let our system and GPT-4 automatically build and apply fixes itself until the build succeeds.  
+- We are creating a virtual assistant to explain various aspects of our documentation and feature sets. Using AI we will be able to provide even more accessible documentation and examples that are context aware. We will open source this effort so other companies can add the same functionality to their applications.
+
+If you would like to see what’s possible with Release + GPT come by our booth at [2023 RailsConf](https://railsconf.org/) or take a look at this [video](https://vimeo.com/819902308). To try our development platform that is as easy as Heroku, but with the power of the largest cloud providers, use the promo code “**RailsConf**” when you [sign up](https://release.com/get-started) or contact sales for a [demo](https://release.com/book-a-demo)!

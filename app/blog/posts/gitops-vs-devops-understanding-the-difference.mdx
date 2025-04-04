@@ -1,0 +1,84 @@
+---
+title: "GitOps vs DevOps: Understanding the Difference"
+summary: >-
+  Let's look at a comparison between the classical GitOps vs DevOps. What are
+  the key similarities and differences?
+publishDate: "Wed Sep 07 2022 16:05:43 GMT+0000 (Coordinated Universal Time)"
+author: vicky-koblinski
+readingTime: 3
+categories: &ref_0
+  - platform-engineering
+  - kubernetes
+mainImage: /blog-images/4752ccf6e76e8eb0b4198dbea7f80c51.jpg
+imageAlt: a person working on a laptop
+showCTA: true
+ctaCopy: >-
+  Improve CD pipelines with Release's ephemeral environments for secure,
+  automated deployments. Enhance version tracking and streamline workflows.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=gitops-vs-devops-understanding-the-difference
+relatedPosts:
+  - ""
+ogImage: /blog-images/4752ccf6e76e8eb0b4198dbea7f80c51.jpg
+excerpt: >-
+  Let's look at a comparison between the classical GitOps vs DevOps. What are
+  the key similarities and differences?
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+When it comes to cooperative coding, DevOps is fundamentally a culture of continuous integration and deployment that aims to keep things running smoothly. GitOps is a newer, similar practice that builds on many of the same principles, only with a specifically version-tracking-based approach. It can be quite difficult to understand the differences, as both practices overlap greatly. In this article, we'll take a look at that overlap and outline some of the key differences. 
+
+### What Is DevOps?
+
+DevOps is, put simply, a strategy for increasing the efficiency of coding projects by connecting development and operations, enabling them to work together in a steady feedback loop of [CI/CD](https://en.wikipedia.org/wiki/CI/CD). Instead of keeping development and operations separate, and needing to coordinate between them as two separate branches of a project, new developments are continually integrated. The product is then tested, deployed, and monitored by operations and fed back for further development. 
+
+#### GitOps: Git for Automation
+
+In many ways, GitOps can seem like a branch of classic DevOps. GitOps represents an approach to DevOps functionality and goals that specifically relies on Git, [the most commonly used version tracking software today](https://www.cyberfella.co.uk/2020/03/23/what-is-devops/). In fact, because Git is so commonly used, many DevOps pipelines also use Git! However, GitOps refers to a practice that builds on the specifics of Git. It prioritizes automation specifically tied to Git's version control systems, and it leans into those functionalities. A few examples of this are: 
+
+- Rollouts and rollbacks: With version control tracking, it's easy to deploy a new feature, environment, or other aspect, then quickly revert back to an earlier, more stable version if it doesn't behave as expected.
+- Infrastructure as code: With Git, environments and infrastructure can be version tracked as well.
+- Push versus pull: Git allows operations to pull and review changes, and then the requested changes are automatically deployed.
+
+#### GitOps vs DevOps
+
+At their most basic level, DevOps and GitOps have the same root: a continuous pipeline that connects all the steps of a stable project into one flow. However, GitOps is more specific and tied to a singular tool. This leads to a few subtle, but important, differences. 
+
+### Better CD in CI/CD Pipelines
+
+A classic DevOps pipeline often starts with a repository for the developers' contributions. This is often in GitHub already, but it doesn't necessarily have to be for DevOps. Developers would then commit changes, which would be handled by a CI/CD tool (such as Azure). The CI/CD tool runs automated tests and integrates changes if they're acceptable. This then moves immediately into deployment via an automated deployment tool. 
+
+![](/blog-images/6462723ca5342d6403bb4c563715a4f4.png)
+
+GitOps expands on the continuous deployment (CD) stage of the pipeline, creating a more secure way to deploy with fewer failure points. The continuous integration (CI) step remains largely the same, but GitOps gives CD its own focus. GitOps tools continuously compare the current state of the operating environment with the desired state captured in the repository. If changes are made, they're pulled to the deployment server. Deployment automation tools can now pull those changes in turn—and revert to the latest stable version if there's an issue. 
+
+It's important to note that this kind of CD implementation isn't exclusive to GitOps. Though GitOps is conducive to good deployment strategies, in part due to automated version control tracking making them easier, any DevOps pipeline can employ them. They also aren't Git exclusive! However, they're often tied to GitOps as the shift to GitOps has placed more attention and focus on the CD step using Git functionalities to refine and improve the process of deployment. 
+
+### Infrastructure as Code
+
+One thing that comes up frequently when talking about GitOps is infrastructure as code (IaC). [Infrastructure as code](https://microtica.com/blog/infrastructure-as-code-from-the-beginning-to-gitops/) is a method of managing infrastructure to ensure that projects run in a consistent environment. This is done by including infrastructure inside of your code, and in GitOps, this means Git will apply the same version control to infrastructure as it does to any other part of the source code. In fact, Git is such a useful tool for this that many DevOps pipelines today also use Git for it. 
+
+Though many people regard GitOps as a direct response to the rise of the IaC concept, the relationship between GitOps and IaC has some subtle nuances. You can read about [some of these considerations in more detail here](https://microtica.com/blog/infrastructure-as-code-from-the-beginning-to-gitops/). Ultimately, while DevOps often deals with IaC as well, Git simplifies and enables this practice to the point that any DevOps techniques along these lines will either overlap significantly with GitOps or simply use Git. GitOps also places specific priority on IaC, while DevOps encompasses a greater, more generalized culture. 
+
+A good example of this is Release's own [environment configuration tracking](https://docs.releasehub.com/reference-documentation/gitops). In this case, we track the environment as part of the infrastructure. Release's UI builds on Git's existing version tracking, expanding on the common aspects of GitOps, such as automation, templating, and version tracking. 
+
+![](/blog-images/66d46a33d50e527bacbcfe342206ec03.jpeg)
+
+### Challenges and Best Practices of GitOps
+
+Ultimately, GitOps is an approach within the DevOps mindset that helps get the most out of Git and its toolkit. A majority of its advantages over traditional DevOps come from the strategic use of its foundations to further streamline a CI/CD pipeline. As such, to get the most out of GitOps, you need to know the foremost challenges that can arise and how to best navigate them. Here are a few of the major points to keep in mind: 
+
+- Security: One issue that often arises with Git is security. Sensitive data (such as security keys, passwords, or tokens) cannot be stored in areas that are committed to shared repositories. [Because these cannot be stored in plain text](https://release.com/blog/how-to-manage-gitops-secrets-a-detailed-guide), you need additional tools to either encrypt them or store them elsewhere.
+- Multi-environment configurations: Git only allows one environment per branch, and it requires that you define the environment within the repository. Any changes to environments, therefore, must be committed and pushed. Even if one environment per branch is enough, it can easily snowball. Release and environments as service (EaaS) provide solutions to manage this.
+- Scalability: This is one of the challenges that is hardest to manage. Git stores the history of all commits and changes. Over a number of versions and repositories, this can become quite a lot of data to store. While there isn't an easy fix for this, it's something that can be kept in mind. Limit the number of branches, cut down on duplicate code if possible, and keep commit permissions and protocol organized. With adequate planning and care, it's possible to keep GitOps relatively scalable.
+
+### Is GitOps an Offshoot of DevOps?
+
+In many ways, a CI/CD pipeline developed with GitOps does much of the same things that one developed with classic DevOps does, and a good classic DevOps setup has elements in place to cover much of what GitOps does. Therefore, GitOps can be regarded both as a tool in the DevOps toolkit or as its own practice, often depending on which elements of it you prioritize. 
+
+However, in either case, GitOps is a continuation of the culture that DevOps encompasses. It fills in blanks in areas that aren't prioritized in classical DevOps with strategies that remain in line with the core philosophy of DevOps. By knowing the most important advantages and challenges of GitOps, you can capitalize on the most important aspects of DevOps while taking it one step further. 
+
+### Conclusion on GitOps vs DevOps
+
+Good CI/CD and DevOps practices can have a huge impact on how efficiently a company operates. In this article, we went over what DevOps is, how GitOps fits into DevOps, and their differences. We also mentioned some best practices for incorporating GitOps effectively into your team's DevOps mentality. You can now take this information and make the best decisions possible for your development processes.

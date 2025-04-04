@@ -1,11 +1,12 @@
-import { cookies } from 'next/headers'
-import ClientSideRenderer from '@/components/ClientSideRenderer'
+"use client";
 
-export default function Home() {
-  const cookieStore = cookies()
-  const initialVersion = cookieStore.get('landing_version')?.value || 'default'
+import HomeContent from "./components/HomeContent";
+import VersionPageWrapper from "@/components/shared/layout/VersionPageWrapper";
 
+export default function HomePage() {
   return (
-    <ClientSideRenderer initialVersion={initialVersion} />
-  )
+    <VersionPageWrapper includeLayout={true}>
+      <HomeContent />
+    </VersionPageWrapper>
+  );
 }

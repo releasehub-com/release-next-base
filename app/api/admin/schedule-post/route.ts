@@ -1,0 +1,186 @@
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { db } from "@/lib/db";
+import { user, scheduledPosts, socialAccounts } from "@/lib/db/schema";
+import { eq, and } from "drizzle-orm";
+import { v4 as uuidv4 } from "uuid";
+
+export async function POST(request: Request) {
+  try {
+    const session = await getServerSession();
+
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Get the user's ID from the database
+    const userResult = await db
+      .select()
+      .from(user)
+      .where(eq(user.email, session.user.email));
+
+    if (!userResult.length) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const userId = userResult[0].id;
+
+    const body = await request.json();
+    const { content, scheduledFor, socialAccountId, metadata } = body;
+
+    if (!content || !scheduledFor || !socialAccountId) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 },
+      );
+    }
+
+    // Validate that the scheduled time is in the future
+    const scheduledTime = new Date(scheduledFor);
+    if (scheduledTime <= new Date()) {
+      return NextResponse.json(
+        { error: "Scheduled time must be in the future" },
+        { status: 400 },
+      );
+    }
+
+    // Validate image assets if present
+    if (metadata?.imageAssets) {
+      if (!Array.isArray(metadata.imageAssets)) {
+        return NextResponse.json(
+          { error: "imageAssets must be an array" },
+          { status: 400 },
+        );
+      }
+
+      console.log("Received image assets:", metadata.imageAssets);
+
+      if (metadata.imageAssets.length > 9) {
+        return NextResponse.json(
+          { error: "Maximum of 9 images allowed" },
+          { status: 400 },
+        );
+      }
+
+      // Process image assets based on platform
+      if (metadata.platform === "linkedin") {
+        // Get the user's LinkedIn account
+        const linkedInAccount = await db
+          .select()
+          .from(socialAccounts)
+          .where(
+            and(
+              eq(socialAccounts.userId, userId),
+              eq(socialAccounts.provider, "linkedin"),
+            ),
+          )
+          .limit(1);
+
+        if (!linkedInAccount.length) {
+          return NextResponse.json(
+            { error: "LinkedIn account not found" },
+            { status: 404 },
+          );
+        }
+
+        // Fetch display URLs for LinkedIn assets
+        const imageAssets = await Promise.all(
+          metadata.imageAssets.map(async (asset) => {
+            try {
+              // Extract the asset ID from the URN, handling both string and object formats
+              const assetUrn = typeof asset === "string" ? asset : asset.asset;
+              // Extract just the asset ID from the URN (everything after the last colon)
+              const assetId = assetUrn.split(":").pop();
+
+              const response = await fetch(
+                `https://api.linkedin.com/v2/assets/${assetId}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${linkedInAccount[0].accessToken}`,
+                    "Content-Type": "application/json",
+                    "X-Restli-Protocol-Version": "2.0.0",
+                    "LinkedIn-Version": "202304",
+                  },
+                },
+              );
+
+              if (!response.ok) {
+                const errorText = await response.text();
+                console.error("LinkedIn asset details error:", {
+                  status: response.status,
+                  statusText: response.statusText,
+                  error: errorText,
+                  assetUrn,
+                  assetId,
+                });
+                throw new Error(`Failed to fetch asset details: ${errorText}`);
+              }
+
+              const data = await response.json();
+              console.log("LinkedIn asset details response:", data);
+
+              if (data.status !== "ALLOWED") {
+                console.error("Asset not ready:", data);
+                throw new Error("Asset not ready for use");
+              }
+
+              return {
+                asset: assetUrn,
+                displayUrl:
+                  typeof asset === "object" ? asset.displayUrl : assetUrn,
+              };
+            } catch (error) {
+              console.error("Error fetching LinkedIn asset details:", error);
+              return typeof asset === "object"
+                ? asset
+                : { asset, displayUrl: asset };
+            }
+          }),
+        );
+        metadata.imageAssets = imageAssets;
+      } else if (metadata.platform === "twitter") {
+        // For Twitter, preserve the displayUrl from the upload response
+        metadata.imageAssets = metadata.imageAssets.map((asset) => {
+          if (typeof asset === "string") {
+            // If it's just a string, it's probably a legacy format - construct URL
+            const cleanMediaId = asset.includes("_")
+              ? asset.split("_")[1]
+              : asset;
+            return {
+              asset,
+              displayUrl: `https://pbs.twimg.com/media/${cleanMediaId}?format=jpg&name=large`,
+            };
+          }
+          // If it's already an object with displayUrl, use it as is
+          return asset;
+        });
+      }
+    }
+
+    // Create scheduled post
+    const [scheduledPost] = await db
+      .insert(scheduledPosts)
+      .values({
+        id: uuidv4(),
+        userId,
+        socialAccountId,
+        content,
+        scheduledFor: scheduledTime,
+        metadata: {
+          ...metadata,
+          imageAssets: metadata?.imageAssets || [],
+        },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+
+    return NextResponse.json({ scheduledPost });
+  } catch (error) {
+    console.error("Error scheduling post:", error);
+    return NextResponse.json(
+      { error: "Failed to schedule post" },
+      { status: 500 },
+    );
+  }
+}

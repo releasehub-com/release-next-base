@@ -1,0 +1,90 @@
+---
+title: Environments as a Service (EaaS) - Top 3 benefits
+summary: >-
+  Everything is a service these days; Everything as a Service (XaaS) actually
+  exists. So you can be forgiven for not
+publishDate: "Fri Mar 12 2021 22:29:07 GMT+0000 (Coordinated Universal Time)"
+author: erik-landerholm
+readingTime: 5
+categories: &ref_0
+  - platform-engineering
+  - product
+mainImage: /blog-images/07630124bcf2ad1c2a94c9a06b56585f.jpg
+imageAlt: Dozens of colorful sunflowers representing the diversity of EaaS
+showCTA: true
+ctaCopy: >-
+  Release's EaaS platform simplifies cost control, scalability, and ephemeral
+  environments, aligning with EaaS benefits mentioned in the blog.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=environments-as-a-service-eaas-top-3-benefits
+relatedPosts:
+  - ""
+ogImage: /blog-images/07630124bcf2ad1c2a94c9a06b56585f.jpg
+excerpt: >-
+  Everything is a service these days; Everything as a Service (XaaS) actually
+  exists. So you can be forgiven for not
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+### Environments as a Service
+
+Everything is a service these days; Everything as a Service ([XaaS](https://simple.wikipedia.org/wiki/Everything_as_a_service)) actually exists. So you can be forgiven for not knowing exactly what Environments as a Service (EaaS) is and why it could be a game changer for your business.
+
+EaaS is the natural extension of infrastructure as a service (IaaS, e.g. AWS, GCP, etc.), but instead of just the hardware and base software, EaaS includes all your code and settings as well as the infrastructure and software to run your application in an isolated environment. You describe your application to the system and the EaaS platform does the rest.
+
+These environments can be used for performance testing, QA, Sales Demos, large software and/or data migrations—even production. Aside from production, these environments are ephemeral; they come and go based on your particular SDLC.
+
+There are a lot of reasons to implement an EaaS, but there are 3 specific benefits that can change the whole trajectory of your business.
+
+### Cost Control
+
+Using a cloud provider has huge advantages, but there are some downsides, and a big one is cost. It isn’t that using a cloud provider means your infrastructure costs are necessarily higher, but the risk of accidentally spending a lot more money than you meant to is real! An EaaS can make this a non-issue. Once you know what an environment costs to create, you can understand your expenditures in a way not possible when dealing with AWS or GCP directly.
+
+> _Don’t forget to create all the correct billing alarms in AWS, they aren’t on by default!_
+
+Your EaaS provider gives you total control over your cloud bill by allowing you to limit the number of environments created and what they consist of… Your environments can be scaled to match your needs for each environment so that costs can be contained. For example, your demo environments need not be as big or fast as your load testing environment. Also, as noted above, your environments are ephemeral so they can be spun up and deleted automatically for only as long as you are actually going to use them.
+
+The costs of building your own internal EaaS is complicated to calculate, but you need to take into account a team of specialized devops engineers working on the project for 6-18+ months (depending on complexity), maintenance of the platform each year, cost of adopting new technologies, handling all your own AWS or other cloud costs, internal product management to make sure it stays competitive, and so on. It’s not cheap or easy to understand the costs of this kind of system. Even a team of only 3 Devops engineers working on an EaaS for about 6 months is over half a million dollars and that does not take into account opportunity cost and maintenance/upgrading costs going forward.
+
+Buying the right EaaS will be usable sooner than if you build it yourself and the costs will be simple to understand and more affordable. There are many things to spend your limited resources on to move your business forward, but building your own EaaS is not one of them.
+
+### Massive Increases in Speed
+
+> _“Speed Kills.” - Al Davis_
+
+All things being equal you have an advantage in football and business if you are more agile than your opponents or competitors. Obviously, in software development you need to define speed with a component of quality. Deploying a bunch of changes quickly that result in lower conversion or (worse) down-time is a huge problem, and that’s not how we want to measure speed: it’s too naive.
+
+We need to measure our velocity by only counting product deliverables that meet or exceed your key metrics and don’t compromise the stability of the application. Having a fast and capable EaaS could increase your teams’ velocity more than implementing any other kind of platform. An EaaS can improve your velocity in at least two dimensions by removing bottlenecks and decreasing rework.
+
+With an EaaS your releases will never get stuck because of a lack of staging or QA environments. The ability to create and destroy production like environments with your EaaS means your releases aren’t being delayed because of environmental bottlenecks. Since your environments are now ephemeral you can create more when your teams need them and shut them down when they aren’t needed. Capacity planning can now be done in real time with the platform reacting to your teams’ changes in velocity.
+
+![Ephemeral Environments](/blog-images/dcb11bff94c7277ee59cddb74df6be58.png)
+
+> _So many beautiful Ephemeral Environments to work with!_
+
+Rework is the most costly kind of work you can do. You always want to tackle rework as early as possible. You can’t avoid it completely, but you can minimize its impact. Often features are complex—even the smallest ones—with all the ways people may interact with it. From mobile apps to APIs, features often need to be seen or experienced by many people and multiple teams before release to avoid rework. Having access to an isolated, ephemeral environment that looks like ‘production + the new feature’ gives each team the ability to test earlier on and give feedback while the developers and designers are creating it. A good EaaS will give you the confidence in your quality and remove bottlenecks, allowing all your teams to achieve more in less time than ever before.
+
+### Implementing New Technology
+
+![Devops Tools and Technolgies](/blog-images/89eb8ffe69f92eea204cf6945c432912.png)
+
+> _Simplified Devops technolgies image, courtesy of OSOLABS._
+
+Technologies are constantly changing and evolving. It wasn’t that long ago that open source databases and the cloud weren’t considered mature enough technologies for the enterprise. It was even less time ago when you didn’t use containers, but just virtual machines (VMs) on AWS using EC2. If you started building an internal EaaS 4-5 years ago you most likely did not build it using Kubernetes (k8s); it just wasn’t ready for production workloads at the time. The retro-fit of an internal EaaS from managing VMs or containers to managing k8s is a non-trivial process. This is one of the major reasons you want to use an external EaaS.
+
+Kubernetes is amazing when it’s running well and managed by an experienced group of people. Implementing it is not for the faint of heart and it changes rapidly compared to more mature software. It’s probably the ultimate “[footgun](https://en.wiktionary.org/wiki/footgun)” in devops at the moment.
+
+K8s is not an EaaS by itself, but just a piece of the system—albeit an important one. In order to implement an internal EaaS on Kubernetes you need a deep understanding of it and a group of talented engineers to create an EaaS on top of it. And after you do all that, what happens if Kubernetes gets supplanted by something else? You will be stuck at that decision again, needing to invest all the time and resources to implement something new, or stay with what you have and hope it doesn’t hold you back compared to your competitors.
+
+Cloud providers are always supporting new technologies and many times the documentation, support, and stability of these technologies leaves something to be desired. An EaaS can help you avoid the time and distraction it takes to learn and implement all these changing technologies. You can think of Kubernetes as an engine and an EaaS as a car. Most of us buy a car, not all the parts of the car to make it yourself, unless we are in the business of building cars. You are in the business of creating amazing AI products, collaboration software, or just about anything other than an EaaS.
+
+### Conclusion
+
+An EaaS is crucial for your business to move as fast as possible while not sacrificing quality. The ability to control and predict costs while producing high quality work as quickly as possible is the holy grail of product development. The inability to quickly produce isolated environments of any specification will hold you back in innumerable ways.
+
+EaaS platforms are extremely complicated systems with rapidly changing technologies underpinning them. Just as most companies shouldn’t create their own alerting and monitoring solution, but instead use Datadog or an analog, they shouldn’t be creating their own EaaS.
+
+_At Release we work tirelessly to bring your application to life in an orchestrated, human interface. We write software to deal with all the complexity, difficulty, and strain so that no one else has to (unless they want to!) We create the engine that drives the Kubernetes vehicle, and we deliver solutions that our customers can use to get on with their business of doing business. Checkout_ [_Release_](https://releasehub.com) _and let us help your business streamline feature development with EaaS!_
+
+Photo by [Alexander Schimmeck](https://unsplash.com/@alschim?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/)

@@ -1,0 +1,88 @@
+---
+title: How to Solve AWS EFS “Operation Not Permitted” Errors in EKS
+summary: >-
+  Learn how we have helped our customers maintain strong deployment without
+  overloading the workload and application stack
+publishDate: "Sat Jul 16 2022 20:59:54 GMT+0000 (Coordinated Universal Time)"
+author: regis-wilson
+readingTime: 7
+categories: &ref_0
+  - kubernetes
+  - platform-engineering
+mainImage: /blog-images/5b34326d4b07234018b56444f8235b98.jpg
+imageAlt: A block of code in a computer screen
+showCTA: true
+ctaCopy: >-
+  By automating environment setup like EFS in EKS, Release simplifies storage
+  management for Kubernetes workloads. Try it now!
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=how-to-solve-aws-efs-operation-not-permitted-errors-in-eks
+relatedPosts:
+  - ""
+ogImage: /blog-images/5b34326d4b07234018b56444f8235b98.jpg
+excerpt: >-
+  Learn how we have helped our customers maintain strong deployment without
+  overloading the workload and application stack
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+At ReleaseHub, we operate dozens of Amazon Elastic Kubernetes Service (EKS) clusters on behalf of our customers. The various workloads and application stacks we have to support are practically as diverse as the number of engineers who use our product. One very common use case is a permanent storage space for the workloads that are deployed in each environment.
+
+The most common general solution for storage in AWS for compute workloads is the Elastic Block Service (EBS), which has the advantage of being relatively performant and easy to set up. However, it has the drawback that EBS volumes are tied to a specific Availability Zone (AZ). Therefore, using Kubernetes workloads running in multiple Availability Zones (AZs), it turns out that ensuring pod workloads correctly map to the correct AZ is actually difficult to do properly and has caused numerous issues for our customers who use EBS storage in their clusters. We also discovered that EBS storage costs can add up quickly and over-provisioning volume sizes (which is a necessary evil) can add to this problem.
+
+Without going too far down the pros and cons of each storage system, we found that most customers were well satisfied with using Elastic FileSystem (EFS) mount points to provide persistent storage volumes backing the application workloads deployed to their clusters. EFS provides a good balance of performance, reliability, price (pay-for-what-you-store), and AZ diversification. As such, we made an early decision to move almost all customer workloads off EBS to EFS and only allowed the EBS option for customer workloads who specifically opt-in to it. This solution worked well for us since EKS version 1.14 all the way up until recently when we started moving customers to 1.21 and beyond.
+
+### The Problem
+
+In our original implementation of EFS workloads in EKS, we started out using the (now retired) [EFS provisioner](https://github.com/kubernetes-retired/external-storage/tree/master/aws/efs). This solution allowed our customers to specify a volume for persistent storage and the provisioner would create a filesystem mount from an existing EFS infrastructure point (which we create automatically upon cluster creation). The customer pods would then mount this filesystem and have unlimited storage that would persist until the workload expired or was deleted, at which point the volume space would be removed. We literally experienced zero issues with this configuration from the first time we tested it.
+
+In recent months, we have been tirelessly upgrading to the latest version(s) of EKS to keep customers up to date with the latest features and deprecations in the never ending Kubernetes versions. Upon reviewing the various addons and plugins, we realised that the EFS provisioner was replaced by the modern [EFS CSI driver](https://github.com/kubernetes-sigs/aws-efs-csi-driver). You can read more about the two projects in [this stack overflow article](https://github.com/kubernetes-sigs/aws-efs-csi-driver).
+
+The upgrade process was not terribly difficult for us since we could easily run both provisioners side by side and then switch over workloads using the [Kubernetes Storage Class](https://kubernetes.io/docs/concepts/storage/storage-classes/) objects. As one example, Customer A would be using the legacy _provisioner: releasehub.com/aws-efs_ storage class and then we could upgrade any subsequent workloads to _provisioner: efs.csi.aws.com_ and then test until we were satisfied with the results. Rolling back was easy to revert the workloads back to the original storage class.
+
+Eventually, after demonstrating that the process worked seamlessly and nearly flawlessly with the new driver and the same infrastructure in a variety of scenarios, we were able to confidently roll out the changes to more and more customers in a planned migration.
+
+That was when we ran into two major stumbling blocks with customer workloads that use persistent volumes: postgres and rabbitmq containers. Here are the horrible details we discovered for each:
+
+_initdb: could not change permissions of directory "/var/lib/postgresql/data/pgdata": Operation not permitted_
+
+‍*chown: /var/lib/rabbitmq: Operation not permitted*
+
+It is important to note that this could happen to any workloads that use the chown command, but these were the most common complaints we got from customers.
+
+### Diagnosis
+
+At first, we did what every engineer does: we searched Google and confirmed the problems were widespread, finding stack overflow and server fault questions [here](https://stackoverflow.com/questions/51801220/postgres-on-kubernetes-volume-permission-error) and [here](https://serverfault.com/questions/993907/rabbitmq-kubernetes-with-nfs-mount) respectively. Unfortunately, and most frustratingly, there were no good solutions to the problem(s) and even worse, many of the solutions posited by people were highly complex, tightly tied to a particular implementation, or technically brittle. There seemed to be no particularly elegant, easy solution especially for our wide diversity of customer user cases.
+
+We tried using the latest versions of the drivers to no avail. We tried even older versions of the CSI driver to see if this might have been a regression (to no avail). Digging in even deeper to EKS and EFS specifically, we discovered that dynamic provisioning (which is what we rely on to provide a seamless, fast, efficient service for workloads) was [recently added to the new CSI driver](https://aws.amazon.com/blogs/containers/introducing-efs-csi-dynamic-provisioning/). This [GitHub issue](https://github.com/kubernetes-sigs/aws-efs-csi-driver/issues/300) (unsolved to this day) indicates that the problem has actually been in place from the beginning of the driver’s use cases.
+
+Reading through the various use cases affected was like reading a long-lost diary of all our horrible secrets and failures laid bare: including some horrific harbingers of doom we had nearly inflicted on the rest of our customers who were yet to be migrated. We quickly reviewed our test cases and made the stunning discovery that we had been testing all kinds of workloads that read and write to NFS volumes, but hadn’t tested the ones that use chown. That was the only use case we hadn’t considered, and it was the one use case that failed.
+
+The root cause of the issue is that an EFS mount point that is dynamically created for a pod workload is given a set of mapped numerical User IDs (UIDs), but the UID that is stored inside the pod workload typically will not match the UID assigned to the EFS mount point. In most use cases, the operating system will not necessarily care what UID is in use on the mounted filesystem; it will typically just blindly read and/or write to the filesystem and assume that if the operation is a success that the permissions are correct. There are a number of good reasons not to be that trusting however. For example, in a database scenario, the permissions related to reading and writing data for the storage of important information is not left to chance and the application will attempt to ensure the UID (and maybe even Group IDs \[GIDs\]) match.
+
+This did not answer the question of why the legacy deprecated provisioner seems to work flawlessly, but we will dig into that on another blog post.
+
+To date, there does not seem to be any way to match the UIDs so that the operating system inside the container can set or even pretend to set the UID of a directory the application needs for reading and writing so that it matches the physical infrastructure underlying Kubernetes. This is not just an academic legacy issue, it is a real concern for security and privacy reasons that affect modern applications running in modern Cloud Native environments.
+
+### A Few Solutions
+
+Finally we present a few solutions, in chronological order of ones that we tried. We gradually settled on the last option as you will see the rationale behind this decision unfold.
+
+Option 1: Find every occurrence of Waldo and fix it for each customer and application workload. This option sounds as bad as you imagine it would be. Worse, it could make an easy and simple solution (pull a standard container and run it) unusable under normal circumstances. Even worse, our work would never be done: any new customers we onboard would have a new set of changes or fixes or workarounds to find and implement.
+
+For example, we could easily identify the lines affecting us in the [postgresql image entrypoint](https://github.com/docker-library/postgres/issues/361#issuecomment-468391845) and create our own version. Which you would then need to create a separate dockerfile and modify it to your tastes…for each customer and each version of postgres and operating system that is in use times the number of applications each customer uses. Or, we could try to force the UID and GID numbers to match the CSI provisioner’s UID and GID to match (again, with a [splinter version of the dockerfile](https://github.com/docker-library/postgres/issues/361#issuecomment-508303459)). Now that we have quote-unquote, allegedly, supposedly, air quotes “solved” the problem, do the exact same thing for the next application (like rabbitmq, or Jenkins, or _whatever_) and all the application and operating system versions. Not just now, but also moving forward into the future forever.
+
+Option 2: Try to boil the ocean to find every single species of fish and identify them. Taking a step back, it is clear that we cannot hope to ever solve every use case of chown that is out there in the wild today, not to mention new ones that are being born every year. We were able to identify that most docker images use a specific UID and GID combination and the numbers of these are fairly limited. Examining two use cases in question, we found that postgresql images tended to use 999:999 and several others used 99 or 100, perhaps 1000 and 1001. This seemed like a promising lead to a solution because you can specify the [UID in the CSI provisioner](https://github.com/kubernetes-sigs/aws-efs-csi-driver#storage-class-parameters-for-dynamic-provisioning).
+
+This elegant solution would result in creating several StorageClasses in Kubernetes, like say, “postgresql-999”, “rabbitmq-1001”, and so forth. Or maybe just “efs-uid-999” to be more generic. Then we would teach each customer who enjoyed a failed build or deploy stack trace to change their settings to use the appropriate StorageClass. Even better, there are only about 2^16 possible unique UIDs in Linux, so we could programmatically create all of them in advance and apply them to our cluster to be stored in etcd, ready for retrieval whenever a customer wanted a UID-specific storage class. Or to limit choices in an opinionated but friendly way, we could require all containers to use a fixed UID, like 42, in order to use the storage volumes on our platform. If a customer wanted to use a different UID, like 43, we could charge $1 for every UID above and beyond the original one.
+
+If you did not detect any sarcasm in the preceding paragraph, you may want to call a crisis hotline to discuss obtaining a sense of humour. Amazon does not sell any upon last check; although you might find a used version on Etsy or eBay. I once ordered a sense of humour and it was stolen by a porch pirate before I could bring it in. Once I had obtained a suitable one, I would occasionally rent mine out on the joke version of Uber or Lyft, and sometimes you can even spend the night in my sense of humour on AirBNB, but due to abuse and lack of adequate tipping I have had to scale my activities down lately.
+
+Option 3: When in doubt, rollback to when it worked. We ultimately had to decide that we would be unable to support the new CSI driver until an adequate solution for dynamic deployments of EFS volumes was found for EKS. In the world of open source, there is always someone who comes up with a clever solution to a common problem and that becomes the de facto implementation recommendation. Currently, we were satisfied with the original functionality of the deprecated provisioner.
+
+But this raises another issue, how do we square using a deprecated and potentially unsupported solution on a platform our customers depend and rely upon? The answer is that we can make small adjustments and updates to the yaml and source code since the original solution code is still available and can be updated by Releasehub to support our customers.
+
+### Conclusion
+
+Sometimes we must accept that we live in an imperfect world and accept the fact that we are as imperfect as the imperfect world we live in which means that we should accept the imperfection as the correct way that things should be and thus, the imperfection we see in the world merely reflects the imperfections in ourselves, which makes us perfect in every way.

@@ -8,6 +8,10 @@
 
 # testing
 /coverage
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
 
 # next.js
 /.next/
@@ -27,6 +31,8 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env.blog
+.env
 
 # vercel
 .vercel
@@ -34,3 +40,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Test artifacts
+test-artifacts/
+
+# Contentlayer
+.contentlayer

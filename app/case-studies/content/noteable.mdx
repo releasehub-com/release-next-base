@@ -1,0 +1,50 @@
+---
+title: "With Release, Noteable Increases Collaboration and Velocity While Cutting Downtime by 50%"
+description: "Noteable is a collaborative notebook platform that enables teams to use and visualize data, together."
+publishDate: "2024-02-29T22:13:29.000Z"
+logo: "/case-study-images/c7e0fe6523d616fedbf4aa86deedb856.svg"
+thumbnail: "/case-study-images/3604ac35f8024f1f78daf543ef9be000.png"
+---
+
+#### About the client
+
+Noteable is a collaborative notebook platform that enables teams to use and visualize data, together. Its cloud-based and secure deployment options, no-code visualizations, and collaborative environment make it easy for teams to work with data in a single platform. Users can comment on, export, and share data points through a modern UI with native SQL support. Historically, different teams had different skill sets and used specialized tools that weren’t tightly integrated with one another. Too many handoffs led to unverifiable or unreproducible work, and the workflow process became prone to failure. Now, with Noteable, teams remain fully integrated in existing programming environments, while creating rich visualizations to share. All without code.
+
+#### Technologies used
+
+- Preview environments to empower non-traditional users to work with data in new ways.
+
+#### Problem
+
+Noteable is focused on improving collaboration and data visualization techniques by adding features to virtual notebook environments such as versioning, commenting, real-time updates and role-based access control. Advanced visualization capabilities enable Noteable’s customers to automatically visualize their data in sophisticated new ways, and to explore their data before writing any code.
+
+This is crucial, as IDC found that [data experts worldwide spend 44 percent of their workdays on unsuccessful data activities](https://www.alteryx.com/resources/report/idc-state-of-data-science-and-analytics). A staggering [90 percent](https://venturebeat.com/2021/11/16/noteable-expands-analytics-tools-for-programming-with-new-21m/) of time is spent searching for, preparing, and analyzing data – essential housekeeping tasks, which ultimately don’t add any meaningful value at all.
+
+So Noteable developed a suite of integrated collaboration tools to simplify communication and encourage exploration across teams, including commenting, version control and auto save. Additional features – including managed cloud infrastructure, integrated single sign-on, and role-based access control – act as a secure foundation.
+
+Designing and augmenting these types of rich feature sets, however, required Noteable developers to rapidly test their own code changes. Pull requests were taking too long, and they needed to streamline their entire code review and developer collaboration processes.  Noteable needed faster feedback loops, and environments where they could quickly preview their code changes. Ephemeral environments through Release fit their requirements perfectly.
+
+#### How was this solved before
+
+Diego Rodriguez, staff devOps engineer tech lead at Noteable, had tried building custom environments during his time at prior companies. He knew the DIY approach relied heavily on pull requests and interconnected tools to browse and manage code. This required a lot of cobbled together infrastructure, as well as writing customized scripts. It resulted in a situation where different teams were working on different aspects of the platform simultaneously. Developers made changes in isolated environments and couldn’t easily determine the full impact of code changes until everything was merged together. And with many code changes in flight at the same time, it became increasingly difficult to identify and fix errors.
+
+In his words: “At Noteable, we didn't have anything before Release - but because of my previous experience, we set forth to look for a vendor and not build something by ourselves.”
+
+#### A new solution
+
+By turning to Release, the developers at Noteable now review their full stack and all the supporting infrastructure at the click of a button. Noteable also has immediate access to on-demand ephemeral environments, where they can spin up and delete environments on the fly, easily preview all code changes and run end-to-end tests in a fully fleshed out environment – before they get merged into the main branch on the source code repository.
+
+‍  
+The resulting impact Noteable has experienced is significant. Noteable estimates the time saved with Release compared to building custom environments is at least a full quarter worth of development work across two devops engineers, not accounting for the operational burden of maintaining a custom solution. With Release, they’re able to push a change to GitHub and instantly visualize the code change, which accelerates development and product releases. Additionally, running end-to-end tests in a fully fleshed out environment allows faster iteration, and collaboration is greatly improved as developers can access environments from a central, shared location. Finally, developers at Noteable don’t need to worry about maintaining any tooling or added infrastructure.
+
+#### What’s next
+
+Noteable currently uses Release ephemeral environments with the frontend stack, and they  plan to also deploy ephemeral environments for the backend stack. Doing so will alleviate local development complexities due to the varied supporting infrastructure systems that are in use and give the backend team more time to focus on development.
+
+#### A word from the client
+
+> All pull requests require review, which became a substantial time investment and ultimately a blocking step for us. During code review, even the best developers may not understand what they’re looking at initially. Having ephemeral environments to bring up on-demand, and play with while looking at the code – rather than having to stop work, pull everything down, integrate new code changes into the main project repository, and fire it up again – reduces our time by 50 percent.
+
+###### Krishna Rajendran
+
+<CaseStudyCTA />

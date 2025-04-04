@@ -1,0 +1,231 @@
+---
+title: "Kubernetes Jobs: How to Create, Schedule, Run, and More"
+summary: >-
+  Let's walk through a tutorial on how to create, schedule, configure, and run
+  Kubernetes Jobs.
+publishDate: "Tue Sep 06 2022 18:29:41 GMT+0000 (Coordinated Universal Time)"
+author: tommy-mcclung
+readingTime: 4
+categories: &ref_0
+  - kubernetes
+  - platform-engineering
+mainImage: /blog-images/a127125d021b2ea0b1d611e065508bb3.jpg
+imageAlt: "Kubernetes Jobs: How to Create, Schedule, Run, and More"
+showCTA: true
+ctaCopy: >-
+  Simplify Kubernetes job management with Release's ephemeral environments.
+  Test, schedule, and run jobs effortlessly for faster deployment cycles.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=kubernetes-jobs-how-to-create-schedule-run-and-more
+relatedPosts:
+  - ""
+ogImage: /blog-images/a127125d021b2ea0b1d611e065508bb3.jpg
+excerpt: >-
+  Let's walk through a tutorial on how to create, schedule, configure, and run
+  Kubernetes Jobs.
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+Kubernetes jobs have many real-life applications. For example, you can use jobs to execute a process for data backup. Once the backup is successful, the job stops running the pods. 
+
+In this post, you'll learn how to use Kubernetes jobs. We'll walk you through a tutorial on how to create, schedule, configure, and run Kubernetes Jobs. 
+
+### What Are Kubernetes Jobs?
+
+Kubernetes jobs are controllers that create one or more [pods](https://release.com/blog/kubernetes-environment-variables#:~:text=Configuration%20for%20Your%20Pods) that will run until execution successfully terminates for a specific number of pods. Once the task assigned to a job completes without any error, the task(job) stops running. In case of a failure, the job attempts to retry until all pods run successfully. You can limit how many times a job retries execution using configurations like **activeDeadline** and **backoffLimit**.
+
+![](/blog-images/61b64d6364c17fa822bc244ed2254bc7.jpeg)
+
+### Use Cases of Kubernetes Jobs (When to Use It)
+
+Now that we know some examples of tasks we can execute using jobs, let's walk through a brief tutorial on how to work with Kubernetes jobs. 
+
+#### 1\. Backups
+
+You can use Kubernetes jobs to perform a task like the periodic backup of data on your server or application. For example, if you want a backup, you set up a job and run it one time. The job will continue running its pods until the backup completes. If the job fails, it will retry. Hence, you can just start the job and not worry about it stopping until the backup completes. Also, you don't have to worry about the task executing again after the backup succeeds. 
+
+#### 2\. Installing and Uninstalling Services
+
+Another good example of a task you can perform with Kubernetes jobs is installing new services for your application. Likewise, you can use jobs to remove existing services that you no longer need. Similar to our backup example, these jobs will run and stop executing their pods as soon as they successfully add or remove the target services. If they don’t succeed, the jobs retry the tasks. 
+
+### How to Use Kubernetes Jobs
+
+Now that we know some examples of tasks we can execute using jobs, let's walk through a brief tutorial on how to work with Kubernetes jobs. 
+
+### Prerequisites
+
+In order to follow along better, you'll need to have the following tools and experience: 
+
+- Kubernetes installation on your target machine
+- Basic knowledge of [Docker](https://releasehub.com/blog/6-docker-compose-best-practices-for-dev-and-prod) and Kubernetes
+- Knowledge of Terminal and CLI
+
+With that out of the way, let's walk through the actual steps for using jobs. 
+
+#### Step 1: Creating a Job
+
+Just like most operations in Kubernetes, you create jobs using a [**YAML file**](https://en.wikipedia.org/wiki/YAML). The YAML file will contain all the details about your job, like the name of the job, what should happen when a pod fails, and so on. In later steps, we'll take a closer look at the various job configuration options. 
+
+So, on your machine, create a new file with the name **hello_world_job.yaml** and paste the configuration for your new job into it. For this tutorial, we'll use the following code: 
+
+```yaml
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hello-world-job
+spec:
+  template:
+    metadata:
+      name: hello-world-job
+    spec:
+      containers:
+      - name: hello-world
+        image: centos:7
+        command:
+         - "bin/bash"
+         - "-c"
+         - "echo hello world"
+      restartPolicy: Never
+
+```
+
+The above configuration is for a job that simply prints "hello world." Next, finish up creating the job by running the following command: 
+
+```yaml
+kubectl apply -f hello_world_job.yaml
+```
+
+You should get the following message on your terminal if the command runs successfully: 
+
+```yaml
+job.batch/hello-world-job created
+```
+
+Also, you can verify that your job was created by running this command: 
+
+```yaml
+kubectl get jobs
+```
+
+The output of this command is a list of all your jobs, similar to the following: 
+
+![](/blog-images/a5aaf0f992a37f835ee63ec9391620d9.svg)
+
+From the above photo, we can see that we created our **hello-world-job** successfully. **‍**
+
+#### **Step 2: Configuring a Job**
+
+From the previous step, we already have a few configurations for our job. However, let's walk through a few more complex configurations. In order to do that, let's create a new job. Create a new **hello_world_4x.yaml** file and add the following code to it: 
+
+```yaml
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hello-world-4x-job
+spec:
+  completions: 4
+  template:
+    metadata:
+      name: hello-world-4x-job
+    spec:
+      containers:
+      - name: hello-world-4x
+        image: centos:7
+        command:
+         - "bin/bash"
+         - "-c"
+         - "echo hello world"
+      restartPolicy: Never
+
+```
+
+**Completion**: In this bit of code, we introduce a new configuration (i.e., completions). In step 1, Kubernetes created a single pod that runs our task once. However, using completions, we can perform the same task multiple times. Completions run multiple pods one after the other. 
+
+Let's take a look at another configuration option. Again, create a new **hello_world_4x_parallel.yaml** file and add the following code to it: 
+
+```yaml
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hello-world-parallel-job
+spec:
+  completions: 4
+  parallelism: 2
+  template:
+    metadata:
+      name: hello-world-parallel-job
+    spec:
+      containers:
+      - name: hello-world-parallel
+        image: centos:7
+        command:
+         - "bin/bash"
+         - "-c"
+         - "echo hello world"
+      restartPolicy: Never
+
+```
+
+‍**Parallelism**: Notice the new configuration item, parallelism. The previous job executed pods one after another. However, we can configure a job to run pods in parallel using this new configuration. 
+
+#### Step 3: Schedule a Job
+
+If you need to start jobs at a specific time in the future, or you want to run them in a repetitive pattern at specific intervals, you should consider using a **CronJob**. A CronJob creates jobs that repeat using a schedule. You can schedule the job using the cron format and can set the schedule in the **schedule** object. 
+
+The following example YAML file shows a CronJob: 
+
+```yaml
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hello-world-cron
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: hello-world
+            image: centos:7
+            imagePullPolicy: IfNotPresent
+            command:
+            - /bin/sh
+            - -c
+            - "echo Hello World"
+          restartPolicy: OnFailure
+
+```
+
+In this code, the cron schedule format is the string "\*/5 \* \* \* \*." It contains 5 sections (separated with white spaces), representing a minute, hour, day of the month, and day of the week in that order. "\*/5" means the task will run every 5 minutes. To explain the schedule format further, if you change the schedule to "0 \*/5 \* \* \*", the job will execute every 5 hours. Also, setting all 5 fields to "\*" means a job will run every minute. 
+
+To create the job on your machine, run the following command: 
+
+```yaml
+kubectl create -f your-cronjob-yaml-file
+```
+
+To see the cronjob you just created, simply run the **kubectl create -f cronjob.yaml** command. 
+
+#### Step 4: Running a Job
+
+To run a job after creating the YAML file for it, simply run the **kubectl apply -f \[yaml-file\]** command. Replace \[yaml-file\] with the actual file name for your job configuration. 
+
+You can verify the status of your job by running the **kubectl get jobs** command. For an even more detailed report, you can run **kubectl describe job \[job-name\]**. 
+
+#### Step 5: Deleting a Job
+
+For logging and tracking purposes, jobs and the pods they create do not get deleted even after they stop running. However, when you no longer need them, you can clean old jobs and their pods up. To do this you can use the **kubectl delete jobs/\[job-name\]** command.   
+
+### Summing Everything up
+
+In this post, we've covered what Kubernetes Jobs are—resources that create pods that keep running until successful completion. 
+
+You also learned how to create, configure and run Kubernetes jobs. For jobs that need to run at a specific time or repetitively, you can use the CronJob Kubernetes resource. 
+
+Finally, you learned how to delete Kubernetes jobs after they complete. Since a record of jobs and their pods stay even after completion, if you no longer need that record, you can delete it by deleting the job.

@@ -1,0 +1,241 @@
+---
+title: How to Use GitHub Actions With Environment Variables
+summary: >-
+  We'll cover GitHub Actions & show you how to use it to automate your
+  deployment workflow & save secrets
+publishDate: "Thu Aug 18 2022 17:07:54 GMT+0000 (Coordinated Universal Time)"
+author: ashley-penney
+readingTime: 8
+categories: &ref_0
+  - platform-engineering
+  - product
+mainImage: /blog-images/f1faa433780d4d232b9bb49a72ccb7bf.jpg
+imageAlt: How to Use GitHub Actions With Environment Variables
+showCTA: true
+ctaCopy: >-
+  Learn how Release.com's ephemeral environments automate deployment workflows,
+  simplifying setup of environment variables and enabling seamless
+  collaboration.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=how-to-use-github-actions-with-environment-variables
+relatedPosts:
+  - ""
+ogImage: /blog-images/f1faa433780d4d232b9bb49a72ccb7bf.jpg
+excerpt: >-
+  We'll cover GitHub Actions & show you how to use it to automate your
+  deployment workflow & save secrets
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+In this post we'll cover GitHub Actions. We'll show you how to use it to automate your deployment workflow and how to use environment variables to save secrets.
+
+We will deploy a simple Nest app using GitHub Actions. We'll start with a simple NestJS app. You don't need to know NestJS to get started, and you can use your own app if you wish. The starting point of the project can be taken from [here](https://drive.google.com/file/d/1CJFwKAXWL8lZ0ujf3YPpG5dpdOLQsHpF/view?usp=sharing).
+
+### GitHub Actions Environment Variables
+
+We're going to store Docker secrets later in the post using secret variables from GitHub Actions. They can be easily found in the Settings tab and will help you during the automation process.
+
+### The Tasks
+
+Like in any production app, we'll create a feature branch from the main branch. After the changes are made, we'll create a pull request to the main branch.
+
+Before merging, you need to ensure that this feature branch will not cause any breaking changes. For each pull request, you want to ensure that the build is successful and that all tests passed.
+
+If you don’t use GitHub Actions, this will require a manual process. Suppose you’re happy with your pull request and want to merge it into the main branch. The next set of tasks is to build Docker image and push it into Docker hub. You can also automate these manual tasks with GitHub Actions.
+
+### The Setup
+
+You need to extract the **Nest-App** from the link provided earlier in your local system and run **npm install** in it.
+
+![](/blog-images/61de738636b74a4216e630ff1024635f.jpeg)
+
+After that, create a new repository in GitHub and push your project.
+
+![](/blog-images/76ded41a7c03b2f5afb5abb7d123c616.jpeg)
+
+Click on the Actions tab. There you will find a lot of snippets for different projects.
+
+![](/blog-images/b9ec68025691256ab9cba2614a385b74.jpeg)
+
+Search for **Node** and then click on the Configure button of a Node.js project.
+
+![](/blog-images/45d3290c126861a09d429bc2582bd944.jpeg)
+
+Copy all the code from this page, but don't save it. You are going to create it from VS Code in the next step.
+
+![](/blog-images/b82f17f22e01ffa6472fdc081c3495cc.jpeg)
+
+Back in your app, you need to create a **.github** folder and a **workflows** folder inside it. So inside it, create an **integrate.yml** file and paste the code from earlier. The .yml file basically says that on push or pull to the main branch, you need to run jobs. The first job name is **build**, and it runs-on an Ubuntu machine provided by GitHub. It also specifies the node version it will run.
+
+In the steps below, you are using GitHub's Checkout Actions to check out into the build agent's directory. After that, you are setting up Node in that directory.
+
+Lastly, the main command of **npm i** and **npm run build** are run.
+
+![](/blog-images/7aa0ea5d28b8b100aee5be0f64b6f28d.jpeg)
+
+You will also create the workflow for your tests. Below, you are creating another job called **unit-tests** and doing the same setup again.
+
+![](/blog-images/98b73339a487e1bb24cb6bd6194ac428.jpeg)
+
+### The Failed Run
+
+Now create and push a remote branch that you'll use for your changes.
+
+![](/blog-images/fa1f72626c6431c4352d9f1b0ddec471.jpeg)
+
+Back in GitHub, you'll see a compare and pull request button that you need to click.
+
+![](/blog-images/dd9fcd4428c1e06c04a7ca4a3646b869.jpeg)
+
+In the next screen, you just need to write a description and click the **Create pull request** button.
+
+![](/blog-images/98b160ae8870934a7cd483ca622baaab.jpeg)
+
+The next screen says that a new branch got created called **new-actions**. Click on the **Actions** tab.
+
+![](/blog-images/7f19256ca772c9d9678d56bc8d3d0936.jpeg)
+
+On the Actions page, you can see that your action failed. You need to click on the same to know the exact issue.
+
+![](/blog-images/63e3309115da67b74b5a6d779f9eab51.jpeg)
+
+The next page shows that there is an issue in **unit-tests** in the **integrate.yml** file.
+
+![](/blog-images/a9829e0056013f757f67c1f13d22e684.jpeg)
+
+### The Successful Run
+
+Upon inspection, it's clear that there is no space in the unit tests. So, we're adding the space and again pushing the changes to new-actions.
+
+![](/blog-images/156ce8c10431fe1426a009fab5432af5.jpeg)
+
+Back in GitHub, you can see that a new action has been running.
+
+![](/blog-images/bb891d268168446141db309c475e2881.jpeg)
+
+This time the build completed successfully.
+
+Also notice that the build and unit-tests jobs were run on three versions of Node.js.
+
+![](/blog-images/26b26e641ffb845367e548b35dc7ba73.jpeg)
+
+Now you can Merge this pull request and will get a confirmation.
+
+![](/blog-images/292e6e4263ee046fa40b786a031f6e5e.jpeg)
+
+### The Docker Setup
+
+You'll need to go to [https://hub.docker.com/](https://hub.docker.com/) and register if you don't have an account.
+
+![](/blog-images/6b410e32beebed28daf6bea9d6490921.jpeg)
+
+Once you're logged in, click on the **Create Repository** button.
+
+![](/blog-images/a99532a999716f3bde75b620aa354502.jpeg)
+
+On the next page, you need to give the app a name and a description. Then click the **Create** button.
+
+![](/blog-images/85961c4d417b3e66423920d66cde69f9.jpeg)
+
+On the next page, you should see the success message. Then click on the user profile in the top-right corner and then click the **Account Settings** link.
+
+![](/blog-images/8ac4ab239e5e298f18683a64a93ba1c4.jpeg)
+
+On the next screen, click on the **Security** tab and then the **New Access Token** button.
+
+![](/blog-images/ade3e8ac580bfad73508eae59e679b29.jpeg)
+
+A pop-up will open, and you need to give a description and permissions. After that, click the **Generate** button.
+
+![](/blog-images/52a843287e5ae1987ee99e9a7033ceed.jpeg)
+
+On the next screen, you will get your username and the token. You'll need to copy those.
+
+![](/blog-images/d4bec72be3d4b04e38779e69e396406d.jpeg)
+
+### Environment Variables in GitHub
+
+You cannot expose the Docker username and password, so you'll save them in GitHub environment variables.
+
+In the GitHub repository, click **Settings**, **Secrets**, then **Actions**. You should see a button for **New repository secret**, and you'll need to click on it.
+
+![](/blog-images/6353eefbb121932e8ab2a8453666d341.jpeg)
+
+On the next page, you will give the new secret a name of **DOCKER_PASSWORD**. Add the access token from the earlier section. After that, click on the **Add secret** button.
+
+![](/blog-images/6584dab387bacd7a8884bbc995b3ac87.jpeg)
+
+You'll also create another variable of DOCKER_USERNAME and store the username here.
+
+![](/blog-images/7754383385a826feb41943a24da64a52.jpeg)
+
+Now you should see two Repository secrets in the Actions tab.
+
+![](/blog-images/a2bf3b669a7c118fd697a9211ad7daff.jpeg)
+
+### The Release Flow
+
+Next, you'll create the Docker release flow. Go to the main branch. Then get the updates and create a new branch of **release-flow**.
+
+![](/blog-images/36da4467aba4283357fc61ddfed95f5a.jpeg)
+
+Next, create a file **release.yml** in the **workflows** folder. Place the code below in it. Here, you're running the job **deploy** only when merging to the main branch. You just need to check out to the branch. After that, you will be running the Docker build command.
+
+Next, you'll use the username and password to log in to Docker using the secrets stored in GitHub in the previous section.
+
+Lastly, you're running the push command to push to Docker.
+
+![](/blog-images/832271f36ff927eb9bbb671f38e243b5.jpeg)
+
+### The Docker Run
+
+First, you'll add these changes and then commit them to your new **release-flow** branch. After that, you'll push it to GitHub.
+
+![](/blog-images/d5590fff294bb7b3d89fba8b444062dd.jpeg)
+
+Back in GitHub, you should see a new **Compare & pull request** on the home page of your app.
+
+Click on it.
+
+![](/blog-images/1b55c04f275301aba88419232e4fd989.jpeg)
+
+On the next page, you need to provide some descriptions and click the **Create pull request** button.
+
+![](/blog-images/329aa27963728a7dbdfdb7c519fcc060.jpeg)
+
+Since you've created a new branch, the integrate flow, the build, and the unit test jobs should run successfully.
+
+![](/blog-images/8405ed8cda6741f5000d54a8bf55d9d3.jpeg)
+
+Now you can merge your pull request in the main branch by clicking the **Merge pull request** button.
+
+![](/blog-images/73e3af43c41f41a1f3f441e33533148a.jpeg)
+
+You will be asked to confirm this merge on the next page. Just click the **Confirm merge** button.
+
+![](/blog-images/d7f2b2cab41cae10bb97ba925b9fbb9f.jpeg)
+
+Your new actions of release-flow should run now, and you can see it in the Actions tab.
+
+![](/blog-images/29cf0c74c3a35e4b8cffbaaf1ff67d6c.jpeg)
+
+After clicking any of them, you should find that your Docker commands also ran.
+
+![](/blog-images/1d6be7566e7a5977a38bcdfb7c3d15f8.jpeg)
+
+After two or three minutes, your workflows should complete successfully.
+
+![](/blog-images/94954f42d12405ba1b7f217fbc0e8ee8.jpeg)
+
+You can also confirm that the new Docker image was added in Docker hub.
+
+![](/blog-images/257d71668c191a3e7682cbf079802232.jpeg)
+
+### Conclusion
+
+In this post, you pushed a simple Nest app to GitHub. Then you created two automated workflows on GitHub through GitHub Actions.
+
+First, you created an integrate workflow that ran when a pull request was made to main branch from a feature branch. It ran the build and test jobs. Next, you created integrate workflow for your Docker workflow. It ran after a push was made to the main branch. The job created a Docker build and a Docker image in Docker hub.
+
+Did you know you can easily spin up an environment on release directly from your docker-compose file? Give it a [shot](https://release.com/).

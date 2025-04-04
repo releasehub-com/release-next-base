@@ -1,0 +1,251 @@
+---
+title: Kubernetes - How to Debug CrashLoopBackOff in a Container
+summary: >-
+  If you've used Kubernetes (k8s), you've probably bumped into the dreaded
+  CrashLoopBackOff. A CrashLoopBackOff is possibl
+publishDate: "Thu Feb 04 2021 19:23:56 GMT+0000 (Coordinated Universal Time)"
+author: david-giffin
+readingTime: 3
+categories: &ref_0
+  - kubernetes
+  - platform-engineering
+mainImage: /blog-images/4e91e41da26a361f3123c6c7a68815ee.jpg
+imageAlt: Storage containers stacked representing a CrashLoopBackOff in a container
+showCTA: true
+ctaCopy: >-
+  Struggling with CrashLoopBackOff in Kubernetes? Use Release for streamlined
+  debugging environments and faster issue resolution.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=kubernetes-how-to-debug-crashloopbackoff-in-a-container
+relatedPosts:
+  - ""
+ogImage: /blog-images/4e91e41da26a361f3123c6c7a68815ee.jpg
+excerpt: >-
+  If you've used Kubernetes (k8s), you've probably bumped into the dreaded
+  CrashLoopBackOff. A CrashLoopBackOff is possibl
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+If you've used Kubernetes (k8s), you've probably bumped into the dreaded CrashLoopBackOff. A CrashLoopBackOff is possible for several types of k8s misconfigurations (not able to connect to persistent volumes, init-container misconfiguration, etc). We aren't going to cover how to configure k8s properly in this article, but instead will focus on the harder problem of debugging your code or, even worse, someone else's code 😱
+
+Here is the output from kubectl describe pod for a CrashLoopBackOff:
+
+```ruby
+
+Name:             frontend-5c49b595fc-sjzkg
+Namespace:        tedbf02-ac-david-nginx-golang-tmcclung-nginx-golang
+Priority:         0
+Start Time:       Wed, 23 Dec 2020 14:55:49 -0500
+Labels:           app=frontend
+                  pod-template-hash=5c49b595fc
+                  tier=frontend
+Status:           Running
+IP:              10.1.31.0
+IPs:
+Controlled By:   ReplicaSet/frontend-5c49b595fc
+Containers:
+  frontend:
+    Container ID:   docker://a4ed7efcaaa87fe36342cf7532ff1de5cd51b62d3d681dfb9857999300f6c587
+    Image:          .amazonaws.com/tommyrelease/awesome-compose/frontend@sha256:dfd762c
+    Image ID:       docker-pullable://.amazonaws.com/tommyrelease/awesome-compose/frontend@sha256:dfd762c
+    Port:           80/TCP
+    Host Port:      0/TCP
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Sun, 24 Jan 2021 20:25:26 -0500
+      Finished:     Sun, 24 Jan 2021 20:25:26 -0500
+    Ready:          False
+    Restart Count:  9043
+
+```
+
+Two common problems when starting a container are OCI runtime create failed (which means you are referencing a binary or script that doesn't exist on the container) and container "Completed" or "Error" which both mean that the code executing on the container failed to run a service and stay running.
+
+Here's an example of an OCI runtime error, trying to execute: "hello crashloop":
+
+```ruby
+
+Port:           80/TCP
+    Host Port:    0/TCP
+    Command:
+      hello
+      crashloop
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       ContainerCannotRun
+      Message:      OCI runtime create failed: container_linux.go:370: starting container process caused: exec: "hello": executable file not found in $PATH: unknown
+      Exit Code:    127
+      Started:      Mon, 25 Jan 2021 22:20:04 -0500
+      Finished:     Mon, 25 Jan 2021 22:20:04 -0500
+
+```
+
+K8s gives you the exit status of the process in the container when you look at a pod using kubectl or [k9s](https://github.com/derailed/k9s). Common exit statuses from unix processes include 1-125. Each unix command usually has a man page, which provides more details around the various exit codes. Exit code (128 + SIGKILL 9) 137 means that k8s hit the memory limit for your pod and killed your container for you.
+
+Here is the output from kubectl describe pod, showing the container exit code:
+
+```ruby
+
+Last State:     Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Sun, 24 Jan 2021 20:25:26 -0500
+      Finished:     Sun, 24 Jan 2021 20:25:26 -0500
+    Ready:          False
+    Restart Count:  9043
+
+```
+
+### All containers are not created equally.
+
+Docker allows you to define an Entrypoint and Cmd which you can mix and match in a Dockerfile. Entrypoint is the executable, and Cmd are the arguments passed to the Entrypoint. The Dockerfile schema is quite lenient and allows users to set Cmd without Entrypoint, which means that the first argument in Cmd will be the executable to run.
+
+Note: k8s uses a different naming convention for Docker Entrypoint and Cmd. In Kubernetes command is Docker Entrypoint and Kubernetes args is Docker Cmd.
+
+| Description           | The command run by the container | Arguments passed to the command |
+| --------------------- | -------------------------------- | ------------------------------- |
+| Docker field name     | Entrypoint                       | Cmd                             |
+| Kubernetes field name | Command                          | args                            |
+
+There are a few tricks to understanding how the container you're working with starts up. In order to get the startup command when you're dealing with someone else's container, we need to know the intended Docker Entrypoint and Cmd of the Docker image. If you have the Dockerfile that created the Docker image, then you likely already know the Entrypoint and Cmd, unless you aren't defining them and inheriting from a base image that has them set.
+
+When dealing with either off the shelf containers, using someone else's container and you don't have the Dockerfile, or you're inheriting from a base image that you don't have the Dockerfile for, you can use the following steps to get the values you need. First, we pull the container locally using docker pull, then we inspect the container image to get the Entrypoint and Cmd:
+
+- docker pull <image id=""></image>
+- docker inspect <image id=""></image>
+
+Here we use jq to filter the JSON response from docker inspect:
+
+```ruby
+
+david@sega:~: docker pull docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+7.10.2: Pulling from elasticsearch/elasticsearch
+ddf49b9115d7: Pull complete
+e736878e27ad: Pull complete
+7487c9dcefbe: Pull complete
+9ccb7e6e1f0c: Pull complete
+dcec6dec98db: Pull complete
+8a10b4854661: Pull complete
+1e595aee1b7d: Pull complete
+06cc198dbf22: Pull complete
+55b9b1b50ed8: Pull complete
+Digest: sha256:d528cec81720266974fdfe7a0f12fee928dc02e5a2c754b45b9a84c84695bfd9
+Status: Downloaded newer image for docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+david@sega:~: docker inspect docker.elastic.co/elasticsearch/elasticsearch:7.10.2 | jq '.[0] .ContainerConfig .Entrypoint'
+[
+  "/tini",
+  "--",
+  "/usr/local/bin/docker-entrypoint.sh"
+]
+david@sega:~: docker inspect docker.elastic.co/elasticsearch/elasticsearch:7.10.2 | jq '.[0] .ContainerConfig .Cmd'
+[
+  "/bin/sh",
+  "-c",
+  "#(nop) ",
+  "CMD [\"eswrapper\"]"
+]
+
+```
+
+### The Dreaded CrashLoopBackOff
+
+Now that you have all that background, let's get to debugging the CrashLoopBackOff.
+
+In order to understand what's happening, it's important to be able to inspect the container inside of k8s so the application has all the environment variables and dependent services. Updating the deployment and setting the container Entrypoint or k8s command temporarily to tail -f /dev/null or sleep infinity will give you an opportunity to debug why the service doesn't stay running.
+
+Here's how to configure k8s to override the container Entrypoint:
+
+```ruby
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: elasticsearch
+  namespace: elasticsearch
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: backend
+      tier: backend
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: backend
+        tier: backend
+    spec:
+      containers:
+      - command:
+        - tail
+        - "-f"
+        - /dev/null
+
+```
+
+Here's the configuration in Release:
+
+```ruby
+
+services:
+- name: elasticsearch
+  image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+  command:
+  - tail
+  - "-f"
+  - /dev/null
+
+```
+
+You can now use kubectl or k9s to exec into the container and take a look around. Using the Entrypoint and Cmd you discovered earlier, you can execute the intended startup command and see how the application is failing.
+
+Depending on the container you're running, it may be missing many of the tools necessary to debug your problem like: curl, lsof, vim; and if it's someone else's code, you probably don't know which version of linux was used to create the image. We typically try all of the common package managers until we find the right one. Most containers these days use Alpine Linux (apk package manager) or a Debian, Ubuntu (apt-get package manager) based image. In some cases we've seen Centos and Fedora, which both use the yum package manager.
+
+One of the following commands should work depending on the operating system:
+
+- apk
+- apt-get
+- yum
+
+Dockerfile maintainers often remove the cache from the package manager to shrink the size of the image, so you may also need to run one of the following:
+
+- apk update
+- apt-get update
+- yum makecache
+
+Now you need to add the necessary tools to help with debugging. Depending on the package manager you found, use one of the following commands to add useful debugging tools:
+
+- apt-get install -y curl vim procps inetutils-tools net-tools lsof
+- apk add curl vim procps net-tools lsof
+- yum install curl vim procps lsof
+
+At this point, it's up to you to figure out the problem. You can edit files using vim to tweak the container until you understand what's going on. If you forget all of the files you've touched on the container, you can alway kill the pod and the container will restart without your changes. Always remember to write down the steps taken to get the container working. You'll want to use your notes to alter the Dockerfile or add commands to the container startup scripts.
+
+### Debugging Your Containers
+
+We have created a simple script to get all of the debuging tools, as long as you are working with a container that has curl pre-installed:
+
+```ruby
+
+# install debugging tools on a container with curl pre-installed
+
+/bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/releaseapp-io/container-debug/main/install.sh)"
+
+```
+
+### Conclusion
+
+In this article, we've learnt how to spot and investigate the CrashLoopBackOff errors in containers. We walked you through how to inspect and investigate the container image itself. We've listed and shown some tools that we use to spot problems and investigate issues. We got several useful and basic tools installed on the image, hopefully regardless of base image. With these steps in mind and all the tools ready at your disposal, go forth and fix all the things!

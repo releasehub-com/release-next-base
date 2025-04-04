@@ -1,0 +1,92 @@
+---
+title: How to Setup Test Environments That Are Easy to Maintain
+summary: >-
+  How to set up test environment | Data, Scope, environment lifetime, and what
+  is the focus and goal at each stage.
+publishDate: "Tue Feb 15 2022 22:04:30 GMT+0000 (Coordinated Universal Time)"
+author: taurai-mutimutema
+readingTime: 6
+categories: &ref_0
+  - platform-engineering
+  - product
+mainImage: /blog-images/e860bfc6e52f225fe1a870172da90274.jpg
+imageAlt: How to Setup Test Environments That Are Easy to Maintain
+showCTA: true
+ctaCopy: >-
+  Simplify test environment setup with Release's on-demand environments
+  mirroring production for efficient testing and seamless collaboration.
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=setup-test-environment
+relatedPosts:
+  - ""
+ogImage: /blog-images/e860bfc6e52f225fe1a870172da90274.jpg
+excerpt: >-
+  How to set up test environment | Data, Scope, environment lifetime, and what
+  is the focus and goal at each stage.
+tags: *ref_0
+ctaButton: Try Release for Free
+---
+
+Setting up test environments is an integral step in ensuring smooth-running and bug-free applications post deployment. But once they're live, test environments also require the same TLC you invest into production servers. With this comes that double-effort dread. Should developers be spending time managing environments instead of the applications?
+
+This post explains how your engineers can set up test environments that don't demoralize developers with huge effort requirements. We'll review the various test environment options at your disposal, along with a few common challenges you might encounter during the setup phase. We'll then close with actionable solutions to the pain points around test environments.
+
+Before we discuss strategies, let's investigate why any of this is necessary.
+
+![](/blog-images/b01106eda919a6d670bc40cc5374a2b5.png)
+
+### Why You Need Preproduction Testing Environments
+
+Let's cut to the chase. If you don't invest time and effort into test environments, you'd almost certainly spend resources correcting faulty performance issues in production. Not to take anything away from your development skills, but testing itself is one skill crucial to the success of any software project. The best way to execute tests is in test environments—replicas of the production environment, accessible only to engineers and testers.
+
+Skipping the creation of test environments, or running badly configured ones, can counter the benefits of testing. Whichever stage (and associated environments) your team runs tests at must represent the production environment closely. This cancels out any environment parameter-based bugs later on.
+
+#### Common Testing Environments
+
+Testing saves your team a lot of time (and face). As such, it's worth investing in the most suitable environments for your applications. Not all testing environments are the same. In fact, testing itself takes place at different stages along an application's metamorphosis. Three such milestones, each sparking an environment, commonly appear regardless of your development framework.
+
+- **Development:** Tests run alongside new feature additions. Since this is where the main copy (branch) of an application resides, setting up is near effortless and cost the least to manage.
+- **Testing:** This environment is created after development as a separate environment for engineers to put applications under various tests. This can be a minimum resource allocated container. It's a discovery phase that might itself be replicated to try out different testing frameworks/applications.
+- **Staging:** Staging is perfect for post-development demonstrations of the application to a few users, but not the entire user base. Usually an opportunity for the app' investors/owners to check if the product addresses their business case.
+
+Some QAs will include the production environment as another test opportunity. Yes, continuous tests have become the norm, especially with teams practicing CI/CD principles. Being continuous implies an application is always being worked on. Consequently, changes made due to test results after deployment just mean we're in the development environment, after all.
+
+#### Challenges in Setting Up Test Environments
+
+Even with the knowledge of which environment to create, how well your testing turns out depends on **how** you create and manage the environment. Without proper management of test environments, the following burdens can plague your team:
+
+- **Brittle smoke tests:** This leads to loss of confidence in a project's feasibility. In practice, you'll only find out that your environment caused test failures, and not your application. However, you'll have already wasted valuable time and possibly drowned team morale.
+- **High cost of data synchronization with production:** Running tests on live data (or subsets of it) requires proper planning and infrastructure setup. Unpleasant loss of data, or corruption of live instances, can ruin tests altogether.
+- **Inconsistent test data across teams:** All members of a development team should be up to speed with the most up-to-date test data. Inconsistencies that arise due to badly configured test environments can result in teams wasting efforts on otherwise resolved issues.
+
+All these problem cases cause setup costs to accumulate. Unmanaged, a team might use the budget on unnecessary or duplicate resources.
+
+#### Traditional Costs of Provisioning and Changing a Test Environment
+
+Typically, test environments will have a cost budget close to that of a live environment. If you already have a live version of the application, you'll be wise to use it as a threshold. You can then provide containers and resources that let teams run tests without "choking" the application.
+
+Costs can pile as your team creates new and persisting test environments. This brings the issue of environment lifecycle into focus. If your service provider charges on a resource consumption model, you're best alerting teams of the need to tear environments down after tests. This significantly optimizes your testing routine. Having templates of the various test environments your team requires is another way of making sure they don't end up provisioning too many resources.
+
+With a versioning platform hosting application code, moving your application from one environment to the next becomes cheaper than manually copying and pasting code. Here you'll save on storage and reduce the range of errors that befall blocks of code as they move from place to place.
+
+### How to Run a Tight Ship Around Test Environments
+
+You'll have to approach every step of setting up and maintaining test environments with deliberate strategy. Also, it's important not to focus on cost-saving entirely as you'll likely negotiate on the performance and range of possible tests. Balancing these out requires listing out the tests you'll run and the tools for which each environment will require.
+
+Doing the above, along with manually checking for any unnecessary leaks from redundant environments, will surely take all of your engineers' time and effort. You might need to hire someone to focus on just that, but this would just pile costs on your testing process. A better route would use tools to manage test environments.
+
+[Release](https://release.com/) is a good example of tools created to manage and lessen test environment costs. This includes creating on-demand test environments with an Environment as a Service approach for instant deployment and execution of tests. The platform also enables sharable test cases, keeping teams at par with the latest test results across all created environments.
+
+Perhaps the least-discussed issue around testing is how scalable every environment you create is. As an application grows, so too should the environments in which tests are run. Test environment tools that provide a central configuration spot to scale the provision of test spaces become crucial to successful tests.
+
+![](/blog-images/3f26cfb9856a36c12ece5ceddc1fd660.png)
+
+### Last Take: Testing Done Right
+
+Knowing what the focus and goal are at each stage of the test environments' creation makes it much easier to manage them. This allows for proper planning and ample resource allocation for every test case you deem necessary to test your applications.
+
+With a plan in hand, the task to set up test environments is best left to the mandate of the right tools. Regardless of the environments you need, creating them should be an easy process. On-demand [staging environments](https://release.com/staging-environments) for as many test cases as necessary will resolve most of the pain points we discussed above.
+
+Tools also immediately make managing them less stressful compared to manually managing them. They also automate and standardize how you set up test environment variables and share any results thereof. Combine such a tool with test automation frameworks and your developers get to focus on the applications, not the environment.
+
+_This post was written by Taurai Mutimutema._ [_Taurai_](https://x.com/rusiqe) _is a systems analyst with a knack for writing, which was probably sparked by the need to document technical processes during code and implementation sessions. He enjoys learning new technology and talks about tech even more than he writes._
