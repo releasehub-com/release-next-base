@@ -91,6 +91,10 @@ export const authors: Record<string, Author> = {
     name: "James Quigley",
     image: "/authors/default-avatar.jpg",
   },
+  "jay-stotz": {
+    name: "Jay Stotz",
+    image: "/authors/jay-stotz.jpg",
+  },
   default: {
     name: "Release Team",
     image: "/authors/default-avatar.jpg",
