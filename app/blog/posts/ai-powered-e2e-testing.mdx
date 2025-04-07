@@ -68,8 +68,7 @@ Before we get into the technical details, let's consider why E2E testing is espe
 
 For this tutorial, we'll use [Release Example Voting App](https://github.com/awesome-release/release-example-voting-app), a microservice application with a React frontend, a Python API, and a Node.js worker. This app allows users to vote between two options and see the results in real time.
 
-![Screenshot of the Voting App interface]
-[IMAGE: Screenshot showing the voting app interface with two voting options]
+![Screenshot of the Voting App interface](/blog-images/voting_app.png)
 
 The application architecture looks like this:
 
@@ -106,38 +105,7 @@ Next, we'll create a Jest configuration file to work with Puppeteer. Here's the 
 
 > **Cursor Prompt:** Create a Jest configuration file that works with Puppeteer for end-to-end testing. Also create a jest-puppeteer configuration file that allows us to run tests against an external server.
 
-![Cursor configuring Jest]
-[IMAGE: Screenshot of Cursor Agent creating a Jest configuration file]
-
-Cursor would then generate these configuration files:
-
-Create a `jest.config.js` file:
-
-```javascript
-module.exports = {
-  preset: 'jest-puppeteer',
-  testMatch: ['**/*.test.js'],
-  testTimeout: 30000,
-};
-```
-
-And a `jest-puppeteer.config.js` file:
-
-```javascript
-module.exports = {
-  launch: {
-    headless: process.env.HEADLESS !== 'false',
-    slowMo: process.env.SLOWMO ? parseInt(process.env.SLOWMO) : 0,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  },
-  server: {
-    command: 'echo "Using external server"',
-    port: 3000,
-    launchTimeout: 10000,
-    usedPortAction: 'ignore',
-  },
-};
-```
+![Cursor configuring Jest](/blog-images/cursor_initial_creation.png)
 
 ### Step 3: Write the First E2E Test
 
@@ -145,54 +113,7 @@ Now, let's use Cursor to write our first E2E test. We'll start by testing the vo
 
 > **Cursor Prompt:** Write a Puppeteer test file called voting.test.js that tests the basic functionality of our voting app. The app has a main page with two voting options, a thank you page after voting, and a results page. Use environment variables for the app URL with a localhost fallback.
 
-![Cursor creating the first test]
-[IMAGE: Screenshot showing Cursor generating the first E2E test]
-
-Create a file named `voting.test.js`:
-
-```javascript
-describe('Voting App', () => {
-  beforeAll(async () => {
-    // Set the target URL from environment variable or use a default
-    const baseUrl = process.env.APP_URL || 'http://localhost:3000';
-    await page.goto(baseUrl, { waitUntil: 'networkidle0' });
-  });
-
-  it('should load the voting page', async () => {
-    // Verify the title is correct
-    await expect(page.title()).resolves.toMatch('Voting App');
-    
-    // Verify voting options are displayed
-    const options = await page.$$('.voting-option');
-    expect(options.length).toBe(2);
-  });
-
-  it('should allow a user to vote', async () => {
-    // Click the first voting option
-    await page.click('.voting-option:nth-child(1)');
-    
-    // Wait for vote to be processed
-    await page.waitForNavigation({ waitUntil: 'networkidle0' });
-    
-    // Verify we're on the thank you page
-    const thankYouMessage = await page.$eval('.thank-you-message', el => el.textContent);
-    expect(thankYouMessage).toContain('Thank you for voting!');
-  });
-
-  it('should show results page with data', async () => {
-    // Navigate to results page
-    await page.goto(`${process.env.APP_URL || 'http://localhost:3000'}/results`, { waitUntil: 'networkidle0' });
-    
-    // Verify results are displayed
-    const resultsContainer = await page.$('.results-container');
-    expect(resultsContainer).not.toBeNull();
-    
-    // Verify vote counts are displayed
-    const voteCounts = await page.$$('.vote-count');
-    expect(voteCounts.length).toBe(2);
-  });
-});
-```
+![Cursor creating the first test](/blog-images/cursor_first_e2e_test.png)
 
 ### Step 4: Add More Test Coverage
 
@@ -200,123 +121,7 @@ Let's extend our test suite to cover more functionality. Here's the prompt for C
 
 > **Cursor Prompt:** Create a new test file called results.test.js that focuses on testing the results page. Include tests for real-time updates when votes are cast and verify the page works correctly on mobile devices.
 
-![Cursor extending test coverage]
-[IMAGE: Screenshot showing Cursor generating additional tests]
-
-Create a file named `results.test.js`:
-
-```javascript
-describe('Results Page', () => {
-  beforeAll(async () => {
-    const baseUrl = process.env.APP_URL || 'http://localhost:3000';
-    await page.goto(`${baseUrl}/results`, { waitUntil: 'networkidle0' });
-  });
-
-  it('should display the results in real-time', async () => {
-    // Verify the results page title
-    await expect(page.title()).resolves.toMatch('Voting Results');
-    
-    // Get initial vote counts
-    const initialCounts = await page.$$eval('.vote-count', els => 
-      els.map(el => parseInt(el.textContent.trim(), 10))
-    );
-    
-    // Open a new page to cast a vote
-    const newPage = await browser.newPage();
-    await newPage.goto(process.env.APP_URL || 'http://localhost:3000', { waitUntil: 'networkidle0' });
-    
-    // Vote for the first option
-    await newPage.click('.voting-option:nth-child(1)');
-    await newPage.waitForNavigation({ waitUntil: 'networkidle0' });
-    await newPage.close();
-    
-    // Wait for results to update (allow time for the worker to process)
-    await page.waitForTimeout(2000);
-    
-    // Get updated vote counts
-    const updatedCounts = await page.$$eval('.vote-count', els => 
-      els.map(el => parseInt(el.textContent.trim(), 10))
-    );
-    
-    // Verify vote count for first option increased
-    expect(updatedCounts[0]).toBe(initialCounts[0] + 1);
-  });
-
-  it('should properly render on mobile screens', async () => {
-    // Emulate a mobile device
-    await page.setViewport({ width: 375, height: 667 });
-    
-    // Verify the results are still visible and properly formatted
-    const resultsContainer = await page.$('.results-container');
-    const isVisible = await resultsContainer.isIntersectingViewport();
-    expect(isVisible).toBe(true);
-    
-    // Return to desktop viewport
-    await page.setViewport({ width: 1280, height: 800 });
-  });
-});
-```
-
-### Step 5: Create Utilities for Test Setup
-
-To make our tests more maintainable, let's create a utilities file with helper functions. Here's our prompt:
-
-> **Cursor Prompt:** Create a utility file with helpful functions for our E2E tests. Include functions for waiting for elements, handling network idle states, casting votes, and setting up a browser instance.
-
-![Cursor creating test utilities]
-[IMAGE: Screenshot showing Cursor generating utility functions]
-
-Create a file named `test-utils.js`:
-
-```javascript
-const puppeteer = require('puppeteer');
-
-/**
- * Waits for an element to be visible
- * @param {Page} page - Puppeteer page object
- * @param {string} selector - CSS selector for the element
- * @param {number} timeout - Maximum wait time in milliseconds
- */
-async function waitForElement(page, selector, timeout = 5000) {
-  await page.waitForSelector(selector, { visible: true, timeout });
-}
-
-/**
- * Waits for network to be idle
- * @param {Page} page - Puppeteer page object 
- */
-async function waitForNetworkIdle(page) {
-  await page.waitForNavigation({ waitUntil: 'networkidle0' });
-}
-
-/**
- * Casts a vote for a specific option
- * @param {Page} page - Puppeteer page object
- * @param {number} optionIndex - Index of option to vote for (0-based)
- */
-async function castVote(page, optionIndex) {
-  await page.click(`.voting-option:nth-child(${optionIndex + 1})`);
-  await waitForNetworkIdle(page);
-}
-
-/**
- * Sets up a fresh browser instance
- * @returns {Promise<Browser>} Puppeteer browser instance
- */
-async function setupBrowser() {
-  return await puppeteer.launch({
-    headless: process.env.HEADLESS !== 'false',
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
-}
-
-module.exports = {
-  waitForElement,
-  waitForNetworkIdle,
-  castVote,
-  setupBrowser,
-};
-```
+![Cursor extending test coverage](/blog-images/cursor_second_test.png)
 
 ## Running E2E Tests in Ephemeral Environments with Release
 
@@ -331,154 +136,54 @@ Now that we have our E2E tests, let's integrate them with Release to run them in
 
 To run our tests in Release ephemeral environments, we need to:
 
-1. Configure the Release YAML file for our application
+1. Create a Release application
 2. Create a GitHub Actions workflow to trigger tests 
 3. Set up the necessary environment variables and secrets
 
-### Step 1: Configure Release.yaml
+### Step 1: Create the Release Application
 
-First, let's use Cursor to create a Release.yaml file for our application:
-
-> **Cursor Prompt:** Create a release.yaml file for our microservice voting application that includes a frontend, API, worker, Redis, and Postgres. Also add a testing section that configures an E2E testing framework with Puppeteer.
-
-```yaml
-apiVersion: release.com/v1
-kind: Application
-metadata:
-  name: voting-app
-spec:
-  services:
-    frontend:
-      build:
-        context: ./frontend
-      ports:
-        - port: 3000
-      env:
-        - name: API_URL
-          value: http://api:5000
-      resources:
-        limits:
-          memory: 256Mi
-          cpu: 200m
-    
-    api:
-      build:
-        context: ./api
-      ports:
-        - port: 5000
-      env:
-        - name: REDIS_HOST
-          value: redis
-        - name: POSTGRES_HOST
-          value: postgres
-      resources:
-        limits:
-          memory: 256Mi
-          cpu: 200m
-    
-    worker:
-      build:
-        context: ./worker
-      env:
-        - name: REDIS_HOST
-          value: redis
-        - name: POSTGRES_HOST
-          value: postgres
-      resources:
-        limits:
-          memory: 256Mi
-          cpu: 200m
-    
-    redis:
-      image: redis:alpine
-      ports:
-        - port: 6379
-    
-    postgres:
-      image: postgres:14-alpine
-      env:
-        - name: POSTGRES_PASSWORD
-          value: postgres
-        - name: POSTGRES_USER
-          value: postgres
-        - name: POSTGRES_DB
-          value: postgres
-      ports:
-        - port: 5432
-
-  # Configure testing
-  testing:
-    enabled: true
-    frameworks:
-      - name: e2e
-        command: "cd /app/e2e-tests && npm test"
-        image: node:16-alpine
-        env:
-          - name: APP_URL
-            value: http://frontend:3000
-          - name: HEADLESS
-            value: "true"
-        resources:
-          limits:
-            memory: 512Mi
-            cpu: 500m
-```
+First, let's create a Release application based on the example voting app repository. You can follow along the [instructions on our docs](https://docs.release.com/guides-and-examples/common-setup-examples/example-voting-app).
 
 ### Step 2: Create GitHub Actions Workflow
 
-Now, let's use Cursor to create a GitHub Actions workflow file for running E2E tests:
-
-> **Cursor Prompt:** Create a GitHub Actions workflow file that sets up the Release CLI, creates an ephemeral environment for our voting app, runs E2E tests in that environment, and then cleans up afterward.
-
-![Cursor creating GitHub Actions workflow]
-[IMAGE: Screenshot showing Cursor generating a GitHub Actions workflow file]
-
-Create a file named `.github/workflows/e2e-tests.yml`:
+Next we configure GitHub Actions to run our E2E tests in a Release ephemeral environment. The essential pieces are running the Release CLI from our CI workflow to create an environment and capture its URL to allow us to run the tests against it:
 
 ```yaml
-name: E2E Tests
-
-on:
-  pull_request:
-    branches: [main]
-  push:
-    branches: [main]
-
-jobs:
-  e2e-tests:
+  create_environment:
+    name: Create release environment
+    needs: build_and_upload
     runs-on: ubuntu-latest
-    
+    concurrency: ci-${{ github.ref }}
+    container: public.ecr.aws/b4g8c3s2/release-cli
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
-      
-      - name: Set up Release CLI
+      - name: download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: images
+      - name: create release environment
+        shell: bash
         run: |
-          curl -sL https://cli.release.com/install.sh | bash
-          echo "$HOME/.release/bin" >> $GITHUB_PATH
-      
-      - name: Login to Release
-        run: release login --api-key ${{ secrets.RELEASE_API_KEY }}
-      
-      - name: Create ephemeral environment
-        id: create-env
-        run: |
-          ENV_ID=$(release env create --name=e2e-test-${{ github.run_id }} --wait)
-          echo "ENV_ID=$ENV_ID" >> $GITHUB_ENV
-          
-          # Get the environment URL for testing
-          ENV_URL=$(release env get $ENV_ID --output=json | jq -r '.frontendUrl')
-          echo "ENV_URL=$ENV_URL" >> $GITHUB_ENV
-      
-      - name: Run E2E tests
-        run: |
-          release env test $ENV_ID --framework=e2e --wait
-      
-      - name: Cleanup environment
-        if: always()
-        run: |
-          release env delete $ENV_ID --force
+          BRANCH=e2e-testing
+          FRONTEND_IMAGE=$(cat frontend_image.txt)
+          BACKEND_IMAGE=$(cat backend_image.txt)
+          FRONTEND=frontend
+          BACKEND=backend
+          release environments create \
+            --account "$RELEASE_ACCOUNT_ID" \
+            --app "$RELEASE_APP_ID" \
+            --branch "$BRANCH" \
+            --image-overrides "$FRONTEND=$FRONTEND_IMAGE" \
+            --image-overrides "$BACKEND=$BACKEND_IMAGE" \
+            --output json \
+            --wait > res.json
+      - name: upload image name
+        uses: actions/upload-artifact@v3
+        with:
+          name: json
+          path: res.json
 ```
+
+A complete example can be found on our [E2E testing docs](https://docs.release.com/reference-documentation/e2e-testing).
 
 ### Step 3: Configure Secrets and Variables
 
