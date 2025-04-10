@@ -1,0 +1,310 @@
+---
+title: "Migrating Sidekiq Background Jobs to Temporal in Ruby on Rails"
+summary: "Ruby on Rails developers often use Sidekiq for background processing, but complex workflows can push its limits. Learn how Temporal, a workflow orchestration engine designed for durable, stateful execution, can be a powerful alternative for complex tasks."
+publishDate: "2024-04-08"
+author: "erik-landerholm"
+readingTime: 15
+categories: &ref_0
+  - platform-engineering
+  - ruby-on-rails
+  - background-jobs
+mainImage: "/blog-images/sidekiq-temporal.png"
+imageAlt: "Comparison between Temporal workflow orchestration and Sidekiq background jobs"
+showCTA: true
+ctaCopy: "Looking to upgrade your background job processing? Try Release for reliable, scalable environments to test complex workflows."
+ctaLink: "https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=temporal-vs-sidekiq"
+relatedPosts:
+  - "kubernetes-jobs-how-to-create-schedule-run-and-more"
+  - "improve-developer-velocity-with-ephemeral-environments"
+ogImage: "/blog-images/temporal-vs-sidekiq.jpg"
+excerpt: "Learn how to migrate from Sidekiq to Temporal in Ruby on Rails for more reliable, stateful workflow orchestration. This guide covers key differences, migration steps, and performance considerations."
+tags: *ref_0
+ctaButton: "Try Release for Free"
+---
+
+# Migrating Sidekiq Background Jobs to Temporal in Ruby on Rails
+
+Ruby on Rails developers often use **Sidekiq** for background processing. Sidekiq excels at handling many quick jobs concurrently, but complex workflows or long-running tasks can push its limits. **Temporal**, on the other hand, is a workflow orchestration engine designed for **durable, stateful** execution. This guide will introduce Temporal, compare it to Sidekiq, and walk through how to migrate a background job from Sidekiq to Temporal with code examples in Ruby. We'll cover what makes Temporal unique (stateful workflows, built-in retries, fault tolerance), the challenges of adopting it, and provide a step-by-step example using the `temporal-ruby` SDK.
+
+## What is Temporal, and How Does It Differ from Sidekiq?
+
+**Temporal** is an open-source workflow orchestration platform. Unlike a traditional job queue (like Sidekiq) that simply executes jobs asynchronously, Temporal manages **stateful workflows** with reliability and durability. Temporal **keeps track of workflow progress and guarantees completion** of a job, even if workers crash or networks fail. In contrast, **Sidekiq** is a background job processor backed by Redis, optimized for fast, one-off tasks running in a multi-threaded worker process.
+
+### Key Differences
+
+1. **State and Durability**  
+   Sidekiq jobs are transient; the state is usually not persisted between steps unless you handle it yourself. Temporal workflows are **durable** – the workflow's state is persistently stored by the Temporal server. If a worker process dies, Temporal can resume the workflow from its last known state on another worker.
+
+2. **Retries and Fault Tolerance**  
+   Sidekiq can retry failed jobs a limited number of times. Temporal *automatically retries* failed **activities** until they succeed or exhaust a defined retry policy. This makes Temporal resilient to transient failures or network issues.
+
+3. **Workflow vs Job Model**  
+   With Sidekiq, complex **job dependencies** or multi-step processes require manual orchestration. Temporal offers a **workflow programming model**: you write a Workflow function that calls **Activities** (tasks) in sequence or parallel, and Temporal ensures correct ordering and state tracking. This is much easier for multi-step processes with dependencies.
+
+4. **Long-Running Processes**  
+   Sidekiq is optimized for quick tasks; running a job for hours or days is often problematic. Temporal workflows have **no built-in time limit**. A workflow can run for days, weeks, or indefinitely—Temporal persists the state continuously.
+
+5. **Scalability and Concurrency**  
+   Sidekiq uses multi-threading in each worker process and is excellent at running many quick jobs in parallel. Temporal's architecture scales by distributing tasks across multiple worker processes (or machines). Need to run 10,000 tasks in parallel? Temporal can fan out child workflows or activities easily, load-balancing tasks among available workers.
+
+6. **Visibility and Debugging**  
+   Both systems have web UIs, but Temporal's Web UI provides a **complete history** of each workflow execution—every step, retry, state transition—while Sidekiq's UI focuses on queued, running, or failed jobs. Temporal's detailed history is invaluable for debugging complex workflows.
+
+7. **Language Support**  
+   Sidekiq is Ruby-specific, tightly integrated with Rails. Temporal is **multi-language**, with official SDKs in Go, Java, Python, TypeScript, .NET, etc. For Ruby, you can use the community SDK (`temporal-ruby`) or the newer official Ruby SDK.
+
+**Summary**: Sidekiq is perfect for straightforward background tasks that run quickly. Temporal is designed for **stateful, durable** workflows, making it far more robust for complex, long-running, or highly critical processes.
+
+## Challenges in Adopting Temporal
+
+Despite its advantages, adopting Temporal is a paradigm shift for Rails developers coming from Sidekiq.
+
+1. **New Programming Model**  
+   Temporal introduces **Workflows** and **Activities**. A workflow is a function whose execution state is managed by Temporal. Activities are the tasks that actually do the work. You can't simply drop a Sidekiq job into Temporal; you need to refactor into workflows and activities. Also, **workflow code must be deterministic**—no direct random calls or time lookups without using Temporal APIs.
+
+2. **Infrastructure Overhead**  
+   Running Sidekiq involves Redis and your worker processes. Temporal is a distributed system with multiple services (the Temporal server cluster and persistence store). You must either self-host or use **Temporal Cloud**. This adds complexity to deployment and operations.
+
+3. **Learning Curve**  
+   Developers must learn new concepts: **signals, queries, timers**, etc. With Sidekiq, you enqueue a job. With Temporal, you orchestrate a workflow that schedules activities. It can take time to master, though the benefits for reliability and stateful orchestration are often worth it.
+
+4. **Development Workflow Changes**  
+   You'll likely run a **local Temporal server** via Docker for development. Your tests might be more integration-style, requiring you to spin up the Temporal server and worker. This can slow iteration compared to Sidekiq's simpler in-process or Redis-based testing.
+
+5. **Operational Considerations**  
+   You must watch out for workflow **History size**, **namespace management**, **task queue management**, and **rate limits**. Monitoring the Temporal cluster is more involved than monitoring a single Redis instance for Sidekiq.
+
+The payoff is **reliability at scale**, built-in retries, and a powerful stateful model. Teams find that complex or long-running tasks become easier to manage once they adapt to Temporal's model.
+
+## Getting Started with Temporal in Ruby (Temporal Ruby SDK Basics)
+
+Temporal has an official Ruby SDK (in development) and a community-based SDK from Coinbase (`temporal-ruby`). Below we'll use `temporal-ruby`.
+
+### Setup
+
+1. **Temporal Server**  
+   For local testing, run the Temporal server via Docker. In production, either self-host your own Temporal cluster or use **Temporal Cloud**.
+
+2. **Install the Gem**  
+   Add the gem to your `Gemfile`:
+
+   ```ruby
+   gem 'temporal-ruby'
+   ```
+
+   Then run `bundle install`.
+
+3. **Configure Temporal**  
+   Configure the client with your connection settings (host, port, namespace, etc.). A minimal Rails initializer might look like:
+
+   ```ruby
+   # config/initializers/temporal.rb
+   require 'temporal-ruby'
+
+   Temporal.configure do |config|
+     config.host = 'localhost'
+     config.port = 7233
+     config.namespace = 'rails-app-dev'
+     config.task_queue = 'default-task-queue'
+   end
+
+   # Register the namespace if needed
+   begin
+     Temporal.register_namespace('rails-app-dev', description: 'Dev namespace for Rails Temporal')
+   rescue Temporal::NamespaceAlreadyExistsFailure
+     # Ignore if it already exists
+   end
+   ```
+
+### Defining Workflows and Activities
+
+Workflows and activities in `temporal-ruby` are defined as follows:
+
+```ruby
+require 'temporal-ruby'
+
+# Define an Activity
+class HelloActivity < Temporal::Activity
+  def execute(name)
+    puts "Hello #{name}!"
+    # return a result if needed
+  end
+end
+
+# Define a Workflow
+class HelloWorldWorkflow < Temporal::Workflow
+  def execute
+    HelloActivity.execute!('World')
+  end
+end
+```
+
+**Notes**:
+
+- A workflow must inherit `Temporal::Workflow`.
+- An activity must inherit `Temporal::Activity`.
+- Workflows orchestrate the steps; activities perform the actual work.
+- Use `ActivityClass.execute!` to invoke an activity from within a workflow.
+
+### Running a Worker
+
+A separate worker process (similar to a Sidekiq worker) polls the **Task Queue**:
+
+```ruby
+require 'temporal/worker'
+
+worker = Temporal::Worker.new
+worker.register_workflow(HelloWorldWorkflow)
+worker.register_activity(HelloActivity)
+worker.start
+```
+
+This worker will run indefinitely, pulling tasks from `default-task-queue` (or whichever you configured).
+
+### Starting a Workflow
+
+Starting a workflow is similar to enqueuing a job:
+
+```ruby
+Temporal.start_workflow(
+  HelloWorldWorkflow,
+  options: { task_queue: 'default-task-queue', workflow_id: 'hello-123' }
+)
+```
+
+Temporal will create a new workflow execution. The `workflow_id` ensures idempotency (no duplicates for the same ID). The worker picks it up, runs `HelloWorldWorkflow#execute`, and calls the activity.
+
+## Example: Replacing a Long-Running Sidekiq Job with a Temporal Workflow
+
+Suppose you have a long-running Sidekiq job:
+
+```ruby
+class ProcessFileJob
+  include Sidekiq::Worker
+  sidekiq_options retry: 5, queue: :default
+
+  def perform(file_id, user_id)
+    file = download_file(file_id)
+    data = parse_file(file)
+    results = store_results(data)
+    notify_user(user_id, results)
+  end
+end
+```
+
+To convert this to Temporal, break it into **Activities** for each step, and a **Workflow** that orchestrates them:
+
+```ruby
+# Activities
+
+class DownloadFileActivity < Temporal::Activity
+  def execute(file_id)
+    file_contents = ExternalService.download(file_id)
+    file_contents
+  end
+end
+
+class ParseFileActivity < Temporal::Activity
+  def execute(file_contents)
+    data = Parser.parse(file_contents)
+    data
+  end
+end
+
+class StoreResultsActivity < Temporal::Activity
+  def execute(data)
+    results = Database.save_parsed_data(data)
+    results
+  end
+end
+
+class NotifyUserActivity < Temporal::Activity
+  def execute(user_id, results)
+    UserNotifier.send_processing_complete(user_id, results)
+    nil
+  end
+end
+
+> Be careful returning large objects or text in your activities. There is a 2MB size limit and (at the writing of this post) temporal-ruby has an issue with deserializing nested JSON objects: https://github.com/coinbase/temporal-ruby/issues/204. Make sure to return nil or true if you don't need the results or store the results in redis, DB or something like S3 and then retreive it in the next activity.
+
+
+# Workflow
+
+class ProcessFileWorkflow < Temporal::Workflow
+  def execute(file_id, user_id)
+    file_contents = DownloadFileActivity.execute!(file_id)
+    data = ParseFileActivity.execute!(file_contents)
+    results = StoreResultsActivity.execute!(data)
+    NotifyUserActivity.execute!(user_id, results)
+
+    :done
+  end
+end
+```
+
+Then register them in a worker:
+
+```ruby
+worker = Temporal::Worker.new(task_queue: 'file-processing')
+worker.register_workflow(ProcessFileWorkflow)
+worker.register_activity(DownloadFileActivity)
+worker.register_activity(ParseFileActivity)
+worker.register_activity(StoreResultsActivity)
+worker.register_activity(NotifyUserActivity)
+worker.start
+```
+
+And enqueue the workflow:
+
+```ruby
+Temporal.start_workflow(
+  ProcessFileWorkflow,
+  file_id,
+  user_id,
+  options: { task_queue: 'file-processing', workflow_id: "process-file-#{file_id}" }
+)
+```
+
+### Why Temporal Helps Here
+
+- **Automatic retries per activity**: Each step can be retried independently on failure.  
+- **Resuming after crash**: If the worker restarts, the workflow will continue where it left off.  
+- **Visibility**: Temporal's Web UI logs every step of the workflow, making debugging easier.  
+- **Stateful orchestration**: The workflow holds onto intermediate results without manually storing them.
+
+## Performance Considerations and When to Use Temporal
+
+- **High Throughput vs. Reliability**: Sidekiq can process thousands of small jobs/second with minimal overhead. Temporal has more overhead due to storing workflow history, but provides strong guarantees for **reliability** and **long-running** tasks.
+- **Complex Orchestration**: Temporal shines with multi-step or multi-service processes needing robust error handling and monitoring. Sidekiq alone struggles with complex workflows unless you add external coordination.
+- **Long-Running or Stateful Work**: If your tasks run for hours, days, or need human intervention, Temporal's infinite workflow duration is invaluable. Sidekiq typically expects shorter tasks.
+- **Exactly-Once Execution**: Temporal's unique `workflow_id` enforcement prevents duplicate concurrent workflows. This built-in deduplication helps avoid race conditions.
+
+For many applications, you'll **combine** both: keep Sidekiq for quick, simple tasks and use Temporal where reliability and stateful orchestration matter most.
+
+## Tooling, Development Cycle, and Observability
+
+- **Local Development**: You'll run a local Temporal server (often via Docker Compose) plus a worker. This can be more setup than a local Redis for Sidekiq.
+- **CLI (tctl)**: Temporal has a command-line tool for listing, describing, and manually interacting with workflows. Sidekiq mainly has its Web UI and relies on logs for deeper debugging.
+- **Web UI**: Temporal's Web UI provides a detailed event history per workflow, including retries, failures, and state transitions. Sidekiq's UI tracks queued/running jobs, but not step-by-step details.
+- **Metrics & Tracing**: Temporal emits system metrics about workflows, tasks, latencies, etc. Sidekiq has queue metrics but typically needs custom instrumentation for multi-step processes.
+- **Versioning & Code Updates**: Be mindful of **workflow determinism** and versioning when you deploy new code. Long-running workflows must remain compatible with the workflow definition they started with.
+
+## Conclusion
+
+Migrating from Sidekiq to Temporal is a major step that can **vastly improve** reliability and clarity for your background processing. **Temporal's unique value** is its approach to **stateful, durable workflows** rather than the traditional fire-and-forget jobs. It excels for **long-running, critical, and multi-step processes** with complex dependencies.
+
+However, **Temporal is not a drop-in replacement** for all Sidekiq use cases. It adds complexity: you need a Temporal server, you must learn its concepts, and you must handle workflow determinism. Many teams start by migrating their most critical or long-running jobs to Temporal and keep Sidekiq for simpler tasks.
+
+If you're looking for **guaranteed completion**, **built-in retries**, and **precise orchestration** for your background jobs, Temporal is a powerful solution. For simpler or smaller tasks, Sidekiq's simplicity and speed remain appealing. By using both where each excels, your Rails application can achieve robustness and performance in background processing.
+
+---
+
+**References & Further Reading**
+
+1. Temporal Documentation: [docs.temporal.io/temporal](https://docs.temporal.io/temporal)  
+2. Temporal Ruby SDK (Coinbase): [GitHub - coinbase/temporal-ruby](https://github.com/coinbase/temporal-ruby)  
+3. Sidekiq Documentation: [sidekiq.org](https://sidekiq.org)  
+4. Temporal Web UI & CLI Documentation: [docs.temporal.io](https://docs.temporal.io)
+
+---
+
