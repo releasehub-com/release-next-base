@@ -1,0 +1,252 @@
+---
+title: "AI-Powered E2E Testing: How Cursor and Release Make Quality at Speed Possible"
+summary: >-
+  As AI accelerates software development, robust end-to-end testing becomes crucial. 
+  Learn how to leverage Cursor and Release to build, maintain, and run E2E tests in 
+  ephemeral environments, ensuring quality keeps pace with AI-powered development velocity.
+excerpt: >-
+  Discover how AI tools like Cursor make E2E testing more accessible while Release's 
+  ephemeral environments provide the perfect infrastructure for automated testing pipelines.
+categories:
+  - ai
+  - testing
+  - platform-engineering
+imageAlt: >-
+  A developer using AI to create and run E2E tests in ephemeral environments
+publishDate: "2025-04-07T08:00:00.000Z"
+author: jay-stotz
+readingTime: 10
+mainImage: /blog-images/ai-e2e-testing.jpg
+showCTA: true
+ctaCopy: Try Release to run your E2E tests in ephemeral environments and accelerate your testing workflow
+ctaLink: >-
+  https://release.com/signup?utm_source=blog&utm_medium=cta&utm_campaign=blog-cta&utm_content=ai-powered-e2e-testing
+relatedPosts:
+  - improve-developer-velocity-with-ephemeral-environments
+  - introducing-release-ai
+  - kubernetes-health-checks-2-ways-to-improve-stability
+ogImage: /blog-images/ai-e2e-testing.jpg
+tags:
+  - ai
+  - testing
+  - platform-engineering
+ctaButton: Try Release for Free
+---
+
+## AI Is Accelerating Development: Why E2E Testing Matters More Than Ever
+
+Software development is in the midst of a revolution. AI-powered tools like Cursor, GitHub Copilot, and Claude are dramatically increasing developer productivity, enabling engineers to write code faster than ever before. At Release, we've seen firsthand how AI assistants can transform development workflows, reducing time spent on repetitive tasks and accelerating implementation of new features.
+
+But this increased velocity comes with a challenge: how do we maintain quality when development is moving faster than ever?
+
+As the pace of development accelerates, robust testing becomes not just important but essential. End-to-end (E2E) tests that verify your application works correctly from the user's perspective are particularly valuable because they validate the entire system, not just isolated components.
+
+The good news? The same AI tools accelerating development can also help create and maintain E2E tests. In this post, we'll:
+
+1. Explore how AI assistants like Cursor can help build E2E test suites
+2. Walk through creating Puppeteer tests for a sample application
+3. Show how to run these tests in ephemeral environments using Release
+4. Demonstrate GitHub Actions integration for automated testing
+
+Let's dive in.
+
+## Why E2E Testing Matters in an AI-Accelerated World
+
+Before we get into the technical details, let's consider why E2E testing is especially important in an environment where AI is accelerating development:
+
+1. **Feature Velocity**: AI tools can help developers implement features much faster, but without proper testing, bugs can slip through.
+
+2. **System Verification**: While AI can generate code that looks correct, only E2E tests can verify that all components work together as expected.
+
+3. **Regression Prevention**: As codebases grow more complex, E2E tests provide confidence that new features don't break existing functionality.
+
+4. **Documentation**: E2E tests serve as living documentation of how your application is supposed to work.
+
+5. **User Experience Validation**: E2E tests simulate real user interactions, validating that the application works correctly from the user's perspective.
+
+## Setting Up the Example Application
+
+For this tutorial, we'll use [Release Example Voting App](https://github.com/awesome-release/release-example-voting-app), a microservice application with a React frontend, a Python API, and a Node.js worker. This app allows users to vote between two options and see the results in real time.
+
+![Screenshot of the Voting App interface](/blog-images/voting_app.png)
+
+The application architecture looks like this:
+
+- **Frontend**: React application serving the voting interface and results page
+- **API**: Python Flask application providing REST endpoints
+- **Worker**: Node.js service processing votes
+- **Database**: Redis for temporary storage and Postgres for persistent storage
+
+## Creating E2E Tests with Cursor in Agent Mode
+
+Now let's use Cursor in Agent mode to create an E2E test suite using Puppeteer. If you're not familiar with Cursor, it's an AI-powered code editor that can help you write, understand, and refactor code.
+
+### Step 1: Set Up the Project
+
+First, let's create a new directory for our tests and initialize a new project. In Cursor's Agent mode, we'd use a prompt like this:
+
+> **Cursor Prompt:** Create a new directory for E2E tests with Puppeteer and Jest. Initialize a Node.js project and install the necessary dependencies.
+
+Based on this prompt, Cursor would suggest the following commands:
+
+```bash
+mkdir e2e-tests
+cd e2e-tests
+npm init -y
+npm install puppeteer jest jest-puppeteer @types/puppeteer @types/jest
+```
+
+### Step 2: Configure Jest and Puppeteer
+
+Next, we'll create a Jest configuration file to work with Puppeteer. Here's the prompt we'd use in Cursor:
+
+> **Cursor Prompt:** Create a Jest configuration file that works with Puppeteer for end-to-end testing. Also create a jest-puppeteer configuration file that allows us to run tests against an external server.
+
+![Cursor configuring Jest](/blog-images/cursor_initial_creation.png)
+
+
+### Step 3: Write the First E2E Test
+
+Now, let's use Cursor to write our first E2E test. We'll start by testing the voting functionality with this prompt:
+
+> **Cursor Prompt:** Write a Puppeteer test file called voting.test.js that tests the basic functionality of our voting app. The app has a main page with two voting options, a thank you page after voting, and a results page. Use environment variables for the app URL with a localhost fallback.
+
+![Cursor creating the first test](/blog-images/cursor_first_e2e_test.png)
+
+### Step 4: Add More Test Coverage
+
+Let's extend our test suite to cover more functionality. Here's the prompt for Cursor:
+
+> **Cursor Prompt:** Create a new test file called results.test.js that focuses on testing the results page. Include tests for real-time updates when votes are cast and verify the page works correctly on mobile devices.
+
+![Cursor extending test coverage](/blog-images/cursor_second_test.png)
+
+## Running E2E Tests in Ephemeral Environments with Release
+
+Now that we have our E2E tests, let's integrate them with Release to run them in ephemeral environments. This approach has several advantages:
+
+1. Tests run against isolated, clean environments
+2. Multiple test runs can execute in parallel
+3. Environments are automatically cleaned up after tests
+4. Tests run against realistic, production-like setups
+
+### Setting Up Release for E2E Testing
+
+To run our tests in Release ephemeral environments, we need to:
+
+1. Create a Release application
+2. Create a GitHub Actions workflow to trigger tests 
+3. Set up the necessary environment variables and secrets
+
+### Step 1: Create the Release Application
+
+First, let's create a Release application based on the example voting app repository. You can follow along the [instructions on our docs](https://docs.release.com/guides-and-examples/common-setup-examples/example-voting-app).
+
+### Step 2: Create GitHub Actions Workflow
+
+Next we configure GitHub Actions to run our E2E tests in a Release ephemeral environment. The essential pieces are running the Release CLI from our CI workflow to create an environment and capture its URL to allow us to run the tests against it:
+
+```yaml
+  create_environment:
+    name: Create release environment
+    needs: build_and_upload
+    runs-on: ubuntu-latest
+    concurrency: ci-${{ github.ref }}
+    container: public.ecr.aws/b4g8c3s2/release-cli
+    steps:
+      - name: download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: images
+      - name: create release environment
+        shell: bash
+        run: |
+          BRANCH=e2e-testing
+          FRONTEND_IMAGE=$(cat frontend_image.txt)
+          BACKEND_IMAGE=$(cat backend_image.txt)
+          FRONTEND=frontend
+          BACKEND=backend
+          release environments create \
+            --account "$RELEASE_ACCOUNT_ID" \
+            --app "$RELEASE_APP_ID" \
+            --branch "$BRANCH" \
+            --image-overrides "$FRONTEND=$FRONTEND_IMAGE" \
+            --image-overrides "$BACKEND=$BACKEND_IMAGE" \
+            --output json \
+            --wait > res.json
+      - name: upload image name
+        uses: actions/upload-artifact@v3
+        with:
+          name: json
+          path: res.json
+```
+
+A complete example can be found on our [E2E testing docs](https://docs.release.com/reference-documentation/e2e-testing).
+
+### Step 3: Configure Secrets and Variables
+
+In your GitHub repository settings, add the following secrets:
+
+- `RELEASE_API_KEY`: Your Release API key for authentication
+
+## Leveraging Release's Ephemeral Environments for Testing
+
+Running E2E tests in ephemeral environments provides several key benefits:
+
+### 1. Isolation and Consistency
+
+Each test run gets a fresh, isolated environment that closely resembles production. This eliminates test flakiness caused by shared state or previous test runs.
+
+### 2. Parallelization
+
+Multiple test environments can run simultaneously, speeding up your CI/CD pipeline.
+
+### 3. Realistic Testing
+
+Tests run against the full application stack, including databases and microservices, providing confidence that your application works end-to-end.
+
+### 4. Resource Efficiency
+
+Environments are automatically provisioned before tests and destroyed afterward, preventing unnecessary resource usage.
+
+## Best Practices for AI-Assisted E2E Testing
+
+Based on our experience using Cursor and Release for E2E testing, here are some best practices:
+
+### 1. Start with Clear Test Objectives
+
+Before asking AI to generate tests, clearly define what you want to test. Specific prompts like "Write a test to verify user login functionality" work better than vague requests.
+
+### 2. Review and Refine AI-Generated Tests
+
+AI tools like Cursor are powerful, but they're not perfect. Always review generated tests for:
+- Edge cases the AI might have missed
+- Application-specific assumptions that might be incorrect
+- Brittle selectors that could break easily
+
+### 3. Create Modular, Reusable Components
+
+Structure your tests with reusable helper functions and page objects. This makes tests more maintainable and easier for AI to understand and modify.
+
+### 4. Use Explicit Waits
+
+AI-generated tests often use static timeouts. Replace these with explicit waits for elements or network idle states to make tests more robust.
+
+### 5. Monitor and Analyze Test Results
+
+Set up monitoring for your E2E tests to identify patterns in failures. This feedback loop helps you continuously improve both your application and your tests.
+
+## Conclusion: Quality at AI Speed
+
+As AI accelerates software development, E2E testing becomes more critical than ever. By combining AI-powered coding tools like Cursor with ephemeral environment platforms like Release, teams can maintain high quality standards even as development velocity increases.
+
+The same AI capabilities that help you write application code faster can also help create comprehensive test suites, maintaining the balance between speed and quality.
+
+Ready to accelerate your testing workflow with ephemeral environments? [Try Release today](https://release.com/signup) and see how it can transform your E2E testing strategy.
+
+## Resources
+
+- [Release Example Voting App](https://github.com/awesome-release/release-example-voting-app)
+- [Release Documentation: E2E Testing](https://docs.release.com/reference-documentation/e2e-testing)
+- [Puppeteer Documentation](https://pptr.dev/)
+- [Jest Documentation](https://jestjs.io/) 
