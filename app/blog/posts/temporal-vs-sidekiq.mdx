@@ -225,9 +225,6 @@ class NotifyUserActivity < Temporal::Activity
   end
 end
 
-> Be careful returning large objects or text in your activities. There is a 2MB size limit and (at the writing of this post) temporal-ruby has an issue with deserializing nested JSON objects: https://github.com/coinbase/temporal-ruby/issues/204. Make sure to return nil or true if you don't need the results or store the results in redis, DB or something like S3 and then retreive it in the next activity.
-
-
 # Workflow
 
 class ProcessFileWorkflow < Temporal::Workflow
@@ -241,6 +238,8 @@ class ProcessFileWorkflow < Temporal::Workflow
   end
 end
 ```
+
+> Be careful returning large objects or text in your activities. There is a 2MB size limit and (at the writing of this post) temporal-ruby has an issue with deserializing nested JSON objects: https://github.com/coinbase/temporal-ruby/issues/204. Make sure to return nil or true if you don't need the results or store the results in redis, DB or something like S3 and then retreive it in the next activity.
 
 Then register them in a worker:
 
