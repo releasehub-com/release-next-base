@@ -1,6 +1,10 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
 import type { ComponentProps } from "react";
 import Image from "next/image";
+import React from "react";
+
+// Import the CodeBlock component
+const CodeBlock = React.lazy(() => import("@/app/blog/components/CodeBlock"));
 
 interface MDXContentProps {
   source: string;
@@ -16,6 +20,8 @@ interface MDXContentProps {
     strong?: (props: ComponentProps<"strong">) => JSX.Element;
     em?: (props: ComponentProps<"em">) => JSX.Element;
     blockquote?: (props: ComponentProps<"blockquote">) => JSX.Element;
+    pre?: (props: ComponentProps<"pre">) => JSX.Element;
+    code?: (props: ComponentProps<"code">) => JSX.Element;
   };
 }
 
@@ -92,6 +98,31 @@ const defaultComponents = {
       </div>
     </div>
   ),
+  pre: (props: ComponentProps<"pre">) => (
+    <pre
+      className="bg-gray-900 rounded-lg p-4 mb-4 overflow-x-auto"
+      {...props}
+    />
+  ),
+  code: (props: ComponentProps<"code">) => {
+    // Check if this is an inline code block or a code block inside a pre tag
+    const isInlineCode = !React.Children.toArray(props.children).some(
+      (child) => typeof child === "string" && child.includes("\n")
+    );
+
+    if (isInlineCode) {
+      return (
+        <code className="bg-gray-800 px-1 py-0.5 rounded text-sm" {...props} />
+      );
+    }
+
+    // This is a code block, use the CodeBlock component for syntax highlighting
+    return (
+      <React.Suspense fallback={<code {...props} />}>
+        <CodeBlock {...props} />
+      </React.Suspense>
+    );
+  },
 };
 
 export default function MDXContent({

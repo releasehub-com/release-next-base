@@ -5,6 +5,7 @@ import Image from "next/image";
 import CallToAction from "@/components/blog/CallToAction";
 import React, { ReactElement } from "react";
 import type { ComponentProps } from "react";
+import CodeBlock from "./CodeBlock";
 
 type MDXComponents = {
   img: (props: ComponentProps<"img">) => JSX.Element;
@@ -45,15 +46,29 @@ const components: MDXComponents = {
   a: (props) => (
     <a className="text-purple-400 hover:text-purple-300" {...props} />
   ),
-  pre: (props) => (
-    <pre
-      className="bg-gray-800 p-4 rounded-lg overflow-x-auto mb-4"
-      {...props}
-    />
-  ),
-  code: (props) => (
-    <code className="bg-gray-800 px-1 py-0.5 rounded" {...props} />
-  ),
+  pre: (props) => {
+    const codeElement = React.Children.toArray(props.children).find(
+      (child) => React.isValidElement(child) && child.type === "code"
+    ) as ReactElement | undefined;
+
+    return (
+      <pre
+        className="bg-gray-800 p-4 rounded-lg overflow-x-auto mb-4"
+        {...props}
+      />
+    );
+  },
+  code: (props) => {
+    const isInlineCode = !React.Children.toArray(props.children).some(
+      (child) => typeof child === "string" && child.includes("\n")
+    );
+
+    if (isInlineCode) {
+      return <code className="bg-gray-800 px-1 py-0.5 rounded" {...props} />;
+    }
+
+    return <CodeBlock {...props} />;
+  },
   ul: (props) => (
     <ul className="list-disc list-outside text-gray-300 mb-4 ml-6" {...props} />
   ),
