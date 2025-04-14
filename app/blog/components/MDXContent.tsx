@@ -3,7 +3,7 @@
 import { useMDXComponent } from "next-contentlayer/hooks";
 import Image from "next/image";
 import CallToAction from "@/components/blog/CallToAction";
-import React from "react";
+import React, { ReactElement } from "react";
 import type { ComponentProps, HTMLAttributes } from "react";
 import CodeBlock from "./CodeBlock";
 
@@ -78,18 +78,37 @@ const components = {
   a: (props: HTMLAttributes<HTMLAnchorElement>) => (
     <a className="text-purple-400 hover:text-purple-300 underline" {...props} />
   ),
-  pre: (props: HTMLAttributes<HTMLPreElement>) => (
-    <pre
-      className="bg-gray-900 rounded-lg p-4 mb-4 overflow-x-auto"
-      {...props}
-    />
-  ),
-  code: (props: HTMLAttributes<HTMLElement>) => (
-    <code
-      className="bg-gray-800 px-1 py-0.5 rounded text-sm text-gray-300"
-      {...props}
-    />
-  ),
+  pre: (props: HTMLAttributes<HTMLPreElement>) => {
+    // Extract the className from the child code element if it exists
+    const codeElement = React.Children.toArray(props.children).find(
+      (child) => React.isValidElement(child) && child.type === "code"
+    ) as ReactElement | undefined;
+
+    return (
+      <pre
+        className="bg-gray-900 rounded-lg p-4 mb-4 overflow-x-auto"
+        {...props}
+      />
+    );
+  },
+  code: (props: HTMLAttributes<HTMLElement>) => {
+    // Check if this is an inline code block or a code block inside a pre tag
+    const isInlineCode = !React.Children.toArray(props.children).some(
+      (child) => typeof child === "string" && child.includes("\n")
+    );
+
+    if (isInlineCode) {
+      return (
+        <code
+          className="bg-gray-800 px-1 py-0.5 rounded text-sm text-gray-300"
+          {...props}
+        />
+      );
+    }
+
+    // This is a code block, use the CodeBlock component for syntax highlighting
+    return <CodeBlock {...props} />;
+  },
   ul: (props: HTMLAttributes<HTMLUListElement>) => (
     <ul className="list-disc list-outside text-gray-300 mb-4 ml-6" {...props} />
   ),
