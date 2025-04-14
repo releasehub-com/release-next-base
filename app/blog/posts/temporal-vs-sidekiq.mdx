@@ -264,6 +264,78 @@ Temporal.start_workflow(
 )
 ```
 
+## Managing Complex Deployment Workflows
+
+At Release, we handle complex deployment workflows that include multiple dependent stages, user-configurable parallelization of custom tasks, and coordination across services. These workflows go well beyond simple background job execution.
+
+In a typical Sidekiq-based system, the conventional pattern for handling this complexity is choreography ([more on choreography vs. orchestration](https://temporal.io/blog/to-choreograph-or-orchestrate-your-saga-that-is-the-question)). Sidekiq does offer tools like batches with callbacks, but these solutions fall short when it comes to clarity and control in workflows as dynamic and multi-staged as ours.
+
+To make this manageable, we introduced a custom `Sidekiq::JobGroup` abstraction that allows us to wait for the completion of several tasks before triggering the next stage:
+
+```ruby
+class DeployWorkflow
+  def perform(deployment_id)
+    stages = DeploymentConfig.get(deployment_id).stages
+
+    stages.each do |stage|
+      jids = stage.tasks.map do |task_config|
+        CustomDeployJob.perform_async(deployment_id, stage.name, task_config)
+      end
+
+      group = Sidekiq::JobGroup.new(jids, name: stage.name)
+      group.join(timeout: 600) # Wait for all tasks in this stage to complete before moving on
+    end
+
+    Rails.logger.info("Deployment #{deployment_id} complete!")
+  end
+end
+
+class CustomDeployJob
+  include Sidekiq::Job
+
+  def perform(deployment_id, stage_name, task_config)
+    TaskRunner.run(deployment_id, stage_name, task_config)
+  end
+end
+```
+
+While this works, it comes at a cost: `group.join` blocks the current Sidekiq thread until all tasks complete. In deeply nested workflows with multiple stages, this leads to a significant number of threads being tied up just waiting. This kind of busy-waiting architecture becomes difficult to scale and reason about.
+
+### Temporal: Built-In Orchestration
+
+Temporal, by contrast, is built for orchestration. With the [`temporal-ruby`](https://github.com/coinbase/temporal-ruby) library, we can model our entire deployment as a workflow that coordinates child workflows for each stage.
+
+Here's an example of how we might express that same multi-stage deploy logic in Temporal:
+
+```ruby
+class DeployWorkflow < Temporal::Workflow
+  def execute(deployment_id)
+    stages = DeploymentConfig.get(deployment_id).stages
+
+    stages.each do |stage|
+      futures = stage.tasks.map do |task_config|
+        DeployTaskWorkflow.execute(task_config)
+      end
+
+      futures.each(&:get) # Wait for all tasks in this stage to complete before moving on
+    end
+
+    Workflow.logger.info("Deployment #{deployment_id} complete!")
+  end
+end
+
+class DeployTaskWorkflow < Temporal::Workflow
+  def execute(task_config)
+    # Custom logic for running a single task in a stage
+    TaskRunner.run(task_config)
+  end
+end
+```
+
+While this is structurally similar to our Sidekiq code, Temporal handles the waiting, retrying, and state persistence under the hood. As soon as the Temporal workflow has to wait on a future for a child workflow, it yields and waits for an event from the Temporal server to cause it to resume without blocking a worker thread.
+
+We're in the process of migrating our core deployment logic from Sidekiq to Temporal to take advantage of these orchestration benefits. Temporal workflows give us a single source of truth for the deployment process, allow us to scale without thread contention, and make the system much easier to observe and reason about.
+
 ### Why Temporal Helps Here
 
 - **Automatic retries per activity**: Each step can be retried independently on failure.  
