@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 export async function POST(request: Request) {
   const data = await request.json();
@@ -26,10 +27,19 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json({
+    const sessionCookie = response.headers.get("set-cookie");
+    
+    const redirectUrl = `${process.env.WEB_URL}/register/verify?email=${data.user.email}`;
+    const jsonResponse = NextResponse.json({
       success: true,
-      redirectUrl: `${process.env.WEB_URL}/register/verify?email=${data.user.email}`,
+      redirectUrl,
     });
+    
+    if (sessionCookie) {
+      jsonResponse.headers.set("set-cookie", sessionCookie);
+    }
+
+    return jsonResponse;
   } catch (err) {
     console.error("Signup error:", err);
     return NextResponse.json(
