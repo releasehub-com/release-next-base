@@ -1,7 +1,7 @@
 import { VersionId, Version, VersionContent, BenefitType } from "./types";
 
 export const STORAGE_KEY = "landing_version";
-export const DEFAULT_VERSION: VersionId = "ephemeral";
+export const DEFAULT_VERSION: VersionId = "ai-pipeline";
 
 const defaultBenefits: readonly BenefitType[] = [
   {
