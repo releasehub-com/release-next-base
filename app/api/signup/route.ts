@@ -29,7 +29,7 @@ export async function POST(request: Request) {
 
     const sessionCookie = response.headers.get("set-cookie");
     
-    const redirectUrl = `${process.env.WEB_URL}/register/verify?email=${data.user.email}`;
+    const redirectUrl = `${process.env.WEB_URL}/register/company-page`;
     const jsonResponse = NextResponse.json({
       success: true,
       redirectUrl,
